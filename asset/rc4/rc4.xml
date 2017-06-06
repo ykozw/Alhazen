@@ -1,0 +1,177 @@
+<?xml version='1.0' encoding='utf-8'?>
+<scene version="0.4.0">
+  
+  <!--タイムアウト。300秒-->
+  <integer name="timeout" value="30000000" />
+  
+  <!--プログレッシブ動作-->
+  <boolean name="progressive" value="true" />
+  
+  <!--スナップショット出力秒数設定-->
+  <integer name="snapshotinterval" value="30" />
+  
+  <!--スナップショット毎にデノイズ-->
+  <boolean name="snapshotdenoise" value="false"/>
+  
+  <!--デノイザーは中央値フィルター-->
+  <denoiser type="medianfilter"/>
+  <!--<denoiser type="ap"/>-->
+  
+  <!--cubeファイルを使ったトーンマッピング-->
+  <tonemapper type="dotcube">
+    <float name="gamma" value="2.2"/>
+    <string name="file" value="IWLTBAP Aspen - Standard.cube"/>
+  </tonemapper>
+  
+  <!--インテグレーター-->
+  <!--<integrator type="debug_depth">-->
+  <!--<integrator type="debug_id">-->
+  <!--<integrator type="debug_normal">-->
+  <!--<integrator type="ao">-->
+  <!--<integrator type="bruteforce">-->
+	<integrator type="pt">
+  </integrator>
+
+  <!--センサー-->
+	<sensor type="perspective">
+		<float name="farClip" value="100"/>
+		<float name="focusDistance" value="7"/>
+    <float name="fov" value="45.0"/>
+    <string name="fovAxis" value="x"/>
+		<float name="nearClip" value="0.1"/>
+		<transform name="toWorld">
+			<lookat target="0, 0.8, 0" origin="0.0, 1.5, 5.0" up="0.0, 1.0, 0.0"/>
+		</transform>
+
+    <!--サンプラーはLDSが遅すぎるので別のものを使う-->
+    <!--<sampler type="ldsampler">-->
+    <sampler type="independ">
+      <integer name="sampleCount" value="4"/>
+    </sampler>
+
+    <film type="hdrfilm">
+      <integer name="pixelWidth" value="1280"/>
+      <integer name="pixelHeight" value="960"/>
+      <float name="filmWidthMM" value="90"/>
+      <float name="filmHeightMM" value="60"/>
+    </film>
+  </sensor>
+
+  <!--エリアライト-->
+  <emitter type="rectangleLight">
+    <vec3 name="center" x="0.0" y="2.1" z ="-0.5"/>
+    <vec3 name="axisx" x="0.2" y="0.0" z ="0.0"/>
+    <vec3 name="axisy" x="0.0" y="0.0" z ="0.2"/>
+    <rgb name="radiance" value="160.0 160.0 160.0"/>
+  </emitter>
+  
+  <!--マテリアル定義-->
+  <bsdf type="diffuse" id="matRed">
+    <rgb name="reflectance" value="1.0 0.0 0.0"/>
+  </bsdf>
+  <bsdf type="diffuse" id="matGreen">
+    <rgb name="reflectance" value="0.0 1.0 0.0"/>
+  </bsdf>
+  <bsdf type="diffuse" id="matBlue">
+    <rgb name="reflectance" value="0.0 0.0 1.0"/>
+  </bsdf>
+  <bsdf type="diffuse" id="matYellow">
+    <rgb name="reflectance" value="1.0 1.0 0.0"/>
+  </bsdf>
+  <bsdf type="diffuse" id="matWhite">
+    <rgb name="reflectance" value="1.0 1.0 1.0"/>
+  </bsdf>
+  <bsdf type="mirror" id="mirror">
+    <!--リフレクタンス指定できてないけどできるようにする-->
+    <rgb name="reflectance" value="1.0 1.0 1.0"/>
+  </bsdf>
+  <bsdf type="glass" id="glass">
+    <float name="ior" value="1.5"/>
+  </bsdf>
+  
+  <!--メンガー-->
+  <!--<shape type="menger">
+    <ref name="bsdf" value="matWhite"/>
+  </shape>-->
+  
+    
+  <!--球1-->
+  <shape type="sphere">
+    <!--TODO: 移動変形はtransformで扱った方が綺麗かもしれない-->
+    <Point name="center" x="+0.2" y="0.3" z="0"/>
+    <Point name="radius" value="0.3"/>
+    <!--<ref name="bsdf" value="glass"/>-->
+    <ref name="bsdf" value="matWhite"/>
+  </shape>
+  
+  <!--球2-->
+  <shape type="sphere">
+    <!--TODO: 移動変形はtransformで扱った方が綺麗かもしれない-->
+    <Point name="center" x="-0.4" y="0.71" z="-1.2"/>
+    <Point name="radius" value="0.2"/>
+    <ref name="bsdf" value="mirror"/>
+  </shape>
+  
+  <!--箱1-->
+  <shape type="box">
+    <transform name="toworld">
+      <scale x = "0.3" y = "1.0" z = "0.3"/>
+      <rotate x = "0.0" y = "1.0" z = "0.0" angle = "45" />
+      <translate x = "0.5" y = "0.2" z = "-1.0"/>
+    </transform>
+    <ref name="bsdf" value="matYellow"/>
+    <!--<ref name="bsdf" value="glass"/>-->
+  </shape>
+  
+  <!--箱2-->
+  <shape type="box">
+    <transform name="toWorld">
+      <scale x = "0.3" y = "0.5" z = "0.3"/>
+      <rotate x = "0.0" y = "1.0" z = "0.0" angle = "-45" />
+      <translate x = "-0.4" y = "0.0" z = "-1.2"/>
+    </transform>
+    <!--<ref name="bsdf" value="matYellow"/>-->
+  <ref name="bsdf" value="glass"/>
+  </shape>
+  
+  <!--地面-->
+  <shape type="plane">
+  </shape>
+  
+  <!--天井-->
+  <shape type="plane">
+    <transform name="toWorld">
+      <rotate x = "1.0" y = "0.0" z = "0.0" angle = "180" />
+      <translate x = "0.0" y = "-2.5" z = "0.0"/>
+    </transform>
+    <string name="bsdf" value="matWhite"/>
+  </shape>
+
+  <!--奥の平面-->
+  <shape type="plane">
+    <transform name="toWorld">
+      <rotate x = "1.0" y = "0.0" z = "0.0" angle = "-90" />
+      <translate x = "0.0" y = "-2.5" z = "0.0"/>
+    </transform>
+    <ref name="bsdf" value="matWhite"/>
+  </shape>
+  
+  <!--左の平面-->
+  <shape type="plane">
+    <transform name="toWorld">
+      <rotate x = "0.0" y = "0.0" z = "1.0" angle = "90" />
+      <translate x = "0.0" y = "-1.0" z = "0.0"/>
+    </transform>
+    <ref name="bsdf" value="matRed"/>
+  </shape>
+  
+  <!--右の平面-->
+  <shape type="plane">
+    <transform name="toWorld">
+      <rotate x = "0.0" y = "0.0" z = "1.0" angle = "-90" />
+      <translate x = "0.0" y = "-1.0" z = "0.0"/>
+    </transform>
+    <ref name="bsdf" value="matGreen"/>
+  </shape>
+  
+</scene>

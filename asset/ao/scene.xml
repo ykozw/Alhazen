@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='utf-8'?>
+<scene version="0.4.0">
+  
+  <!--タイムアウト。300秒-->
+  <integer name="timeout" value="30000000" />
+  
+  <!--プログレッシブ動作-->
+  <boolean name="progressive" value="false" />
+  
+  <!--スナップショット出力秒数設定-->
+  <integer name="snapshotinterval" value="100" />
+  
+  <!--スナップショット毎にデノイズ-->
+  <boolean name="snapshotdenoise" value="false"/>
+  
+  <!--サブサンプル指定をここに-->
+  <SubpixelSampler type="SubpixelSampleIndependent">
+    <integer name="spp" value="4"/>
+    <integer name="seed" value="123456789"/>
+  </SubpixelSampler>
+  
+  <!--デノイザー指定-->
+  <!--<denoiser type="medianfilter"/>-->
+  <Denoiser type="NullDenoiser"/>
+  <!--<denoiser type="ap"/>-->
+  
+  <!--インテグレーター-->
+  <!--<integrator type="debug_depth">-->
+  <!--<integrator type="debug_id">-->
+  <!--<integrator type="debug_normal">-->
+  <!--<integrator type="pt">-->
+  <SurfaceIntegrator type="AOSurfaceIntegrator">
+  <!--<SurfaceIntegrator type="TestIntegrator">-->
+    <int name ="sampleNum" value="64"/>
+  </SurfaceIntegrator>
+  
+  <Tonemapper type="Degamma">
+  </Tonemapper>
+
+  <!--センサー-->
+	<Sensor type="Perspective">
+		<float name="farClip" value="100"/>
+		<float name="focusDistance" value="7"/>
+    <float name="fov" value="45.0"/>
+    <string name="fovAxis" value="x"/>
+		<float name="nearClip" value="0.1"/>
+		<transform name="toWorld">
+			<lookat target="0, 0.8, 0" origin="0.0, 1.5, 5.0" up="0.0, 1.0, 0.0"/>
+		</transform>
+
+    <film type="hdrfilm">
+      <integer name="pixelWidth" value="512"/>
+      <integer name="pixelHeight" value="512"/>
+      <float name="filmWidthMM" value="90"/>
+      <float name="filmHeightMM" value="60"/>
+    </film>
+  </Sensor>
+    
+  <!--球1-->
+  <Shape type="Sphere">
+    <!--TODO: 移動変形はtransformで扱った方が綺麗かもしれない-->
+    <Point name="center" x="+0.2" y="0.3" z="0"/>
+    <Point name="radius" value="0.3"/>
+    <!--<ref name="bsdf" value="glass"/>-->
+    <ref name="bsdf" value="matWhite"/>
+  </Shape>
+  
+  <!--地面-->
+  <Shape type="PlaneShape">
+  </Shape>
+  
+</scene>

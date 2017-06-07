@@ -1,8 +1,6 @@
 ﻿#include "pch.hpp"
 #include "aabb.hpp"
 
-extern IncrimentCounter g_checkAABB;
-
 //-------------------------------------------------
 //
 //-------------------------------------------------
@@ -104,8 +102,6 @@ INLINE void AABB::addAABB(const AABB& aabb)
 INLINE bool AABB::intersect(const Ray& ray, Intersect* isect) const
 {
     //
-    ++g_checkAABB;
-    //
     const AABB& aabb = *this;
     float tmin, tmax, tymin, tymax, tzmin, tzmax;
     tmin = (aabb[ray.sign[0]].x - ray.o.x) * ray.dinv.x;
@@ -171,8 +167,6 @@ INLINE bool AABB::intersect(const Ray& ray, Intersect* isect) const
 //------------------------------------------
 INLINE bool AABB::intersectCheck(const Ray& ray, float currentIntersectT ) const
 {
-    //
-    ++g_checkAABB;
     //
     const AABB& aabb = *this;
     float tmin, tmax, tymin, tymax, tzmin, tzmax;

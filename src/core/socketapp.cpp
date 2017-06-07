@@ -3,6 +3,7 @@
 #include "core/math.hpp"
 #include "core/image.hpp"
 
+#if defined(WINDOWS)
 /*
 -------------------------------------------------
 -------------------------------------------------
@@ -40,3 +41,4 @@ void SocketApp::sendTile(const Region2D& region, const ImageLDR& image)
     //
     send(data);
 }
+#endif

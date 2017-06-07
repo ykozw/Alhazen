@@ -239,7 +239,7 @@ INLINE int32_t testAABB(
 //-------------------------------------------------
 // select
 //-------------------------------------------------
-__forceinline __m128 select(__m128 v0, __m128 v1, __m128 mask)
+AL_FORCEINLINE __m128 select(__m128 v0, __m128 v1, __m128 mask)
 {
     return _mm_or_ps(
         _mm_andnot_ps(mask, v0),

@@ -636,6 +636,7 @@ void RealSensor::calcPrecomputeTable()
 //-------------------------------------------------
 void RealSensor::dumpLensSpecImage() const
 {
+#if defined(WINDOWS)
     // 最も高いレンズの高さを出す
     float apeYmax = 0.0f;
     for (const auto& surf : surfs_)
@@ -806,6 +807,9 @@ void RealSensor::dumpLensSpecImage() const
             path.endPath();
         }
     }
+#else
+    AL_ASSERT_ALWAYS(false);
+#endif
 }
 
 //-------------------------------------------------

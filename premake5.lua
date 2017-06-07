@@ -9,10 +9,15 @@ project "Alhazen"
    targetdir "bin/%{cfg.buildcfg}"
    pchsource "src/pch.cpp"
    pchheader "pch.hpp"
+   includedirs { "src", "../src","../../src","thirdparty/ChaiScript/include"}
    includedirs {
      "src",
-     "thirdparty/tinyxml2"
+     "thirdparty/tinyxml2",
+     -- XCode対策(途中)
+     "../src",
+     "../../src"
    }
+
    files {
      "src/pch.cpp",
      "src/**.hpp",
@@ -20,11 +25,16 @@ project "Alhazen"
      "src/**.inl", 
      "thirdparty/tinyxml2/tinyxml2.cpp"
    }
-   characterset "MBCS"
-   
-   filter "files:thirdparty/tinyxml2/tinyxml2.cpp"
-     flags { "NoPCH" }
 
+   characterset "MBCS"
+   flags { "C++14" }
+
+   configuration "vs*"
+      buildoptions { "/bigobj" }
+      
+  filter "files:thirdparty/tinyxml2/tinyxml2.cpp"
+     flags { "NoPCH" }
+   
    filter "configurations:Debug"
       defines { "DEBUG" }
       flags { "Symbols" }

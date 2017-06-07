@@ -2,6 +2,7 @@
 #include "pch.hpp"
 #include "core/criticalsection.hpp"
 
+#if defined(WINDOWS)
 /*
 -------------------------------------------------
 -------------------------------------------------
@@ -42,3 +43,4 @@ private:
     bool isConnected_ = false;
     CriticalSection cs_;
 };
+#endif

@@ -854,7 +854,9 @@ EnviromentLight::EnviromentLight(const ObjectProp& objectProp)
     const std::string ext = strrchr(fileName.c_str(), '.');
     if (ext == ".hdr")
     {
+#if defined(WINDOWS)
         image_.readHdr(fileName);
+#endif
     }
     else if (ext == ".bmp")
     {

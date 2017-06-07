@@ -2,6 +2,7 @@
 
 #include "pch.hpp"
 
+#if defined(WINDOWS)
 /*
 -------------------------------------------------
 -------------------------------------------------
@@ -52,3 +53,4 @@ public:
 private:
     CriticalSection& cs_;
 };
+#endif

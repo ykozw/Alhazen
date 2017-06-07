@@ -2,17 +2,9 @@
 #include "core/stats.hpp"
 #include "core/math.hpp"
 
-std::vector<IncrimentCounter*> IncrimentCounter::counters;
 std::vector<StatCounter*> StatCounter::counters;
-//
-IncrimentCounter g_intersectTriangle("INTERSECT_TRIANGLE");
-IncrimentCounter g_intersectSphere("INTERSECT_SPHERE");
-IncrimentCounter g_intersectPlane("INTERSECT_PLANE");
-IncrimentCounter g_checkTriangle("CHECK_TRIANGLE");
-IncrimentCounter g_checkSphere("CHECK_SPHERE");
-IncrimentCounter g_checkPlane("CHECK_PLANE");
-IncrimentCounter g_checkAABB("CHECK_AABB");
 
+#if 0
 //-------------------------------------------------
 // IncrimentCounter
 //-------------------------------------------------
@@ -41,6 +33,7 @@ void IncrimentCounter::print()
         logging("Counter[%s]: %" PRIu64, counter->name_.c_str(), total);
     }
 }
+#endif
 
 //-------------------------------------------------
 // StatCounter

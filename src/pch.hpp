@@ -23,6 +23,7 @@
 #include <cassert>
 #include <ctime>
 #include <cinttypes>
+#include <cstdarg>
 #define _USE_MATH_DEFINES
 #include <cmath>
 
@@ -48,34 +49,16 @@
 #include <shared_mutex>
 #include <atomic>
 
-#if defined(WINDOWS)
-// windows
-#define NOMINMAX
-#define WIN32_LEAN_AND_MEAN
-#include <io.h>
-#include <fcntl.h>
-#include <windows.h>
-#include <windowsx.h>
-#include <winsock2.h>
-#include <Ws2tcpip.h>
-#include <timeapi.h>
-#include <sal.h>
-#include <Shlwapi.h>
-#include <xmllite.h>
-#pragma comment(lib,"winmm.lib")
-#pragma comment(lib, "xmllite.lib")
-#pragma comment(lib, "Shlwapi.lib")
-#pragma comment(lib, "ws2_32.lib")
-#endif
-
 // SIMD
-#if defined(CLANG)
+#if defined(CLANG)  
 #include <x86intrin.h>
 #else
 #include <mmintrin.h>
 #include <intrin.h>
 #endif
 
+// portableだけれども各種SDKに依存するヘッダ
+#include <direct.h>
 
 // Third party
 #include "tinyxml2.h"
@@ -96,24 +79,18 @@
 #define WAVE_LENGTH_F_DASH 0.4880f
 #define WAVE_LENGTH_C_DASH 0.6439f
 
+// Debug関連
+#define DBG_BREAK {/*__builtin_trap(); */__debugbreak(); *reinterpret_cast<int32_t*>(nullptr) = 0;}
+
 #if defined(NO_ASSERT)
 #define AL_ASSERT_DEBUG(expr)
 #define AL_VALID(expr) expr
 #else
-
-#if defined(WINDOWS)
-#define AL_ASSERT_DEBUG(expr) if(!(expr)){ printf("%s %s %d\n",#expr, __FILE__, __LINE__); OutputDebugString(#expr);  DebugBreak(); }
-#else
-#define AL_ASSERT_DEBUG(expr) if(!(expr)){ printf("%s %s %d\n",#expr, __FILE__, __LINE__); }
-#endif
+#define AL_ASSERT_DEBUG(expr) if(!(expr)){ printf("%s %s %d\n",#expr, __FILE__, __LINE__); DBG_BREAK }
 #define AL_VALID(expr) AL_ASSERT_DEBUG(expr)
 #endif
+#define AL_ASSERT_ALWAYS(expr) if(!(expr)){ printf("%s %s %d\n",#expr, __FILE__, __LINE__); DBG_BREAK }
 
-#if defined(WINDOWS)
-#define AL_ASSERT_ALWAYS(expr) if(!(expr)){ printf("%s %s %d\n",#expr, __FILE__, __LINE__); OutputDebugString(#expr);  DebugBreak(); }
-#else
-#define AL_ASSERT_ALWAYS(expr) if(!(expr)){ printf("%s %s %d\n",#expr, __FILE__, __LINE__); __builtin_trap(); }
-#endif
 
 // aligin
 #if defined(WINDOWS)

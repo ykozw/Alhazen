@@ -5,7 +5,6 @@
 #include "core/image.hpp"
 #include "core/math.hpp"
 #include "core/scenegeometory.hpp"
-#include "core/socketapp.hpp"
 #include "shape/shape.hpp"
 #include "bsdf/bsdf.hpp"
 #include "sensor/sensor.hpp"
@@ -35,9 +34,6 @@ public:
     Spectrum renderPixel(int32_t px, int32_t py);
 	void developLDR( const std::string& filmName, bool isFinal, bool isPreview );
 	void dumpHDR( const std::string& fileName );
-#if defined(WINDOWS)
-    void sendSceneInfo(SocketApp& socket);
-#endif
 private:
 	SceneGeometory geometory_;
 	SensorPtr sensor_;

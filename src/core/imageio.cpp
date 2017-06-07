@@ -9,7 +9,7 @@
 //-------------------------------------------------
 void Image::readBmp(const std::string& fileName, float gamma)
 {
-#if !defined(WINDOWS)
+#if !defined(WINDOWS) || true
     AL_ASSERT_ALWAYS(false);
 #else
     // 拡張子チェック
@@ -84,6 +84,7 @@ void Image::readBmp(const std::string& fileName, float gamma)
             sp = Spectrum::createFromRGB({{r2, g2, b2}}, false );
         }
     }
+#endif
     return;
 }
 
@@ -92,6 +93,9 @@ void Image::readBmp(const std::string& fileName, float gamma)
 //-------------------------------------------------
 void ImageLDR::writeBmp(const std::string& fileName) const
 {
+#if !defined(WINDOWS) || true
+    AL_ASSERT_ALWAYS(false);
+#else
     //
     logging("Write image [%s].", fileName.c_str() );
     //
@@ -177,6 +181,7 @@ EXIT:
     {
         fclose(file);
     }
+#endif
     return;
 }
 
@@ -185,6 +190,9 @@ EXIT:
 //-------------------------------------------------
 void Image::readHdr(const std::string& fileName)
 {
+#if !defined(WINDOWS) || true
+    AL_ASSERT_ALWAYS(false);
+#else
     // ファイルを開く
     std::ifstream file(fileName, std::ios_base::binary);
     loggingErrorIf(file.fail(), "File open failed.[%s]", fileName.c_str());
@@ -275,6 +283,7 @@ void Image::readHdr(const std::string& fileName)
             p *= scale;
         }
     }
+#endif
 }
 
 //-------------------------------------------------
@@ -283,6 +292,9 @@ void Image::readHdr(const std::string& fileName)
 //-------------------------------------------------
 void Image::writeHdr(const std::string& fileName) const
 {
+#if !defined(WINDOWS) || true
+    AL_ASSERT_ALWAYS(false);
+#else
     //
     const int32_t width = this->width();
     const int32_t height = this->height();

@@ -207,14 +207,6 @@ void SimpleTaskScheduler::Impl::start(int32_t graySize)
             Job::threadId = threadNo; // TODO: 戻す操作がとても恰好が悪い
         }));
     }
-
-#if defined(WINDOWS)
-    // 実行優先度を最高にする
-    for (auto& thread : threads_)
-    {
-        SetThreadPriority(thread.native_handle(), THREAD_PRIORITY_HIGHEST);
-    }
-#endif
 }
 
 /*

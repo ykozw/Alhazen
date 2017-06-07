@@ -326,20 +326,3 @@ void Scene::dumpHDR(const std::string& fileName)
     //image.writeHdr(fullPath);
     //image.writeBHDR(fullPath);
 }
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-#if defined(WINDOWS)
-void Scene::sendSceneInfo(SocketApp& socket)
-{
-    // フィルム情報を送信
-    const FilmPtr& film = sensor_->film();
-    const Image& image = film->image();
-    const Image& subFilmImage =film->subFilm(0).image();
-    AL_ASSERT_DEBUG(subFilmImage.width() == subFilmImage.height());
-    const int32_t tileSize = subFilmImage.width();
-    socket.sendResize(image.width(), image.height(), tileSize);
-}
-#endif

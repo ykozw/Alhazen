@@ -62,8 +62,6 @@
 #include <sal.h>
 #include <Shlwapi.h>
 #include <xmllite.h>
-#include <concurrent_vector.h>
-#include <concurrent_queue.h>
 #pragma comment(lib,"winmm.lib")
 #pragma comment(lib, "xmllite.lib")
 #pragma comment(lib, "Shlwapi.lib")
@@ -80,7 +78,7 @@
 
 
 // Third party
-
+#include "tinyxml2.h"
 
 // macro
 #define PI float(M_PI)

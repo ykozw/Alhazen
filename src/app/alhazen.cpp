@@ -28,7 +28,7 @@ int32_t Alhazen::runApp(const ArgConfig& config)
     taskScheduler.start(grainSize);
     // シーンの構築
     ObjectProp sceneProp;
-    sceneProp.createFromFile(config.sceneFilePath);
+    sceneProp.load(config.sceneFilePath);
     Scene masterScene(sceneProp);
     //
 #if defined(WINDOWS)

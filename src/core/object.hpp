@@ -33,11 +33,6 @@ private:
 	std::string value_;
 };
 
-// あとでインターフェイスから綺麗に消す
-#if !defined(WINDOWS)
-class IStream{};
-#endif
-
 //-------------------------------------------------
 // ObjectProp
 //-------------------------------------------------
@@ -50,13 +45,9 @@ public:
     //
     ObjectProp() = default;
     ObjectProp(const ObjectProp& other) = default;
-    //ObjectProp(const std::string& str);
     ObjectProp(const std::string& tag, const std::string& name, const std::string& value);
     // 生成関連
-    bool createFromFile(const std::string& fileName );
-    bool createFromString(const std::string& str);
-    bool load(IStream* stream);
-    bool load2(const std::string& fileName);
+    bool load(const std::string& fileName);
     // 手動生成系
     void addAttribute(const std::string& tag, const std::string& value);
     void addChild(const ObjectProp& child);
@@ -76,6 +67,8 @@ public:
     std::string asString(const std::string& defaultValue) const;
     Vec3 asXYZ(const Vec3& defaultValue) const;
     float asAngle(float defaultValue) const;
+private:
+    void loadSub(tinyxml2::XMLNode* node, ObjectProp& parentProp);
 private:
     std::string tag_;
     Attributes attributes_;

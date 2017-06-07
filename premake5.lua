@@ -9,7 +9,6 @@ project "Alhazen"
    targetdir "bin/%{cfg.buildcfg}"
    pchsource "src/pch.cpp"
    pchheader "pch.hpp"
-   includedirs { "src", "../src","../../src","thirdparty/ChaiScript/include"}
    includedirs {
      "src",
      "thirdparty/tinyxml2",

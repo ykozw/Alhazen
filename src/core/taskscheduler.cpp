@@ -3,6 +3,93 @@
 #include "core/threadid.hpp"
 #include "core/logging.hpp"
 
+/*
+-------------------------------------------------
+Readers–writer lockなconcurrent_queue
+-------------------------------------------------
+*/
+template <class T>
+class concurrent_queue
+{
+private:
+    std::deque<T> que_;
+    mutable std::shared_timed_mutex mutex_;
+public:
+    /*
+    -------------------------------------------------
+    -------------------------------------------------
+    */
+    concurrent_queue(){}
+    concurrent_queue(const concurrent_queue&) = delete;
+    concurrent_queue& operator=(const concurrent_queue&) = delete;
+
+    /*
+    -------------------------------------------------
+    -------------------------------------------------
+    */
+    void push(const T& x)
+    {
+        std::lock_guard<std::shared_timed_mutex> lock(mutex_);
+        que_.push_back(x);
+    }
+
+    /*
+    -------------------------------------------------
+    -------------------------------------------------
+    */
+    void push(T&& x)
+    {
+        std::lock_guard<std::shared_timed_mutex> lock(mutex_);
+        que_.push_back(std::move(x));
+    }
+
+    /*
+    -------------------------------------------------
+    -------------------------------------------------
+    */
+    bool try_pop(T& x) noexcept
+    {
+        std::lock_guard<std::shared_timed_mutex> lock(mutex_);
+        if (que_.empty())
+        {
+            return false;
+        }
+
+        x = std::move(que_.front());
+        que_.pop_front();
+        return true;
+    }
+
+    /*
+    -------------------------------------------------
+    -------------------------------------------------
+    */
+    void clear()
+    {
+        std::lock_guard<std::shared_timed_mutex> lock(mutex_);
+        que_.clear();
+    }
+
+    /*
+    -------------------------------------------------
+    -------------------------------------------------
+    */
+    std::size_t size() const
+    {
+        std::shared_lock<std::shared_timed_mutex> lock(mutex_);
+        return que_.size();
+    }
+    /*
+    -------------------------------------------------
+    -------------------------------------------------
+    */
+    bool empty() const
+    {
+        std::shared_lock<std::shared_timed_mutex> lock(mutex_);
+        return que_.empty();
+    }
+};
+
 //-------------------------------------------------
 //
 //-------------------------------------------------
@@ -16,11 +103,10 @@ public:
     void shutdown();
     bool isTaskConsumed();
     void add(const TaskFunc& task);
-    void dispatchAndWait(int32_t grainSize);
 private:
-    concurrency::concurrent_queue<TaskFunc> tasks_;
+    concurrent_queue<TaskFunc> tasks_;
     std::vector<std::thread> threads_;
-    std::atomic<bool> exitFlag_ = false;
+    std::atomic<bool> exitFlag_;
 };
 
 //-------------------------------------------------
@@ -122,11 +208,13 @@ void SimpleTaskScheduler::Impl::start(int32_t graySize)
         }));
     }
 
+#if defined(WINDOWS)
     // 実行優先度を最高にする
     for (auto& thread : threads_)
     {
         SetThreadPriority(thread.native_handle(), THREAD_PRIORITY_HIGHEST);
     }
+#endif
 }
 
 /*

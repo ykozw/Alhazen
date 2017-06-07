@@ -7,6 +7,7 @@
 //-------------------------------------------------
 bool printCacheInfo()
 {
+#if defined(WINDOWS)
     std::vector<SYSTEM_LOGICAL_PROCESSOR_INFORMATION> infos;
     infos.resize(1);
     for (;;)
@@ -65,4 +66,7 @@ bool printCacheInfo()
     }
     // 最後まで来たので成功
     return true;
+#else
+    return false;
+#endif
 }

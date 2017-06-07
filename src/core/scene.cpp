@@ -302,7 +302,11 @@ void Scene::developLDR(const std::string& filmName, bool isFinal, bool isPreview
 	// Tonemappingを掛けつつ出力する
 	const std::string fullPath = getOutputFolderPath() + filmName;
 	tonemapper_->process(image, tonemmappedImage_);
+#if defined(WINDOWS)
 	tonemmappedImage_.writeBmp(fullPath);
+#else
+    AL_ASSERT_ALWAYS(false);
+#endif
 	// 出力ファイルのプレビュー
 	if (isPreview)
 	{
@@ -327,6 +331,7 @@ void Scene::dumpHDR(const std::string& fileName)
 -------------------------------------------------
 -------------------------------------------------
 */
+#if defined(WINDOWS)
 void Scene::sendSceneInfo(SocketApp& socket)
 {
     // フィルム情報を送信
@@ -337,3 +342,4 @@ void Scene::sendSceneInfo(SocketApp& socket)
     const int32_t tileSize = subFilmImage.width();
     socket.sendResize(image.width(), image.height(), tileSize);
 }
+#endif

@@ -9,6 +9,9 @@
 //-------------------------------------------------
 void Image::readBmp(const std::string& fileName, float gamma)
 {
+#if !defined(WINDOWS)
+    AL_ASSERT_ALWAYS(false);
+#else
     // 拡張子チェック
     if (strcmp(getExt(fileName.c_str()), ".bmp") != 0)
     {
@@ -363,4 +366,5 @@ void Image::writeHdr(const std::string& fileName) const
             }
         }
     }
+#endif
 }

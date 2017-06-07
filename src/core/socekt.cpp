@@ -2,6 +2,7 @@
 #include "core/socket.hpp"
 #include "core/logging.hpp"
 
+#if defined(WINDOWS)
 /*
 -------------------------------------------------
 -------------------------------------------------
@@ -208,3 +209,4 @@ bool Socket::receive(std::vector<char>& data, int32_t tmpBufferSize)
     } while (recvInBytes == sizeof(tmpBuffer));
     return true;
 }
+#endif

@@ -766,12 +766,12 @@ INLINE Spectrum evalAsSpectrum(const std::string& str, bool asIllumination)
 {
     float r, g, b;
     // RGBの場合 例) "1.0 1.0 1.0"
-    if (sscanf_s(str.c_str(), "%f %f %f", &r, &g, &b) == 3)
+    if (sscanf(str.c_str(), "%f %f %f", &r, &g, &b) == 3)
     {
         return Spectrum::createFromRGB({ { r, g, b } }, asIllumination);
     }
     // スカラーの場合 例)"1"
-    else if (sscanf_s(str.c_str(), "%f", &r) == 1)
+    else if (sscanf(str.c_str(), "%f", &r) == 1)
     {
         return Spectrum::createFromRGB({ { r, r, r } }, asIllumination);
     }

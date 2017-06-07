@@ -71,9 +71,11 @@ std::string ObjectPropString::asString(const std::string& defaultValue) const
 -------------------------------------------------
 -------------------------------------------------
 */
-ObjectProp::ObjectProp(const std::string& str)
+ObjectProp::ObjectProp(const std::string& tag, const std::string& name, const std::string& value)
 {
-    createFromString(str);
+    tag_ = tag;
+    addAttribute("name", name);
+    addAttribute("value", value);
 }
 
 /*
@@ -83,10 +85,14 @@ createFromFile()
 */
 bool ObjectProp::createFromFile(const std::string& fileName)
 {
-    //
+#if defined(WINDOWS)
     IStream* stream = NULL;
     AL_VALID(SUCCEEDED(SHCreateStreamOnFile(fileName.c_str(), STGM_READ, &stream)));
     return load(stream);
+#else
+    AL_ASSERT_ALWAYS(false);
+    return false;
+#endif
 }
 
 /*
@@ -96,9 +102,13 @@ createFromString()
 */
 bool ObjectProp::createFromString(const std::string& str)
 {
-    //
+#if defined(WINDOWS)
     IStream* stream = SHCreateMemStream((BYTE*)str.c_str(), static_cast<UINT>(str.size()));
     return load(stream);
+#else
+    AL_ASSERT_ALWAYS(false);
+    return false;
+#endif
 }
 
 /*
@@ -153,7 +163,7 @@ bool ObjectProp::load2(const std::string& fileName)
     //
     return true;
 }
-
+#if defined(WINDOWS)
 /*
 -------------------------------------------------
 load()
@@ -309,6 +319,54 @@ bool ObjectProp::load(IStream* stream)
     constructObjectProp(this, &nodes_[0]);
     return true;
 }
+#endif
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+void ObjectPropString::setString(const std::string& v)
+{
+    value_ = v;
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+void ObjectPropString::setBool(bool v)
+{
+    value_ = std::to_string(v);
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+void ObjectPropString::setInt(int32_t v)
+{
+    value_ = std::to_string(v);
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+void ObjectPropString::setFloat(float v)
+{
+    value_ = std::to_string(v);
+}
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+void ObjectPropString::setVec3(const Vec3& v)
+{
+    value_ =
+    std::to_string(v.x) + "," +
+    std::to_string(v.y) +"," +
+    std::to_string(v.z);
+}
 
 /*
 -------------------------------------------------
@@ -330,7 +388,7 @@ bool ObjectPropString::asBool(bool defaultValue) const
     {
         return false;
     }
-    else if (sscanf_s(value_.c_str(), "%d", &v) == 1)
+    else if (sscanf(value_.c_str(), "%d", &v) == 1)
     {
         return v != 0;
     }

@@ -86,59 +86,59 @@ template<int32_t l, int32_t m>
 float sphericalHarmonics(float theta, float phi)
 {
     // (l,m)の範囲チェック
-    static_assert((-l <= m) && (m <= l),"");
+    //static_assert((-l <= m) && (m <= l),"");
     //
-    const auto K = [](int l, int m) -> float
+    const auto K = [](int al, int am) -> float
     {
         int i;
         float lpm = 1;
         float lnm = 1;
 
-        if (m < 0)
+        if (am < 0)
         {
-            m = -m;
+            am = -am;
         }
-        for (i = l - m; 0 < i; i--)
+        for (i = al - am; 0 < i; i--)
         {
             lnm *= i;
         }
-        for (i = l + m; 0 < i; i--)
+        for (i = al + am; 0 < i; i--)
         {
             lpm *= i;
         }
-        return sqrtf(((2 * l + 1)*lnm) / (4 * PI*lpm));
+        return sqrtf(((2 * al + 1)*lnm) / (4 * PI*lpm));
     };
     //
-    const auto P = [](int32_t l, int32_t m, float x) -> float
+    const auto P = [](int32_t al, int32_t am, float ax) -> float
     {
         //
         float pmm = 1.0f;
         //
-        if (0 < m)
+        if (0 < am)
         {
-            const float somx2 = sqrtf((1.0f - x)*(1.0f + x));
+            const float somx2 = sqrtf((1.0f - ax)*(1.0f + ax));
             float fact = 1.0f;
-            for (int i = 1; i <= m; i++)
+            for (int i = 1; i <= am; i++)
             {
                 pmm *= (-fact)*somx2;
                 fact += 2.0f;
             }
         }
-        if (l == m)
+        if (al == am)
         {
             return pmm;
         }
         //
-        float pmmp1 = x*(2.0f*m + 1.0f) * pmm;
-        if (l == m + 1)
+        float pmmp1 = ax*(2.0f*am + 1.0f) * pmm;
+        if (al == am + 1)
         {
             return pmmp1;
         }
 
         float pll = 0.0;
-        for (int ll = m + 2; ll <= l; ll++)
+        for (int ll = m + 2; ll <= al; ll++)
         {
-            pll = ((2.0f*ll - 1.0f)*x*pmmp1 - (ll + m - 1.0f)*pmm) / (ll - m);
+            pll = ((2.0f*ll - 1.0f)*ax*pmmp1 - (ll + am - 1.0f)*pmm) / (ll - am);
             pmm = pmmp1;
             pmmp1 = pll;
         }

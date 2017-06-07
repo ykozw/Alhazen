@@ -13,7 +13,7 @@ FILE* file = nullptr;
 void initialzeLog()
 {
     const std::string filePath = getOutputFolderPath() + "log.log";
-    fopen_s(&file, filePath.c_str(), "wt");
+    file = fopen(filePath.c_str(), "wt");
 }
 
 //-------------------------------------------------
@@ -52,7 +52,7 @@ std::string getElapseStr()
     sec %= 60;
     min %= 60;
     char buffer[0xff];
-    sprintf_s(buffer, "%02d:%02d:%02d", hour, min, sec);
+    sprintf(buffer, "%02d:%02d:%02d", hour, min, sec);
     return buffer;
 }
 
@@ -61,6 +61,8 @@ std::string getElapseStr()
 //-------------------------------------------------
 void loggingCore(int level, const char* format, ...)
 {
+#if !defined(WINDOWS)
+#else
     //
     AL_ASSERT_DEBUG(level == 0 || level == 1 || level == 2);
     //
@@ -119,4 +121,5 @@ void loggingCore(int level, const char* format, ...)
         MessageBox(NULL, logBuffer, "Fatal Error", MB_OK);
         exit(-1);
     }
+#endif
 }

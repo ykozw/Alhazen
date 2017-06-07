@@ -28,7 +28,7 @@ static bool readFFormat1(
     static_cast<void>(ni1);
     static_cast<void>(ni2);
     // "f 272 204 205"
-    if (sscanf_s(
+    if (sscanf(
                 str,
                 "f %d %d %d",
                 vi0, vi1, vi2 ) != 3)
@@ -55,7 +55,7 @@ static bool readFFormat2(
     int32_t* ni2 )
 {
     // "f 272/1/1 204/2/2 205/3/3"
-    if (sscanf_s(
+    if (sscanf(
                 str,
                 "f %d/%d/%d %d/%d/%d %d/%d/%d",
                 vi0, ti0, ni0,
@@ -88,7 +88,7 @@ static bool readFFormat3(
     static_cast<void>(ti2);
 
     // "f 272//1 204//2 205//3"
-    if (sscanf_s(
+    if (sscanf(
                 str,
                 "f %d//%d %d//%d %d//%d",
                 vi0, ni0,
@@ -121,7 +121,7 @@ static bool readFFormat4(
     static_cast<void>(ni2);
 
     // "f 272//1 204//2 205//3"
-    if (sscanf_s(
+    if (sscanf(
                 str,
                 "f %d/%d %d/%d %d/%d",
                 vi0, ti0,
@@ -148,7 +148,7 @@ bool checkAsVert(
     if (strncmp(readBuffer, "v ", 2) == 0)
     {
         Vec3 v;
-        if (sscanf_s(
+        if (sscanf(
                     readBuffer,
                     "v %f %f %f",
                     &v.x, &v.y, &v.z) != 3)
@@ -327,7 +327,7 @@ bool checkAsVertexNormal(
     {
         // vn x y z の形式
         Vec3 vn;
-        if (sscanf_s(readBuffer, "vn %f %f %f", &vn.x, &vn.y, &vn.z) != 3)
+        if (sscanf(readBuffer, "vn %f %f %f", &vn.x, &vn.y, &vn.z) != 3)
         {
             loggingError("invalild vt format\n");
             return false;
@@ -356,7 +356,7 @@ bool checkAsUV(
     }
     // vt u v の形式
     float u, v;
-    if (sscanf_s(readBuffer, "vt %f %f", &u, &v) != 2)
+    if (sscanf(readBuffer, "vt %f %f", &u, &v) != 2)
     {
         loggingError("invalild vt format\n");
         return false;
@@ -490,8 +490,7 @@ bool checkAsO(
 bool Mesh::loadFromoObj(const std::string& fileName)
 {
     logging("OBJ: start loading. [%s]", fileName.c_str());
-    FILE* file = NULL;
-    fopen_s(&file, fileName.c_str(), "rt");
+    FILE* file = fopen(fileName.c_str(), "rt");
     if (!file)
     {
         loggingError("OBJ: can't load obj file [%s]\n", fileName.c_str());

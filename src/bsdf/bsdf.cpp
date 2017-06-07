@@ -232,7 +232,7 @@ find()
 */
 const BSDFPtr AllBSDFList::find(const std::string& bsdfName) const
 {
-    auto& ite = bsdfs_.find(bsdfName);
+    auto ite = bsdfs_.find(bsdfName);
     if (ite == bsdfs_.end())
     {
         /*

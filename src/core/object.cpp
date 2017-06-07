@@ -26,6 +26,18 @@ public:
 }init;
 };
 
+//
+void ObjectProp::addAttribute(const std::string& tag, const std::string& value)
+{
+    attributes_.insert(std::pair<std::string,std::string>(tag,value));
+}
+
+//
+void ObjectProp::addChild(const ObjectProp& child)
+{
+    childProps_.push_back(child);
+}
+
 //-------------------------------------------------
 // registerObject
 //-------------------------------------------------

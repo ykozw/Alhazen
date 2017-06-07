@@ -2,6 +2,7 @@
 #include "core/svgwriter.hpp"
 #include "core/aabb.hpp"
 
+#if defined(WINDOWS)
 //-------------------------------------------------
 //
 //-------------------------------------------------
@@ -199,4 +200,6 @@ public:
         }
     }
 } test;
+#endif
+
 #endif

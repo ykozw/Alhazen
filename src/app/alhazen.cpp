@@ -16,11 +16,12 @@
 //-------------------------------------------------
 int32_t Alhazen::runApp(const ArgConfig& config)
 {
+#if defined(WINDOWS)
     // ソケットの初期化
     // HACK: アドレス、ポートなどは決め打ち
     SocketApp socket;
     socket.connect("127.0.0.1", 2001);
-
+#endif
     //
     SimpleTaskScheduler taskScheduler;
     const int32_t grainSize = 1;
@@ -30,8 +31,10 @@ int32_t Alhazen::runApp(const ArgConfig& config)
     sceneProp.createFromFile(config.sceneFilePath);
     Scene masterScene(sceneProp);
     //
+#if defined(WINDOWS)
     masterScene.sendSceneInfo(socket);
-
+#endif
+    
     // スレッド毎にシーンのcloneを作成する
     std::vector<ScenePtr> scenes;
     scenes.resize(taskScheduler.numThread());
@@ -81,6 +84,7 @@ int32_t Alhazen::runApp(const ArgConfig& config)
             logging("All tasks were consumed.");
             break;
         }
+#if defined(WINDOWS)
         // ビューワーへの転送
         const auto transfar2viewer = [&socket,&ldrImages](SubFilm& subFilm, int32_t threadNo)
         {
@@ -91,6 +95,7 @@ int32_t Alhazen::runApp(const ArgConfig& config)
             HDR2LDR(subFilmImage, ldrImage, scale);
             socket.sendTile(subFilm.region(), ldrImage);
         };
+#endif
 
         // レンダリング
         const int32_t TASK_NUM_UNTILL_BY_JOIN = 256;
@@ -105,7 +110,9 @@ int32_t Alhazen::runApp(const ArgConfig& config)
                     isPreview,
                     &filmNo,
                     &masterScene,
+#if defined(WINDOWS)
                     &transfar2viewer,
+#endif
                     &taskNumPerLoop](int32_t threadNo)
             {
                 const int32_t taskNoLocal = taskNo + taskNoOffset;
@@ -115,9 +122,10 @@ int32_t Alhazen::runApp(const ArgConfig& config)
                 }
                 auto& scene = scenes[threadNo];
                 SubFilm& subFilm = scene->render(taskNoLocal);
+#if defined(WINDOWS)
                 // ビューワーに転送
                 transfar2viewer(subFilm, threadNo);
-
+#endif
                 // マスタースレッドでのみ実行する
                 if (threadNo == 0)
                 {
@@ -149,7 +157,6 @@ EXIT:
     masterScene.developLDR(ss.str() + ".bmp", true, isPreview);
     // masterScene.dumpHDR("result.hdr");
     //
-    IncrimentCounter::print();
     StatCounter::print();
     return 0;
 }

@@ -4,6 +4,8 @@
 #include "core/math.hpp"
 #include "core/aabb.hpp"
 
+#if defined(WINDOWS)
+
 //-------------------------------------------------
 // SVGPath
 // SVGのPath要素を作成する
@@ -52,3 +54,4 @@ private:
     float offsetY_;
     FILE* file_;
 };
+#endif

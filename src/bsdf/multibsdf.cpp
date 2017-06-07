@@ -95,7 +95,7 @@ Spectrum BSDFs::bsdfSample(
         return Spectrum(0.0f);
     }
     // どのBSDFをサンプルするかを選択
-    const int32_t bsdfIndex = sampler->getSize(bsdfs_.size());
+    const int32_t bsdfIndex = sampler->getSize(int32_t(bsdfs_.size()));
     const auto& bsdf = bsdfs_[bsdfIndex];
 
     // bsdfをサンプル

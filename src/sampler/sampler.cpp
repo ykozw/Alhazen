@@ -75,7 +75,7 @@ Vec2 Sampler::getDiscAccurate()
     //
     const float r = std::sqrtf(xy.x);
     const float theta = xy.y * PI * 2.0f;
-    return Vec2({ r * std::cosf(theta), r * sin(theta) });
+    return Vec2( r * std::cosf(theta), r * sin(theta) );
 }
 
 /*
@@ -283,7 +283,7 @@ float SamplerHalton::get1d()
 void SamplerHalton::onStartSample(uint32_t sampleNo)
 {
     (void)sampleNo;
-    XorShift128 rng(hash_);
+    XorShift128 rng((int32_t)hash_);
     offsets_.resize(128);
     for (auto& offset : offsets_)
     {

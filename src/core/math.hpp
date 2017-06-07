@@ -252,6 +252,7 @@ public:
 	INLINE operator float() const;
 	INLINE float value() const;
 };
+INLINE bool operator < (FloatInVec lhs, FloatInVec rhs);
 
 /*
 -------------------------------------------------
@@ -463,8 +464,8 @@ public:
 	INLINE void scale(float scale);
 	INLINE Bool8 isNormalized() const;
 	INLINE Bool8 isNormalized(float eps) const;
-	INLINE Float8 length() const;
-	INLINE Float8 lengthSq() const;
+	//INLINE Float8 length() const;
+	//INLINE Float8 lengthSq() const;
 	INLINE Bool8 isAllZero() const;
 	INLINE Vec3Pack8 inverted() const;
 	INLINE Vec3Pack8 invertedSafe(float defaultValue) const;

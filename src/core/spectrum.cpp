@@ -218,7 +218,11 @@ AL_TEST(spectrum, sampleHerowavelength1)
         // LDR化し書き出し
         ImageLDR ldrImage(image.width(), image.height());
         toneMapper->process(image, ldrImage);
+#if defined(WINDOWS)
         ldrImage.writeBmp("ref.bmp");
+#else
+        AL_ASSERT_ALWAYS(false);
+#endif
     }
 #endif
 
@@ -247,7 +251,11 @@ AL_TEST(spectrum, sampleHerowavelength1)
         // LDR化し書き出し
         ImageLDR ldrImage(image.width(), image.height());
         toneMapper->process(image, ldrImage);
+#if defined(WINDOWS)
         ldrImage.writeBmp("sws.bmp");
+#else
+        AL_ASSERT_ALWAYS(false);
+#endif
     }
 #endif
 
@@ -276,7 +284,11 @@ AL_TEST(spectrum, sampleHerowavelength1)
         // LDR化し書き出し
         ImageLDR ldrImage(image.width(), image.height());
         toneMapper->process(image, ldrImage);
+#if defined(WINDOWS)
         ldrImage.writeBmp("hws.bmp");
+#else
+        AL_ASSERT_ALWAYS(false);
+#endif
     }
 #endif
 

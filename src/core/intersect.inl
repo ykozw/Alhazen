@@ -3,13 +3,6 @@
 #include "pch.hpp"
 #include "intersect.hpp"
 
-extern IncrimentCounter g_intersectTriangle;
-extern IncrimentCounter g_intersectSphere;
-extern IncrimentCounter g_intersectPlane;
-extern IncrimentCounter g_checkTriangle;
-extern IncrimentCounter g_checkSphere;
-extern IncrimentCounter g_checkPlane;
-
 //-------------------------------------------------
 // intersectSphereShapeCore()
 //-------------------------------------------------
@@ -20,7 +13,6 @@ INLINE bool intersectSphereShapeCore(
     _Out_ float* t,
     _Out_ bool* intersectBackside)
 {
-    ++g_intersectSphere;
     //
     Vec3 rs = ray.o - o;
     // 球中心からレイ原点までの距離二乗
@@ -95,7 +87,6 @@ INLINE bool intersectSphere(
 //-------------------------------------------------
 INLINE bool intersectSphereCheck(const Ray& ray, const Vec3& pos, float r)
 {
-    ++g_checkSphere;
     float t;
     bool intersectBackside = false;
     return intersectSphereShapeCore(ray, pos, r, &t, &intersectBackside);
@@ -114,8 +105,6 @@ INLINE bool intersectTriangleCore(
     _Out_ float* v,
     _Out_ bool* isFlip )
 {
-    //
-    ++g_intersectTriangle;
     //
     Vec3 e1, e2;  //Edge1, Edge2
     Vec3 P, Q, T;
@@ -217,7 +206,6 @@ INLINE bool intersectTriangle(
 //-------------------------------------------------
 INLINE bool intersectTriangleCheck(const Ray& ray, const Vec3& v0, const Vec3& v1, const Vec3& v2)
 {
-    ++g_checkTriangle;
     float t, u, v;
     bool isFlip;
     return intersectTriangleCore(ray, v0, v1, v2, &t, &u, &v, &isFlip);
@@ -232,8 +220,6 @@ INLINE bool intersectPlaneShapeCore(
     const float dist,
     _Out_ float* t)
 {
-    //
-    ++g_intersectPlane;
     //
     const float nDotD = Vec3::dot(dir, ray.d);
     // 片面のみなので、レイの方向と平面の向きが同じだったら交差しない
@@ -292,7 +278,6 @@ INLINE bool intersectPlaneCheck(
     float dist)
 {
     //
-    ++g_checkPlane;
     float t;
     return intersectPlaneShapeCore(ray, dir, dist, &t);
 }

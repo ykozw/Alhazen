@@ -24,8 +24,8 @@ public:
     }
     INLINE void reset()
     {
-        Type = Type(0.0f);
-        Type = Type(0.0f);
+        sum = Type(0.0f);
+        err = Type(0.0f);
     }
     INLINE void add(const Type& v)
     {

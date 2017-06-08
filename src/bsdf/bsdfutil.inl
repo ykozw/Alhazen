@@ -124,7 +124,7 @@ INLINE void sincosPhi(const Vec3& v, _Out_ float* sinPhi, _Out_ float* cosPhi)
 INLINE Spectrum str2spectrum(const std::string& str)
 {
     float r, g, b;
-    if (sscanf_s(str.c_str(), "%f %f %f", &r, &g, &b) == 3)
+    if (sscanf(str.c_str(), "%f %f %f", &r, &g, &b) == 3)
     {
         return Spectrum::createFromRGB({ { r, g, b } }, false);
     }

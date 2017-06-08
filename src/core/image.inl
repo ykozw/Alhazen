@@ -290,10 +290,13 @@ INLINE const std::vector<PixelLDR>& ImageLDR::pixels() const
 */
 INLINE bool HDR2LDR(const Image& src, ImageLDR& dst, float scale )
 {
+#if 0
     loggingErrorIf(
         (src.width() != dst.width()) ||
         (src.height() != dst.height()),
         "Invalid size tonemapping target");
+#endif
+    
 #if 1
     const float invGamma = 1.0f / 2.2f;
 #else

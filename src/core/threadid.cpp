@@ -1,7 +1,7 @@
 ﻿#include "pch.hpp"
 #include "threadid.hpp"
 
-__declspec(thread) uint32_t Job::threadId = -1;
+AL_TLS uint32_t Job::threadId = -1;
 
 namespace
 {

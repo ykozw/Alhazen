@@ -41,6 +41,7 @@ void detail::registerTest(
     std::function<void(TestContext& tcx)> testFunc,
     bool doTestImplicit)
 {
+#if defined(WINDOWS)
     auto& nameCategory = g_tests.find(testCategory);
     if (nameCategory == g_tests.end())
     {
@@ -50,6 +51,9 @@ void detail::registerTest(
     //
     TestsPerCategory& category = nameCategory->second;
     category.insert(std::make_pair(testName, TestDesc(testName, testFunc, doTestImplicit)));
+#else
+    AL_ASSERT_ALWAYS(false);
+#endif
 }
 
 /*

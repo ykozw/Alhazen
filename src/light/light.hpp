@@ -63,7 +63,7 @@ public:
         SamplerPtr sampler,
         Vec3 targetPos,
         _Out_ Vec3* samplePos,
-        _Out_ float* pdf) const;
+        _Out_ float* pdf) const override;
 
     // ShapeのOverride
     bool hasAABB() const override

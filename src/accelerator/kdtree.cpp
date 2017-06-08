@@ -176,7 +176,7 @@ AL_TEST(Accel, kdtree1)
         points.push_back(v);
     }
     KdTree<Point> kdtree;
-    kdtree.construct(points.data(), points.size());
+    kdtree.construct(points.data(), int32_t(points.size()));
     // 
     bool fail = false;
     for (int32_t i = 0; i<128; ++i)

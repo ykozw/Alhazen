@@ -31,7 +31,8 @@ void testLocalCoord(Type localCoord)
     /*ns.push_back(Vec3(-0.00019813581, -0.00008946839, -0.99999988079));*/
     ns.push_back(Vec3(0.0003860202f, 0.0003860202f, -0.9999998808f));
 
-    const uint32_t start = timeGetTime();
+    const auto startTime = std::chrono::system_clock::now();
+    
     //
     for (const Vec3 n : ns)
     {
@@ -56,7 +57,7 @@ void testLocalCoord(Type localCoord)
 -------------------------------------------------
 -------------------------------------------------
 */
-AL_TEST_IMM(OrthonormalBasis, 0)
+AL_TEST(OrthonormalBasis, 0)
 {
     /*
     ONB_METHOD::Naive

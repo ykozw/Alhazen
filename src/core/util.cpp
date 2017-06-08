@@ -22,6 +22,7 @@ const char* getExt(const char* fileName)
 /*
 -------------------------------------------------
 getDirPath()
+ TODO: ポータビリティ、特殊なケースに対応していないので、C++0zでfilesystemが入ったら改築する
 -------------------------------------------------
 */
 void getDirPath(
@@ -29,16 +30,14 @@ void getDirPath(
     std::string& aDirPath,
     std::string& aFileName)
 {
-    char drive[_MAX_DRIVE + 1] = { '\0' };
-    char dir[_MAX_DIR + 1] = { '\0' };
-    char dirPath[_MAX_PATH + 1] = { '\0' };
-    char fileName[_MAX_PATH + 1] = { '\0' };
-    char extName[_MAX_PATH + 1] = { '\0' };
-    _splitpath(fullPath.c_str(), drive, dir, fileName, extName);
-    _makepath(dirPath, drive, dir, NULL, NULL);
-    //
-    aDirPath = dirPath;
-    aFileName = std::string(fileName) + std::string(extName);
+#if defined(WINDOWS)
+    const char split = '\\';
+#else
+    const char split = '/';
+#endif
+    const size_t fileStart = fullPath.find_last_of(split) + 1;
+    aDirPath = fullPath.substr(0, fileStart);
+    aFileName = fullPath.substr(fileStart, std::string::npos);
 }
 
 /*
@@ -48,11 +47,14 @@ getOutputFolderPath()
 */
 std::string getOutputFolderPath()
 {
+    //
     static std::string path = "";
     if (path != "")
     {
         return path;
     }
+    //
+#if defined(WINDOWS)
     // 現在の時間からフォルダ名を作成
     const time_t timer = time(NULL);
     tm date;
@@ -67,6 +69,12 @@ std::string getOutputFolderPath()
     system(cmd.c_str());
     //
     return path;
+#else
+    //つぎはここから
+    //const auto now = std::chrono::system_clock::now();
+    AL_ASSERT_ALWAYS(false);
+    return "";
+#endif
 }
 
 /*
@@ -87,4 +95,30 @@ uint32_t elapseTimeInMs()
     const auto duration = std::chrono::system_clock::now() - g_startTime;
     int64_t elapsedInMs = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
     return uint32_t(elapsedInMs);
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+std::string readTextFileAll(const std::string& filePath)
+{
+   // TODO: 実装
+    FILE* file = fopen(filePath.c_str(),"rt");
+    if( file == nullptr )
+    {
+        return "";
+    }
+    // ファイルサイズを取得する
+    fseek(file,0, SEEK_END);
+    size_t fileSize = ftell(file);
+    fseek(file,0, SEEK_SET);
+    //　ファイルの内容を全てロードする
+    std::string ret;
+    ret.resize(fileSize);
+    fread((void*)ret.data(),ret.size(),1,file);
+    //
+    fclose(file);
+    //
+    return ret;
 }

@@ -4,7 +4,6 @@
 #include "core/scene.hpp"
 #include "core/taskscheduler.hpp"
 #include "core/util.hpp"
-#include "core/socketapp.hpp"
 #include "app/app.hpp"
 #include "app/alhazen.hpp"
 #include "integrator/integrator.hpp"
@@ -16,22 +15,15 @@
 //-------------------------------------------------
 int32_t Alhazen::runApp(const ArgConfig& config)
 {
-    // ソケットの初期化
-    // HACK: アドレス、ポートなどは決め打ち
-    SocketApp socket;
-    socket.connect("127.0.0.1", 2001);
-
     //
     SimpleTaskScheduler taskScheduler;
     const int32_t grainSize = 1;
     taskScheduler.start(grainSize);
     // シーンの構築
     ObjectProp sceneProp;
-    sceneProp.createFromFile(config.sceneFilePath);
+    sceneProp.load(config.sceneFilePath);
     Scene masterScene(sceneProp);
-    //
-    masterScene.sendSceneInfo(socket);
-
+    
     // スレッド毎にシーンのcloneを作成する
     std::vector<ScenePtr> scenes;
     scenes.resize(taskScheduler.numThread());
@@ -81,17 +73,6 @@ int32_t Alhazen::runApp(const ArgConfig& config)
             logging("All tasks were consumed.");
             break;
         }
-        // ビューワーへの転送
-        const auto transfar2viewer = [&socket,&ldrImages](SubFilm& subFilm, int32_t threadNo)
-        {
-            const Image& subFilmImage = subFilm.image();
-            ImageLDR& ldrImage = ldrImages[threadNo];
-            ldrImage.resize(subFilmImage.width(), subFilmImage.height());
-            const float scale = 1.0f / float(subFilm.getAddNum());
-            HDR2LDR(subFilmImage, ldrImage, scale);
-            socket.sendTile(subFilm.region(), ldrImage);
-        };
-
         // レンダリング
         const int32_t TASK_NUM_UNTILL_BY_JOIN = 256;
         for (int32_t taskNoOffset = 0; taskNoOffset < TASK_NUM_UNTILL_BY_JOIN; ++taskNoOffset)
@@ -105,7 +86,6 @@ int32_t Alhazen::runApp(const ArgConfig& config)
                     isPreview,
                     &filmNo,
                     &masterScene,
-                    &transfar2viewer,
                     &taskNumPerLoop](int32_t threadNo)
             {
                 const int32_t taskNoLocal = taskNo + taskNoOffset;
@@ -115,9 +95,6 @@ int32_t Alhazen::runApp(const ArgConfig& config)
                 }
                 auto& scene = scenes[threadNo];
                 SubFilm& subFilm = scene->render(taskNoLocal);
-                // ビューワーに転送
-                transfar2viewer(subFilm, threadNo);
-
                 // マスタースレッドでのみ実行する
                 if (threadNo == 0)
                 {
@@ -149,7 +126,6 @@ EXIT:
     masterScene.developLDR(ss.str() + ".bmp", true, isPreview);
     // masterScene.dumpHDR("result.hdr");
     //
-    IncrimentCounter::print();
     StatCounter::print();
     return 0;
 }

@@ -40,21 +40,21 @@ INLINE int32_t Size2D::index(int32_t x, int32_t y) const
 //-------------------------------------------------
 INLINE Size2D operator + (const Size2D& lhs, const Size2D& rhs)
 {
-	return Size2D{ lhs.width + rhs.width, lhs.height + rhs.height };
+	return Size2D(lhs.width + rhs.width, lhs.height + rhs.height);
 }
 //-------------------------------------------------
 //
 //-------------------------------------------------
 INLINE Size2D operator - (const Size2D& lhs, const Size2D& rhs)
 {
-	return Size2D{ lhs.width - rhs.width, lhs.height - rhs.height };
+	return Size2D( lhs.width - rhs.width, lhs.height - rhs.height );
 }
 //-------------------------------------------------
 //
 //-------------------------------------------------
 INLINE Size2D operator - (const Size2D& v)
 {
-	return Size2D{ -v.width, -v.height };
+	return Size2D( -v.width, -v.height );
 }
 //-------------------------------------------------
 //
@@ -88,7 +88,7 @@ INLINE bool operator == (const Size2D& lhs, const Size2D& rhs)
 //-------------------------------------------------
 INLINE Size2D operator * (int32_t f, const Size2D& v)
 {
-	return Size2D{ f * v.width, f * v.height };
+	return Size2D( f * v.width, f * v.height );
 }
 
 //-------------------------------------------------
@@ -96,7 +96,7 @@ INLINE Size2D operator * (int32_t f, const Size2D& v)
 //-------------------------------------------------
 INLINE Size2D operator * (const Size2D& v, int32_t f)
 {
-	return Size2D{ f * v.width, f * v.height };
+	return Size2D( f * v.width, f * v.height );
 }
 //-------------------------------------------------
 //
@@ -366,7 +366,11 @@ INLINE FloatInVec::operator __m128 () const
 //-------------------------------------------------
 INLINE FloatInVec::operator float() const
 {
+#if !defined(WINDOWS)
+    return v[0];
+#else
 	return v.m128_f32[0];
+#endif
 }
 
 //-------------------------------------------------
@@ -374,7 +378,19 @@ INLINE FloatInVec::operator float() const
 //-------------------------------------------------
 INLINE float FloatInVec::value() const
 {
+#if !defined(WINDOWS)
+    return v[0];
+#else
 	return v.m128_f32[0];
+#endif
+}
+
+//-------------------------------------------------
+//
+//-------------------------------------------------
+INLINE bool operator < (FloatInVec lhs, FloatInVec rhs)
+{
+    return float(lhs) < float(rhs);
 }
 
 //-------------------------------------------------
@@ -404,7 +420,11 @@ INLINE Bool8::Bool8(__m256 other)
 //-------------------------------------------------
 INLINE bool Bool8::at(int32_t index) const
 {
+#if defined(WINDOWS)
 	return v.m256_f32[index] != 0;
+#else
+    return v[index];
+#endif
 }
 
 //-------------------------------------------------
@@ -434,7 +454,13 @@ INLINE BoolInVec::operator __m128i () const
 //-------------------------------------------------
 INLINE BoolInVec::operator bool() const
 {
+#if defined(WINDOWS)
 	return (v.m128i_i32[0] != 0x00000000);
+#else
+    AL_ASSERT_ALWAYS(false);
+    return false;
+    //return _mm_cmpeq_epi32(v,__mm_set1_epi32(0x00000000))[0];
+#endif
 }
 
 //-------------------------------------------------
@@ -442,7 +468,12 @@ INLINE BoolInVec::operator bool() const
 //-------------------------------------------------
 INLINE bool BoolInVec::value() const
 {
-	return (v.m128i_i32[0] != 0x00000000);
+#if defined(WINDOWS)
+    return (v.m128i_i32[0] != 0x00000000);
+#else
+    AL_ASSERT_ALWAYS(false);
+    return false;
+#endif
 }
 
 //-------------------------------------------------
@@ -718,7 +749,7 @@ INLINE Vec3 Vec3::invertedSafe(const float defaultValue) const
 	};
 	return Vec3(inv(x), inv(y), inv(z));
 #elif defined(AL_MATH_USE_AVX2)
-	const __m128 dv = _mm_set_ps1(defaultValue);
+	//const __m128 dv = _mm_set_ps1(defaultValue);
 	const __m128 zero = _mm_setzero_ps();
 	const __m128 mask = _mm_cmpeq_ps(zero, xyz);
 	const __m128 rcp = _mm_rcp_ps(xyz);
@@ -747,11 +778,18 @@ INLINE Vec3 Vec3::reflect(const Vec3& v) const
 INLINE float& Vec3::operator[](int32_t index)
 {
 	AL_ASSERT_DEBUG(0 <= index && index <= 2);
+    
+#if !defined(WINDOWS)
+    AL_ASSERT_ALWAYS(false);
+    return (float&)xyz[index];
+#else
+    
 #if defined(AL_MATH_USE_NO_SIMD)
 	AL_ASSERT_DEBUG(0 <= index && index <= 2);
 	return *(&x + index);
 #elif defined(AL_MATH_USE_AVX2)
 	return xyz.m128_f32[index];
+#endif
 #endif
 }
 
@@ -761,11 +799,18 @@ INLINE float& Vec3::operator[](int32_t index)
 INLINE float Vec3::operator[](int32_t index) const
 {
 	AL_ASSERT_DEBUG(0 <= index && index <= 2);
+    
+#if !defined(WINDOWS)
+    AL_ASSERT_ALWAYS(false);
+    return (float&)xyz[index];
+#else
+    
 #if defined(AL_MATH_USE_NO_SIMD)
 	AL_ASSERT_DEBUG(0 <= index && index <= 2);
 	return *(&x + index);
 #elif defined(AL_MATH_USE_AVX2)
 	return xyz.m128_f32[index];
+#endif
 #endif
 }
 
@@ -1161,11 +1206,14 @@ INLINE Vec3Pack8& Vec3Pack8::normalize()
 #if defined(AL_MATH_USE_NO_SIMD)
 	assert(false);
 #elif defined(AL_MATH_USE_AVX2)
+    AL_ASSERT_ALWAYS(false);
+#if 0
 	const __m256 len = lengthSq();
 	const __m256 inv = _mm256_rsqrt_ps(len);
 	xs = _mm256_mul_ps(xs, inv);
 	ys = _mm256_mul_ps(ys, inv);
-	zs = _mm256_mul_ps(zs, inv);
+    zs = _mm256_mul_ps(zs, inv);
+#endif
 #endif
 	return *this;
 }
@@ -1201,6 +1249,8 @@ INLINE Bool8 Vec3Pack8::isNormalized(float eps) const
 #if defined(AL_MATH_USE_NO_SIMD)
 	assert(false);
 #elif defined(AL_MATH_USE_AVX2)
+    AL_ASSERT_ALWAYS(false);
+#if 0
 	const __m256 one = _mm256_set1_ps(1.0f);
 	const __m256 epss = _mm256_set1_ps(eps);
 	const __m256 dif = _mm256_sub_ps(length(), one);
@@ -1208,6 +1258,8 @@ INLINE Bool8 Vec3Pack8::isNormalized(float eps) const
 	const __m256 difAbs = _mm256_and_ps(mask, dif);
 	const __m256 tmp = _mm256_cmp_ps(difAbs, epss, _CMP_LT_OQ);
 	return tmp;
+#endif
+    return Bool8();
 #endif
 }
 
@@ -1260,6 +1312,11 @@ INLINE Float8 Vec3Pack8::distanceSq(
 	const Vec3Pack8& lhs,
 	const Vec3Pack8& rhs)
 {
+#if !defined(WINDOWS)
+    AL_ASSERT_ALWAYS(false);
+    return Float8();
+#else
+    
 #if defined(AL_MATH_USE_NO_SIMD)
 	assert(false);
 #elif defined(AL_MATH_USE_AVX2)
@@ -1267,6 +1324,7 @@ INLINE Float8 Vec3Pack8::distanceSq(
 	const __m256 dy = _mm256_sub_ps(lhs.ys, rhs.ys);
 	const __m256 dz = _mm256_sub_ps(lhs.zs, rhs.zs);
 	return lengthSq({ dx, dy, dz });
+#endif
 #endif
 }
 
@@ -1540,7 +1598,6 @@ INLINE Matrix3x3::Matrix3x3(_In_reads_(9) const float* es)
     e[6] = es[6];
     e[7] = es[7];
     e[8] = es[8];
-    e[9] = es[9];
 }
 
 //-------------------------------------------------
@@ -1736,6 +1793,9 @@ INLINE void Matrix4x4::constructAsRotation(const Vec3& xyz, float angle)
 //-------------------------------------------------
 INLINE void Matrix4x4::constructAsViewMatrix(const Vec3& origin, const Vec3& target, const Vec3& up)
 {
+#if !defined(WINDOWS)
+    AL_ASSERT_ALWAYS(false);
+#else
 	const Vec3 zaxis = (target - origin).normalized();
 	const Vec3 xaxis = Vec3::cross(up, zaxis).normalized();
 	const Vec3 yaxis = Vec3::cross(zaxis, xaxis);
@@ -1746,6 +1806,7 @@ INLINE void Matrix4x4::constructAsViewMatrix(const Vec3& origin, const Vec3& tar
 	e42 = -Vec3::dot(yaxis, origin);
 	e43 = -Vec3::dot(zaxis, origin);
 	e44 = 1.0f;
+#endif
 }
 
 //-------------------------------------------------

@@ -21,7 +21,7 @@ public:
     }
     void openRead(const char* filename)
     {
-        fopen_s(&file_, filename, "rt");
+        file_ = fopen(filename, "rt");
     }
     //
     FILE* file()

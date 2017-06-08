@@ -21,7 +21,7 @@ public:
     }
     void openRead(const char* filename)
     {
-        fopen_s(&file_, filename, "rt");
+        file_ = fopen(filename, "rt");
     }
     //
     FILE* file()
@@ -133,7 +133,7 @@ Dotcube::Dotcube(const ObjectProp& objectProp)
     fgets(buffer, 0xff, file.file());
     fgets(buffer, 0xff, file.file());
     int32_t dimSize = 0;
-    while (fscanf_s(file.file(), "LUT_3D_SIZE %d", &dimSize) == 0){}
+    while (fscanf(file.file(), "LUT_3D_SIZE %d", &dimSize) == 0){}
     cube_.resize(dimSize);
     //
     for (int32_t z = 0; z < dimSize; ++z)
@@ -143,7 +143,7 @@ Dotcube::Dotcube(const ObjectProp& objectProp)
             for (int32_t x = 0; x < dimSize; ++x)
             {
                 Vec3& v = cube_.pixel(x, y, z);
-                fscanf_s(file.file(), "%f %f %f", &v.x, &v.y, &v.z);
+                fscanf(file.file(), "%f %f %f", &v.x, &v.y, &v.z);
             }
         }
     }

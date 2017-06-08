@@ -4,21 +4,14 @@
 #include "core/logging.hpp"
 #include "core/threadid.hpp"
 
-#if 0
 //-------------------------------------------------
 // IncrimentCounterValue
 //-------------------------------------------------
 struct IncrimentCounterValue
 {
     // x64ビルド前提
-    std::atomic<uint64_t> value;
+    uint64_t value;
     int8_t unused[120];
-public:
-    IncrimentCounterValue& operator =(const IncrimentCounterValue& other)
-    {
-        value.store(other.value.load());
-        return *this;
-    }
 };
 
 //-------------------------------------------------
@@ -34,8 +27,8 @@ public:
     static void print();
 private:
     // new経由では生成しないようにする
-    void* operator new(size_t size) =delete;
-    void operator delete(void* p) = delete;
+    void* operator new(size_t size);
+    void operator delete(void* p);
 private:
     std::string name_;
     std::array<IncrimentCounterValue, NUM_COUNTERS> values_;    
@@ -48,13 +41,11 @@ private:
 INLINE uint64_t IncrimentCounter::operator++ ()
 {
     std::this_thread::get_id();
-    const int32_t threadNo = Job::threadId;
-    AL_ASSERT_DEBUG(threadNo < NUM_COUNTERS);
-    std::atomic<uint64_t>& v =values_[threadNo].value;
-    const uint64_t oldValue = v.fetch_add(1,std::memory_order_relaxed);
-    return oldValue;
+    const int32_t thredNo = Job::threadId;
+    AL_ASSERT_DEBUG(thredNo < NUM_COUNTERS);
+    _InterlockedExchangeAdd64(reinterpret_cast<__int64 volatile *>(&values_[thredNo].value), 1);
+    return values_[thredNo].value;
 }
-#endif
 
 //-------------------------------------------------
 // StatCounterValue

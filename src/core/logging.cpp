@@ -13,7 +13,7 @@ FILE* file = nullptr;
 void initialzeLog()
 {
     const std::string filePath = getOutputFolderPath() + "log.log";
-    fopen_s(&file, filePath.c_str(), "wt");
+    file = fopen(filePath.c_str(), "wt");
 }
 
 //-------------------------------------------------
@@ -52,7 +52,7 @@ std::string getElapseStr()
     sec %= 60;
     min %= 60;
     char buffer[0xff];
-    sprintf_s(buffer, "%02d:%02d:%02d", hour, min, sec);
+    sprintf(buffer, "%02d:%02d:%02d", hour, min, sec);
     return buffer;
 }
 
@@ -61,6 +61,8 @@ std::string getElapseStr()
 //-------------------------------------------------
 void loggingCore(int level, const char* format, ...)
 {
+#if !defined(WINDOWS)
+#else
     //
     AL_ASSERT_DEBUG(level == 0 || level == 1 || level == 2);
     //
@@ -91,32 +93,13 @@ void loggingCore(int level, const char* format, ...)
     // どのレベルでもファイルには出力する
     writeLine(buffer.c_str());
 
-    // どのレベルでもDebug出力にはそのまま出力する
-    OutputDebugString(buffer.c_str());
-
     // コンソールへの出力
-    if (level == 0)
-    {
-        printf(buffer.c_str());
-    }
-    // warning/errorであれば出力色を変更する
-    else
-    {
-        // コンソールの文字色を変更
-        const HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
-        CONSOLE_SCREEN_BUFFER_INFO info = {};
-        GetConsoleScreenBufferInfo(handle, &info);
-        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_RED);
-        //
-        printf(buffer.c_str());
-        // 文字色を戻す
-        SetConsoleTextAttribute(handle, info.wAttributes);
-    }
+    printf(buffer.c_str());
 
     // errorであればメッセージを出して終了する
     if (level == 2)
     {
-        MessageBox(NULL, logBuffer, "Fatal Error", MB_OK);
         exit(-1);
     }
+#endif
 }

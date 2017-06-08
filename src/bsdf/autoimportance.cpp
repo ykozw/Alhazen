@@ -62,7 +62,11 @@ void AutoImportance::setBRDF(const BSDF* bsdf)
             p.b = c;
         }
     }
+#if defined(WINDOWS)
     ImageIO::writeBmp("heat.bmp", testImage);
+#else
+    AL_ASSERT_ALWAYS(false);
+#endif
 #endif
 
 }

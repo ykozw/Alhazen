@@ -255,7 +255,7 @@ public:
         Vec3 localWo,
         SamplerPtr sampler,
         _Out_ Vec3* localWi,
-        _Out_ float* pdf) const;
+        _Out_ float* pdf) const override;
 private:
     Spectrum baseColor_;
 };
@@ -354,7 +354,7 @@ public:
         const Spectrum& baseColor,
         FresnelTermPtr fTerm,
         MicrofacetDistributionPtr dTerm);
-    Spectrum bsdf(Vec3 wo, Vec3 wi) const;
+    Spectrum bsdf(Vec3 wo, Vec3 wi) const override;
     float pdf(
         Vec3 localWo,
         Vec3 localWi) const override;

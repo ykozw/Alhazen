@@ -1,5 +1,4 @@
 ﻿#include "pch.hpp"
-#include "core/sysinfo.hpp"
 #include "core/util.hpp"
 #include "core/logging.hpp"
 #include "app/app.hpp"
@@ -65,12 +64,9 @@ int32_t App::run(int32_t argc, char* argv[])
     {
         return 0;
     }
-    //
-    printCacheInfo();
 
 #if defined(WINDOWS)
-    // カレントディレクトリ設定
-    SetCurrentDirectory(config.baseFileDir.c_str());
+    _chdir(config.baseFileDir.c_str());
 #endif
     //
     initialzeLog();

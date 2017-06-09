@@ -7,8 +7,15 @@ project "Alhazen"
    kind "ConsoleApp"
    language "C++"
    targetdir "bin/%{cfg.buildcfg}"
-   pchsource "src/pch.cpp"
-   pchheader "pch.hpp"
+
+   -- pchの設定はMSVCとその他のプラットフォームで違うことに注意
+   filter "action:not vs*"
+     pchheader "../src/pch.hpp"
+
+   filter "action:vs*"
+     pchsource "src/pch.cpp"
+     pchheader "pch.hpp"
+
    includedirs {
      "src",
      "thirdparty/tinyxml2",

@@ -1,4 +1,4 @@
-﻿#include "pch.hpp"
+#include "pch.hpp"
 #include "sampleable2d/sampleable2d.hpp"
 #include "core/object.hpp"
 

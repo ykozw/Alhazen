@@ -1,11 +1,11 @@
-﻿#include "pch.hpp"
+#include "pch.hpp"
 #include "core/taskscheduler.hpp"
 #include "core/threadid.hpp"
 #include "core/logging.hpp"
 
 /*
 -------------------------------------------------
-Readers–writer lockなconcurrent_queue
+Readers窶努riter lock縺ェconcurrent_queue
 -------------------------------------------------
 */
 template <class T>
@@ -167,8 +167,7 @@ void SimpleTaskScheduler::start(int32_t graySize)
 }
 void SimpleTaskScheduler::Impl::start(int32_t graySize)
 {
-    // ワーカースレッドスレッドを起動する
-    const int32_t workerThreadNum = numThread();
+    // 繝ッ繝シ繧ォ繝シ繧ケ繝ャ繝ラ繧ケ繝ャ繝ラ繧定オキ蜍輔☆繧    const int32_t workerThreadNum = numThread();
     for (int32_t threadNo = 0; threadNo < workerThreadNum; ++threadNo)
     {
         threads_.push_back(

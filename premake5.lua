@@ -9,12 +9,12 @@ project "Alhazen"
    targetdir "bin/%{cfg.buildcfg}"
 
    -- pchの設定はMSVCとその他のプラットフォームで違うことに注意
-   filter "action:vs*"
-    pchsource "src/pch.cpp"
-    pchheader "pch.hpp"
-   
    filter "action:not vs*"
-    pchheader "../src/pch.hpp"
+     pchheader "../src/pch.hpp"
+
+   filter "action:vs*"
+     pchsource "src/pch.cpp"
+     pchheader "pch.hpp"
 
    includedirs {
      "src",

@@ -1,4 +1,4 @@
-#include "pch.hpp"
+﻿#include "pch.hpp"
 #include "core/rng.hpp"
 #include "core/math.hpp"
 #include "accelerator/kdtree.hpp"

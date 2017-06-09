@@ -1,4 +1,4 @@
-#include "pch.hpp"
+﻿#include "pch.hpp"
 #include "core/floatutil.hpp"
 #include "core/unittest.hpp"
 #include "core/floatstreamstats.hpp"

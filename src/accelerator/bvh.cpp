@@ -1,4 +1,4 @@
-#include "pch.hpp"
+﻿#include "pch.hpp"
 #include "accelerator/bvh.hpp"
 #include "shape/shape.hpp"
 #include "core/logging.hpp"

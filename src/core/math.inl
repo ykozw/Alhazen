@@ -1,4 +1,4 @@
-#include "math.hpp"
+﻿#include "math.hpp"
 
 //-------------------------------------------------
 // _mm_rsqrt_ps_accurate()は単体では精度が非常に低いので

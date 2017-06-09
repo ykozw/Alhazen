@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #pragma region CIEConstants
 static const int SPECTRUM_SAMPLED_NUM_SAMPLES_CIE = 471;

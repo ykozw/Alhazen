@@ -1,4 +1,4 @@
-#include "pch.hpp"
+﻿#include "pch.hpp"
 #include "sh.hpp"
 
 // routine generated programmatically for evaluating SH basis for degree 1

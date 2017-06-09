@@ -1,4 +1,4 @@
-#include "pch.hpp"
+﻿#include "pch.hpp"
 #include "core/taskscheduler.hpp"
 #include "core/threadid.hpp"
 #include "core/logging.hpp"

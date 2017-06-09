@@ -1,4 +1,4 @@
-#include "spectrum.hpp"
+﻿#include "spectrum.hpp"
 
 //-------------------------------------------------
 // createAsBlack()

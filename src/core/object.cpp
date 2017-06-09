@@ -1,4 +1,4 @@
-﻿#include "pch.hpp"
+#include "pch.hpp"
 #include "core/object.hpp"
 #include "core/logging.hpp"
 #include "core/util.hpp"
@@ -48,7 +48,7 @@ void registerObject(
 {
     printf("registerObject[%s:%s]\n", baseClassType.name(), targetClassName.c_str());
     // Global Constructor内で行われること前提
-    AL_ASSERT_DEBUG(Job::threadId == 0);
+    //AL_ASSERT_DEBUG(Job::threadId == 0);
     AL_ASSERT_DEBUG(createObjectFunc != nullptr);
     // TODO: 二重登録検知ができるようにする
     //

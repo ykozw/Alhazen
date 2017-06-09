@@ -1,4 +1,4 @@
-﻿#include "pch.hpp"
+#include "pch.hpp"
 #include "app/alhazen.hpp"
 #include "bsdf/bsdf.hpp"
 #include "core/rng.hpp"
@@ -11,7 +11,7 @@ main
 -------------------------------------------------
 */
 int32_t main(int32_t argc, char* argv[])
-{
+{    
 #if defined(UNIT_TEST)
     doTest();
     return 0;

@@ -1,4 +1,4 @@
-﻿#include "pch.hpp"
+#include "pch.hpp"
 #include "shape.hpp"
 #include "core/orthonormalbasis.hpp"
 #include "bsdf/bsdf.hpp"

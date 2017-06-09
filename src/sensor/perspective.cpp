@@ -1,4 +1,4 @@
-﻿#include "pch.hpp"
+#include "pch.hpp"
 #include "sensor/sensor.hpp"
 #include "sensor/sensorutil.hpp"
 #include "core/transform.hpp"

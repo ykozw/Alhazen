@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #define _CRT_SECURE_NO_WARNINGS 1
 
@@ -57,8 +57,10 @@
 #include <intrin.h>
 #endif
 
+#if defined(WINDOWS)
 // portableだけれども各種SDKに依存するヘッダ
 #include <direct.h>
+#endif
 
 // Third party
 #include "tinyxml2.h"
@@ -80,7 +82,11 @@
 #define WAVE_LENGTH_C_DASH 0.6439f
 
 // Debug関連
-#define DBG_BREAK {/*__builtin_trap(); */__debugbreak(); *reinterpret_cast<int32_t*>(nullptr) = 0;}
+#if defined(WINDOWS)
+#define DBG_BREAK {__debugbreak(); *reinterpret_cast<int32_t*>(nullptr) = 0; }
+#else
+#define DBG_BREAK {__builtin_trap(); }
+#endif
 
 #if defined(NO_ASSERT)
 #define AL_ASSERT_DEBUG(expr)

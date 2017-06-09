@@ -1,4 +1,4 @@
-﻿#include "pch.hpp"
+#include "pch.hpp"
 #include "tonemapper/tonemapper.hpp"
 #include "core/logging.hpp"
 #include "core/distribution1d.hpp"

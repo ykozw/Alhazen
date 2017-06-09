@@ -1,4 +1,4 @@
-﻿#include "pch.hpp"
+#include "pch.hpp"
 #include "threadid.hpp"
 
 AL_TLS uint32_t Job::threadId = -1;

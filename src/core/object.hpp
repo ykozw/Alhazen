@@ -89,8 +89,15 @@ public:
 //-------------------------------------------------
 void registerObject(
     const std::type_index& baseClassType,
-    const std::string& typeName,
+    const std::type_index& targetClassType,
+    const std::string& baseClassName,
+    const std::string& targetClassName,
     std::function<Object*(const ObjectProp&)> createObjectFunc);
+
+//-------------------------------------------------
+//
+//-------------------------------------------------
+std::string typeid2name(const std::type_index& deriClass);
 
 //-------------------------------------------------
 // createObjectOld()
@@ -104,6 +111,9 @@ Object* createObjectCore(
     const std::string& targetClass,
     const ObjectProp& objectProp);
 
+//-------------------------------------------------
+//
+//-------------------------------------------------
 template<typename BaseClass>
 std::shared_ptr<BaseClass> createObject(const std::string& targetClassName)
 {
@@ -116,17 +126,19 @@ std::shared_ptr<BaseClass> createObject(const std::string& targetClassName)
                 ObjectProp())));
 }
 
+//-------------------------------------------------
+//
+//-------------------------------------------------
 template<typename BaseClass>
 std::shared_ptr<BaseClass> createObject(const ObjectProp& objProp)
 {
-    // "class XXX"の形式
-    std::string baseClassName = typeid(BaseClass).name();
-    std::string baseClassNameTrimed = baseClassName.substr(6);
+    //
+    std::string baseClassName = typeid2name(typeid(BaseClass));
     // 同じ階層にある場合と、一つ下の階層にある場合が混在している
     const ObjectProp& targetProp =
-        (baseClassNameTrimed == objProp.tag()) ?
+        (baseClassName == objProp.tag()) ?
         objProp :
-        objProp.findChildByTag(baseClassNameTrimed);
+        objProp.findChildByTag(baseClassName);
     const std::string& targetClassName = targetProp.attribute("type").asString("");
     logging("Create Object[%s::%s]", typeid(BaseClass).name(), targetClassName.c_str());
     return std::shared_ptr<BaseClass>(
@@ -146,7 +158,7 @@ std::shared_ptr<BaseClass> createObject(const ObjectProp& objProp)
 	public: \
 		Register##CLASS_TYPE##CLASS_NAME() \
 		{ \
-			registerObject( typeid(BASE_CLASS_TYPE), #CLASS_TYPE, create); \
+			registerObject( typeid(BASE_CLASS_TYPE), typeid(CLASS_TYPE), #BASE_CLASS_TYPE, #CLASS_TYPE, create); \
 		} \
 		static Object* create(const ObjectProp& prop) \
 		{ \

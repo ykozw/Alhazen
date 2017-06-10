@@ -80,16 +80,20 @@
 #define WAVE_LENGTH_C_DASH 0.6439f
 
 // Debug関連
-#define DBG_BREAK {/*__builtin_trap(); */__debugbreak(); *reinterpret_cast<int32_t*>(nullptr) = 0;}
+#if defined(WINDOWS)
+#define DBG_BREAK() __ud2(); __debugbreak()
+#else
+#define DBG_BREAK() __ud2(); __builtin_trap()
+#endif
 
 #if defined(NO_ASSERT)
 #define AL_ASSERT_DEBUG(expr)
 #define AL_VALID(expr) expr
 #else
-#define AL_ASSERT_DEBUG(expr) if(!(expr)){ printf("%s %s %d\n",#expr, __FILE__, __LINE__); DBG_BREAK }
+#define AL_ASSERT_DEBUG(expr) if(!(expr)){ printf("%s %s %d\n",#expr, __FILE__, __LINE__); DBG_BREAK(); }
 #define AL_VALID(expr) AL_ASSERT_DEBUG(expr)
 #endif
-#define AL_ASSERT_ALWAYS(expr) if(!(expr)){ printf("%s %s %d\n",#expr, __FILE__, __LINE__); DBG_BREAK }
+#define AL_ASSERT_ALWAYS(expr) if(!(expr)){ printf("%s %s %d\n",#expr, __FILE__, __LINE__); DBG_BREAK(); }
 
 
 // aligin

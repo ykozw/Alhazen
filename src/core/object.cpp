@@ -15,6 +15,7 @@ std::unordered_map<std::string, std::function<Object*(const ObjectProp&)>> objec
 typedef std::function<Object*(const ObjectProp&)> CreateObjectFun;
 typedef std::unordered_map<std::string, CreateObjectFun> CreateObjectFunList;
 std::unordered_map<std::type_index, CreateObjectFunList> g_allObjectCreateFuncs;
+std::unordered_map<std::type_index, std::string> g_type2name;
 
 class Init
 {
@@ -39,10 +40,20 @@ void ObjectProp::addChild(const ObjectProp& child)
 }
 
 //-------------------------------------------------
+//
+//-------------------------------------------------
+std::string typeid2name(const std::type_index& deriClass)
+{
+    return g_type2name[deriClass];
+}
+
+//-------------------------------------------------
 // registerObject
 //-------------------------------------------------
 void registerObject(
     const std::type_index& baseClassType,
+    const std::type_index& targetClassType,
+    const std::string& baseClassName,
     const std::string& targetClassName,
     std::function<Object*(const ObjectProp&)> createObjectFunc)
 {
@@ -53,7 +64,9 @@ void registerObject(
     // TODO: 二重登録検知ができるようにする
     //
     objectCreateFuncs.insert(std::pair<std::string, std::function<Object*(const ObjectProp&)>>(targetClassName, createObjectFunc));
-
+    // 
+    g_type2name.insert(std::make_pair(baseClassType, baseClassName));
+    g_type2name.insert(std::make_pair(targetClassType, targetClassName));
     //
     g_allObjectCreateFuncs[baseClassType][targetClassName] = createObjectFunc;
 }

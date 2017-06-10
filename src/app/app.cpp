@@ -8,18 +8,15 @@
 //-------------------------------------------------
 bool parseArgs(int32_t argc, char* argv[], ArgConfig& config)
 {
-    // シーンファイルの指定がない場合は、実行ファイルのあるフォルダをシーン用のディレクトリに。
+    // シーンファイルの指定がない場合は終了
     if (argc < 2)
     {
-        std::string sceneFileDummy;
-        getDirPath(argv[0], config.baseFileDir, sceneFileDummy);
+        loggingError("scene file is not specified.");
+        return false;
     }
-    // シーンファイルの指定がある場合は、シーンファイルのフォルダをカレントディレクトリにする。
-    else
-    {
-        config.sceneFilePath = argv[1];
-        getDirPath(config.sceneFilePath, config.baseFileDir, config.sceneFileName);
-    }
+    //
+    config.sceneFilePath = argv[1];
+    g_fileSystem.init(config.sceneFilePath.c_str());
 
     // オプションの解釈
     bool doTest = false;

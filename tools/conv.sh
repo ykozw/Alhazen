@@ -1,3 +1,3 @@
-find . -name ..\*.cpp -type f | xargs nkf -Lw --overwrite --oc=UTF-8-BOM
-find . -name ..\*.hpp -type f | xargs nkf -Lw --overwrite --oc=UTF-8-BOM
-find . -name ..\*.inl -type f | xargs nkf -Lw --overwrite --oc=UTF-8-BOM
+find ./../src/ -name *.cpp -type f | xargs nkf -w8 -Lw --overwrite --oc=UTF-8-BOM
+find ./../src/ -name *.hpp -type f | xargs nkf -w8 -Lw --overwrite --oc=UTF-8-BOM
+find ./../src/ -name *.inl -type f | xargs nkf -w8 -Lw --overwrite --oc=UTF-8-BOM

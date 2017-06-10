@@ -2,11 +2,34 @@
 
 #include "pch.hpp"
 
-const char* getExt(const char* fileName);
-void getDirPath( const std::string& fullPath, std::string& aDirPath, std::string& aFileName);
-std::string getOutputFolderPath();
-uint32_t elapseTimeInMs();
-bool isMasterThreadOrSerialRegion();
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+class FileSystem
+{
+public:
+    void init(const char* sceneFilePath);
+    std::string getOutputFolderPath() const;
+    static const char* getExt(const char* fileName);
+    static void getDirPath(const std::string& fullPath, std::string& aDirPath, std::string& aFileName);
+    static std::string readTextFileAll(const std::string& filePath);
+private:
+    std::string outputDir_;
+};
+extern FileSystem g_fileSystem;
 
-// 指定したファイルの中身の全ての内容をテキストとして返す
-std::string readTextFileAll(const std::string& filePath);
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+class TimeUtil
+{
+public:
+    TimeUtil();
+    uint32_t elapseTimeInMs();
+private:
+    std::chrono::system_clock::time_point startTime_;
+};
+extern TimeUtil g_timeUtil;
+

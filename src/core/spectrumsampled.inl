@@ -408,9 +408,9 @@ const std::array<float, SPECTRUM_SAMPLED_NUM_SAMPLES_CIE> CIE_lambda
 		822, 823, 824, 825, 826, 827, 828, 829, 830
 	} };
 
-const SpectrumSampled CIE_X = sample2SpectrumSampled(CIE_lambda, CIE_X_SAMPLE);
-const SpectrumSampled CIE_Y = sample2SpectrumSampled(CIE_lambda, CIE_Y_SAMPLE);
-const SpectrumSampled CIE_Z = sample2SpectrumSampled(CIE_lambda, CIE_Z_SAMPLE);
+const SpectrumSampled CIE_X = sample2SpectrumSampled<SPECTRUM_SAMPLED_NUM_SAMPLES_CIE>(CIE_lambda, CIE_X_SAMPLE);
+const SpectrumSampled CIE_Y = sample2SpectrumSampled<SPECTRUM_SAMPLED_NUM_SAMPLES_CIE>(CIE_lambda, CIE_Y_SAMPLE);
+const SpectrumSampled CIE_Z = sample2SpectrumSampled<SPECTRUM_SAMPLED_NUM_SAMPLES_CIE>(CIE_lambda, CIE_Z_SAMPLE);
 const float CIE_X_ACM_INV = 1.0f / CIE_X.accumrate();
 const float CIE_Y_ACM_INV = 1.0f / CIE_Y.accumrate();
 const float CIE_Z_ACM_INV = 1.0f / CIE_Z.accumrate();
@@ -721,20 +721,20 @@ const std::array<float, SPECTRUM_SAMPLED_NUM_SAMPLES_RGB> rgbLambda
 		687.096313f, 698.064026f,
 		709.031738f, 720.000000f
 	} };
-const SpectrumSampled whiteReflectance = sample2SpectrumSampled(rgbLambda, whiteSample);
-const SpectrumSampled cyanReflectance = sample2SpectrumSampled(rgbLambda, cyanSample);
-const SpectrumSampled magentaReflectance = sample2SpectrumSampled(rgbLambda, magentaSample);
-const SpectrumSampled yellowReflectance = sample2SpectrumSampled(rgbLambda, yellowSample);
-const SpectrumSampled redReflectance = sample2SpectrumSampled(rgbLambda, redSample);
-const SpectrumSampled greenReflectance = sample2SpectrumSampled(rgbLambda, greenSample);
-const SpectrumSampled blueReflectance = sample2SpectrumSampled(rgbLambda, blueSample);
-const SpectrumSampled whiteIllum = sample2SpectrumSampled(rgbLambda, whiteIllumSample);
-const SpectrumSampled cyanIllum = sample2SpectrumSampled(rgbLambda, cyanIllumSample);
-const SpectrumSampled magentaIllum = sample2SpectrumSampled(rgbLambda, magentaIllumSample);
-const SpectrumSampled yellowIllum = sample2SpectrumSampled(rgbLambda, yellowIllumSample);
-const SpectrumSampled redIllum = sample2SpectrumSampled(rgbLambda, redIllumSample);
-const SpectrumSampled greenIllum = sample2SpectrumSampled(rgbLambda, greenIllumSample);
-const SpectrumSampled blueIllum = sample2SpectrumSampled(rgbLambda, blueIllumSample);
+const SpectrumSampled whiteReflectance = sample2SpectrumSampled<SPECTRUM_SAMPLED_NUM_SAMPLES_RGB>(rgbLambda, whiteSample);
+const SpectrumSampled cyanReflectance = sample2SpectrumSampled<SPECTRUM_SAMPLED_NUM_SAMPLES_RGB>(rgbLambda, cyanSample);
+const SpectrumSampled magentaReflectance = sample2SpectrumSampled<SPECTRUM_SAMPLED_NUM_SAMPLES_RGB>(rgbLambda, magentaSample);
+const SpectrumSampled yellowReflectance = sample2SpectrumSampled<SPECTRUM_SAMPLED_NUM_SAMPLES_RGB>(rgbLambda, yellowSample);
+const SpectrumSampled redReflectance = sample2SpectrumSampled<SPECTRUM_SAMPLED_NUM_SAMPLES_RGB>(rgbLambda, redSample);
+const SpectrumSampled greenReflectance = sample2SpectrumSampled<SPECTRUM_SAMPLED_NUM_SAMPLES_RGB>(rgbLambda, greenSample);
+const SpectrumSampled blueReflectance = sample2SpectrumSampled<SPECTRUM_SAMPLED_NUM_SAMPLES_RGB>(rgbLambda, blueSample);
+const SpectrumSampled whiteIllum = sample2SpectrumSampled<SPECTRUM_SAMPLED_NUM_SAMPLES_RGB>(rgbLambda, whiteIllumSample);
+const SpectrumSampled cyanIllum = sample2SpectrumSampled<SPECTRUM_SAMPLED_NUM_SAMPLES_RGB>(rgbLambda, cyanIllumSample);
+const SpectrumSampled magentaIllum = sample2SpectrumSampled<SPECTRUM_SAMPLED_NUM_SAMPLES_RGB>(rgbLambda, magentaIllumSample);
+const SpectrumSampled yellowIllum = sample2SpectrumSampled<SPECTRUM_SAMPLED_NUM_SAMPLES_RGB>(rgbLambda, yellowIllumSample);
+const SpectrumSampled redIllum = sample2SpectrumSampled<SPECTRUM_SAMPLED_NUM_SAMPLES_RGB>(rgbLambda, redIllumSample);
+const SpectrumSampled greenIllum = sample2SpectrumSampled<SPECTRUM_SAMPLED_NUM_SAMPLES_RGB>(rgbLambda, greenIllumSample);
+const SpectrumSampled blueIllum = sample2SpectrumSampled<SPECTRUM_SAMPLED_NUM_SAMPLES_RGB>(rgbLambda, blueIllumSample);
 #pragma endregion
 
 //-------------------------------------------------

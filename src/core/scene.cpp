@@ -300,7 +300,7 @@ void Scene::developLDR(const std::string& filmName, bool isFinal, bool isPreview
 	}
 	const Image& image = denoise ? denoiseBuffer_ : radianceImage;
 	// Tonemappingを掛けつつ出力する
-	const std::string fullPath = getOutputFolderPath() + filmName;
+	const std::string fullPath = g_fileSystem.getOutputFolderPath() + filmName;
 	tonemapper_->process(image, tonemmappedImage_);
 #if defined(WINDOWS)
 	tonemmappedImage_.writeBmp(fullPath);
@@ -322,7 +322,7 @@ void Scene::dumpHDR(const std::string& fileName)
 {
     // 内部にあるHDRをそのまま出力する
     const auto& image = sensor_->film()->image();
-    const std::string fullPath = getOutputFolderPath() + fileName;
+    const std::string fullPath = g_fileSystem.getOutputFolderPath() + fileName;
     //image.writeHdr(fullPath);
     //image.writeBHDR(fullPath);
 }

@@ -12,7 +12,7 @@ FILE* file = nullptr;
 //-------------------------------------------------
 void initialzeLog()
 {
-    const std::string filePath = getOutputFolderPath() + "log.log";
+    const std::string filePath = g_fileSystem.getOutputFolderPath() + "log.log";
     file = fopen(filePath.c_str(), "wt");
 }
 
@@ -44,7 +44,7 @@ void writeLine(const char* buffer)
 //-------------------------------------------------
 std::string getElapseStr()
 {
-    const int32_t elapse = elapseTimeInMs();
+    const int32_t elapse = g_timeUtil.elapseTimeInMs();
     // HH:MM:SSにする
     int32_t sec = elapse / 1000;
     int32_t min = sec / 60;

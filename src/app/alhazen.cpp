@@ -51,14 +51,14 @@ int32_t Alhazen::runApp(const ArgConfig& config)
     // 全てのタスクが消化されるか、時間切れになるまで行う
     int32_t taskNo = 0;
     int32_t filmNo = 0;
-    uint32_t nextDevelopTime = elapseTimeInMs() + developIntervalInMs;
+    uint32_t nextDevelopTime = g_timeUtil.elapseTimeInMs() + developIntervalInMs;
     for (;;)
     {
         // 現在実行中のタスクが全て消費されるまで待つ
         while (!taskScheduler.isTaskConsumed())
         {
             //
-            if (elapseTimeInMs() >= timeOutInMs)
+            if (g_timeUtil.elapseTimeInMs() >= timeOutInMs)
             {
                 //logging("Time out.");
                 goto EXIT;
@@ -99,7 +99,7 @@ int32_t Alhazen::runApp(const ArgConfig& config)
                 if (threadNo == 0)
                 {
                     // 現像
-                    if (nextDevelopTime < elapseTimeInMs())
+                    if (nextDevelopTime < g_timeUtil.elapseTimeInMs())
                     {
                         nextDevelopTime += developIntervalInMs;
                         filmNo++;

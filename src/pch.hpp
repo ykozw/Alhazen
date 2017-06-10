@@ -57,8 +57,12 @@
 #include <intrin.h>
 #endif
 
+#if defined(WINDOWS)
 // portableだけれども各種SDKに依存するヘッダ
 #include <direct.h>
+#else
+#include <sys/stat.h> // for mkdir()
+#endif
 
 // Third party
 #include "tinyxml2.h"
@@ -83,7 +87,7 @@
 #if defined(WINDOWS)
 #define DBG_BREAK() __ud2(); __debugbreak()
 #else
-#define DBG_BREAK() __ud2(); __builtin_trap()
+#define DBG_BREAK() __builtin_trap()
 #endif
 
 #if defined(NO_ASSERT)

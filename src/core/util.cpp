@@ -16,7 +16,11 @@ void FileSystem::init(const char* sceneFilePath)
     getDirPath(sceneFilePath, sceneFileDir, fileName);
     // ディレクトリ作成作成
     outputDir_ = sceneFileDir + "/output/";
-    mkdir(outputDir_.c_str());
+#if defined(WINDOWS)
+    _mkdir(outputDir_.c_str());
+#else
+    mkdir(outputDir_.c_str(),755);
+#endif
 }
 
 /*

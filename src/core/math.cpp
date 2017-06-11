@@ -12,44 +12,68 @@ AL_TEST_IMM(Math, BoolInVec)
     // 基本的な真偽の設定
     {
         BoolInVec v(false);
-        AL_ASSERT_DEBUG(!v.value());
-        AL_ASSERT_DEBUG(!(bool)v);
+        AL_ASSERT_ALWAYS(!v.value());
+        AL_ASSERT_ALWAYS(!(bool)v);
     }
     {
         BoolInVec v(true);
-        AL_ASSERT_DEBUG(v.value());
-        AL_ASSERT_DEBUG((bool)v);
+        AL_ASSERT_ALWAYS(v.value());
+        AL_ASSERT_ALWAYS((bool)v);
     }
     // 各種代入
     {
         BoolInVec v0(false);
         BoolInVec v1(v0);
-        AL_ASSERT_DEBUG(!v1.value());
-        AL_ASSERT_DEBUG(!(bool)v1);
+        AL_ASSERT_ALWAYS(!(bool)v1);
     }
     {
         BoolInVec v0(true);
         BoolInVec v1(v0);
-        AL_ASSERT_DEBUG(v1.value());
-        AL_ASSERT_DEBUG((bool)v1);
+        AL_ASSERT_ALWAYS((bool)v1);
     }
     {
         BoolInVec v0(false);
         BoolInVec v1(v0.v);
-        AL_ASSERT_DEBUG(!v1.value());
         AL_ASSERT_DEBUG(!(bool)v1);
     }
     {
         BoolInVec v0(true);
         BoolInVec v1(v0.v);
-        AL_ASSERT_DEBUG(v1.value());
         AL_ASSERT_DEBUG((bool)v1);
     }
-    // TODO: 非ゼロのtrueがちゃんと判定されるかを入れる
-    // TODO: 他のレーンを汚した状態での真偽チェック
+    // 非ゼロのtrueがちゃんと判定されるかを入れる
+    {
+        BoolInVec v;
+        v.v = _mm_set1_epi32(2);
+        AL_ASSERT_ALWAYS((bool)v);
+    }
+    // 他のレーンを汚した状態での真偽チェック
+    {
+        BoolInVec v;
+        v.v = _mm_set_epi32(3,2,1,0);
+        AL_ASSERT_ALWAYS(!(bool)v);
+    }
+    {
+        BoolInVec v;
+        v.v = _mm_set_epi32(3,2,1,1);
+        AL_ASSERT_ALWAYS((bool)v);
+    }
 }
 
-// TODO: FloatInVecのテスト
+/*
+-------------------------------------------------
+FloatInVecに関するテスト
+-------------------------------------------------
+*/
+AL_TEST_IMM(Math, FloatInVec)
+{
+    // 基本的な設定
+    {
+        FloatInVec v(1.0f);
+        AL_ASSERT_ALWAYS(v.value() == 1.0f);
+        AL_ASSERT_ALWAYS((float)v == 1.0f);
+    }
+}
 
 /*
 -------------------------------------------------
@@ -194,16 +218,6 @@ AL_TEST_IMM(Math,V4)
         AL_TEST_CHECK(v.wwxx() == Vec4(y,w,x,x));
     }
 }
-
-
-
-
-
-
-
-
-
-
 
 
 

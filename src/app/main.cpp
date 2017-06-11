@@ -11,7 +11,7 @@ main
 -------------------------------------------------
 */
 int32_t main(int32_t argc, char* argv[])
-{    
+{
 #if defined(UNIT_TEST)
     doTest();
     return 0;

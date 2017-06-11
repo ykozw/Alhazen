@@ -4,6 +4,56 @@
 
 /*
 -------------------------------------------------
+BoolInVecに関するテストコード
+-------------------------------------------------
+*/
+AL_TEST_IMM(Math, BoolInVec)
+{
+    // 基本的な真偽の設定
+    {
+        BoolInVec v(false);
+        AL_ASSERT_DEBUG(!v.value());
+        AL_ASSERT_DEBUG(!(bool)v);
+    }
+    {
+        BoolInVec v(true);
+        AL_ASSERT_DEBUG(v.value());
+        AL_ASSERT_DEBUG((bool)v);
+    }
+    // 各種代入
+    {
+        BoolInVec v0(false);
+        BoolInVec v1(v0);
+        AL_ASSERT_DEBUG(!v1.value());
+        AL_ASSERT_DEBUG(!(bool)v1);
+    }
+    {
+        BoolInVec v0(true);
+        BoolInVec v1(v0);
+        AL_ASSERT_DEBUG(v1.value());
+        AL_ASSERT_DEBUG((bool)v1);
+    }
+    {
+        BoolInVec v0(false);
+        BoolInVec v1(v0.v);
+        AL_ASSERT_DEBUG(!v1.value());
+        AL_ASSERT_DEBUG(!(bool)v1);
+    }
+    {
+        BoolInVec v0(true);
+        BoolInVec v1(v0.v);
+        AL_ASSERT_DEBUG(v1.value());
+        AL_ASSERT_DEBUG((bool)v1);
+    }
+    // TODO: 非ゼロのtrueがちゃんと判定されるかを入れる
+    // TODO: 他のレーンを汚した状態での真偽チェック
+}
+
+// TODO: FloatInVecのテスト
+
+/*
+-------------------------------------------------
+ Vec3に関するテスト
 -------------------------------------------------
 */
 AL_TEST(Math, Vec3)
@@ -66,3 +116,103 @@ AL_TEST(Math, Vec3)
         AL_TEST_CHECK(v.zzz() == Vec3(z, z, z));
     }
 }
+
+// Matrix3x3に関するテスト
+// Matrix4x4に関するテスト
+// AABBに関するテスト
+// Vec4に関するテスト
+/*
+ -------------------------------------------------
+ Vec4に関するテスト
+ -------------------------------------------------
+ */
+AL_TEST_IMM(Math,V4)
+{
+    // 初期設定テスト
+    {
+        const Vec4 v(1.0f);
+        AL_TEST_CHECK(v.x == 1.0f);
+        AL_TEST_CHECK(v.y == 1.0f);
+        AL_TEST_CHECK(v.z == 1.0f);
+        AL_TEST_CHECK(v.w == 1.0f);
+    }
+    {
+        const Vec4 v(0.0f,1.0f,2.0f,3.0f);
+        AL_TEST_CHECK(v.x == 0.0f);
+        AL_TEST_CHECK(v.y == 1.0f);
+        AL_TEST_CHECK(v.z == 2.0f);
+        AL_TEST_CHECK(v.w == 3.0f);
+    }
+#if 0
+    // 長さ
+    {
+        Vec4 v(1.0f,2.0f,3.0f,4.0f);
+        AL_TEST_CHECK(v.lengthSq() == 30.0f);
+        AL_TEST_CHECK(std::fabsf(v.length()-5.477225575f));
+    }
+#endif
+    // TODO: swizzleのテストコード
+    {
+        const float x = 1.0f;
+        const float y = 2.0f;
+        const float z = 3.0f;
+        const float w = 4.0f;
+        const Vec4 v(x,y,z,w);
+        AL_TEST_CHECK(v.xxxx() == Vec4(x,x,x,x));
+        AL_TEST_CHECK(v.yxxx() == Vec4(y,x,x,x));
+        AL_TEST_CHECK(v.zxxx() == Vec4(z,x,x,x));
+        AL_TEST_CHECK(v.wxxx() == Vec4(y,x,x,x));
+        AL_TEST_CHECK(v.xyxx() == Vec4(x,y,x,x));
+        AL_TEST_CHECK(v.yyxx() == Vec4(y,y,x,x));
+        AL_TEST_CHECK(v.zyxx() == Vec4(z,y,x,x));
+        AL_TEST_CHECK(v.wyxx() == Vec4(y,y,x,x));
+        AL_TEST_CHECK(v.xzxx() == Vec4(x,z,x,x));
+        AL_TEST_CHECK(v.yzxx() == Vec4(y,z,x,x));
+        AL_TEST_CHECK(v.zzxx() == Vec4(z,z,x,x));
+        AL_TEST_CHECK(v.wzxx() == Vec4(y,z,x,x));
+        AL_TEST_CHECK(v.xwxx() == Vec4(x,w,x,x));
+        AL_TEST_CHECK(v.ywxx() == Vec4(y,w,x,x));
+        AL_TEST_CHECK(v.zwxx() == Vec4(z,w,x,x));
+        AL_TEST_CHECK(v.wwxx() == Vec4(y,w,x,x));
+        
+        // TODO: 参列目をyにするところから続き
+        AL_TEST_CHECK(v.xxxx() == Vec4(x,x,x,x));
+        AL_TEST_CHECK(v.yxxx() == Vec4(y,x,x,x));
+        AL_TEST_CHECK(v.zxxx() == Vec4(z,x,x,x));
+        AL_TEST_CHECK(v.wxxx() == Vec4(y,x,x,x));
+        AL_TEST_CHECK(v.xyxx() == Vec4(x,y,x,x));
+        AL_TEST_CHECK(v.yyxx() == Vec4(y,y,x,x));
+        AL_TEST_CHECK(v.zyxx() == Vec4(z,y,x,x));
+        AL_TEST_CHECK(v.wyxx() == Vec4(y,y,x,x));
+        AL_TEST_CHECK(v.xzxx() == Vec4(x,z,x,x));
+        AL_TEST_CHECK(v.yzxx() == Vec4(y,z,x,x));
+        AL_TEST_CHECK(v.zzxx() == Vec4(z,z,x,x));
+        AL_TEST_CHECK(v.wzxx() == Vec4(y,z,x,x));
+        AL_TEST_CHECK(v.xwxx() == Vec4(x,w,x,x));
+        AL_TEST_CHECK(v.ywxx() == Vec4(y,w,x,x));
+        AL_TEST_CHECK(v.zwxx() == Vec4(z,w,x,x));
+        AL_TEST_CHECK(v.wwxx() == Vec4(y,w,x,x));
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

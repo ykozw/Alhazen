@@ -416,82 +416,6 @@ INLINE static Vec3 operator / (const Vec3& v, float f);
 
 /*
 -------------------------------------------------
-Vec3x8のデータ構造
--------------------------------------------------
-*/
-struct Vec3Pack8
-{
-public:
-	union
-	{
-		struct
-		{
-			__m256 xs; // xxxxxxxx
-			__m256 ys; // yyyyyyyy
-			__m256 zs; // zzzzzzzz
-		};
-		struct
-		{
-			float x8[8];
-			float y8[8];
-			float z8[8];
-		};
-	};
-public:
-	Vec3Pack8() = default;
-	Vec3Pack8(const Vec3Pack8& other) = default;
-	Vec3Pack8(Vec3Pack8&& other) = default;
-	Vec3Pack8(
-		__m256 v0,
-		__m256 v1,
-		__m256 v2);
-	INLINE void set(
-		// xyzが8回
-		float* xyzs);
-	INLINE void set(
-		const Vec3& v0,
-		const Vec3& v1,
-		const Vec3& v2,
-		const Vec3& v3,
-		const Vec3& v4,
-		const Vec3& v5,
-		const Vec3& v6,
-		const Vec3& v7);
-	INLINE void setZero();
-	INLINE Bool8 isZero() const;
-	INLINE Bool8 hasNan() const;
-	INLINE Vec3Pack8& normalize();
-	INLINE void scale(float scale);
-	INLINE Bool8 isNormalized() const;
-	INLINE Bool8 isNormalized(float eps) const;
-	//INLINE Float8 length() const;
-	//INLINE Float8 lengthSq() const;
-	INLINE Bool8 isAllZero() const;
-	INLINE Vec3Pack8 inverted() const;
-	INLINE Vec3Pack8 invertedSafe(float defaultValue) const;
-	INLINE Vec3Pack8 reflect(const Vec3& v) const;
-	INLINE Float8 operator[](int32_t index) const;
-
-	INLINE static Float8 length(const Vec3Pack8& v);
-	INLINE static Float8 lengthSq(const Vec3Pack8& v);
-	INLINE static Float8 distance(const Vec3Pack8& lhs, const Vec3Pack8& rhs);
-	INLINE static Float8 distanceSq(const Vec3Pack8& lhs, const Vec3Pack8& rhs);
-	INLINE static Float8 dot(const Vec3Pack8& lhs, const Vec3Pack8& rhs);
-	INLINE static Vec3Pack8 cross(const Vec3Pack8& lhs, const Vec3Pack8& rhs);
-};
-INLINE static Vec3Pack8 operator + (const Vec3Pack8& lhs, const Vec3Pack8& rhs);
-INLINE static Vec3Pack8 operator - (const Vec3Pack8& lhs, const Vec3Pack8& rhs);
-INLINE static Vec3Pack8 operator - (const Vec3Pack8& v);
-INLINE static Vec3Pack8& operator += (Vec3Pack8& lhs, const Vec3Pack8& rhs);
-INLINE static Vec3Pack8& operator -= (Vec3Pack8& lhs, const Vec3Pack8& rhs);
-INLINE static Bool8 operator == (const Vec3Pack8& lhs, const Vec3Pack8& rhs);
-INLINE static Vec3Pack8 operator * (float f, const Vec3Pack8& v);
-INLINE static Vec3Pack8 operator * (const Vec3Pack8& v, float f);
-INLINE static Vec3Pack8& operator *= (Vec3Pack8& v, float factor);
-INLINE static Vec3Pack8 operator / (const Vec3Pack8& v, float f);
-
-/*
--------------------------------------------------
 Vec4
 -------------------------------------------------
 */
@@ -517,11 +441,28 @@ public:
 	Vec4(float x, float y, float z, float w);
 	explicit Vec4(float e);
 	Vec4(__m128 other);
+#if 0
+    // アクセッサを分けるようにする
+    //float x()const;
+    //float y()const;
+    //float z()const;
+    //float w()const;
+    // TODO: スイズルを作成する
+    FloatInVec length() const;
+    FloatInVec lengthSq() const;
+    Vec4& normalize();
+    Vec4 normalized() const;
+    //
+#endif
     float operator[](int32_t index) const;
     Vec4& operator=(const Vec4& other)  = default;
-	static float dot(const Vec4& lhs, const Vec4& rhs);
+    static float dot(Vec4 lhs, Vec4 rhs);
+#if 0
+    static FloatInVec length(Vec4 v);
+    static FloatInVec lengthSq(Vec4 v);
+#endif
+    #include "swizzle_v4.inl"
 };
-
 
 /*
 -------------------------------------------------
@@ -610,6 +551,82 @@ public:
 	Matrix4x4& operator = (const Matrix4x4& other);
 };
 INLINE static Matrix4x4 operator + (const Matrix4x4& lhs, const Matrix4x4& rhs);
+
+/*
+ -------------------------------------------------
+ Vec3x8のデータ構造
+ -------------------------------------------------
+ */
+struct Vec3Pack8
+{
+public:
+    union
+    {
+        struct
+        {
+            __m256 xs; // xxxxxxxx
+            __m256 ys; // yyyyyyyy
+            __m256 zs; // zzzzzzzz
+        };
+        struct
+        {
+            float x8[8];
+            float y8[8];
+            float z8[8];
+        };
+    };
+public:
+    Vec3Pack8() = default;
+    Vec3Pack8(const Vec3Pack8& other) = default;
+    Vec3Pack8(Vec3Pack8&& other) = default;
+    Vec3Pack8(
+              __m256 v0,
+              __m256 v1,
+              __m256 v2);
+    INLINE void set(
+                    // xyzが8回
+                    float* xyzs);
+    INLINE void set(
+                    const Vec3& v0,
+                    const Vec3& v1,
+                    const Vec3& v2,
+                    const Vec3& v3,
+                    const Vec3& v4,
+                    const Vec3& v5,
+                    const Vec3& v6,
+                    const Vec3& v7);
+    INLINE void setZero();
+    INLINE Bool8 isZero() const;
+    INLINE Bool8 hasNan() const;
+    INLINE Vec3Pack8& normalize();
+    INLINE void scale(float scale);
+    INLINE Bool8 isNormalized() const;
+    INLINE Bool8 isNormalized(float eps) const;
+    //INLINE Float8 length() const;
+    //INLINE Float8 lengthSq() const;
+    INLINE Bool8 isAllZero() const;
+    INLINE Vec3Pack8 inverted() const;
+    INLINE Vec3Pack8 invertedSafe(float defaultValue) const;
+    INLINE Vec3Pack8 reflect(const Vec3& v) const;
+    INLINE Float8 operator[](int32_t index) const;
+    
+    INLINE static Float8 length(const Vec3Pack8& v);
+    INLINE static Float8 lengthSq(const Vec3Pack8& v);
+    INLINE static Float8 distance(const Vec3Pack8& lhs, const Vec3Pack8& rhs);
+    INLINE static Float8 distanceSq(const Vec3Pack8& lhs, const Vec3Pack8& rhs);
+    INLINE static Float8 dot(const Vec3Pack8& lhs, const Vec3Pack8& rhs);
+    INLINE static Vec3Pack8 cross(const Vec3Pack8& lhs, const Vec3Pack8& rhs);
+};
+INLINE static Vec3Pack8 operator + (const Vec3Pack8& lhs, const Vec3Pack8& rhs);
+INLINE static Vec3Pack8 operator - (const Vec3Pack8& lhs, const Vec3Pack8& rhs);
+INLINE static Vec3Pack8 operator - (const Vec3Pack8& v);
+INLINE static Vec3Pack8& operator += (Vec3Pack8& lhs, const Vec3Pack8& rhs);
+INLINE static Vec3Pack8& operator -= (Vec3Pack8& lhs, const Vec3Pack8& rhs);
+INLINE static Bool8 operator == (const Vec3Pack8& lhs, const Vec3Pack8& rhs);
+INLINE static Vec3Pack8 operator * (float f, const Vec3Pack8& v);
+INLINE static Vec3Pack8 operator * (const Vec3Pack8& v, float f);
+INLINE static Vec3Pack8& operator *= (Vec3Pack8& v, float factor);
+INLINE static Vec3Pack8 operator / (const Vec3Pack8& v, float f);
 
 #include "math.inl"
 #include "swizzle.inl"

@@ -457,9 +457,7 @@ INLINE BoolInVec::operator bool() const
 #if defined(WINDOWS)
 	return (v.m128i_i32[0] != 0x00000000);
 #else
-    AL_ASSERT_ALWAYS(false);
-    return false;
-    //return _mm_cmpeq_epi32(v,__mm_set1_epi32(0x00000000))[0];
+    return value();
 #endif
 }
 
@@ -468,12 +466,11 @@ INLINE BoolInVec::operator bool() const
 //-------------------------------------------------
 INLINE bool BoolInVec::value() const
 {
-#if defined(WINDOWS)
-    return (v.m128i_i32[0] != 0x00000000);
-#else
-    AL_ASSERT_ALWAYS(false);
-    return false;
-#endif
+    const __m128i zero = _mm_set1_epi32(0);
+    const int32_t zeromask =
+        _mm_movemask_epi8(_mm_cmpeq_epi32(v,zero)) & 0x000000FFFF;
+    const int32_t ret = zeromask & 0x01;
+    return !ret;
 }
 
 //-------------------------------------------------
@@ -1529,14 +1526,21 @@ INLINE Vec4::Vec4(_In_reads_(4) const float* es)
 //
 //-------------------------------------------------
 INLINE Vec4::Vec4(float ax, float ay, float az, float aw)
-	:x(ax), y(ay), z(az), w(aw)
-{}
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    x = ax;
+    y = ay;
+    z = az;
+    w = aw;
+#elif defined(AL_MATH_USE_AVX2)
+    xyzw = _mm_set_ps(aw, az, ay, ax);
+#endif
+}
 
 //-------------------------------------------------
 //
 //-------------------------------------------------
 INLINE Vec4::Vec4(float e)
-	:x(e), y(e), z(e), w(e)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
 	x = e;
@@ -1544,13 +1548,14 @@ INLINE Vec4::Vec4(float e)
 	z = e;
 	w = e;
 #elif defined(AL_MATH_USE_AVX2)
-	assert(false);
+    xyzw = _mm_set_ps(e, e, e, e);
 #endif
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE Vec4::Vec4(__m128 other)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
@@ -1559,9 +1564,62 @@ INLINE Vec4::Vec4(__m128 other)
 	z = other.m128_f32[2];
 	w = other.m128_f32[3];
 #elif defined(AL_MATH_USE_AVX2)
-	assert(false);
+    xyzw = other;
 #endif
 }
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+//FloatInVec Vec4::length() const
+//{
+//    return Vec4::length(*this);
+//}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+//FloatInVec Vec4::lengthSq() const
+//{
+//    return Vec4::lengthSq(*this);
+//}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+#if 0
+INLINE Vec4& Vec4::normalize()
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    const float invLen = 1.0f / length();
+    x *= invLen;
+    y *= invLen;
+    z *= invLen;
+    w *= invLen;
+#elif defined(AL_MATH_USE_AVX2)
+    const __m128 dp = _mm_dp_ps(xyzw, xyzw, 0xFF);
+    const __m128 idp = _mm_rsqrt_ps_accurate(dp);
+    xyzw = _mm_mul_ps(xyzw, idp);
+#endif
+    return *this;
+}
+#endif
+
+#if 0
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+Vec4 Vec4::normalized() const
+{
+    Vec4 ret = *this;
+    ret.normalize();
+    return ret;
+}
+#endif
 
 //-------------------------------------------------
 //
@@ -1575,14 +1633,42 @@ INLINE float Vec4::operator[](int32_t index) const
 //-------------------------------------------------
 //
 //-------------------------------------------------
-INLINE float Vec4::dot(const Vec4& lhs, const Vec4& rhs)
+INLINE float Vec4::dot(Vec4 lhs, Vec4 rhs)
 {
+    // TODO: optimize
 	return
 		lhs.x * rhs.x +
 		lhs.y * rhs.y +
 		lhs.z * rhs.z +
 		lhs.w * rhs.w;
 }
+
+#if 0
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE FloatInVec Vec4::length(Vec4 v)
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    assert(false);
+#elif defined(AL_MATH_USE_AVX2)
+    return _mm_sqrt_ps(lengthSq(v));
+#endif
+}
+
+//-------------------------------------------------
+//
+//-------------------------------------------------
+INLINE FloatInVec Vec4::lengthSq(Vec4 v)
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    assert(false);
+#elif defined(AL_MATH_USE_AVX2)
+    return dot(v, v);
+#endif
+}
+#endif
 
 //-------------------------------------------------
 //

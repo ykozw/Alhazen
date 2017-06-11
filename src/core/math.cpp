@@ -20,7 +20,7 @@ AL_TEST_IMM(Math, BoolInVec)
         AL_ASSERT_ALWAYS(v.value());
         AL_ASSERT_ALWAYS((bool)v);
     }
-    // 各種代入
+    // 各種代g入
     {
         BoolInVec v0(false);
         BoolInVec v1(v0);

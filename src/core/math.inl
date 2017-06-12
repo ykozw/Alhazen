@@ -366,11 +366,7 @@ INLINE FloatInVec::operator __m128 () const
 //-------------------------------------------------
 INLINE FloatInVec::operator float() const
 {
-#if !defined(WINDOWS)
-    return v[0];
-#else
-	return v.m128_f32[0];
-#endif
+    return value();
 }
 
 //-------------------------------------------------
@@ -378,11 +374,19 @@ INLINE FloatInVec::operator float() const
 //-------------------------------------------------
 INLINE float FloatInVec::value() const
 {
-#if !defined(WINDOWS)
-    return v[0];
-#else
-	return v.m128_f32[0];
-#endif
+    /*
+     _mm_extract_ps()を使ってはいけない
+     cf. https://stackoverflow.com/a/17258448
+     */
+    return _mm_cvtss_f32(_mm_shuffle_ps(v, v, _MM_SHUFFLE(0, 0, 0, 0)));
+}
+
+//-------------------------------------------------
+//
+//-------------------------------------------------
+INLINE bool FloatInVec::isNan() const
+{
+    return std::isnan(value());
 }
 
 //-------------------------------------------------

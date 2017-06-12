@@ -217,3 +217,21 @@ INLINE Vec3 Vec3::zzz() const
 {
     return _mm_shuffle_ps(xyz, xyz, _MM_SHUFFLE(0, 2, 2, 2));
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

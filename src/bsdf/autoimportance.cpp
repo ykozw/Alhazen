@@ -152,7 +152,7 @@ void AutoImportance::sample(
     _Out_ Vec3* localWi,
     _Out_ float* pdf) const
 {
-    const float coso = localWo.z;
+    const float coso = localWo.z();
     auto ite = std::lower_bound(
                    distributions_.begin(), distributions_.end(), coso,
                    [](const DistributionWo& lhs, float v)->bool{ return lhs.first > v; });
@@ -178,18 +178,17 @@ void AutoImportance::sample(
     // HACK: どうしても円から外れる場合があり得るため正規化
     //samplePoint.normalize();
     //
-    const float phi = atan2f(localWo.y, localWo.x);
+    const float phi = atan2f(localWo.y(), localWo.x());
     const float cosft = cosf(phi);
     const float sinft = sinf(phi);
     const float x = samplePoint.x * cosft - samplePoint.y * sinft;
     const float y = samplePoint.x * sinft + samplePoint.y * cosft;
-    localWi->x = x;
-    localWi->y = y;
     // 1を超えることはあり得るため少し甘めに見える
     const float lenSq = x*x + y*y;
     //AL_ASSERT_DEBUG(lenSq  <= 1.02f);
     // HACK: この定数は非常にまずい
-    localWi->z = sqrtf(alMax(1.0f - (x * x + y * y), 0.0001f));
+    const float z = sqrtf(alMax(1.0f - (x * x + y * y), 0.0001f));
+    *localWi = Vec3(x,y,z);
     //
     AL_ASSERT_DEBUG(!localWi->hasNan());
     // HACK: ここでも正規化
@@ -203,7 +202,7 @@ float AutoImportance::pdf(
     const Vec3& localWo,
     const Vec3& localWi ) const
 {
-    const float coso = localWo.z;
+    const float coso = localWo.z();
     auto ite = std::lower_bound(
                    distributions_.begin(), distributions_.end(), coso,
                    [](const DistributionWo& lhs, float v)->bool{ return lhs.first > v; });
@@ -213,11 +212,11 @@ float AutoImportance::pdf(
     }
     const Distribution2D& dist2d = ite->second;
     //
-    const float phi = -atan2f(localWo.y, localWo.x);
+    const float phi = -atan2f(localWo.y(), localWo.x());
     const float cosft = cosf(phi);
     const float sinft = sinf(phi);
-    const float x = localWi.x * cosft - localWi.y * sinft;
-    const float y = localWi.x * sinft + localWi.y * cosft;
+    const float x = localWi.x() * cosft - localWi.y() * sinft;
+    const float y = localWi.x() * sinft + localWi.y() * cosft;
     //
     const int32_t row = dist2d.row();
     const int32_t col = dist2d.column();

@@ -61,7 +61,7 @@ static void testBSDFcore(BSDFPtr bsdf)
             // 負になっていないかチェック
             AL_ASSERT_ALWAYS(ref >= 0.0f);
             // 総エネルギー
-            const float e = ref * std::fabsf(wi.z) * 2.0f * PI;
+            const float e = ref * std::fabsf(wi.z()) * 2.0f * PI;
             statsEnergyConservation.add(e);
             // ∫pdfdΩ = 1 
             const float pdf = bsdf->pdf(wo, wi);
@@ -75,7 +75,7 @@ static void testBSDFcore(BSDFPtr bsdf)
             const Spectrum refIS = bsdf->bsdfSample(wo, samplerWi, &wiIS, &pdfIS);
             if (pdfIS != 0.0f)
             {
-                statsRhd1.add(refIS.r * std::fabsf(wiIS.z) / pdfIS);
+                statsRhd1.add(refIS.r * std::fabsf(wiIS.z()) / pdfIS);
             }
         }
         AL_ASSERT_ALWAYS(statsEnergyConservation.mean() <= 1.0f);
@@ -394,7 +394,7 @@ AL_TEST(BlinnNDF, 0)
             // 負になっていないかチェック
             AL_ASSERT_ALWAYS(ref >= 0.0f);
             // 総エネルギー
-            const float e = ref * std::fabsf(wi.z) * 2.0f * PI;
+            const float e = ref * std::fabsf(wi.z()) * 2.0f * PI;
             statsEnergyConservation.add(e);
             // ∫pdfdΩ = 1 
             const float pdf = nd->pdf(wo, wi);
@@ -603,9 +603,9 @@ Spectrum Lambertian::bsdfSample(
     float pdfHS;
     *localWi = sampler->getHemisphereCosineWeighted(&pdfHS);
     // 裏面の場合
-    if (localWo.z < 0.)
+    if (localWo.z() < 0.)
     {
-        localWi->z *= -1.0f;
+        localWi->setZ(localWi->z() * -1.0f);
     }
     //
     *pdf = this->pdf(localWo, *localWi);
@@ -701,9 +701,9 @@ Spectrum OrenNayar::bsdfSample(
     float pdfHS;
     *localWi = sampler->getHemisphereCosineWeighted(&pdfHS);
     // 裏面であればwiも裏返す
-    if (localWo.z < 0.)
+    if (localWo.z() < 0.)
     {
-        localWi->z = -localWi->z;
+        localWi->setZ(-localWi->z());
     }
     //
     *aPdf = pdf(localWo, *localWi);
@@ -784,7 +784,7 @@ Spectrum Mirror::bsdfSample(
     _Out_ float* pdf) const
 {
     // 単純なreflect
-    *localWi = Vec3(-localWo.x, -localWo.y, localWo.z);
+    *localWi = Vec3(-localWo.x(), -localWo.y(), localWo.z());
     *pdf = 1.0f;
     // 反射率 1.0
     return Spectrum(1.0f);
@@ -850,7 +850,7 @@ Spectrum Glass::bsdfSample(
     //
     const float glassProb = sampler->get1d();
     // Snellの法則から入射方向を算出
-    const float cosi = alMin(localWo.z, 1.0f);
+    const float cosi = alMin(localWo.z(), 1.0f);
     float ei = 1.0f;
     float et = ior_;
     const float sini = sqrtf(1.0f - cosi * cosi);
@@ -863,7 +863,7 @@ Spectrum Glass::bsdfSample(
     //
     const float sint = ei / et * sini;
     const float cos2t = 1.0f - sint * sint;
-    const Vec3 reflectDir(-localWo.x, -localWo.y, localWo.z);
+    const Vec3 reflectDir(-localWo.x(), -localWo.y(),localWo.z());
     //
     Spectrum spectrum;
     // 完全反射の場合
@@ -879,21 +879,23 @@ Spectrum Glass::bsdfSample(
     {
         const float cost = sqrtf(cos2t);
         // 透過方向の算出
-        Vec3 refractDir;
-        refractDir.z = fromOut ? -cost : cost;
-        Vec2 xy(-localWo.x, -localWo.y);
+        
+        const float z = fromOut ? -cost : cost;
+        float x,y;
+        Vec2 xy(-localWo.x(), -localWo.y());
         const float lensq = xy.lengthSq();
         if (lensq == 0.0f)
         {
-            refractDir.x = 0.0f;
-            refractDir.y = 0.0f;
+            x = 0.0f;
+            y = 0.0f;
         }
         else
         {
             const float s = sqrtf((1.0f - cost*cost) / lensq);
-            refractDir.x = xy.x * s;
-            refractDir.y = xy.y * s;
+            x = xy.x * s;
+            y = xy.y * s;
         }
+        Vec3 refractDir(x,y,z);
         AL_ASSERT_DEBUG(refractDir.isNormalized());
 
         // Schlick
@@ -912,7 +914,7 @@ Spectrum Glass::bsdfSample(
             //
             *localWi = refractDir;
             // 反射量
-            const float c = 1.0f - fabsf(refractDir.z);
+            const float c = 1.0f - fabsf(refractDir.z());
             const float reflection = R0 + (1.0f - R0) * powf(c, 5.0f);
             // 透過量
             const float transmission = 1.0f - reflection;
@@ -929,7 +931,7 @@ Spectrum Glass::bsdfSample(
             //
             *localWi = reflectDir;
             // 反射量
-            const float c = 1.0f - fabsf(reflectDir.z);
+            const float c = 1.0f - fabsf(reflectDir.z());
             const float reflection = R0 + (1.0f - R0) * powf(c, 5.0f);
             // ロシアンルーレット分
             spectrum = Spectrum(reflection / (1.0f - prob));
@@ -983,7 +985,7 @@ AL_TEST(BSDF,testMISC)
         const Vec3 wo = sampler.getHemisphere();
         const Vec3 wi = sampler.getHemisphere();
         const Spectrum reflectance = lambert.bsdf(wo, wi);
-        const float cosweight = wi.z;
+        const float cosweight = wi.z();
         total = total + reflectance;
     }
     total /= float(sn);
@@ -1042,7 +1044,7 @@ Spectrum MicrofacetBSDF::bsdf(
     }
     //
     Vec3 wh = wi + wo;
-    if (wh.x == 0. && wh.y == 0. && wh.z == 0.)
+    if (wh.x() == 0. && wh.y() == 0. && wh.z() == 0.)
     {
         return Spectrum(0.0f);
     }
@@ -1248,7 +1250,7 @@ Spectrum Ward::bsdf(
     spec *= exp(exponent);
     //
     const Vec3 col = cd_  * INV_PI + cs_ * spec;
-    return Spectrum::createFromRGB({ { col.x, col.y, col.z } }, false);
+    return Spectrum::createFromRGB({ { col.x(), col.y(), col.z() } }, false);
 }
 
 /*
@@ -1264,9 +1266,9 @@ Spectrum Ward::bsdfSample(
     float pdfHS;
     *localWi = sampler->getHemisphereCosineWeighted(&pdfHS);
     // 裏面の場合
-    if (localWo.z < 0.)
+    if (localWo.z() < 0.)
     {
-        localWi->z *= -1.f;
+        localWi->setZ(localWi->z() * -1.0f);
     }
     //
     *pdf = this->pdf(localWo, *localWi);
@@ -1379,9 +1381,9 @@ Spectrum Walter::bsdfSample(
     float pdfHS;
     *localWi = sampler->getHemisphereCosineWeighted(&pdfHS);
     // 裏面の場合
-    if (localWo.z < 0.)
+    if (localWo.z() < 0.)
     {
-        localWi->z *= -1.f;
+        localWi->setZ(localWi->z() * -1.0f);
     }
     //
     *pdf = this->pdf(localWo, *localWi);
@@ -1474,7 +1476,7 @@ Spectrum AshikhminShirley::bsdf(
         rho_d *= (1 - rs_);
     }
     const Vec3 val(rho_s + rho_d);
-    return Spectrum::createFromRGB({ { val.x, val.y, val.z } }, false);
+    return Spectrum::createFromRGB({ { val.x(), val.y(), val.z() } }, false);
 }
 
 /*
@@ -1490,9 +1492,9 @@ Spectrum AshikhminShirley::bsdfSample(
     float pdfHS;
     *localWi = sampler->getHemisphereCosineWeighted(&pdfHS);
     // 裏面の場合
-    if (localWo.z < 0.)
+    if (localWo.z() < 0.)
     {
-        localWi->z *= -1.f;
+        localWi->setZ( localWi->z() * -1.0f);
     }
     //
     *pdf = this->pdf(localWo, *localWi);
@@ -1754,7 +1756,7 @@ Spectrum DisneyBRDF::bsdf(
         + Gs*Fs*Ds +
         Vec3(0.25f * clearcoat_ * Gr * Fr * Dr);
     AL_ASSERT_DEBUG(!rgb.hasNan());
-    return SpectrumRGB::createFromRGB({ { rgb.x,rgb.y,rgb.z } }, false);
+    return SpectrumRGB::createFromRGB({ { rgb.x(),rgb.y(),rgb.z() } }, false);
 }
 
 /*
@@ -1775,9 +1777,9 @@ Spectrum DisneyBRDF::bsdfSample(
     float pdfHS;
     *localWi = sampler->getHemisphereCosineWeighted(&pdfHS);
     // 裏面の場合
-    if (localWo.z < 0.)
+    if (localWo.z() < 0.0f)
     {
-        localWi->z *= -1.f;
+        localWi->setZ(localWi->z() * -1.0f);
     }
     //
     *pdf = this->pdf(localWo, *localWi);

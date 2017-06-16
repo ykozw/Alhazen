@@ -12,8 +12,8 @@ const int32_t SPECTRUM_SAMPLED_NUM_SAMPLES = 30;
 //-------------------------------------------------
 //
 //-------------------------------------------------
-void xyz2rgb(const std::array<float, 3>& xyz, std::array<float, 3>& rgb);
-void rgb2xyz(const std::array<float, 3>& rgb, std::array<float, 3>& xyz);
+void xyz2rgb(const std::array<float, 3>& xyz_, std::array<float, 3>& rgb);
+void rgb2xyz(const std::array<float, 3>& rgb, std::array<float, 3>& xyz_);
 //Spectrum evalAsSpectrum(const std::string& str, bool asIllumination);
 
 //-------------------------------------------------
@@ -84,7 +84,7 @@ public:
 	void clear();
 	bool isBlack() const;
 	SpectrumSampled sqrt() const;
-	void toXYZ(std::array<float, 3>& xyz) const;
+	void toXYZ(std::array<float, 3>& xyz_) const;
     void toRGB(SpectrumRGB& rgb) const;
 	void clamp( float mn, float mx );
 	bool hasNaN() const;

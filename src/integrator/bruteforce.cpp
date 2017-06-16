@@ -132,7 +132,7 @@ Spectrum BruteForceIntegrator::radiance(
         throughput *= reflection * localWi.z * 2.0f * PI;
 #endif
         // 次のrayを作成する
-        const Vec3 rayOrig = (localWi.z >= 0.0f) ? isect.uppserSideOrigin() : isect.belowSideOrigin();
+        const Vec3 rayOrig = (localWi.z() >= 0.0f) ? isect.uppserSideOrigin() : isect.belowSideOrigin();
         ray = Ray(rayOrig, worldWi, isect.rayEpsilon);
     }
     //

@@ -37,9 +37,9 @@ inline Vec2 remapDirToSphericalCoord(Vec3 xyz)
     //
     AL_ASSERT_DEBUG(std::fabsf(xyz.length() - 1.0f) < 0.001f);
     // 
-    const float theta = std::acosf(xyz.z);
+    const float theta = std::acosf(xyz.z());
     const float sinTheta = std::sinf(theta);
-    const float tmp = std::min(std::max(xyz.x / sinTheta, 0.0f), 1.0f);
+    const float tmp = std::min(std::max(xyz.x() / sinTheta, 0.0f), 1.0f);
     const float phi = std::acosf(tmp);
     //
     AL_ASSERT_DEBUG(!std::isnan(theta));

@@ -180,9 +180,9 @@ void ObjectPropString::setFloat(float v)
 void ObjectPropString::setVec3(const Vec3& v)
 {
     value_ =
-    std::to_string(v.x) + "," +
-    std::to_string(v.y) +"," +
-    std::to_string(v.z);
+    std::to_string(v.x()) + "," +
+    std::to_string(v.y()) +"," +
+    std::to_string(v.z());
 }
 
 /*
@@ -255,13 +255,13 @@ Vec3 ObjectPropString::asVec3(const Vec3& defaultValue) const
 {
     if (valid_)
     {
-        Vec3 ret;
-        if (sscanf(value_.c_str(), "%f, %f, %f", &ret.x, &ret.y, &ret.z) != 3)
+        float x,y,z;
+        if (sscanf(value_.c_str(), "%f, %f, %f", &x, &y, &z) != 3)
         {
             // TODO: warning
             return defaultValue;
         }
-        return ret;
+        return Vec3(x,y,z);
     }
     else
     {
@@ -425,15 +425,15 @@ Vec3 ObjectProp::asXYZ(const Vec3& defaultValue) const
         return defaultValue;
     }
     //
-    Vec3 ret;
-    if (sscanf(ax.value().c_str(), "%f", &ret.x) != 1 ||
-        sscanf(ay.value().c_str(), "%f", &ret.y) != 1 ||
-        sscanf(az.value().c_str(), "%f", &ret.z) != 1)
+    float x,y,z;
+    if (sscanf(ax.value().c_str(), "%f", &x) != 1 ||
+        sscanf(ay.value().c_str(), "%f", &y) != 1 ||
+        sscanf(az.value().c_str(), "%f", &z) != 1)
     {
         // TODO: warning
         return defaultValue;
     }
-    return ret;
+    return Vec3(x,y,z);
 }
 
 /*

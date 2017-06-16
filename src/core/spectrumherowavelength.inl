@@ -24,7 +24,7 @@ INLINE SpectrumRGB SpectrumHerowavelength::toRGB() const
 {
     std::array<float, 3> rgb;
     Vec3 xyz = toXYZ();
-    xyz2rgb({ { xyz.x, xyz.y, xyz.z } }, rgb);
+    xyz2rgb({ { xyz.x(), xyz.y(), xyz.z() } }, rgb);
 
     // SpectrumSingleWavelength::toRGB()と同じ定数
     const float sr = 2.33995581f;

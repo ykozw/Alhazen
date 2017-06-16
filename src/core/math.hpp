@@ -2,7 +2,7 @@
 #include "pch.hpp"
 
 // VectorMathでSIMDを使うか否か。AVX2まで仮定する。
-//#define AL_MATH_USE_NO_SIMD
+#define AL_MATH_USE_NO_SIMD
 #define AL_MATH_USE_AVX2
 
 /*
@@ -251,6 +251,7 @@ public:
 	INLINE operator __m128 () const;
 	INLINE operator float() const;
 	INLINE float value() const;
+    INLINE bool isNan() const;
 };
 INLINE bool operator < (FloatInVec lhs, FloatInVec rhs);
 
@@ -326,16 +327,13 @@ struct Vec4;
 struct Vec3
 {
 public:
-	union
-	{
-        struct
-        {
-            float x;
-            float y;
-            float z;
-        };
-		__m128 xyz;
-	};
+#if defined(AL_MATH_USE_NO_SIMD)
+    float x_;
+    float y_;
+    float z_;
+#else
+    __m128 xyz_;
+#endif
 public:
 	INLINE Vec3() = default;
 	INLINE Vec3(const Vec3& other) = default;
@@ -349,6 +347,8 @@ public:
 	INLINE void zero();
 	INLINE bool isZero() const;
 	INLINE bool hasNan() const;
+    INLINE bool any() const;
+    INLINE bool all() const;
 	INLINE Vec3& normalize();
 	INLINE Vec3 normalized() const;
 	INLINE void scale(float scale);
@@ -364,13 +364,20 @@ public:
 	INLINE float& operator[](int32_t index);
 	INLINE float operator[](int32_t index) const;
 	INLINE Vec3& operator = (const Vec3& other) = default;
+    //
+    INLINE float x() const;
+    INLINE float y() const;
+    INLINE float z() const;
+    INLINE void setX(float x);
+    INLINE void setY(float y);
+    INLINE void setZ(float z);
     // swizzle
     INLINE Vec3 xxx() const;
     INLINE Vec3 xxy() const;
     INLINE Vec3 xxz() const;
     INLINE Vec3 xyx() const;
     INLINE Vec3 xyy() const;
-    //INLINE Vec3 xyz() const;
+    //INLINE Vec3 xyz_() const;
     INLINE Vec3 xzx() const;
     INLINE Vec3 xzy() const;
     INLINE Vec3 xzz() const;
@@ -400,6 +407,8 @@ public:
 	static FloatInVec dot(const Vec3& lhs, const Vec3& rhs);
 	static Vec3 cross(const Vec3& lhs, const Vec3& rhs);
     static Vec3 mul(const Vec3& lhs, const Vec3& rhs);
+    static Vec3 min(Vec3 lhs, Vec3 rhs);
+    static Vec3 max(Vec3 lhs, Vec3 rhs);
 };
 
 INLINE static Vec3 operator + (const Vec3& lhs, const Vec3& rhs);
@@ -530,7 +539,7 @@ public:
 	void constructAsRotationAxis();
 	void constructAsTranslation(const Vec3& v);
 	void constructAsScale(const Vec3& scale);
-	void constructAsRotation(const Vec3& xyz, float angle);
+	void constructAsRotation(const Vec3& xyz_, float angle);
 	void constructAsViewMatrix(const Vec3& origin, const Vec3& target, const Vec3& up);
 	void fillZero();
 	void identity();
@@ -584,7 +593,7 @@ public:
               __m256 v1,
               __m256 v2);
     INLINE void set(
-                    // xyzが8回
+                    // xyz_が8回
                     float* xyzs);
     INLINE void set(
                     const Vec3& v0,

@@ -863,7 +863,7 @@ INLINE void Vec3::setX(float x)
 INLINE void Vec3::setY(float y)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    z_ = y;
+    y_ = y;
 #else
     // vvyy
     const __m128 tmp0 = _mm_shuffle_ps(_mm_set_ps1(y), xyz_, _MM_SHUFFLE(1, 1, 0, 0));
@@ -892,56 +892,16 @@ INLINE void Vec3::setZ(float z)
 //-------------------------------------------------
 //
 //-------------------------------------------------
-INLINE float& Vec3::operator[](int32_t index)
-{
-	AL_ASSERT_DEBUG(0 <= index && index <= 2);
-#if !defined(WINDOWS)
-    switch(index)
-    {
-        case 0: return x_;
-        case 1: return y_;
-        case 2: return z_;
-        default:
-            AL_ASSERT_ALWAYS(false);
-            return x_;
-    }
-#else
-    
-#if defined(AL_MATH_USE_NO_SIMD)
-	AL_ASSERT_DEBUG(0 <= index && index <= 2);
-	return *(&x + index);
-#elif defined(AL_MATH_USE_AVX2)
-	return xyz_.m128_f32[index];
-#endif
-#endif
-}
-
-//-------------------------------------------------
-//
-//-------------------------------------------------
 INLINE float Vec3::operator[](int32_t index) const
 {
 	AL_ASSERT_DEBUG(0 <= index && index <= 2);
-    
-#if !defined(WINDOWS)
     switch(index)
     {
-        case 0: return x_;
-        case 1: return y_;
-        case 2: return z_;
-        default:
-            AL_ASSERT_ALWAYS(false);
-            return x_;
+        case 0: return x();
+        case 1: return y();
+        case 2: return z();
+        default: return 0.0f;
     }
-#else
-    
-#if defined(AL_MATH_USE_NO_SIMD)
-	AL_ASSERT_DEBUG(0 <= index && index <= 2);
-	return *(&x + index);
-#elif defined(AL_MATH_USE_AVX2)
-	return xyz_.m128_f32[index];
-#endif
-#endif
 }
 
 //-------------------------------------------------

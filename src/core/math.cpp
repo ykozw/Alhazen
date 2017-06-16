@@ -107,6 +107,20 @@ AL_TEST_IMM(Math, Vec3)
         AL_ASSERT_ALWAYS(v.y() == 3.0f);
         AL_ASSERT_ALWAYS(v.z() == 4.0f);
     }
+    {
+        Vec3 v(2.0f,3.0f,4.0f);
+        v.setY(5.0f);
+        AL_ASSERT_ALWAYS(v.x() == 2.0f);
+        AL_ASSERT_ALWAYS(v.y() == 5.0f);
+        AL_ASSERT_ALWAYS(v.z() == 4.0f);
+    }
+    {
+        Vec3 v(2.0f,3.0f,4.0f);
+        v.setZ(5.0f);
+        AL_ASSERT_ALWAYS(v.x() == 2.0f);
+        AL_ASSERT_ALWAYS(v.y() == 3.0f);
+        AL_ASSERT_ALWAYS(v.z() == 5.0f);
+    }
     // 全要素同じ設定をしての初期化
     {
         const Vec3 v(1.0f);

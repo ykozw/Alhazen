@@ -1,25 +1,7 @@
 ﻿#include "math.hpp"
 // TODO: swizzleはvec4と同じようにする
 
-INLINE Vec3 Vec3::xxx() const
-{
-#if 0
-    return _mm_shuffle_ps(xyz_, xyz_, _MM_SHUFFLE(0, 0, 0, 0));
-#else
-    return Vec3();
-#endif
-}
-
-INLINE Vec3 Vec3::zyx() const
-{
-#if 0
-    return _mm_shuffle_ps(xyz_, xyz_, _MM_SHUFFLE(0, 0, 0, 0));
-#else
-    return Vec3();
-#endif
-}
-
-#if 0
+#if 1
 //-------------------------------------------------
 //
 //-------------------------------------------------

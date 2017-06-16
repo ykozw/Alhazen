@@ -107,6 +107,20 @@ AL_TEST_IMM(Math, Vec3)
         AL_ASSERT_ALWAYS(v.y() == 3.0f);
         AL_ASSERT_ALWAYS(v.z() == 4.0f);
     }
+    {
+        Vec3 v(2.0f,3.0f,4.0f);
+        v.setY(5.0f);
+        AL_ASSERT_ALWAYS(v.x() == 2.0f);
+        AL_ASSERT_ALWAYS(v.y() == 5.0f);
+        AL_ASSERT_ALWAYS(v.z() == 4.0f);
+    }
+    {
+        Vec3 v(2.0f,3.0f,4.0f);
+        v.setZ(5.0f);
+        AL_ASSERT_ALWAYS(v.x() == 2.0f);
+        AL_ASSERT_ALWAYS(v.y() == 3.0f);
+        AL_ASSERT_ALWAYS(v.z() == 5.0f);
+    }
     // 全要素同じ設定をしての初期化
     {
         const Vec3 v(1.0f);
@@ -146,13 +160,15 @@ AL_TEST_IMM(Math, Vec3)
         AL_ASSERT_ALWAYS(Vec3(n, v, v).hasNan());
         AL_ASSERT_ALWAYS(Vec3(v, n, v).hasNan());
         AL_ASSERT_ALWAYS(Vec3(v, v, n).hasNan());
+        // w成分は関係がないのでNaNになってはいけない
         AL_ASSERT_ALWAYS(!Vec3(_mm_set_ps(n,v,v,v)).hasNan());
     }
     // any
     {
         AL_ASSERT_ALWAYS(!Vec3(0.0f, 0.0f, 0.0f).any());
-        AL_ASSERT_ALWAYS(!Vec3(0.0f, 1.0f, 0.0f).any());
-        AL_ASSERT_ALWAYS(!Vec3(0.0f, 0.0f, 1.0f).any());
+        AL_ASSERT_ALWAYS(Vec3(0.0f, 1.0f, 0.0f).any());
+        AL_ASSERT_ALWAYS(Vec3(0.0f, 0.0f, 1.0f).any());
+        // w成分は関係がないのでany()の結果には影響を与えてはいけない
         AL_ASSERT_ALWAYS(!Vec3(_mm_set_ps(1.0f,0.0f,0.0f,0.0f)).any());
     }
     // all
@@ -162,8 +178,8 @@ AL_TEST_IMM(Math, Vec3)
         AL_ASSERT_ALWAYS(!Vec3(1.0f, 1.0f, 0.0f).all());
         AL_ASSERT_ALWAYS(!Vec3(0.0f, 1.0f, 1.0f).all());
         AL_ASSERT_ALWAYS(Vec3(1.0f, 1.0f, 1.0f).all());
-        Vec3 v(_mm_set_ps(0.0f,1.0f,1.0f,1.0f));
-        AL_ASSERT_ALWAYS(v.all());
+        // w成分は関係がないのでall()の結果には影響を与えてはいけない
+        AL_ASSERT_ALWAYS(Vec3(_mm_set_ps(0.0f,1.0f,1.0f,1.0f)).all());
     }
     // TODO: normalize
     // TODO:

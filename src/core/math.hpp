@@ -2,7 +2,7 @@
 #include "pch.hpp"
 
 // VectorMathでSIMDを使うか否か。AVX2まで仮定する。
-#define AL_MATH_USE_NO_SIMD
+// #define AL_MATH_USE_NO_SIMD
 #define AL_MATH_USE_AVX2
 
 /*
@@ -361,10 +361,9 @@ public:
 	INLINE Vec3 invertedSafe(float defaultValue) const;
 	INLINE Vec3 reflect(const Vec3& v) const;
     //
-	INLINE float& operator[](int32_t index);
 	INLINE float operator[](int32_t index) const;
 	INLINE Vec3& operator = (const Vec3& other) = default;
-    //
+    // アクセッサ
     INLINE float x() const;
     INLINE float y() const;
     INLINE float z() const;

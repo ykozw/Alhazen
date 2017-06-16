@@ -13,9 +13,9 @@ INLINE Ray::Ray()
 {
     d.normalize();
     dinv = d.invertedSafe(std::numeric_limits <float>::max());
-    sign[0] = (d.x < 0.0f);
-    sign[1] = (d.y < 0.0f);
-    sign[2] = (d.z < 0.0f);
+    sign[0] = (d.x() < 0.0f);
+    sign[1] = (d.y() < 0.0f);
+    sign[2] = (d.z() < 0.0f);
 }
 
 //-------------------------------------------------
@@ -30,9 +30,9 @@ INLINE Ray::Ray(const Vec3& pos, const Vec3& dir, float awaveLength, float amint
 {
     d.normalize();
     dinv = d.invertedSafe(std::numeric_limits <float>::max());
-    sign[0] = (d.x < 0.0f);
-    sign[1] = (d.y < 0.0f);
-    sign[2] = (d.z < 0.0f);
+    sign[0] = (d.x() < 0.0f);
+    sign[1] = (d.y() < 0.0f);
+    sign[2] = (d.z() < 0.0f);
 }
 
 //-------------------------------------------------

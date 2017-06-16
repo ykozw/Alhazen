@@ -483,11 +483,11 @@ INLINE bool BoolInVec::value() const
 INLINE Vec3::Vec3(_In_reads_(3) float* es)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-	x = es[0];
-	y = es[1];
-	z = es[2];
+	x_ = es[0];
+	y_ = es[1];
+	z_ = es[2];
 #elif defined(AL_MATH_USE_AVX2)
-	xyz = (_mm_set_ps(0.0f, es[2], es[1], es[0]));
+	xyz_ = (_mm_set_ps(0.0f, es[2], es[1], es[0]));
 #endif
 }
 
@@ -497,11 +497,11 @@ INLINE Vec3::Vec3(_In_reads_(3) float* es)
 INLINE Vec3::Vec3(float ax, float ay, float az)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-	x = ax;
-	y = ay;
-	z = az;
+	x_ = ax;
+	y_ = ay;
+	z_ = az;
 #elif defined(AL_MATH_USE_AVX2)
-	xyz = _mm_set_ps(0.0f, az, ay, ax);
+	xyz_ = _mm_set_ps(0.0f, az, ay, ax);
 #endif
 }
 
@@ -511,11 +511,11 @@ INLINE Vec3::Vec3(float ax, float ay, float az)
 INLINE Vec3::Vec3(float e)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-	x = e;
-	y = e;
-	z = e;
+	x_ = e;
+	y_ = e;
+	z_ = e;
 #elif defined(AL_MATH_USE_AVX2)
-	xyz = (_mm_set_ps(0.0f, e, e, e));
+	xyz_ = (_mm_set_ps(0.0f, e, e, e));
 #endif
 }
 
@@ -525,11 +525,11 @@ INLINE Vec3::Vec3(float e)
 INLINE Vec3::Vec3(__m128 other)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-	x = other.m128_f32[0];
-	y = other.m128_f32[1];
-	z = other.m128_f32[2];
+	x_ = _mm_cvtss_f32(_mm_shuffle_ps(other, other, _MM_SHUFFLE(0, 0, 0, 0)));
+	y_ = _mm_cvtss_f32(_mm_shuffle_ps(other, other, _MM_SHUFFLE(0, 0, 0, 1)));
+	z_ = _mm_cvtss_f32(_mm_shuffle_ps(other, other, _MM_SHUFFLE(0, 0, 0, 2)));
 #elif defined(AL_MATH_USE_AVX2)
-	xyz = other;
+	xyz_ = other;
 #endif
 }
 
@@ -539,11 +539,11 @@ INLINE Vec3::Vec3(__m128 other)
 INLINE Vec3::Vec3(const std::array<float, 3>& arr)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-	x = arr[0];
-	y = arr[1];
-	z = arr[2];
+	x_ = arr[0];
+	y_ = arr[1];
+	z_ = arr[2];
 #elif defined(AL_MATH_USE_AVX2)
-	xyz = _mm_set_ps(0.0f, arr[2], arr[1], arr[0]);
+	xyz_ = _mm_set_ps(0.0f, arr[2], arr[1], arr[0]);
 #endif
 }
 
@@ -553,11 +553,11 @@ INLINE Vec3::Vec3(const std::array<float, 3>& arr)
 INLINE Vec3::Vec3(const Vec4& arr)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    x = arr[0];
-    y = arr[1];
-    z = arr[2];
+    x_ = arr[0];
+    y_ = arr[1];
+    z_ = arr[2];
 #elif defined(AL_MATH_USE_AVX2)
-    xyz = _mm_set_ps(0.0f, arr[2], arr[1], arr[0]);
+    xyz_ = _mm_set_ps(0.0f, arr[2], arr[1], arr[0]);
 #endif
 }
 
@@ -567,11 +567,11 @@ INLINE Vec3::Vec3(const Vec4& arr)
 INLINE void Vec3::zero()
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-	x = 0.0f;
-	y = 0.0f;
-	z = 0.0f;
+	x_ = 0.0f;
+	y_ = 0.0f;
+	z_ = 0.0f;
 #elif defined(AL_MATH_USE_AVX2)
-	xyz = _mm_set_ps1(0.0f);
+	xyz_ = _mm_set_ps1(0.0f);
 #endif
 }
 
@@ -583,30 +583,62 @@ INLINE bool Vec3::isZero() const
 #if defined(AL_MATH_USE_NO_SIMD)
 	const float d = 0.0001f;
 	return
-		fabsf(x) < d &&
-		fabsf(y) < d &&
-		fabsf(z) < d;
+		fabsf(x_) < d &&
+		fabsf(y_) < d &&
+		fabsf(z_) < d;
 #elif defined(AL_MATH_USE_AVX2)
 	const __m128 zero = _mm_setzero_ps();
-	const __m128 mask = _mm_cmpeq_ps(zero, xyz);
+	const __m128 mask = _mm_cmpeq_ps(zero, xyz_);
 	const int isZeroMask = _mm_movemask_ps(mask);
 	return (isZeroMask == 0);
 #endif
 }
 
 //-------------------------------------------------
-//
+// TODO: 戻り値はBoolInVecの方がいいかもしれない
 //-------------------------------------------------
 INLINE bool Vec3::hasNan() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
 	return
-		isnan(x) ||
-		isnan(y) ||
-		isnan(z);
+		isnan(x_) ||
+		isnan(y_) ||
+		isnan(z_);
 #elif defined(AL_MATH_USE_AVX2)
-	const __m128 mask = _mm_cmpeq_ps(xyz, xyz);
+	const __m128 mask = _mm_cmpeq_ps(xyz_, xyz_);
 	return (_mm_movemask_ps(mask) == 0);
+#endif
+}
+
+/*
+-------------------------------------------------
+いずれかの要素が非0かを返す
+-------------------------------------------------
+*/
+INLINE bool Vec3::any() const
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    return (x_ != 0.0f) ||(y_ != 0.0f) ||(z_ != 0.0f);
+#else
+    const __m128 zero = _mm_setzero_ps();
+    const __m128 mask = _mm_cmpeq_ps(zero, xyz_);
+    return _mm_movemask_ps(mask) != 0;
+#endif
+}
+
+/*
+ -------------------------------------------------
+ 全ての要素が非0かを返す
+ -------------------------------------------------
+ */
+INLINE bool Vec3::all() const
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    return (x_ != 0.0f) && (y_ != 0.0f) && (z_ != 0.0f);
+#else
+    const __m128 zero = _mm_setzero_ps();
+    const __m128 mask = _mm_cmpeq_ps(zero, xyz_);
+    return _mm_movemask_ps(mask) == 0x07;
 #endif
 }
 
@@ -617,14 +649,14 @@ INLINE Vec3& Vec3::normalize()
 {
 #if defined(AL_MATH_USE_NO_SIMD)
 	const float invLen = 1.0f / length();
-	x *= invLen;
-	y *= invLen;
-	z *= invLen;
+	x_ *= invLen;
+	y_ *= invLen;
+	z_ *= invLen;
 	return *this;
 #elif defined(AL_MATH_USE_AVX2)
-	const __m128 dp = _mm_dp_ps(xyz, xyz, 0x77);
+	const __m128 dp = _mm_dp_ps(xyz_, xyz_, 0x77);
 	const __m128 idp = _mm_rsqrt_ps_accurate(dp);
-	xyz = _mm_mul_ps(xyz, idp);
+	xyz_ = _mm_mul_ps(xyz_, idp);
 	return *this;
 #endif
 }
@@ -636,11 +668,11 @@ INLINE Vec3 Vec3::normalized() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
 	const float invLen = 1.0f / length();
-	return Vec3(x * invLen, y * invLen, z * invLen);
+	return Vec3(x_ * invLen, y_ * invLen, z_ * invLen);
 #elif defined(AL_MATH_USE_AVX2)
-	const __m128 dp = _mm_dp_ps(xyz, xyz, 0x7F);
+	const __m128 dp = _mm_dp_ps(xyz_, xyz_, 0x7F);
 	const __m128 idp = _mm_rsqrt_ps_accurate(dp);
-	return _mm_mul_ps(xyz, idp);
+	return _mm_mul_ps(xyz_, idp);
 #endif
 }
 
@@ -650,12 +682,12 @@ INLINE Vec3 Vec3::normalized() const
 INLINE void Vec3::scale(float scale)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-	x *= scale;
-	y *= scale;
-	z *= scale;
+	x_ *= scale;
+	y_ *= scale;
+	z_ *= scale;
 #elif defined(AL_MATH_USE_AVX2)
 	const __m128 s = _mm_set1_ps(scale);
-	xyz = _mm_mul_ps(xyz, s);
+	xyz_ = _mm_mul_ps(xyz_, s);
 #endif
 }
 
@@ -689,7 +721,7 @@ INLINE FloatInVec Vec3::length() const
 #if defined(AL_MATH_USE_NO_SIMD)
 	return sqrtf(lengthSq());
 #elif defined(AL_MATH_USE_AVX2)
-	return length(xyz);
+	return length(xyz_);
 #endif
 }
 
@@ -699,9 +731,9 @@ INLINE FloatInVec Vec3::length() const
 INLINE FloatInVec Vec3::lengthSq() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-	return x*x + y*y + z*z;
+	return x_*x_ + y_*y_ + z_*z_;
 #elif defined(AL_MATH_USE_AVX2)
-	return lengthSq(xyz);
+	return lengthSq(xyz_);
 #endif
 }
 
@@ -712,11 +744,11 @@ INLINE bool Vec3::isAllZero() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
 	return
-		(x == 0.0f) &&
-		(y == 0.0f) &&
-		(z == 0.0f);
+		(x_ == 0.0f) &&
+		(y_ == 0.0f) &&
+		(z_ == 0.0f);
 #elif defined(AL_MATH_USE_AVX2)
-    return (_mm_movemask_ps(_mm_cmpeq_ps(xyz, _mm_setzero_ps())) & 0x07) != 0;
+    return (_mm_movemask_ps(_mm_cmpeq_ps(xyz_, _mm_setzero_ps())) & 0x07) != 0;
 #endif
 }
 
@@ -726,10 +758,10 @@ INLINE bool Vec3::isAllZero() const
 INLINE Vec3 Vec3::inverted() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-	return Vec3(1.0f / x, 1.0f / y, 1.0f / z);
+	return Vec3(1.0f / x_, 1.0f / y_, 1.0f / z_);
 	assert(false);
 #elif defined(AL_MATH_USE_AVX2)
-	return _mm_rsqrt_ps_accurate(xyz);
+	return _mm_rsqrt_ps_accurate(xyz_);
 #endif
 
 }
@@ -748,12 +780,12 @@ INLINE Vec3 Vec3::invertedSafe(const float defaultValue) const
 		}
 		return 1.0f / v;
 	};
-	return Vec3(inv(x), inv(y), inv(z));
+	return Vec3(inv(x_), inv(y_), inv(z_));
 #elif defined(AL_MATH_USE_AVX2)
 	//const __m128 dv = _mm_set_ps1(defaultValue);
 	const __m128 zero = _mm_setzero_ps();
-	const __m128 mask = _mm_cmpeq_ps(zero, xyz);
-	const __m128 rcp = _mm_rcp_ps(xyz);
+	const __m128 mask = _mm_cmpeq_ps(zero, xyz_);
+	const __m128 rcp = _mm_rcp_ps(xyz_);
 	return _mm_andnot_ps(mask, rcp);
 #endif
 }
@@ -776,20 +808,110 @@ INLINE Vec3 Vec3::reflect(const Vec3& v) const
 //-------------------------------------------------
 //
 //-------------------------------------------------
+INLINE float Vec3::x() const
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    return x_;
+#else
+    return _mm_cvtss_f32(_mm_shuffle_ps(xyz_, xyz_, _MM_SHUFFLE(0, 0, 0, 0)));
+#endif
+}
+
+//-------------------------------------------------
+//
+//-------------------------------------------------
+INLINE float Vec3::y() const
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    return y_;
+#else
+    return _mm_cvtss_f32(_mm_shuffle_ps(xyz_, xyz_, _MM_SHUFFLE(0, 0, 0, 1)));
+#endif
+}
+
+//-------------------------------------------------
+//
+//-------------------------------------------------
+INLINE float Vec3::z() const
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    return z_;
+#else
+    return _mm_cvtss_f32(_mm_shuffle_ps(xyz_, xyz_, _MM_SHUFFLE(0, 0, 0, 2)));
+#endif
+}
+
+//-------------------------------------------------
+//
+//-------------------------------------------------
+INLINE void Vec3::setX(float x)
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    x_ = x;
+#else
+    // vvyy
+    const __m128 tmp0 = _mm_shuffle_ps(_mm_set_ps1(x), xyz_, _MM_SHUFFLE(1, 1, 0, 0));
+    // vyz
+    __m128 tmp1 = _mm_shuffle_ps(tmp0, xyz_, _MM_SHUFFLE(3, 3, 2, 0));
+    xyz_ = tmp1;
+#endif
+}
+
+//-------------------------------------------------
+//
+//-------------------------------------------------
+INLINE void Vec3::setY(float y)
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    z_ = y;
+#else
+    // vvyy
+    const __m128 tmp0 = _mm_shuffle_ps(_mm_set_ps1(y), xyz_, _MM_SHUFFLE(1, 1, 0, 0));
+    // vyz
+    __m128 tmp1 = _mm_shuffle_ps(tmp0, xyz_, _MM_SHUFFLE(3, 3, 2, 0));
+    xyz_ = tmp1;
+#endif
+}
+
+//-------------------------------------------------
+//
+//-------------------------------------------------
+INLINE void Vec3::setZ(float z)
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    z_ = z;
+#else
+    // vvyy
+    const __m128 tmp0 = _mm_shuffle_ps(_mm_set_ps1(z), xyz_, _MM_SHUFFLE(1, 1, 0, 0));
+    // vyz
+    __m128 tmp1 = _mm_shuffle_ps(tmp0, xyz_, _MM_SHUFFLE(3, 3, 2, 0));
+    xyz_ = tmp1;
+#endif
+}
+
+//-------------------------------------------------
+//
+//-------------------------------------------------
 INLINE float& Vec3::operator[](int32_t index)
 {
 	AL_ASSERT_DEBUG(0 <= index && index <= 2);
-    
 #if !defined(WINDOWS)
-    AL_ASSERT_ALWAYS(false);
-    return (float&)xyz[index];
+    switch(index)
+    {
+        case 0: return x_;
+        case 1: return y_;
+        case 2: return z_;
+        default:
+            AL_ASSERT_ALWAYS(false);
+            return x_;
+    }
 #else
     
 #if defined(AL_MATH_USE_NO_SIMD)
 	AL_ASSERT_DEBUG(0 <= index && index <= 2);
 	return *(&x + index);
 #elif defined(AL_MATH_USE_AVX2)
-	return xyz.m128_f32[index];
+	return xyz_.m128_f32[index];
 #endif
 #endif
 }
@@ -802,15 +924,22 @@ INLINE float Vec3::operator[](int32_t index) const
 	AL_ASSERT_DEBUG(0 <= index && index <= 2);
     
 #if !defined(WINDOWS)
-    AL_ASSERT_ALWAYS(false);
-    return (float&)xyz[index];
+    switch(index)
+    {
+        case 0: return x_;
+        case 1: return y_;
+        case 2: return z_;
+        default:
+            AL_ASSERT_ALWAYS(false);
+            return x_;
+    }
 #else
     
 #if defined(AL_MATH_USE_NO_SIMD)
 	AL_ASSERT_DEBUG(0 <= index && index <= 2);
 	return *(&x + index);
 #elif defined(AL_MATH_USE_AVX2)
-	return xyz.m128_f32[index];
+	return xyz_.m128_f32[index];
 #endif
 #endif
 }
@@ -834,8 +963,38 @@ INLINE FloatInVec Vec3::lengthSq(const Vec3& v)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
 	assert(false);
-#elif defined(AL_MATH_USE_AVX2)
+#else
 	return dot(v, v);
+#endif
+}
+
+//-------------------------------------------------
+//
+//-------------------------------------------------
+INLINE Vec3 Vec3::min(Vec3 lhs, Vec3 rhs)
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    const float x = std::min(lhs.x(),rhs.x());
+    const float y = std::min(lhs.y(),rhs.y());
+    const float z = std::min(lhs.z(),rhs.z());
+    return Vec3(x,y,z);
+#else
+    return _mm_max_ps(lhs.xyz_,rhs.xyz_);
+#endif
+}
+
+//-------------------------------------------------
+//
+//-------------------------------------------------
+INLINE Vec3 Vec3::max(Vec3 lhs, Vec3 rhs)
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    const float x = std::max(lhs.x(),rhs.x());
+    const float y = std::max(lhs.y(),rhs.y());
+    const float z = std::max(lhs.z(),rhs.z());
+    return Vec3(x,y,z);
+#else
+    return _mm_max_ps(lhs.xyz_,rhs.xyz_);
 #endif
 }
 
@@ -848,7 +1007,7 @@ INLINE FloatInVec Vec3::distance(const Vec3& lhs, const Vec3& rhs)
 	const Vec3 tmp = lhs - rhs;
 	return tmp.length();
 #elif defined(AL_MATH_USE_AVX2)
-	const __m128 dif = _mm_sub_ps(lhs.xyz, rhs.xyz);
+	const __m128 dif = _mm_sub_ps(lhs.xyz_, rhs.xyz_);
 	return length(dif);
 #endif
 }
@@ -862,7 +1021,7 @@ INLINE FloatInVec Vec3::distanceSq(const Vec3& lhs, const Vec3& rhs)
 	const Vec3 tmp = lhs - rhs;
 	return tmp.lengthSq();
 #elif defined(AL_MATH_USE_AVX2)
-	const __m128 dif = _mm_sub_ps(lhs.xyz, rhs.xyz);
+	const __m128 dif = _mm_sub_ps(lhs.xyz_, rhs.xyz_);
 	return lengthSq(dif);
 #endif
 }
@@ -874,30 +1033,30 @@ INLINE FloatInVec Vec3::dot(const Vec3& lhs, const Vec3& rhs)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
 	return
-		lhs.x * rhs.x +
-		lhs.y * rhs.y +
-		lhs.z * rhs.z;
+		lhs.x_ * rhs.x_ +
+		lhs.y_ * rhs.y_ +
+		lhs.z_ * rhs.z_;
 #elif defined(AL_MATH_USE_AVX2)
-	return _mm_dp_ps(lhs.xyz, rhs.xyz, 0x7F);
+	return _mm_dp_ps(lhs.xyz_, rhs.xyz_, 0x7F);
 #endif
 }
 
 //-------------------------------------------------
 //
 //-------------------------------------------------
-INLINE Vec3 Vec3::cross(const Vec3& xyz, const Vec3& abc)
+INLINE Vec3 Vec3::cross(const Vec3& xyz_, const Vec3& abc)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
 	return
 		Vec3(
-			xyz.y * abc.z - xyz.z * abc.y,
-            xyz.z * abc.x - xyz.x * abc.z,
-            xyz.x * abc.y - xyz.y * abc.x);
+			xyz_.y_ * abc.z_ - xyz_.z_ * abc.y_,
+            xyz_.z_ * abc.x_ - xyz_.x_ * abc.z_,
+            xyz_.x_ * abc.y_ - xyz_.y_ * abc.x_);
 #elif defined(AL_MATH_USE_AVX2)
-	const __m128 tmp0 = _mm_shuffle_ps(xyz.xyz, xyz.xyz, _MM_SHUFFLE(3, 0, 2, 1));
-	const __m128 tmp1 = _mm_shuffle_ps(abc.xyz, abc.xyz, _MM_SHUFFLE(3, 1, 0, 2));
-	const __m128 tmp2 = _mm_shuffle_ps(xyz.xyz, xyz.xyz, _MM_SHUFFLE(3, 1, 0, 2));
-	const __m128 tmp3 = _mm_shuffle_ps(abc.xyz, abc.xyz, _MM_SHUFFLE(3, 0, 2, 1));
+	const __m128 tmp0 = _mm_shuffle_ps(xyz_.xyz_, xyz_.xyz_, _MM_SHUFFLE(3, 0, 2, 1));
+	const __m128 tmp1 = _mm_shuffle_ps(abc.xyz_, abc.xyz_, _MM_SHUFFLE(3, 1, 0, 2));
+	const __m128 tmp2 = _mm_shuffle_ps(xyz_.xyz_, xyz_.xyz_, _MM_SHUFFLE(3, 1, 0, 2));
+	const __m128 tmp3 = _mm_shuffle_ps(abc.xyz_, abc.xyz_, _MM_SHUFFLE(3, 0, 2, 1));
 	return _mm_sub_ps(_mm_mul_ps(tmp0, tmp1), _mm_mul_ps(tmp2, tmp3));
 #endif
 }
@@ -910,11 +1069,11 @@ INLINE Vec3 Vec3::mul(const Vec3& lhs, const Vec3& rhs)
 #if defined(AL_MATH_USE_NO_SIMD)
     return
         Vec3(
-            xyz.x * abc.x,
-            xyz.y * abc.y,
-            xyz.z * abc.z);
+            lhs.x_ * rhs.x_,
+            lhs.y_ * rhs.y_,
+            lhs.z_ * rhs.z_);
 #elif defined(AL_MATH_USE_AVX2)
-    return _mm_mul_ps(lhs.xyz, rhs.xyz);
+    return _mm_mul_ps(lhs.xyz_, rhs.xyz_);
 #endif
 }
 
@@ -926,11 +1085,11 @@ INLINE static Vec3 operator + (const Vec3& lhs, const Vec3& rhs)
 #if defined(AL_MATH_USE_NO_SIMD)
 	return
 		Vec3(
-			lhs.x + rhs.x,
-			lhs.y + rhs.y,
-			lhs.z + rhs.z);
+			lhs.x_ + rhs.x_,
+			lhs.y_ + rhs.y_,
+			lhs.z_ + rhs.z_);
 #elif defined(AL_MATH_USE_AVX2)
-	return _mm_add_ps(lhs.xyz, rhs.xyz);
+	return _mm_add_ps(lhs.xyz_, rhs.xyz_);
 #endif
 }
 
@@ -942,11 +1101,11 @@ INLINE static Vec3 operator - (const Vec3& lhs, const Vec3& rhs)
 #if defined(AL_MATH_USE_NO_SIMD)
 	return
 		Vec3(
-			lhs.x - rhs.x,
-			lhs.y - rhs.y,
-			lhs.z - rhs.z);
+			lhs.x_ - rhs.x_,
+			lhs.y_ - rhs.y_,
+			lhs.z_ - rhs.z_);
 #elif defined(AL_MATH_USE_AVX2)
-	return _mm_sub_ps(lhs.xyz, rhs.xyz);
+	return _mm_sub_ps(lhs.xyz_, rhs.xyz_);
 #endif
 }
 
@@ -956,9 +1115,9 @@ INLINE static Vec3 operator - (const Vec3& lhs, const Vec3& rhs)
 INLINE static Vec3 operator - (const Vec3& v)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-	return  Vec3(-v.x, -v.y, -v.z);
+	return  Vec3(-v.x_, -v.y_, -v.z_);
 #elif defined(AL_MATH_USE_AVX2)
-	return _mm_sub_ps(_mm_setzero_ps(), v.xyz);
+	return _mm_sub_ps(_mm_setzero_ps(), v.xyz_);
 #endif
 }
 //-------------------------------------------------
@@ -970,7 +1129,7 @@ INLINE static Vec3& operator += (Vec3& lhs, const Vec3& rhs)
 	lhs = lhs + rhs;
 	return lhs;
 #elif defined(AL_MATH_USE_AVX2)
-	lhs.xyz = _mm_add_ps(lhs.xyz, rhs.xyz);
+	lhs.xyz_ = _mm_add_ps(lhs.xyz_, rhs.xyz_);
 	return lhs;
 #endif
 }
@@ -984,7 +1143,7 @@ INLINE static Vec3& operator -= (Vec3& lhs, const Vec3& rhs)
 	lhs = lhs - rhs;
 	return lhs;
 #elif defined(AL_MATH_USE_AVX2)
-	lhs.xyz = _mm_sub_ps(lhs.xyz, rhs.xyz);
+	lhs.xyz_ = _mm_sub_ps(lhs.xyz_, rhs.xyz_);
 	return lhs;
 #endif
 }
@@ -995,11 +1154,11 @@ INLINE static BoolInVec operator == (const Vec3& lhs, const Vec3& rhs)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
 	return
-		(lhs.x == rhs.x) &&
-		(lhs.y == rhs.y) &&
-		(lhs.z == rhs.z);
+		(lhs.x_ == rhs.x_) &&
+		(lhs.y_ == rhs.y_) &&
+		(lhs.z_ == rhs.z_);
 #elif defined(AL_MATH_USE_AVX2)
-	const __m128 mask = _mm_cmpeq_ps(lhs.xyz, rhs.xyz);
+	const __m128 mask = _mm_cmpeq_ps(lhs.xyz_, rhs.xyz_);
 	const int32_t maskPacked = _mm_movemask_ps(mask);
 	return (maskPacked == 0x0F);
 #endif
@@ -1021,12 +1180,12 @@ INLINE static Vec3 operator * (float f, const Vec3& v)
 #if defined(AL_MATH_USE_NO_SIMD)
 	return
 		Vec3(
-			f * v.x,
-			f * v.y,
-			f * v.z);
+			f * v.x_,
+			f * v.y_,
+			f * v.z_);
 #elif defined(AL_MATH_USE_AVX2)
 	const __m128 s = _mm_set1_ps(f);
-	return _mm_mul_ps(s, v.xyz);
+	return _mm_mul_ps(s, v.xyz_);
 #endif
 }
 
@@ -1039,7 +1198,7 @@ INLINE static Vec3 operator * (const Vec3& v, float f)
 	return f*v;
 #elif defined(AL_MATH_USE_AVX2)
 	const __m128 s = _mm_set1_ps(f);
-	return _mm_mul_ps(v.xyz, s);
+	return _mm_mul_ps(v.xyz_, s);
 #endif
 }
 
@@ -1053,7 +1212,7 @@ INLINE static Vec3& operator *= (Vec3& v, float f)
 	return v;
 #elif defined(AL_MATH_USE_AVX2)
 	const __m128 s = _mm_set1_ps(f);
-	v.xyz = _mm_mul_ps(s, v.xyz);
+	v.xyz_ = _mm_mul_ps(s, v.xyz_);
 	return v;
 #endif
 }
@@ -1065,10 +1224,10 @@ INLINE static Vec3 operator / (const Vec3& v, float f)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
 	const float inv = 1.0f / f;
-	return Vec3(v.x * inv, v.y * inv, v.z * inv);
+	return Vec3(v.x_ * inv, v.y_ * inv, v.z_ * inv);
 #elif defined(AL_MATH_USE_AVX2)
 	const __m128 s = _mm_rcp_ps(_mm_set1_ps(f));
-	return _mm_mul_ps(v.xyz, s);
+	return _mm_mul_ps(v.xyz_, s);
 #endif
 }
 
@@ -1094,11 +1253,11 @@ INLINE static __m256 combine128(__m128 a, __m128 b)
 }
 
 //-------------------------------------------------
-// xyzが8回連続で続くfloat配列からの構築
+// xyz_が8回連続で続くfloat配列からの構築
 // 参考: http://www.isus.jp/specials/3d-vector-normalization/
 //-------------------------------------------------
 INLINE void Vec3Pack8::set(
-	// xyzが8回
+	// xyz_が8回
 	float* xyz8)
 {
 	const __m128 x0y0z0x1 = _mm_load_ps(xyz8 + 0);
@@ -1133,10 +1292,10 @@ INLINE void Vec3Pack8::set(
 #if defined(AL_MATH_USE_NO_SIMD)
 	assert(false);
 #elif defined(AL_MATH_USE_AVX2)
-	const __m256 x0y0z0w0_x4y4z4w4 = combine128(v0.xyz, v4.xyz);
-	const __m256 x1y1z1w1_x5y5z5w5 = combine128(v1.xyz, v5.xyz);
-	const __m256 x2y2z2w2_x6y6z6w6 = combine128(v2.xyz, v6.xyz);
-	const __m256 x3y3z3w3_x7y7z7w7 = combine128(v3.xyz, v7.xyz);
+	const __m256 x0y0z0w0_x4y4z4w4 = combine128(v0.xyz_, v4.xyz_);
+	const __m256 x1y1z1w1_x5y5z5w5 = combine128(v1.xyz_, v5.xyz_);
+	const __m256 x2y2z2w2_x6y6z6w6 = combine128(v2.xyz_, v6.xyz_);
+	const __m256 x3y3z3w3_x7y7z7w7 = combine128(v3.xyz_, v7.xyz_);
 	const __m256 x0x2y0y2_x4x6y4y6 = _mm256_unpacklo_ps(x0y0z0w0_x4y4z4w4, x2y2z2w2_x6y6z6w6);
 	const __m256 z0z2w0w2_z4z6w4w6 = _mm256_unpackhi_ps(x0y0z0w0_x4y4z4w4, x2y2z2w2_x6y6z6w6);
 	const __m256 x1x3y1y3_x5x7x5y7 = _mm256_unpacklo_ps(x1y1z1w1_x5y5z5w5, x3y3z3w3_x7y7z7w7);
@@ -1563,10 +1722,10 @@ INLINE Vec4::Vec4(float e)
 INLINE Vec4::Vec4(__m128 other)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-	x = other.m128_f32[0];
-	y = other.m128_f32[1];
-	z = other.m128_f32[2];
-	w = other.m128_f32[3];
+    x = _mm_cvtss_f32(_mm_shuffle_ps(other, other, _MM_SHUFFLE(0, 0, 0, 0)));
+    y = _mm_cvtss_f32(_mm_shuffle_ps(other, other, _MM_SHUFFLE(0, 0, 0, 1)));
+    z = _mm_cvtss_f32(_mm_shuffle_ps(other, other, _MM_SHUFFLE(0, 0, 0, 2)));
+    w = _mm_cvtss_f32(_mm_shuffle_ps(other, other, _MM_SHUFFLE(0, 0, 0, 3)));
 #elif defined(AL_MATH_USE_AVX2)
     xyzw = other;
 #endif
@@ -1824,9 +1983,9 @@ INLINE void Matrix4x4::constructAsRotationAxis()
 //-------------------------------------------------
 INLINE void Matrix4x4::constructAsTranslation(const Vec3& v)
 {
-	const float x = v.x;
-	const float y = v.y;
-	const float z = v.z;
+	const float x = v.x();
+	const float y = v.y();
+	const float z = v.z();
     e11 = 1.0f; e12 = 0.0f; e13 = 0.0f; e14 = 0.0f;
     e21 = 0.0f; e22 = 1.0f; e23 = 0.0f; e24 = 0.0f;
     e31 = 0.0f; e32 = 0.0f; e33 = 1.0f; e34 = 0.0f;
@@ -1838,9 +1997,9 @@ INLINE void Matrix4x4::constructAsTranslation(const Vec3& v)
 //-------------------------------------------------
 INLINE void Matrix4x4::constructAsScale(const Vec3& scale)
 {
-	const float sx = scale.x;
-	const float sy = scale.y;
-	const float sz = scale.z;
+	const float sx = scale.x();
+	const float sy = scale.y();
+	const float sz = scale.z();
 	e11 = sx;   e12 = 0.0f; e13 = 0.0f; e14 = 0.0f;
 	e21 = 0.0f; e22 = sy;   e23 = 0.0f; e24 = 0.0f;
 	e31 = 0.0f; e32 = 0.0f; e33 = sz;   e34 = 0.0f;
@@ -1850,15 +2009,15 @@ INLINE void Matrix4x4::constructAsScale(const Vec3& scale)
 //-------------------------------------------------
 // http://www.euclideanspace.com/maths/geometry/rotations/conversions/angleToMatrix/
 //-------------------------------------------------
-INLINE void Matrix4x4::constructAsRotation(const Vec3& xyz, float angle)
+INLINE void Matrix4x4::constructAsRotation(const Vec3& xyz_, float angle)
 {
 	//
 	const float s = std::sinf(angle);
 	const float c = std::cosf(angle);
 	const float t = 1.0f - c;
-	const float x = xyz.x;
-	const float y = xyz.y;
-	const float z = xyz.z;
+	const float x = xyz_.x();
+	const float y = xyz_.y();
+	const float z = xyz_.z();
 	const float tx = t * x;
 	const float ty = t * y;
 	const float tz = t * z;
@@ -1926,7 +2085,7 @@ INLINE void Matrix4x4::identity()
 //-------------------------------------------------
 INLINE Vec3 Matrix4x4::transform(const Vec3& v) const
 {
-	const Vec4 nv(v.x, v.y, v.z, 1.0f);
+	const Vec4 nv(v.x(), v.y(), v.z(), 1.0f);
 	return
 		Vec3(
 			Vec4::dot(columnVector(0), nv),

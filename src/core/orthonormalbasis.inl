@@ -45,7 +45,7 @@ void OrthonormalBasis<METHOD>::set(const Vec3& an)
     {
     case ONB_METHOD::Naive:
         {
-            if (fabsf(n_.x) < 0.99f)
+            if (fabsf(n_.x()) < 0.99f)
             {
                 s_ = Vec3::cross(n_, Vec3(1.0f, 0.0f, 0.0));
             }
@@ -59,13 +59,13 @@ void OrthonormalBasis<METHOD>::set(const Vec3& an)
         break;
     case ONB_METHOD::Moller99:
         {
-            if (fabs(n_.x) > fabs(n_.z))
+            if (fabs(n_.x()) > fabs(n_.z()))
             {
-                t_ = Vec3(-n_.y, n_.x, 0.0f);
+                t_ = Vec3(-n_.y(), n_.x(), 0.0f);
             }
             else
             {
-                t_ = Vec3(0.0f, -n_.z, n_.y);
+                t_ = Vec3(0.0f, -n_.z(), n_.y());
             }
             t_ *= 1.0f / std::sqrtf(Vec3::dot(t_, t_));
             s_ = Vec3::cross(t_, n_);
@@ -73,45 +73,45 @@ void OrthonormalBasis<METHOD>::set(const Vec3& an)
         break;
     case ONB_METHOD::Frisvad12:
         {
-            if (n_.z < -0.9999999f)
+            if (n_.z() < -0.9999999f)
             {
                 s_ = Vec3(0.0f, -1.0f, 0.0f);
                 t_ = Vec3(-1.0f, 0.0f, 0.0f);
             }
             else
             {
-                const float a = 1.0f / (1.0f + n_.z);
-                const float b = -n_.x * n_.y * a;
-                s_ = Vec3(1.0f - n_.x * n_.x * a, b, -n_.x);
-                t_ = Vec3(b, 1.0f - n_.y * n_.y * a, -n_.y);
+                const float a = 1.0f / (1.0f + n_.z());
+                const float b = -n_.x() * n_.y() * a;
+                s_ = Vec3(1.0f - n_.x() * n_.x() * a, b, -n_.x());
+                t_ = Vec3(b, 1.0f - n_.y() * n_.y() * a, -n_.y());
             }
         }
         break;
     case ONB_METHOD::Duff17:
         {
-            const float sign = copysignf(1.0f, n_.z);
-            const float a = -1.0f / (sign + n_.z);
-            const float b = n_.x * n_.y * a;
-            t_ = Vec3(1.0f + sign * n_.x * n_.x * a, sign * b, -sign * n_.x);
-            s_ = Vec3(b, sign + n_.y * n_.y * a, -n_.y);
+            const float sign = copysignf(1.0f, n_.z());
+            const float a = -1.0f / (sign + n_.z());
+            const float b = n_.x() * n_.y() * a;
+            t_ = Vec3(1.0f + sign * n_.x() * n_.x() * a, sign * b, -sign * n_.x());
+            s_ = Vec3(b, sign + n_.y() * n_.y() * a, -n_.y());
         }
         break;
     case ONB_METHOD::Nelson17:
         {
             const double dthreshold = -0.9999999999776;
             float rthreshold = -0.7f;
-            if (n_.z >= rthreshold)
+            if (n_.z() >= rthreshold)
             {
-                const float a = 1.0f / (1.0f + n_.z);
-                const float b = -n_.x * n_.y * a;
-                t_ = Vec3(1.0f - n_.x * n_.x * a, b, -n_.x);
-                s_ = Vec3(b, 1.0f - n_.y * n_.y * a, -n_.y);
+                const float a = 1.0f / (1.0f + n_.z());
+                const float b = -n_.x() * n_.y() * a;
+                t_ = Vec3(1.0f - n_.x() * n_.x() * a, b, -n_.x());
+                s_ = Vec3(b, 1.0f - n_.y() * n_.y() * a, -n_.y());
             }
             else
             {
-                double x = (double)n_.x;
-                double y = (double)n_.y;
-                double z = (double)n_.z;
+                double x = (double)n_.x();
+                double y = (double)n_.y();
+                double z = (double)n_.z();
                 const double d = 1. / std::sqrt(x*x + y*y + z*z);
                 x *= d;
                 y *= d;
@@ -192,9 +192,10 @@ void OrthonormalBasis<METHOD>::set(const Vec3& an, const Vec3& at, const Vec3& a
 template<ONB_METHOD METHOD>
 void OrthonormalBasis<METHOD>::updateNTS()
 {
-    ntsX_ = Vec3(n_.x, t_.x, s_.x);
-    ntsY_ = Vec3(n_.y, t_.y, s_.y);
-    ntsZ_ = Vec3(n_.z, t_.z, s_.z);
+    // TODO: 最適化
+    ntsX_ = Vec3(n_.x(), t_.x(), s_.x());
+    ntsY_ = Vec3(n_.y(), t_.y(), s_.y());
+    ntsZ_ = Vec3(n_.z(), t_.z(), s_.z());
 }
 
 

@@ -66,10 +66,10 @@ Matrix4x4 Transform::constructToWorldMatrix(const ObjectProp& objectProp) const
             <rotate x = "0.701" y = "0.701" z = "0" angle = "180" / >
             の形式。
             */
-            const Vec3 xyz = child.asXYZ(Vec3(1.0f, 0.0f, 0.0f));
+            const Vec3 xyz_ = child.asXYZ(Vec3(1.0f, 0.0f, 0.0f));
             const float angleInDegree = child.asAngle(0.0f);
             Matrix4x4 mat;
-            mat.constructAsRotation(xyz, DEG2RAD(angleInDegree));
+            mat.constructAsRotation(xyz_, DEG2RAD(angleInDegree));
             toWorld = Matrix4x4::mul(toWorld, mat);
         }
         else if (tag == "lookat")

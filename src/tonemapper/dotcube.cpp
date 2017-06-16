@@ -143,7 +143,9 @@ Dotcube::Dotcube(const ObjectProp& objectProp)
             for (int32_t x = 0; x < dimSize; ++x)
             {
                 Vec3& v = cube_.pixel(x, y, z);
-                fscanf(file.file(), "%f %f %f", &v.x, &v.y, &v.z);
+                float fx,fy,fz;
+                fscanf(file.file(), "%f %f %f", &fx, &fy, &fz);
+                v = Vec3(fx,fy,fz);
             }
         }
     }
@@ -176,9 +178,9 @@ bool Dotcube::process(const Image& src, ImageLDR& dst) const
             // tonemapping
             const Vec3 newPix = cube_.sample(tr2, tg2, tb2);
             // toInt
-            const float ifr = newPix.x * 255.0f + 0.5f;
-            const float ifg = newPix.y * 255.0f + 0.5f;
-            const float ifb = newPix.z * 255.0f + 0.5f;
+            const float ifr = newPix.x() * 255.0f + 0.5f;
+            const float ifg = newPix.y() * 255.0f + 0.5f;
+            const float ifb = newPix.z() * 255.0f + 0.5f;
             const uint8_t ir = (uint8_t)alClamp((int32_t)(ifr), (int32_t)0, (int32_t)255);
             const uint8_t ib = (uint8_t)alClamp((int32_t)(ifg), (int32_t)0, (int32_t)255);
             const uint8_t ig = (uint8_t)alClamp((int32_t)(ifb), (int32_t)0, (int32_t)255);

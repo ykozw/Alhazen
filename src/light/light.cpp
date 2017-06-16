@@ -155,7 +155,7 @@ AL_TEST(ConstantLight, 0)
         if (hit)
         {
             const float reflection = 1.0f / PI;
-            stats.add(dir.z * 2.0f * PI * reflection);
+            stats.add(dir.z() * 2.0f * PI * reflection);
         }
         else
         {
@@ -171,7 +171,7 @@ AL_TEST(ConstantLight, 0)
         Vec3 samplePos;
         float pdf;
         const Spectrum e = light.sampleLe(sampler, Vec3(0.0f, 0.0f, 0.0f), &samplePos, &pdf);
-        if (samplePos.z < 0.0f)
+        if (samplePos.z() < 0.0f)
         {
             stats2.add(0.0f);
         }
@@ -179,7 +179,7 @@ AL_TEST(ConstantLight, 0)
         {
             const Vec3 wi = samplePos.normalized();
             const float reflection = 1.0f / PI;
-            stats2.add(e.r * wi.z * reflection / pdf);
+            stats2.add(e.r * wi.z() * reflection / pdf);
         }
     }
     // 真値が同じ範囲に入っているかチェック
@@ -483,7 +483,7 @@ AL_TEST(RectangleLight, 1)
         if (hit)
         {
             const float reflection = 1.0f / PI;
-            stats.add(dir.z * 2.0f * PI * reflection);
+            stats.add(dir.z() * 2.0f * PI * reflection);
         }
         else
         {
@@ -500,7 +500,7 @@ AL_TEST(RectangleLight, 1)
         float pdf;
         const Spectrum e = light.sampleLe(sampler, Vec3(0.0f, 0.0f, 0.0f), &samplePos, &pdf);
         const Vec3 wi = samplePos.normalized();
-        stats2.add(e.r * wi.z / pdf);
+        stats2.add(e.r * wi.z() / pdf);
     }
     // 真値が同じ範囲に入っているかチェック
     AL_ASSERT_ALWAYS(FloatStreamStats::maybeSameMean(stats, stats2));
@@ -716,7 +716,7 @@ AL_TEST(SphereLight, 1)
         if (hit)
         {
             const float reflection = 1.0f / PI;
-            stats.add(dir.z * 2.0f * PI * reflection);
+            stats.add(dir.z() * 2.0f * PI * reflection);
         }
         else
         {
@@ -733,7 +733,7 @@ AL_TEST(SphereLight, 1)
         float pdf;
         const Spectrum e = light.sampleLe(sampler, Vec3(0.0f, 0.0f, 0.0f), &samplePos, &pdf);
         const Vec3 wi = samplePos.normalized();
-        stats2.add(e.r * wi.z / pdf);
+        stats2.add(e.r * wi.z() / pdf);
     }
     // 真値が同じ範囲に入っているかチェック
     AL_ASSERT_ALWAYS(FloatStreamStats::maybeSameMean(stats, stats2));
@@ -820,8 +820,8 @@ dir2tex()
 static void dir2tex(const Vec3& dir, _Out_ Vec2* uv)
 {
     const float invPI = 1.0f / PI;
-    uv->x = (atan2f(dir.x, -dir.y) * invPI + 1.0f) * 0.5f;
-    uv->y = acosf(dir.z) * invPI;
+    uv->x = (atan2f(dir.x(), -dir.y()) * invPI + 1.0f) * 0.5f;
+    uv->y = acosf(dir.z()) * invPI;
 }
 
 /*
@@ -835,9 +835,9 @@ static void tex2dir(const Vec2& uv, _Out_ Vec3* dir)
     const float v = uv.y;
     const float theta2 = PI * (u - 1.0f);
     const float phi2 = PI * v;
-    dir->x = sinf(phi2) * sinf(theta2);
-    dir->y = -sinf(phi2) * cosf(theta2);
-    dir->z = cosf(phi2);
+    dir->setX( sinf(phi2) * sinf(theta2) );
+    dir->setY( -sinf(phi2) * cosf(theta2) );
+    dir->setZ( cosf(phi2) );
 }
 
 /*

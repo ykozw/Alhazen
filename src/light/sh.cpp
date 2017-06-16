@@ -12,9 +12,9 @@
 inline static void sh_eval_basis_1(const Vec3& dir, float b[4])
 {
     //
-    const float x = dir.x;
-    const float y = dir.y;
-    const float z = dir.z;
+    const float x = dir.x();
+    const float y = dir.y();
+    const float z = dir.z();
     // l=0,m=0
     b[0] = 0.282094791773878140f;
     // l=1,m=0
@@ -37,9 +37,9 @@ inline static void sh_eval_basis_1(const Vec3& dir, float b[4])
 inline static void sh_eval_basis_2(const Vec3& dir, float b[9])
 {
     //
-    const float x = dir.x;
-    const float y = dir.y;
-    const float z = dir.z;
+    const float x = dir.x();
+    const float y = dir.y();
+    const float z = dir.z();
     //
     const float z2 = z*z;
     const float p_0_0 = 0.282094791773878140f;

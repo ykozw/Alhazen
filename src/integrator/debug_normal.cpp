@@ -57,5 +57,5 @@ Spectrum NormalSurfaceIntegrator::radiance(
     }
     Vec3 n = isect.normal;
     Vec3 v = Vec3::mul((n.normalized() + Vec3(1.0f)), Vec3(0.5f));
-    return Spectrum::createFromRGB({ { v.x, v.y, v.z } }, false);
+    return Spectrum::createFromRGB({ { v.x(), v.y(), v.z() } }, false);
 }

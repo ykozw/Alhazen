@@ -55,7 +55,7 @@ INLINE AABB Menger::aabb() const
 //-------------------------------------------------
 float maxcomp(const Vec3& p)
 {
-    return std::max(p.x, std::max(p.y, p.z));
+    return std::max(p.x(), std::max(p.y(), p.z()));
 }
 
 //-------------------------------------------------
@@ -65,9 +65,9 @@ static Vec3 absVec3(const Vec3& v)
 {
     return
         Vec3(
-            std::abs(v.x),
-            std::abs(v.y),
-            std::abs(v.z));
+            std::abs(v.x()),
+            std::abs(v.y()),
+            std::abs(v.z()));
 }
 
 //-------------------------------------------------
@@ -77,9 +77,9 @@ static Vec3 maxVec3(const Vec3& v0, const Vec3& v1)
 {
     return
         Vec3(
-            std::max(v0.x, v1.x),
-            std::max(v0.y, v1.y),
-            std::max(v0.z, v1.z));
+            std::max(v0.x(), v1.x()),
+            std::max(v0.y(), v1.y()),
+            std::max(v0.z(), v1.z()));
 }
 
 //-------------------------------------------------
@@ -89,9 +89,9 @@ static Vec3 minVec3(const Vec3& v0, const Vec3& v1)
 {
     return
         Vec3(
-            std::min(v0.x, v1.x),
-            std::min(v0.y, v1.y),
-            std::min(v0.z, v1.z));
+            std::min(v0.x(), v1.x()),
+            std::min(v0.y(), v1.y()),
+            std::min(v0.z(), v1.z()));
 }
 
 //-------------------------------------------------
@@ -101,9 +101,9 @@ static Vec3 modVec3(const Vec3& v0, const Vec3& v1)
 {
     return
         Vec3(
-            fmodf(v0.x + v1.x*100.0f, v1.x),
-            fmodf(v0.y + v1.y*100.0f, v1.y),
-            fmodf(v0.z + v1.z*100.0f, v1.z));
+            fmodf(v0.x() + v1.x()*100.0f, v1.x()),
+            fmodf(v0.y() + v1.y()*100.0f, v1.y()),
+            fmodf(v0.z() + v1.z()*100.0f, v1.z()));
 }
 
 //-------------------------------------------------
@@ -137,9 +137,9 @@ static Vec4 mapFunc(Vec3 p)
         Vec3 a = modVec3(p*s, Vec3(2.0f)) - 1.0;
         s *= 3.0;
         const Vec3 r = absVec3(1.0 - 3.0*absVec3(a));
-        float da = std::max(r.x, r.y);
-        float db = std::max(r.y, r.z);
-        float dc = std::max(r.z, r.x);
+        float da = std::max(r.x(), r.y());
+        float db = std::max(r.y(), r.z());
+        float dc = std::max(r.z(), r.x());
         float c = (std::min(da, std::min(db, dc)) - 1.0f) / s;
 
         if (c>d)
@@ -191,9 +191,9 @@ Vec3 calcNormal(Vec3 pos)
     nor.y = mapFunc(pos + eps.yxy).x - map(pos - eps.yxy).x;
     nor.z = mapFunc(pos + eps.yyx).x - map(pos - eps.yyx).x;
     */
-    nor.x = mapFunc(pos + sel(eps,0,1,1)).x - mapFunc(pos - sel(eps, 0, 1, 1)).x;
-    nor.y = mapFunc(pos + sel(eps,1,0,1)).x - mapFunc(pos - sel(eps, 1, 0, 1)).x;
-    nor.z = mapFunc(pos + sel(eps,1,1,0)).x - mapFunc(pos - sel(eps, 1, 1, 0)).x;
+    nor.setX(mapFunc(pos + sel(eps,0,1,1)).x - mapFunc(pos - sel(eps, 0, 1, 1)).x);
+    nor.setY(mapFunc(pos + sel(eps,1,0,1)).x - mapFunc(pos - sel(eps, 1, 0, 1)).x);
+    nor.setZ(mapFunc(pos + sel(eps,1,1,0)).x - mapFunc(pos - sel(eps, 1, 1, 0)).x);
     return nor.normalized();
 }
 

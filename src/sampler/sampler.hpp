@@ -9,17 +9,17 @@
 -------------------------------------------------
 xy: [0,1]のSquare上の一点
 uv: 半径1の円上の一点。
-xyz: 単位球上での一点。(z-up)
+xyz_: 単位球上での一点。(z-up)
 tp: (theta,phi)。球面座標。それぞれPIと2PIで割られているので[0,1]。
 -------------------------------------------------
 */
 
 
-// SphericalCoordinate(tp) -> Dir(xyz)
+// SphericalCoordinate(tp) -> Dir(xyz_)
 Vec3 remapSphericalCoordToDir(Vec2 tp);
 
-// Dir(xyz) -> SphericalCoordinate(tp)
-Vec2 remapDirToSphericalCoord(Vec3 xyz);
+// Dir(xyz_) -> SphericalCoordinate(tp)
+Vec2 remapDirToSphericalCoord(Vec3 xyz_);
 
 /*
 -------------------------------------------------
@@ -81,14 +81,14 @@ public:
     Vec2 getDiscAccurate();
     Vec2 getDiscConcentric();
 
-    // Hemisphere(xyz)
+    // Hemisphere(xyz_)
     Vec3 getHemisphere();
     Vec3 getHemisphereCosineWeighted(_Out_ float* pdf);
 
-    // Sphere(xyz)
+    // Sphere(xyz_)
     Vec3 getSphere();
 
-    // Cone(xyzでz軸が中心)
+    // Cone(xyz_でz軸が中心)
     Vec3 getCone(float cosTheta);
 
     /*

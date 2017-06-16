@@ -14,12 +14,10 @@ INLINE AABB::AABB()
 //-------------------------------------------------
 INLINE void AABB::clear()
 {
-    mn.x = std::numeric_limits<float>::max();
-    mn.y = std::numeric_limits<float>::max();
-    mn.z = std::numeric_limits<float>::max();
-    mx.x = std::numeric_limits<float>::lowest();
-    mx.y = std::numeric_limits<float>::lowest();
-    mx.z = std::numeric_limits<float>::lowest();
+    const float maxv = std::numeric_limits<float>::max();
+    const float minv = std::numeric_limits<float>::min();
+    mn = Vec3(maxv,maxv,maxv);
+    mx = Vec3(minv,minv,minv);
 }
 
 //-------------------------------------------------
@@ -27,15 +25,11 @@ INLINE void AABB::clear()
 //-------------------------------------------------
 INLINE void AABB::addPoint(const Vec3& point)
 {
-    const float x = point.x;
-    const float y = point.y;
-    const float z = point.z;
-    mn.x = alMin(x, mn.x);
-    mn.y = alMin(y, mn.y);
-    mn.z = alMin(z, mn.z);
-    mx.x = alMax(x, mx.x);
-    mx.y = alMax(y, mx.y);
-    mx.z = alMax(z, mx.z);
+    const float x = point.x();
+    const float y = point.y();
+    const float z = point.z();
+    mn = Vec3::min(point,mn);
+    mx = Vec3::max(point,mx);
 }
 
 //-------------------------------------------------
@@ -87,12 +81,8 @@ INLINE Vec3 AABB::size() const
 INLINE void AABB::addAABB(const AABB& aabb)
 {
     AL_ASSERT_DEBUG(aabb.validate());
-    mn.x = alMin(aabb.mn.x, mn.x);
-    mn.y = alMin(aabb.mn.y, mn.y);
-    mn.z = alMin(aabb.mn.z, mn.z);
-    mx.x = alMax(aabb.mx.x, mx.x);
-    mx.y = alMax(aabb.mx.y, mx.y);
-    mx.z = alMax(aabb.mx.z, mx.z);
+    mn = Vec3::min(aabb.mn,mn);
+    mx = Vec3::min(aabb.mx,mx);
 }
 
 //------------------------------------------
@@ -104,10 +94,10 @@ INLINE bool AABB::intersect(const Ray& ray, Intersect* isect) const
     //
     const AABB& aabb = *this;
     float tmin, tmax, tymin, tymax, tzmin, tzmax;
-    tmin = (aabb[ray.sign[0]].x - ray.o.x) * ray.dinv.x;
-    tmax = (aabb[1 - ray.sign[0]].x - ray.o.x) * ray.dinv.x;
-    tymin = (aabb[ray.sign[1]].y - ray.o.y) * ray.dinv.y;
-    tymax = (aabb[1 - ray.sign[1]].y - ray.o.y) * ray.dinv.y;
+    tmin = (aabb[ray.sign[0]].x() - ray.o.x()) * ray.dinv.x();
+    tmax = (aabb[1 - ray.sign[0]].x() - ray.o.x()) * ray.dinv.x();
+    tymin = (aabb[ray.sign[1]].y() - ray.o.y()) * ray.dinv.y();
+    tymax = (aabb[1 - ray.sign[1]].y() - ray.o.y()) * ray.dinv.y();
     int32_t hitAxis = 0;
     if ((tmin > tymax) || (tymin > tmax))
     {
@@ -122,8 +112,8 @@ INLINE bool AABB::intersect(const Ray& ray, Intersect* isect) const
     {
         tmax = tymax;
     }
-    tzmin = (aabb[ray.sign[2]].z - ray.o.z) * ray.dinv.z;
-    tzmax = (aabb[1 - ray.sign[2]].z - ray.o.z) * ray.dinv.z;
+    tzmin = (aabb[ray.sign[2]].z() - ray.o.z()) * ray.dinv.z();
+    tzmax = (aabb[1 - ray.sign[2]].z() - ray.o.z()) * ray.dinv.z();
     if ((tmin > tzmax) || (tzmin > tmax))
     {
         return false;
@@ -170,10 +160,10 @@ INLINE bool AABB::intersectCheck(const Ray& ray, float currentIntersectT ) const
     //
     const AABB& aabb = *this;
     float tmin, tmax, tymin, tymax, tzmin, tzmax;
-    tmin = (aabb[ray.sign[0]].x - ray.o.x) * ray.dinv.x;
-    tmax = (aabb[1 - ray.sign[0]].x - ray.o.x) * ray.dinv.x;
-    tymin = (aabb[ray.sign[1]].y - ray.o.y) * ray.dinv.y;
-    tymax = (aabb[1 - ray.sign[1]].y - ray.o.y) * ray.dinv.y;
+    tmin = (aabb[ray.sign[0]].x() - ray.o.x()) * ray.dinv.x();
+    tmax = (aabb[1 - ray.sign[0]].x() - ray.o.x()) * ray.dinv.x();
+    tymin = (aabb[ray.sign[1]].y() - ray.o.y()) * ray.dinv.y();
+    tymax = (aabb[1 - ray.sign[1]].y() - ray.o.y()) * ray.dinv.y();
     if ((tmin > tymax) || (tymin > tmax))
     {
         return false;
@@ -186,8 +176,8 @@ INLINE bool AABB::intersectCheck(const Ray& ray, float currentIntersectT ) const
     {
         tmax = tymax;
     }
-    tzmin = (aabb[ray.sign[2]].z - ray.o.z) * ray.dinv.z;
-    tzmax = (aabb[1 - ray.sign[2]].z - ray.o.z) * ray.dinv.z;
+    tzmin = (aabb[ray.sign[2]].z() - ray.o.z()) * ray.dinv.z();
+    tzmax = (aabb[1 - ray.sign[2]].z() - ray.o.z()) * ray.dinv.z();
     if ((tmin > tzmax) || (tzmin > tmax))
     {
         return false;
@@ -208,10 +198,11 @@ INLINE bool AABB::intersectCheck(const Ray& ray, float currentIntersectT ) const
 //------------------------------------------
 INLINE bool AABB::validate() const
 {
+    // TODO: 最適化
     return
-        (mx.x >= mn.x) &&
-        (mx.y >= mn.y) &&
-        (mx.z >= mn.z);
+        (mx.x() >= mn.x()) &&
+        (mx.y() >= mn.y()) &&
+        (mx.z() >= mn.z());
 }
 
 /*
@@ -220,10 +211,11 @@ INLINE bool AABB::validate() const
 */
 INLINE bool AABB::isInside(const Vec3& p) const
 {
+    // TODO: 最適化
     return
-        (mn.x <= p.x) && (p.x <= mx.x) &&
-        (mn.y <= p.y) && (p.y <= mx.y) &&
-        (mn.z <= p.z) && (p.z <= mx.z);
+        (mn.x() <= p.x()) && (p.x() <= mx.x()) &&
+        (mn.y() <= p.y()) && (p.y() <= mx.y()) &&
+        (mn.z() <= p.z()) && (p.z() <= mx.z());
 }
 
 //------------------------------------------

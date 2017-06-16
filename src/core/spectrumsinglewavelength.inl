@@ -35,7 +35,7 @@ INLINE SpectrumRGB SpectrumSingleWavelength::toRGB() const
 #endif
     std::array<float, 3> rgb;
     Vec3 xyz = toXYZ();
-    xyz2rgb({ { xyz.x, xyz.y, xyz.z } }, rgb);
+    xyz2rgb({ { xyz.x(), xyz.y(), xyz.z() } }, rgb);
     return SpectrumRGB(rgb[0] * sr, rgb[1] * sg, rgb[2] * sb );
 }
 

@@ -163,10 +163,10 @@ Spectrum PTSurfaceIntegrator::radiance(
             break;
         }
         const Vec3 worldWi = local.local2world(localWi);
-        throughput = throughput * reflectance * fabsf(localWi.z) / pdfBSDF * INV_PI; // TODO: invpiはどうやって取り除くのか？pdf()の単位を変えればいいのか？
+        throughput = throughput * reflectance * fabsf(localWi.z()) / pdfBSDF * INV_PI; // TODO: invpiはどうやって取り除くのか？pdf()の単位を変えればいいのか？
         AL_ASSERT_DEBUG(!throughput.hasNaN());
         // 次のrayを作成する
-        const Vec3 rayOrig = (localWi.z >= 0.0f) ? isect.uppserSideOrigin() : isect.belowSideOrigin();
+        const Vec3 rayOrig = (localWi.z() >= 0.0f) ? isect.uppserSideOrigin() : isect.belowSideOrigin();
         ray = Ray(rayOrig, worldWi, isect.rayEpsilon);
     }
     //
@@ -321,7 +321,7 @@ Spectrum PTSurfaceIntegrator::estimateOneLight(
                 // レイ指定でのEmittionの取得
                 // TODO: あれ、これは方向が逆になってない？
                 const Spectrum emittion = light->emittion(isect.uppserSideOrigin(), worldWi);
-                const float cosTerm = fabsf(localWi.z);
+                const float cosTerm = fabsf(localWi.z());
                 spectrum += reflectance * emittion * 4.0f * cosTerm / pdf;
             }
             return spectrum;
@@ -387,7 +387,7 @@ Spectrum PTSurfaceIntegrator::estimateOneLight(
                     }
                     //
                     // 最終的なspectrum値の算出
-                    const Spectrum spectrum = reflectance * emittion * std::fabsf(localWi.z) * weight / pdfLight;
+                    const Spectrum spectrum = reflectance * emittion * std::fabsf(localWi.z()) * weight / pdfLight;
                     //const Spectrum spectrum = Spectrum::createFromRGB({ weight ,0.0f, 0.0f }, false);
                     AL_ASSERT_DEBUG(!spectrum.hasNaN());
                     return spectrum;

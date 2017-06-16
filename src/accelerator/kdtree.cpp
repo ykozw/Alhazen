@@ -159,6 +159,10 @@ AL_TEST(Accel, kdtree1)
         :public Vec3
     {
     public:
+        Point() = default;
+        Point(float x, float y, float z)
+        :Vec3(x,y,z)
+        {}
         Vec3 position() const
         {
             return *this;
@@ -169,10 +173,7 @@ AL_TEST(Accel, kdtree1)
     XorShift128 rng;
     for (int32_t i = 0; i<1024; ++i)
     {
-        Point v;
-        v.x = rng.nextFloat();
-        v.y = rng.nextFloat();
-        v.z = rng.nextFloat();
+        Point v(rng.nextFloat(),rng.nextFloat(),rng.nextFloat());
         points.push_back(v);
     }
     KdTree<Point> kdtree;

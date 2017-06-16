@@ -70,15 +70,15 @@ public:
     {
         const Vec3& ro = ray.o;
         const Vec3& rdi = ray.dinv;
-        o[0] = _mm_set_ps1(ro.x);
-        o[1] = _mm_set_ps1(ro.y);
-        o[2] = _mm_set_ps1(ro.z);
-        d[0] = _mm_set_ps1(ray.d.x);
-        d[1] = _mm_set_ps1(ray.d.y);
-        d[2] = _mm_set_ps1(ray.d.z);
-        dinv[0] = _mm_set_ps1(rdi.x);
-        dinv[1] = _mm_set_ps1(rdi.y);
-        dinv[2] = _mm_set_ps1(rdi.z);
+        o[0] = _mm_set_ps1(ro.x());
+        o[1] = _mm_set_ps1(ro.y());
+        o[2] = _mm_set_ps1(ro.z());
+        d[0] = _mm_set_ps1(ray.d.x());
+        d[1] = _mm_set_ps1(ray.d.y());
+        d[2] = _mm_set_ps1(ray.d.z());
+        dinv[0] = _mm_set_ps1(rdi.x());
+        dinv[1] = _mm_set_ps1(rdi.y());
+        dinv[2] = _mm_set_ps1(rdi.z());
         sign[0] = ray.sign[0];
         sign[1] = ray.sign[1];
         sign[2] = ray.sign[2];

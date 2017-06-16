@@ -1,6 +1,4 @@
-﻿#pragma once
-
-#include "pch.hpp"
+﻿#include "pch.hpp"
 #include "scenegeometory.hpp"
 
 //-------------------------------------------------

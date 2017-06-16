@@ -751,12 +751,12 @@ INLINE void xyz2rgb(const std::array<float, 3>& axyz, std::array<float, 3>& rgb)
 //-------------------------------------------------
 // rgb2xyz()
 //-------------------------------------------------
-INLINE void rgb2xyz(const std::array<float, 3>& argb, std::array<float, 3>& xyz)
+INLINE void rgb2xyz(const std::array<float, 3>& argb, std::array<float, 3>& xyz_)
 {
     const Vec3 rgb(argb);
-    xyz[0] = Vec3::dot(Vec3(+0.412453f, +0.357580f, +0.180423f), rgb);
-    xyz[1] = Vec3::dot(Vec3(+0.212671f, +0.715160f, +0.072169f), rgb);
-    xyz[2] = Vec3::dot(Vec3(+0.019334f, +0.119193f, +0.950227f), rgb);
+    xyz_[0] = Vec3::dot(Vec3(+0.412453f, +0.357580f, +0.180423f), rgb);
+    xyz_[1] = Vec3::dot(Vec3(+0.212671f, +0.715160f, +0.072169f), rgb);
+    xyz_[2] = Vec3::dot(Vec3(+0.019334f, +0.119193f, +0.950227f), rgb);
 }
 
 //-------------------------------------------------
@@ -987,18 +987,18 @@ INLINE SpectrumSampled SpectrumSampled::sqrt() const
 //-------------------------------------------------
 // toXYZ()
 //-------------------------------------------------
-INLINE void SpectrumSampled::toXYZ(std::array<float, 3>& xyz) const
+INLINE void SpectrumSampled::toXYZ(std::array<float, 3>& xyz_) const
 {
-	xyz[0] = xyz[1] = xyz[2] = 0.0f;
+	xyz_[0] = xyz_[1] = xyz_[2] = 0.0f;
 	for (int i = 0; i < SPECTRUM_SAMPLED_NUM_SAMPLES; ++i)
 	{
-		xyz[0] += CIE_X.samples[i] * samples[i];
-		xyz[1] += CIE_Y.samples[i] * samples[i];
-		xyz[2] += CIE_Z.samples[i] * samples[i];
+		xyz_[0] += CIE_X.samples[i] * samples[i];
+		xyz_[1] += CIE_Y.samples[i] * samples[i];
+		xyz_[2] += CIE_Z.samples[i] * samples[i];
 	}
-    xyz[0] *= CIE_X_ACM_INV;
-    xyz[1] *= CIE_Y_ACM_INV;
-    xyz[2] *= CIE_Z_ACM_INV;
+    xyz_[0] *= CIE_X_ACM_INV;
+    xyz_[1] *= CIE_Y_ACM_INV;
+    xyz_[2] *= CIE_Z_ACM_INV;
 }
 
 //-------------------------------------------------
@@ -1006,10 +1006,10 @@ INLINE void SpectrumSampled::toXYZ(std::array<float, 3>& xyz) const
 //-------------------------------------------------
 INLINE void SpectrumSampled::toRGB(SpectrumRGB& spectrumRGB) const
 {
-	std::array<float, 3> xyz;
+	std::array<float, 3> xyz_;
     std::array<float, 3> rgb;
-	toXYZ(xyz);
-	xyz2rgb(xyz, rgb);
+	toXYZ(xyz_);
+	xyz2rgb(xyz_, rgb);
 	const float inf = std::numeric_limits<float>::max();
     spectrumRGB.r = alClamp(rgb[0], 0.0f, inf);
     spectrumRGB.g = alClamp(rgb[1], 0.0f, inf);

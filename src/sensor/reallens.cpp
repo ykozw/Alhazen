@@ -413,9 +413,9 @@ float fract(float v)
 //
 Vec3 HSV2RGB(const Vec3& hsv)
 {
-    const float h = fract(hsv.x);
-    const float s = hsv.y;
-    const float v = hsv.z;
+    const float h = fract(hsv.x());
+    const float s = hsv.y();
+    const float v = hsv.z();
     const float hueF = h * 6.0f;
     const int hueI = static_cast<int>(hueF);
     const float fr = hueF - hueI;
@@ -423,41 +423,41 @@ Vec3 HSV2RGB(const Vec3& hsv)
     const float n = v * (1.0f - s*fr);
     const float p = v * (1.0f - s*(1.0f - fr));
     //
-    Vec3 rgb;
+    float r,g,b;
     switch (hueI)
     {
     case 0:
-        rgb.x = v;
-        rgb.y = p;
-        rgb.z = m;
+        r = v;
+        g = p;
+        b = m;
         break;
     case 1:
-        rgb.x = n;
-        rgb.y = v;
-        rgb.z = m;
+        r = n;
+        g = v;
+        b = m;
         break;
     case 2:
-        rgb.x = m;
-        rgb.y = v;
-        rgb.z = p;
+        r = m;
+        g = v;
+        b = p;
         break;
     case 3:
-        rgb.x = m;
-        rgb.y = n;
-        rgb.z = v;
+        r = m;
+        g = n;
+        b = v;
         break;
     case 4:
-        rgb.x = p;
-        rgb.y = m;
-        rgb.z = v;
+        r = p;
+        g = m;
+        b = v;
         break;
     default:
-        rgb.x = v;
-        rgb.y = m;
-        rgb.z = n;
+        r = v;
+        g = m;
+        b = n;
         break;
     }
-    return rgb;
+    return Vec3(r,g,b);
 }
 
 //-------------------------------------------------
@@ -890,11 +890,11 @@ INLINE void intersectPlaneAsStopPlane(
     _Out_ Vec3* hitPos)
 {
     // 平面は常に(0,0,1)を向いているので、dot(rayDir,planeNormal) = rayDir.z
-    const float nDotD = rayDir.z;
+    const float nDotD = rayDir.z();
     // 平行なレイは出ていない前提
     AL_ASSERT_DEBUG(fabsf(nDotD) != 0.0f);
     // 距離の算出
-    const float t = (dist - rayOrig.z) / nDotD;
+    const float t = (dist - rayOrig.z()) / nDotD;
     // レイ原点の背後には存在しない前提
     AL_ASSERT_DEBUG(t >= 0.0f);
     //
@@ -952,7 +952,7 @@ bool RealSensor::lensTrace(
                 lens.z,
                 &hitPos );
             //
-            if (!isInsideElapse(hitPos.x, hitPos.y, lens.apeX, lens.apeY))
+            if (!isInsideElapse(hitPos.x(), hitPos.y(), lens.apeX, lens.apeY))
             {
                 // 最初から外しているのは何かがまずい
                 //AL_ASSERT_DEBUG(i != surfs_.size() - 1);
@@ -979,7 +979,7 @@ bool RealSensor::lensTrace(
             }
             // レンズ口径以上の場所に交差した場合も失敗
             const Vec3& p = isect.position;
-            if (!isInsideElapse(p.x, p.y, lens.apeX, lens.apeY))
+            if (!isInsideElapse(p.x(), p.y(), lens.apeX, lens.apeY))
             {
                 // 最初から外しているのは何かがまずい
                 //AL_ASSERT_DEBUG(i != surfs_.size() - 1);
@@ -1025,7 +1025,7 @@ float RealSensor::workingDistance(const float imageSensorOffset) const
     {
         AL_ASSERT_DEBUG(false);
     }
-    const float wd = -outRay.o.y * outRay.d.z / outRay.d.y;
+    const float wd = -outRay.o.y() * outRay.d.z() / outRay.d.y();
     return wd;
 }
 
@@ -1191,10 +1191,10 @@ Ray RealSensor::generateRay(float imageX, float imageY, float& pdf ) const
 
     
     // zはoffsetを0に。
-    outRay.o.z = 0.0f;
+    outRay.o.setZ( 0.0f );
     // xyは単位をスケールする
-    outRay.o.x *= scale_;
-    outRay.o.y *= scale_;
+    outRay.o.setX(outRay.o.x() * scale_);
+    outRay.o.setY(outRay.o.y() * scale_);
     // ワールド空間に変換
     const Vec3 worldDir = lcoal_.local2world(outRay.d);
     Vec3 worldOrig = lcoal_.local2world(outRay.o);

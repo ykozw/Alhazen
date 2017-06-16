@@ -90,6 +90,7 @@ AL_TEST_IMM(Math, FloatInVec)
         v.v = _mm_set_ps(2.0f,3.0f,nan,1.0f);
         AL_ASSERT_ALWAYS(!v.isNan());
     }
+    // TODO: floatを直接乗算できるようにする
 }
 
 /*
@@ -97,30 +98,37 @@ AL_TEST_IMM(Math, FloatInVec)
  Vec3に関するテスト
 -------------------------------------------------
 */
-AL_TEST(Math, Vec3)
+AL_TEST_IMM(Math, Vec3)
 {
-    // 
+    {
+        Vec3 v(2.0f,3.0f,4.0f);
+        v.setX(5.0f);
+        AL_ASSERT_ALWAYS(v.x() == 5.0f);
+        AL_ASSERT_ALWAYS(v.y() == 3.0f);
+        AL_ASSERT_ALWAYS(v.z() == 4.0f);
+    }
+    // 全要素同じ設定をしての初期化
     {
         const Vec3 v(1.0f);
-        AL_TEST_CHECK(v.x == 1.0f);
-        AL_TEST_CHECK(v.y == 1.0f);
-        AL_TEST_CHECK(v.z == 1.0f);
+        AL_ASSERT_ALWAYS(v.x() == 1.0f);
+        AL_ASSERT_ALWAYS(v.y() == 1.0f);
+        AL_ASSERT_ALWAYS(v.z() == 1.0f);
     }
-    // 
+    // 配列からの生成
     {
         const float arr[] = { 1.0f,2.0f,3.0f };
         const Vec3 v(arr);
-        AL_TEST_CHECK(v.x == 1.0f);
-        AL_TEST_CHECK(v.y == 2.0f);
-        AL_TEST_CHECK(v.z == 3.0f);
+        AL_ASSERT_ALWAYS(v.x() == 1.0f);
+        AL_ASSERT_ALWAYS(v.y() == 2.0f);
+        AL_ASSERT_ALWAYS(v.z() == 3.0f);
     }
     // zero
     {
         Vec3 v;
         v.zero();
-        AL_TEST_CHECK(v.x == 0.0f);
-        AL_TEST_CHECK(v.y == 0.0f);
-        AL_TEST_CHECK(v.z == 0.0f);
+        AL_ASSERT_ALWAYS(v.x() == 0.0f);
+        AL_ASSERT_ALWAYS(v.y() == 0.0f);
+        AL_ASSERT_ALWAYS(v.z() == 0.0f);
     }
     // swizzle
     {
@@ -128,11 +136,37 @@ AL_TEST(Math, Vec3)
         const float y = 1.0f;
         const float z = 2.0f;
         const Vec3 v(x, y, z);
-        AL_TEST_CHECK(v.xxx() == Vec3(x, x, x));
-        AL_TEST_CHECK(v.zyx() == Vec3(z, y, x));
+        AL_ASSERT_ALWAYS(v.xxx() == Vec3(x, x, x));
+        AL_ASSERT_ALWAYS(v.zyx() == Vec3(z, y, x));
     }
-    // TODO: isNan
-    // TODO: any/all
+    // hasNan
+    {
+        const float v = 1.0f;
+        const float n =std::numeric_limits<float>::quiet_NaN();
+        AL_ASSERT_ALWAYS(Vec3(n, v, v).hasNan());
+        AL_ASSERT_ALWAYS(Vec3(v, n, v).hasNan());
+        AL_ASSERT_ALWAYS(Vec3(v, v, n).hasNan());
+        AL_ASSERT_ALWAYS(!Vec3(_mm_set_ps(n,v,v,v)).hasNan());
+    }
+    // any
+    {
+        AL_ASSERT_ALWAYS(!Vec3(0.0f, 0.0f, 0.0f).any());
+        AL_ASSERT_ALWAYS(!Vec3(0.0f, 1.0f, 0.0f).any());
+        AL_ASSERT_ALWAYS(!Vec3(0.0f, 0.0f, 1.0f).any());
+        AL_ASSERT_ALWAYS(!Vec3(_mm_set_ps(1.0f,0.0f,0.0f,0.0f)).any());
+    }
+    // all
+    {
+        AL_ASSERT_ALWAYS(!Vec3(0.0f, 0.0f, 0.0f).all());
+        AL_ASSERT_ALWAYS(!Vec3(1.0f, 0.0f, 0.0f).all());
+        AL_ASSERT_ALWAYS(!Vec3(1.0f, 1.0f, 0.0f).all());
+        AL_ASSERT_ALWAYS(!Vec3(0.0f, 1.0f, 1.0f).all());
+        AL_ASSERT_ALWAYS(Vec3(1.0f, 1.0f, 1.0f).all());
+        Vec3 v(_mm_set_ps(0.0f,1.0f,1.0f,1.0f));
+        AL_ASSERT_ALWAYS(v.all());
+    }
+    // TODO: normalize
+    // TODO:
 }
 
 /*

@@ -147,15 +147,16 @@ bool checkAsVert(
     // 頂点行
     if (strncmp(readBuffer, "v ", 2) == 0)
     {
-        Vec3 v;
+        float x,y,z;
         if (sscanf(
                     readBuffer,
                     "v %f %f %f",
-                    &v.x, &v.y, &v.z) != 3)
+                    &x, &y, &z) != 3)
         {
             loggingError("invalild vertex format\n");
             return false;
         }
+        Vec3 v(x,y,z);
         this_.vs.push_back(v);
         return true;
     }
@@ -326,12 +327,13 @@ bool checkAsVertexNormal(
     if (strncmp(readBuffer, "vn ", 3) == 0)
     {
         // vn x y z の形式
-        Vec3 vn;
-        if (sscanf(readBuffer, "vn %f %f %f", &vn.x, &vn.y, &vn.z) != 3)
+        float x,y,z;
+        if (sscanf(readBuffer, "vn %f %f %f", &x, &y, &z) != 3)
         {
             loggingError("invalild vt format\n");
             return false;
         }
+        Vec3 vn(x,y,z);
         this_.ns.push_back(vn);
         return true;
     }
@@ -617,7 +619,7 @@ void Mesh::recalcBound()
     //
     const Vec3& mn = aabb.min();
     const Vec3& mx = aabb.max();
-    logging("AABB(%.2f,%.2f,%.2f)-(%.2f,%.2f,%.2f)", mn.x, mn.y, mn.z, mx.x, mx.y, mx.z);
+    logging("AABB(%.2f,%.2f,%.2f)-(%.2f,%.2f,%.2f)", mn.x(), mn.y(), mn.z(), mx.x(), mx.y(), mx.z());
 }
 
 //-------------------------------------------------

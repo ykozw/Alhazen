@@ -290,32 +290,32 @@ void QBVH::constructNodeMedian(
         thisTriAabb.addAABB(tri.aabb);
     }
     const auto size = thisTriAabb.size();
-    // xyz
-    if ((size.x < size.y) && (size.y < size.z))
+    // xyz_
+    if ((size.x() < size.y()) && (size.y() < size.z()))
     {
         axisTop = 2;
         axisLR = 1;
     }
     // xzy
-    else if ((size.x < size.z) && (size.z < size.y))
+    else if ((size.x() < size.z()) && (size.z() < size.y()))
     {
         axisTop = 1;
         axisLR = 2;
     }
     // yxz
-    else if ((size.y < size.x) && (size.x < size.z))
+    else if ((size.y() < size.x()) && (size.x() < size.z()))
     {
         axisTop = 2;
         axisLR = 0;
     }
     // yzx
-    else if ((size.y < size.z) && (size.z < size.x))
+    else if ((size.y() < size.z()) && (size.z() < size.x()))
     {
         axisTop = 0;
         axisLR = 2;
     }
     // zxy
-    else if ((size.z < size.x) && (size.x < size.y))
+    else if ((size.z() < size.x()) && (size.x() < size.y()))
     {
         axisTop = 1;
         axisLR = 0;
@@ -398,12 +398,12 @@ void QBVH::constructNodeMedian(
         {
             for (const auto& v : tri.v)
             {
-                minxsF[areaNo] = alMin(v.x, minxsF[areaNo]);
-                minysF[areaNo] = alMin(v.y, minysF[areaNo]);
-                minzsF[areaNo] = alMin(v.z, minzsF[areaNo]);
-                maxxsF[areaNo] = alMax(v.x, maxxsF[areaNo]);
-                maxysF[areaNo] = alMax(v.y, maxysF[areaNo]);
-                maxzsF[areaNo] = alMax(v.z, maxzsF[areaNo]);
+                minxsF[areaNo] = alMin(v.x(), minxsF[areaNo]);
+                minysF[areaNo] = alMin(v.y(), minysF[areaNo]);
+                minzsF[areaNo] = alMin(v.z(), minzsF[areaNo]);
+                maxxsF[areaNo] = alMax(v.x(), maxxsF[areaNo]);
+                maxysF[areaNo] = alMax(v.y(), maxysF[areaNo]);
+                maxzsF[areaNo] = alMax(v.z(), maxzsF[areaNo]);
             }
         }
     }
@@ -437,15 +437,15 @@ void QBVH::constructNodeMedian(
             const auto& t1 = targetTri.size() >= 2 ? targetTri[1].v : dummyVerts;
             const auto& t2 = targetTri.size() >= 3 ? targetTri[2].v : dummyVerts;
             const auto& t3 = targetTri.size() >= 4 ? targetTri[3].v : dummyVerts;
-            ALIGN32 float x0s[4] = { t0[0].x, t1[0].x, t2[0].x, t3[0].x };
-            ALIGN32 float x1s[4] = { t0[1].x, t1[1].x, t2[1].x, t3[1].x };
-            ALIGN32 float x2s[4] = { t0[2].x, t1[2].x, t2[2].x, t3[2].x };
-            ALIGN32 float y0s[4] = { t0[0].y, t1[0].y, t2[0].y, t3[0].y };
-            ALIGN32 float y1s[4] = { t0[1].y, t1[1].y, t2[1].y, t3[1].y };
-            ALIGN32 float y2s[4] = { t0[2].y, t1[2].y, t2[2].y, t3[2].y };
-            ALIGN32 float z0s[4] = { t0[0].z, t1[0].z, t2[0].z, t3[0].z };
-            ALIGN32 float z1s[4] = { t0[1].z, t1[1].z, t2[1].z, t3[1].z };
-            ALIGN32 float z2s[4] = { t0[2].z, t1[2].z, t2[2].z, t3[2].z };
+            ALIGN32 float x0s[4] = { t0[0].x(), t1[0].x(), t2[0].x(), t3[0].x() };
+            ALIGN32 float x1s[4] = { t0[1].x(), t1[1].x(), t2[1].x(), t3[1].x() };
+            ALIGN32 float x2s[4] = { t0[2].x(), t1[2].x(), t2[2].x(), t3[2].x() };
+            ALIGN32 float y0s[4] = { t0[0].y(), t1[0].y(), t2[0].y(), t3[0].y() };
+            ALIGN32 float y1s[4] = { t0[1].y(), t1[1].y(), t2[1].y(), t3[1].y() };
+            ALIGN32 float y2s[4] = { t0[2].y(), t1[2].y(), t2[2].y(), t3[2].y() };
+            ALIGN32 float z0s[4] = { t0[0].z(), t1[0].z(), t2[0].z(), t3[0].z() };
+            ALIGN32 float z1s[4] = { t0[1].z(), t1[1].z(), t2[1].z(), t3[1].z() };
+            ALIGN32 float z2s[4] = { t0[2].z(), t1[2].z(), t2[2].z(), t3[2].z() };
             //
             leafs_.push_back(QBVHLeaf());
             QBVHLeaf& leaf = leafs_[leafs_.size()-1];
@@ -508,32 +508,32 @@ void QBVH::constructNodeSAH(
         thisTriAabb.addAABB(tri.aabb);
     }
     const auto size = thisTriAabb.size();
-    // xyz
-    if ((size.x < size.y) && (size.y < size.z))
+    // xyz_
+    if ((size.x() < size.y()) && (size.y() < size.z()))
     {
         axisTop = 2;
         axisLR = 1;
     }
     // xzy
-    else if ((size.x < size.z) && (size.z < size.y))
+    else if ((size.x() < size.z()) && (size.z() < size.y()))
     {
         axisTop = 1;
         axisLR = 2;
     }
     // yxz
-    else if ((size.y < size.x) && (size.x < size.z))
+    else if ((size.y() < size.x()) && (size.x() < size.z()))
     {
         axisTop = 2;
         axisLR = 0;
     }
     // yzx
-    else if ((size.y < size.z) && (size.z < size.x))
+    else if ((size.y() < size.z()) && (size.z() < size.x()))
     {
         axisTop = 0;
         axisLR = 2;
     }
     // zxy
-    else if ((size.z < size.x) && (size.x < size.y))
+    else if ((size.z() < size.x()) && (size.x() < size.y()))
     {
         axisTop = 1;
         axisLR = 0;
@@ -616,12 +616,12 @@ void QBVH::constructNodeSAH(
         {
             for (const auto& v : tri.v)
             {
-                minxsF[areaNo] = alMin(v.x, minxsF[areaNo]);
-                minysF[areaNo] = alMin(v.y, minysF[areaNo]);
-                minzsF[areaNo] = alMin(v.z, minzsF[areaNo]);
-                maxxsF[areaNo] = alMax(v.x, maxxsF[areaNo]);
-                maxysF[areaNo] = alMax(v.y, maxysF[areaNo]);
-                maxzsF[areaNo] = alMax(v.z, maxzsF[areaNo]);
+                minxsF[areaNo] = alMin(v.x(), minxsF[areaNo]);
+                minysF[areaNo] = alMin(v.y(), minysF[areaNo]);
+                minzsF[areaNo] = alMin(v.z(), minzsF[areaNo]);
+                maxxsF[areaNo] = alMax(v.x(), maxxsF[areaNo]);
+                maxysF[areaNo] = alMax(v.y(), maxysF[areaNo]);
+                maxzsF[areaNo] = alMax(v.z(), maxzsF[areaNo]);
             }
         }
     }
@@ -656,15 +656,15 @@ void QBVH::constructNodeSAH(
             const auto& t1 = targetTri.size() >= 2 ? targetTri[1].v : dummyVerts;
             const auto& t2 = targetTri.size() >= 3 ? targetTri[2].v : dummyVerts;
             const auto& t3 = targetTri.size() >= 4 ? targetTri[3].v : dummyVerts;
-            ALIGN32 float x0s[4] = { t0[0].x, t1[0].x, t2[0].x, t3[0].x };
-            ALIGN32 float x1s[4] = { t0[1].x, t1[1].x, t2[1].x, t3[1].x };
-            ALIGN32 float x2s[4] = { t0[2].x, t1[2].x, t2[2].x, t3[2].x };
-            ALIGN32 float y0s[4] = { t0[0].y, t1[0].y, t2[0].y, t3[0].y };
-            ALIGN32 float y1s[4] = { t0[1].y, t1[1].y, t2[1].y, t3[1].y };
-            ALIGN32 float y2s[4] = { t0[2].y, t1[2].y, t2[2].y, t3[2].y };
-            ALIGN32 float z0s[4] = { t0[0].z, t1[0].z, t2[0].z, t3[0].z };
-            ALIGN32 float z1s[4] = { t0[1].z, t1[1].z, t2[1].z, t3[1].z };
-            ALIGN32 float z2s[4] = { t0[2].z, t1[2].z, t2[2].z, t3[2].z };
+            ALIGN32 float x0s[4] = { t0[0].x(), t1[0].x(), t2[0].x(), t3[0].x() };
+            ALIGN32 float x1s[4] = { t0[1].x(), t1[1].x(), t2[1].x(), t3[1].x() };
+            ALIGN32 float x2s[4] = { t0[2].x(), t1[2].x(), t2[2].x(), t3[2].x() };
+            ALIGN32 float y0s[4] = { t0[0].y(), t1[0].y(), t2[0].y(), t3[0].y() };
+            ALIGN32 float y1s[4] = { t0[1].y(), t1[1].y(), t2[1].y(), t3[1].y() };
+            ALIGN32 float y2s[4] = { t0[2].y(), t1[2].y(), t2[2].y(), t3[2].y() };
+            ALIGN32 float z0s[4] = { t0[0].z(), t1[0].z(), t2[0].z(), t3[0].z() };
+            ALIGN32 float z1s[4] = { t0[1].z(), t1[1].z(), t2[1].z(), t3[1].z() };
+            ALIGN32 float z2s[4] = { t0[2].z(), t1[2].z(), t2[2].z(), t3[2].z() };
             //
             leafs_.push_back(QBVHLeaf());
             QBVHLeaf& leaf = leafs_[leafs_.size() - 1];

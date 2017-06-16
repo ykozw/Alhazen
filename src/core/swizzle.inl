@@ -1,11 +1,31 @@
 ﻿#include "math.hpp"
+// TODO: swizzleはvec4と同じようにする
 
+INLINE Vec3 Vec3::xxx() const
+{
+#if 0
+    return _mm_shuffle_ps(xyz_, xyz_, _MM_SHUFFLE(0, 0, 0, 0));
+#else
+    return Vec3();
+#endif
+}
+
+INLINE Vec3 Vec3::zyx() const
+{
+#if 0
+    return _mm_shuffle_ps(xyz_, xyz_, _MM_SHUFFLE(0, 0, 0, 0));
+#else
+    return Vec3();
+#endif
+}
+
+#if 0
 //-------------------------------------------------
 //
 //-------------------------------------------------
 INLINE Vec3 Vec3::xxx() const
 {
-    return _mm_shuffle_ps(xyz, xyz, _MM_SHUFFLE(0, 0, 0, 0));
+    return _mm_shuffle_ps(xyz_, xyz_, _MM_SHUFFLE(0, 0, 0, 0));
 }
 
 //-------------------------------------------------
@@ -13,7 +33,7 @@ INLINE Vec3 Vec3::xxx() const
 //-------------------------------------------------
 INLINE Vec3 Vec3::xxy() const
 {
-    return _mm_shuffle_ps(xyz, xyz, _MM_SHUFFLE(0, 1, 0, 0));
+    return _mm_shuffle_ps(xyz_, xyz_, _MM_SHUFFLE(0, 1, 0, 0));
 }
 
 //-------------------------------------------------
@@ -21,7 +41,7 @@ INLINE Vec3 Vec3::xxy() const
 //-------------------------------------------------
 INLINE Vec3 Vec3::xxz() const
 {
-    return _mm_shuffle_ps(xyz, xyz, _MM_SHUFFLE(0, 2, 0, 0));
+    return _mm_shuffle_ps(xyz_, xyz_, _MM_SHUFFLE(0, 2, 0, 0));
 }
 
 //-------------------------------------------------
@@ -29,7 +49,7 @@ INLINE Vec3 Vec3::xxz() const
 //-------------------------------------------------
 INLINE Vec3 Vec3::xyx() const
 {
-    return _mm_shuffle_ps(xyz, xyz, _MM_SHUFFLE(0, 0, 1, 0));
+    return _mm_shuffle_ps(xyz_, xyz_, _MM_SHUFFLE(0, 0, 1, 0));
 }
 
 //-------------------------------------------------
@@ -37,14 +57,14 @@ INLINE Vec3 Vec3::xyx() const
 //-------------------------------------------------
 INLINE Vec3 Vec3::xyy() const
 {
-    return _mm_shuffle_ps(xyz, xyz, _MM_SHUFFLE(0, 1, 1, 0));
+    return _mm_shuffle_ps(xyz_, xyz_, _MM_SHUFFLE(0, 1, 1, 0));
 }
 
 #if 0
 //-------------------------------------------------
 //
 //-------------------------------------------------
-INLINE Vec3 Vec3::xyz() const
+INLINE Vec3 Vec3::xyz_() const
 {
     return *this;
 }
@@ -55,7 +75,7 @@ INLINE Vec3 Vec3::xyz() const
 //-------------------------------------------------
 INLINE Vec3 Vec3::xzx() const
 {
-    return _mm_shuffle_ps(xyz, xyz, _MM_SHUFFLE(0, 0, 2, 0));
+    return _mm_shuffle_ps(xyz_, xyz_, _MM_SHUFFLE(0, 0, 2, 0));
 }
 
 //-------------------------------------------------
@@ -63,7 +83,7 @@ INLINE Vec3 Vec3::xzx() const
 //-------------------------------------------------
 INLINE Vec3 Vec3::xzy() const
 {
-    return _mm_shuffle_ps(xyz, xyz, _MM_SHUFFLE(0, 1, 2, 0));
+    return _mm_shuffle_ps(xyz_, xyz_, _MM_SHUFFLE(0, 1, 2, 0));
 }
 
 //-------------------------------------------------
@@ -71,7 +91,7 @@ INLINE Vec3 Vec3::xzy() const
 //-------------------------------------------------
 INLINE Vec3 Vec3::xzz() const
 {
-    return _mm_shuffle_ps(xyz, xyz, _MM_SHUFFLE(0, 2, 2, 0));
+    return _mm_shuffle_ps(xyz_, xyz_, _MM_SHUFFLE(0, 2, 2, 0));
 }
 
 //-------------------------------------------------
@@ -79,7 +99,7 @@ INLINE Vec3 Vec3::xzz() const
 //-------------------------------------------------
 INLINE Vec3 Vec3::yxx() const
 {
-    return _mm_shuffle_ps(xyz, xyz, _MM_SHUFFLE(0, 0, 0, 1));
+    return _mm_shuffle_ps(xyz_, xyz_, _MM_SHUFFLE(0, 0, 0, 1));
 }
 
 //-------------------------------------------------
@@ -87,7 +107,7 @@ INLINE Vec3 Vec3::yxx() const
 //-------------------------------------------------
 INLINE Vec3 Vec3::yxy() const
 {
-    return _mm_shuffle_ps(xyz, xyz, _MM_SHUFFLE(0, 1, 0, 1));
+    return _mm_shuffle_ps(xyz_, xyz_, _MM_SHUFFLE(0, 1, 0, 1));
 }
 
 //-------------------------------------------------
@@ -95,7 +115,7 @@ INLINE Vec3 Vec3::yxy() const
 //-------------------------------------------------
 INLINE Vec3 Vec3::yxz() const
 {
-    return _mm_shuffle_ps(xyz, xyz, _MM_SHUFFLE(0, 2, 0, 1));
+    return _mm_shuffle_ps(xyz_, xyz_, _MM_SHUFFLE(0, 2, 0, 1));
 }
 
 //-------------------------------------------------
@@ -103,7 +123,7 @@ INLINE Vec3 Vec3::yxz() const
 //-------------------------------------------------
 INLINE Vec3 Vec3::yyx() const
 {
-    return _mm_shuffle_ps(xyz, xyz, _MM_SHUFFLE(0, 0, 1, 1));
+    return _mm_shuffle_ps(xyz_, xyz_, _MM_SHUFFLE(0, 0, 1, 1));
 }
 
 //-------------------------------------------------
@@ -111,7 +131,7 @@ INLINE Vec3 Vec3::yyx() const
 //-------------------------------------------------
 INLINE Vec3 Vec3::yyy() const
 {
-    return _mm_shuffle_ps(xyz, xyz, _MM_SHUFFLE(0, 1, 1, 1));
+    return _mm_shuffle_ps(xyz_, xyz_, _MM_SHUFFLE(0, 1, 1, 1));
 }
 
 //-------------------------------------------------
@@ -119,7 +139,7 @@ INLINE Vec3 Vec3::yyy() const
 //-------------------------------------------------
 INLINE Vec3 Vec3::yyz() const
 {
-    return _mm_shuffle_ps(xyz, xyz, _MM_SHUFFLE(0, 2, 1, 1));
+    return _mm_shuffle_ps(xyz_, xyz_, _MM_SHUFFLE(0, 2, 1, 1));
 }
 
 //-------------------------------------------------
@@ -127,7 +147,7 @@ INLINE Vec3 Vec3::yyz() const
 //-------------------------------------------------
 INLINE Vec3 Vec3::yzx() const
 {
-    return _mm_shuffle_ps(xyz, xyz, _MM_SHUFFLE(0, 0, 2, 1));
+    return _mm_shuffle_ps(xyz_, xyz_, _MM_SHUFFLE(0, 0, 2, 1));
 }
 
 //-------------------------------------------------
@@ -135,7 +155,7 @@ INLINE Vec3 Vec3::yzx() const
 //-------------------------------------------------
 INLINE Vec3 Vec3::yzy() const
 {
-    return _mm_shuffle_ps(xyz, xyz, _MM_SHUFFLE(0, 1, 2, 1));
+    return _mm_shuffle_ps(xyz_, xyz_, _MM_SHUFFLE(0, 1, 2, 1));
 }
 
 //-------------------------------------------------
@@ -143,7 +163,7 @@ INLINE Vec3 Vec3::yzy() const
 //-------------------------------------------------
 INLINE Vec3 Vec3::yzz() const
 {
-    return _mm_shuffle_ps(xyz, xyz, _MM_SHUFFLE(0, 2, 2, 1));
+    return _mm_shuffle_ps(xyz_, xyz_, _MM_SHUFFLE(0, 2, 2, 1));
 }
 
 //-------------------------------------------------
@@ -151,7 +171,7 @@ INLINE Vec3 Vec3::yzz() const
 //-------------------------------------------------
 INLINE Vec3 Vec3::zxx() const
 {
-    return _mm_shuffle_ps(xyz, xyz, _MM_SHUFFLE(0, 0, 0, 2));
+    return _mm_shuffle_ps(xyz_, xyz_, _MM_SHUFFLE(0, 0, 0, 2));
 }
 
 //-------------------------------------------------
@@ -159,7 +179,7 @@ INLINE Vec3 Vec3::zxx() const
 //-------------------------------------------------
 INLINE Vec3 Vec3::zxy() const
 {
-    return _mm_shuffle_ps(xyz, xyz, _MM_SHUFFLE(0, 1, 0, 2));
+    return _mm_shuffle_ps(xyz_, xyz_, _MM_SHUFFLE(0, 1, 0, 2));
 }
 
 //-------------------------------------------------
@@ -167,7 +187,7 @@ INLINE Vec3 Vec3::zxy() const
 //-------------------------------------------------
 INLINE Vec3 Vec3::zxz() const
 {
-    return _mm_shuffle_ps(xyz, xyz, _MM_SHUFFLE(0, 2, 0, 2));
+    return _mm_shuffle_ps(xyz_, xyz_, _MM_SHUFFLE(0, 2, 0, 2));
 }
 
 //-------------------------------------------------
@@ -175,7 +195,7 @@ INLINE Vec3 Vec3::zxz() const
 //-------------------------------------------------
 INLINE Vec3 Vec3::zyx() const
 {
-    return _mm_shuffle_ps(xyz, xyz, _MM_SHUFFLE(0, 0, 1, 2));
+    return _mm_shuffle_ps(xyz_, xyz_, _MM_SHUFFLE(0, 0, 1, 2));
 }
 
 //-------------------------------------------------
@@ -183,7 +203,7 @@ INLINE Vec3 Vec3::zyx() const
 //-------------------------------------------------
 INLINE Vec3 Vec3::zyy() const
 {
-    return _mm_shuffle_ps(xyz, xyz, _MM_SHUFFLE(0, 1, 1, 2));
+    return _mm_shuffle_ps(xyz_, xyz_, _MM_SHUFFLE(0, 1, 1, 2));
 }
 
 //-------------------------------------------------
@@ -191,7 +211,7 @@ INLINE Vec3 Vec3::zyy() const
 //-------------------------------------------------
 INLINE Vec3 Vec3::zyz() const
 {
-    return _mm_shuffle_ps(xyz, xyz, _MM_SHUFFLE(0, 2, 1, 2));
+    return _mm_shuffle_ps(xyz_, xyz_, _MM_SHUFFLE(0, 2, 1, 2));
 }
 
 //-------------------------------------------------
@@ -199,7 +219,7 @@ INLINE Vec3 Vec3::zyz() const
 //-------------------------------------------------
 INLINE Vec3 Vec3::zzx() const
 {
-    return _mm_shuffle_ps(xyz, xyz, _MM_SHUFFLE(0, 0, 2, 2));
+    return _mm_shuffle_ps(xyz_, xyz_, _MM_SHUFFLE(0, 0, 2, 2));
 }
 
 //-------------------------------------------------
@@ -207,7 +227,7 @@ INLINE Vec3 Vec3::zzx() const
 //-------------------------------------------------
 INLINE Vec3 Vec3::zzy() const
 {
-    return _mm_shuffle_ps(xyz, xyz, _MM_SHUFFLE(0, 1, 2, 2));
+    return _mm_shuffle_ps(xyz_, xyz_, _MM_SHUFFLE(0, 1, 2, 2));
 }
 
 //-------------------------------------------------
@@ -215,9 +235,9 @@ INLINE Vec3 Vec3::zzy() const
 //-------------------------------------------------
 INLINE Vec3 Vec3::zzz() const
 {
-    return _mm_shuffle_ps(xyz, xyz, _MM_SHUFFLE(0, 2, 2, 2));
+    return _mm_shuffle_ps(xyz_, xyz_, _MM_SHUFFLE(0, 2, 2, 2));
 }
-
+#endif
 
 
 

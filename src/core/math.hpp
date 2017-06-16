@@ -363,7 +363,7 @@ public:
     //
 	INLINE float operator[](int32_t index) const;
 	INLINE Vec3& operator = (const Vec3& other) = default;
-    //
+    // アクセッサ
     INLINE float x() const;
     INLINE float y() const;
     INLINE float z() const;

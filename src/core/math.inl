@@ -589,8 +589,7 @@ INLINE bool Vec3::isZero() const
 #elif defined(AL_MATH_USE_AVX2)
 	const __m128 zero = _mm_setzero_ps();
 	const __m128 mask = _mm_cmpeq_ps(zero, xyz_);
-	const int isZeroMask = _mm_movemask_ps(mask);
-	return (isZeroMask == 0);
+	return (_mm_movemask_ps(mask) == 0);
 #endif
 }
 
@@ -606,7 +605,7 @@ INLINE bool Vec3::hasNan() const
 		isnan(z_);
 #elif defined(AL_MATH_USE_AVX2)
 	const __m128 mask = _mm_cmpeq_ps(xyz_, xyz_);
-	return (_mm_movemask_ps(mask) == 0);
+	return (_mm_movemask_ps(mask) & 0x07) != 0x07;
 #endif
 }
 
@@ -622,7 +621,7 @@ INLINE bool Vec3::any() const
 #else
     const __m128 zero = _mm_setzero_ps();
     const __m128 mask = _mm_cmpeq_ps(zero, xyz_);
-    return _mm_movemask_ps(mask) != 0;
+    return (_mm_movemask_ps(mask) & 0x07) != 0x07;
 #endif
 }
 
@@ -638,7 +637,7 @@ INLINE bool Vec3::all() const
 #else
     const __m128 zero = _mm_setzero_ps();
     const __m128 mask = _mm_cmpeq_ps(zero, xyz_);
-    return _mm_movemask_ps(mask) == 0x07;
+    return (_mm_movemask_ps(mask) & 0x07) == 0x00;
 #endif
 }
 
@@ -852,7 +851,7 @@ INLINE void Vec3::setX(float x)
     // vvyy
     const __m128 tmp0 = _mm_shuffle_ps(_mm_set_ps1(x), xyz_, _MM_SHUFFLE(1, 1, 0, 0));
     // vyz
-    __m128 tmp1 = _mm_shuffle_ps(tmp0, xyz_, _MM_SHUFFLE(3, 3, 2, 0));
+    const __m128 tmp1 = _mm_shuffle_ps(tmp0, xyz_, _MM_SHUFFLE(2, 2, 2, 0));
     xyz_ = tmp1;
 #endif
 }
@@ -865,10 +864,10 @@ INLINE void Vec3::setY(float y)
 #if defined(AL_MATH_USE_NO_SIMD)
     y_ = y;
 #else
-    // vvyy
-    const __m128 tmp0 = _mm_shuffle_ps(_mm_set_ps1(y), xyz_, _MM_SHUFFLE(1, 1, 0, 0));
+    // xxvv
+    const __m128 tmp0 = _mm_shuffle_ps(xyz_, _mm_set_ps1(y), _MM_SHUFFLE(1, 1, 0, 0));
     // vyz
-    __m128 tmp1 = _mm_shuffle_ps(tmp0, xyz_, _MM_SHUFFLE(3, 3, 2, 0));
+    const __m128 tmp1 = _mm_shuffle_ps(tmp0, xyz_, _MM_SHUFFLE(2, 2, 2, 0));
     xyz_ = tmp1;
 #endif
 }
@@ -881,10 +880,8 @@ INLINE void Vec3::setZ(float z)
 #if defined(AL_MATH_USE_NO_SIMD)
     z_ = z;
 #else
-    // vvyy
-    const __m128 tmp0 = _mm_shuffle_ps(_mm_set_ps1(z), xyz_, _MM_SHUFFLE(1, 1, 0, 0));
-    // vyz
-    __m128 tmp1 = _mm_shuffle_ps(tmp0, xyz_, _MM_SHUFFLE(3, 3, 2, 0));
+    // xyv
+    const __m128 tmp1 = _mm_shuffle_ps(xyz_, _mm_set_ps1(z), _MM_SHUFFLE(3, 3, 1, 0));
     xyz_ = tmp1;
 #endif
 }

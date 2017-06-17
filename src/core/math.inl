@@ -2070,9 +2070,9 @@ INLINE void Matrix4x4::constructAsViewMatrix(const Vec3& origin, const Vec3& tar
 	const Vec3 zaxis = (target - origin).normalized();
 	const Vec3 xaxis = Vec3::cross(up, zaxis).normalized();
 	const Vec3 yaxis = Vec3::cross(zaxis, xaxis);
-	e11 = xaxis.x; e12 = yaxis.x; e13 = zaxis.x; e14 = 0.0f;
-	e21 = xaxis.y; e22 = yaxis.y; e23 = zaxis.y; e24 = 0.0f;
-	e31 = xaxis.z; e32 = yaxis.z; e33 = zaxis.z; e34 = 0.0f;
+	e11 = xaxis.x(); e12 = yaxis.x(); e13 = zaxis.x(); e14 = 0.0f;
+	e21 = xaxis.y(); e22 = yaxis.y(); e23 = zaxis.y(); e24 = 0.0f;
+	e31 = xaxis.z(); e32 = yaxis.z(); e33 = zaxis.z(); e34 = 0.0f;
 	e41 = -Vec3::dot(xaxis, origin);
 	e42 = -Vec3::dot(yaxis, origin);
 	e43 = -Vec3::dot(zaxis, origin);

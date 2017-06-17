@@ -776,9 +776,9 @@ void RealSensor::dumpLensSpecImage() const
         // レイの色の計算
         const Vec3 rayColor  = HSV2RGB(Vec3((float)on / (float)numOrig, 1.0f, 1.0f));
         const std::string rayColorStr = "rgb(" +
-                                        std::to_string((int32_t)(rayColor.x*255.0f)) + "," +
-                                        std::to_string((int32_t)(rayColor.y*255.0f)) + "," +
-                                        std::to_string((int32_t)(rayColor.z*255.0f)) + ")";
+                                        std::to_string((int32_t)(rayColor.x()*255.0f)) + "," +
+                                        std::to_string((int32_t)(rayColor.y()*255.0f)) + "," +
+                                        std::to_string((int32_t)(rayColor.z()*255.0f)) + ")";
         //
         for (int32_t rn = 0; rn < numRaysPerOrig; ++rn)
         {
@@ -790,19 +790,19 @@ void RealSensor::dumpLensSpecImage() const
             //
             Ray outRay;
             std::vector<Vec3> tracePoints;
-            if (!lensTrace(imageXYZInMM.x, imageXYZInMM.y, rayDir, WAVE_LENGTH_D, imageSensorOffset_, &tracePoints, &outRay))
+            if (!lensTrace(imageXYZInMM.x(), imageXYZInMM.y(), rayDir, WAVE_LENGTH_D, imageSensorOffset_, &tracePoints, &outRay))
             {
                 // HACK: 本当であれば必ず成功するはず
                 //continue;
             }
             //
-            auto& path = svg.beginPath(-tracePoints[0].z, tracePoints[0].y);
+            auto& path = svg.beginPath(-tracePoints[0].z(), tracePoints[0].y());
             path.setStrokeWidth(0.2f);
             path.setStrokeColor(rayColorStr );
             for (int32_t pn = 1; pn < tracePoints.size(); ++pn)
             {
                 auto& p = tracePoints[pn];
-                path.addLine(-p.z, p.y);
+                path.addLine(-p.z(), p.y());
             }
             path.endPath();
         }

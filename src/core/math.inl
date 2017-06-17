@@ -1646,7 +1646,7 @@ INLINE Vec4::Vec4(_In_reads_(4) const float* es)
     z_ = es[2];
     w_ = es[3];
 #else
-    xyzw_ = _mm_set_ps(es[0], es[1], es[2], es[3]);
+    xyzw_ = _mm_set_ps(es[3], es[2], es[1], es[0]);
 #endif
 }
 
@@ -1705,8 +1705,7 @@ INLINE float Vec4::x()const
 #if defined(AL_MATH_USE_NO_SIMD)
     return x_;
 #else
-    AL_ASSERT_ALWAYS(false);
-    return 0.0f;
+    return _mm_cvtss_f32(_mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 0, 0, 0)));
 #endif
 }
 
@@ -1719,8 +1718,7 @@ INLINE float Vec4::y()const
 #if defined(AL_MATH_USE_NO_SIMD)
     return y_;
 #else
-    AL_ASSERT_ALWAYS(false);
-    return 0.0f;
+    return _mm_cvtss_f32(_mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 0, 0, 1)));
 #endif
 }
 
@@ -1733,8 +1731,7 @@ INLINE float Vec4::z()const
 #if defined(AL_MATH_USE_NO_SIMD)
     return z_;
 #else
-    AL_ASSERT_ALWAYS(false);
-    return 0.0f;
+    return _mm_cvtss_f32(_mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 0, 0, 2)));
 #endif
 }
 
@@ -1747,8 +1744,7 @@ INLINE float Vec4::w()const
 #if defined(AL_MATH_USE_NO_SIMD)
     return w_;
 #else
-    AL_ASSERT_ALWAYS(false);
-    return 0.0f;
+    return _mm_cvtss_f32(_mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 0, 0, 3)));
 #endif
 }
 
@@ -1811,12 +1807,14 @@ Vec4 Vec4::normalized() const
 INLINE float Vec4::operator[](int32_t index) const
 {
     AL_ASSERT_DEBUG(0 <= index && index <= 3);
-#if defined(AL_MATH_USE_NO_SIMD)
-    return *(&x_+ index);
-#else
-    AL_ASSERT_ALWAYS(false);
-    return 0.0f;
-#endif
+    switch(index)
+    {
+        case 0: return x();
+        case 1: return y();
+        case 2: return z();
+        case 3: return w();
+        default: return 0.0f;
+    }
 }
 
 //-------------------------------------------------

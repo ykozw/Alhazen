@@ -425,6 +425,9 @@ public:
     INLINE float y()const;
     INLINE float z()const;
     INLINE float w()const;
+    // swizzle
+#include "swizzle_vec4.inl"
+    
 #if 0
     // TODO: スイズルを作成する
     FloatInVec length() const;
@@ -440,7 +443,7 @@ public:
     static FloatInVec length(Vec4 v);
     static FloatInVec lengthSq(Vec4 v);
 #endif
-    //#include "swizzle_vec4.inl"
+    
 };
 
 /*

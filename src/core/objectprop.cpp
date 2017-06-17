@@ -93,7 +93,7 @@ bool ObjectProp::load(const std::string& fileName)
     // sceneノードがルート
     auto sceneNode = xml.FirstChildElement("scene");
     ObjectProp root;
-    loadSub( sceneNode, root);
+    loadSub(sceneNode, root);
     *this = root.childProps_[0];
     //
     return true;
@@ -180,9 +180,9 @@ void ObjectPropString::setFloat(float v)
 void ObjectPropString::setVec3(const Vec3& v)
 {
     value_ =
-    std::to_string(v.x()) + "," +
-    std::to_string(v.y()) +"," +
-    std::to_string(v.z());
+        std::to_string(v.x()) + "," +
+        std::to_string(v.y()) + "," +
+        std::to_string(v.z());
 }
 
 /*
@@ -255,13 +255,13 @@ Vec3 ObjectPropString::asVec3(const Vec3& defaultValue) const
 {
     if (valid_)
     {
-        float x,y,z;
+        float x, y, z;
         if (sscanf(value_.c_str(), "%f, %f, %f", &x, &y, &z) != 3)
         {
             // TODO: warning
             return defaultValue;
         }
-        return Vec3(x,y,z);
+        return Vec3(x, y, z);
     }
     else
     {
@@ -425,7 +425,7 @@ Vec3 ObjectProp::asXYZ(const Vec3& defaultValue) const
         return defaultValue;
     }
     //
-    float x,y,z;
+    float x, y, z;
     if (sscanf(ax.value().c_str(), "%f", &x) != 1 ||
         sscanf(ay.value().c_str(), "%f", &y) != 1 ||
         sscanf(az.value().c_str(), "%f", &z) != 1)
@@ -433,7 +433,7 @@ Vec3 ObjectProp::asXYZ(const Vec3& defaultValue) const
         // TODO: warning
         return defaultValue;
     }
-    return Vec3(x,y,z);
+    return Vec3(x, y, z);
 }
 
 /*

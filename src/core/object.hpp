@@ -10,8 +10,8 @@
 class ObjectPropString
 {
 public:
-	ObjectPropString();
-	ObjectPropString( const std::string& value );
+    ObjectPropString();
+    ObjectPropString(const std::string& value);
     //
     const std::string& value()const;
     bool valid();
@@ -25,12 +25,12 @@ public:
     // プリミティブな型のみここで変換を行う
     std::string asString(const std::string& defaultValue) const;
     bool asBool(bool defaultValue) const;
-    int32_t asInt( int32_t defaultValue ) const;
+    int32_t asInt(int32_t defaultValue) const;
     float asFloat(float defaultValue) const;
-	Vec3 asVec3(const Vec3& defaultValue) const;
+    Vec3 asVec3(const Vec3& defaultValue) const;
 private:
-	bool valid_;
-	std::string value_;
+    bool valid_;
+    std::string value_;
 };
 
 //-------------------------------------------------
@@ -81,7 +81,7 @@ private:
 class Object
 {
 public:
-	virtual ~Object(){}
+    virtual ~Object() {}
 };
 
 //-------------------------------------------------

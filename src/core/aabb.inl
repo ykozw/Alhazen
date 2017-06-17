@@ -16,8 +16,8 @@ INLINE void AABB::clear()
 {
     const float maxv = std::numeric_limits<float>::max();
     const float minv = std::numeric_limits<float>::min();
-    mn = Vec3(maxv,maxv,maxv);
-    mx = Vec3(minv,minv,minv);
+    mn = Vec3(maxv, maxv, maxv);
+    mx = Vec3(minv, minv, minv);
 }
 
 //-------------------------------------------------
@@ -28,8 +28,8 @@ INLINE void AABB::addPoint(const Vec3& point)
     const float x = point.x();
     const float y = point.y();
     const float z = point.z();
-    mn = Vec3::min(point,mn);
-    mx = Vec3::max(point,mx);
+    mn = Vec3::min(point, mn);
+    mx = Vec3::max(point, mx);
 }
 
 //-------------------------------------------------
@@ -81,8 +81,8 @@ INLINE Vec3 AABB::size() const
 INLINE void AABB::addAABB(const AABB& aabb)
 {
     AL_ASSERT_DEBUG(aabb.validate());
-    mn = Vec3::min(aabb.mn,mn);
-    mx = Vec3::min(aabb.mx,mx);
+    mn = Vec3::min(aabb.mn, mn);
+    mx = Vec3::min(aabb.mx, mx);
 }
 
 //------------------------------------------
@@ -155,7 +155,7 @@ INLINE bool AABB::intersect(const Ray& ray, Intersect* isect) const
 // 衝突するかしないかわかればよいのでその情報だけ返す
 // http ://people.csail.mit.edu/amy/papers/box-jgt.pdf
 //------------------------------------------
-INLINE bool AABB::intersectCheck(const Ray& ray, float currentIntersectT ) const
+INLINE bool AABB::intersectCheck(const Ray& ray, float currentIntersectT) const
 {
     //
     const AABB& aabb = *this;
@@ -347,10 +347,10 @@ INLINE const Vec2& AABB2D::max() const
 INLINE Vec2 AABB2D::onCoord(const Vec2& coord) const
 {
     const Vec2 d = mx - mn;
-    return 
+    return
         Vec2(
-        mn.x + d.x * coord.x,
-        mn.y + d.y * coord.y );
+            mn.x + d.x * coord.x,
+            mn.y + d.y * coord.y);
 }
 
 //-------------------------------------------------

@@ -45,7 +45,7 @@
 INLINE Vec4 xxxx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,x_,x_,x_);
+    return Vec4(x_, x_, x_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 0, 0, 0));
 #endif
@@ -54,7 +54,7 @@ INLINE Vec4 xxxx() const
 INLINE Vec4 yxxx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,x_,x_,x_);
+    return Vec4(y_, x_, x_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 0, 0, 1));
 #endif
@@ -63,7 +63,7 @@ INLINE Vec4 yxxx() const
 INLINE Vec4 zxxx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,x_,x_,x_);
+    return Vec4(z_, x_, x_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 0, 0, 2));
 #endif
@@ -72,7 +72,7 @@ INLINE Vec4 zxxx() const
 INLINE Vec4 wxxx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,x_,x_,x_);
+    return Vec4(w_, x_, x_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 0, 0, 3));
 #endif
@@ -81,7 +81,7 @@ INLINE Vec4 wxxx() const
 INLINE Vec4 xyxx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,y_,x_,x_);
+    return Vec4(x_, y_, x_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 0, 1, 0));
 #endif
@@ -90,7 +90,7 @@ INLINE Vec4 xyxx() const
 INLINE Vec4 yyxx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,y_,x_,x_);
+    return Vec4(y_, y_, x_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 0, 1, 1));
 #endif
@@ -99,7 +99,7 @@ INLINE Vec4 yyxx() const
 INLINE Vec4 zyxx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,y_,x_,x_);
+    return Vec4(z_, y_, x_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 0, 1, 2));
 #endif
@@ -108,7 +108,7 @@ INLINE Vec4 zyxx() const
 INLINE Vec4 wyxx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,y_,x_,x_);
+    return Vec4(w_, y_, x_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 0, 1, 3));
 #endif
@@ -117,7 +117,7 @@ INLINE Vec4 wyxx() const
 INLINE Vec4 xzxx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,z_,x_,x_);
+    return Vec4(x_, z_, x_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 0, 2, 0));
 #endif
@@ -126,7 +126,7 @@ INLINE Vec4 xzxx() const
 INLINE Vec4 yzxx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,z_,x_,x_);
+    return Vec4(y_, z_, x_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 0, 2, 1));
 #endif
@@ -135,7 +135,7 @@ INLINE Vec4 yzxx() const
 INLINE Vec4 zzxx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,z_,x_,x_);
+    return Vec4(z_, z_, x_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 0, 2, 2));
 #endif
@@ -144,7 +144,7 @@ INLINE Vec4 zzxx() const
 INLINE Vec4 wzxx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,z_,x_,x_);
+    return Vec4(w_, z_, x_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 0, 2, 3));
 #endif
@@ -153,7 +153,7 @@ INLINE Vec4 wzxx() const
 INLINE Vec4 xwxx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,w_,x_,x_);
+    return Vec4(x_, w_, x_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 0, 3, 0));
 #endif
@@ -162,7 +162,7 @@ INLINE Vec4 xwxx() const
 INLINE Vec4 ywxx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,w_,x_,x_);
+    return Vec4(y_, w_, x_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 0, 3, 1));
 #endif
@@ -171,7 +171,7 @@ INLINE Vec4 ywxx() const
 INLINE Vec4 zwxx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,w_,x_,x_);
+    return Vec4(z_, w_, x_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 0, 3, 2));
 #endif
@@ -180,7 +180,7 @@ INLINE Vec4 zwxx() const
 INLINE Vec4 wwxx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,w_,x_,x_);
+    return Vec4(w_, w_, x_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 0, 3, 3));
 #endif
@@ -189,7 +189,7 @@ INLINE Vec4 wwxx() const
 INLINE Vec4 xxyx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,x_,y_,x_);
+    return Vec4(x_, x_, y_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 1, 0, 0));
 #endif
@@ -198,7 +198,7 @@ INLINE Vec4 xxyx() const
 INLINE Vec4 yxyx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,x_,y_,x_);
+    return Vec4(y_, x_, y_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 1, 0, 1));
 #endif
@@ -207,7 +207,7 @@ INLINE Vec4 yxyx() const
 INLINE Vec4 zxyx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,x_,y_,x_);
+    return Vec4(z_, x_, y_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 1, 0, 2));
 #endif
@@ -216,7 +216,7 @@ INLINE Vec4 zxyx() const
 INLINE Vec4 wxyx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,x_,y_,x_);
+    return Vec4(w_, x_, y_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 1, 0, 3));
 #endif
@@ -225,7 +225,7 @@ INLINE Vec4 wxyx() const
 INLINE Vec4 xyyx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,y_,y_,x_);
+    return Vec4(x_, y_, y_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 1, 1, 0));
 #endif
@@ -234,7 +234,7 @@ INLINE Vec4 xyyx() const
 INLINE Vec4 yyyx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,y_,y_,x_);
+    return Vec4(y_, y_, y_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 1, 1, 1));
 #endif
@@ -243,7 +243,7 @@ INLINE Vec4 yyyx() const
 INLINE Vec4 zyyx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,y_,y_,x_);
+    return Vec4(z_, y_, y_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 1, 1, 2));
 #endif
@@ -252,7 +252,7 @@ INLINE Vec4 zyyx() const
 INLINE Vec4 wyyx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,y_,y_,x_);
+    return Vec4(w_, y_, y_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 1, 1, 3));
 #endif
@@ -261,7 +261,7 @@ INLINE Vec4 wyyx() const
 INLINE Vec4 xzyx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,z_,y_,x_);
+    return Vec4(x_, z_, y_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 1, 2, 0));
 #endif
@@ -270,7 +270,7 @@ INLINE Vec4 xzyx() const
 INLINE Vec4 yzyx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,z_,y_,x_);
+    return Vec4(y_, z_, y_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 1, 2, 1));
 #endif
@@ -279,7 +279,7 @@ INLINE Vec4 yzyx() const
 INLINE Vec4 zzyx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,z_,y_,x_);
+    return Vec4(z_, z_, y_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 1, 2, 2));
 #endif
@@ -288,7 +288,7 @@ INLINE Vec4 zzyx() const
 INLINE Vec4 wzyx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,z_,y_,x_);
+    return Vec4(w_, z_, y_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 1, 2, 3));
 #endif
@@ -297,7 +297,7 @@ INLINE Vec4 wzyx() const
 INLINE Vec4 xwyx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,w_,y_,x_);
+    return Vec4(x_, w_, y_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 1, 3, 0));
 #endif
@@ -306,7 +306,7 @@ INLINE Vec4 xwyx() const
 INLINE Vec4 ywyx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,w_,y_,x_);
+    return Vec4(y_, w_, y_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 1, 3, 1));
 #endif
@@ -315,7 +315,7 @@ INLINE Vec4 ywyx() const
 INLINE Vec4 zwyx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,w_,y_,x_);
+    return Vec4(z_, w_, y_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 1, 3, 2));
 #endif
@@ -324,7 +324,7 @@ INLINE Vec4 zwyx() const
 INLINE Vec4 wwyx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,w_,y_,x_);
+    return Vec4(w_, w_, y_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 1, 3, 3));
 #endif
@@ -333,7 +333,7 @@ INLINE Vec4 wwyx() const
 INLINE Vec4 xxzx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,x_,z_,x_);
+    return Vec4(x_, x_, z_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 2, 0, 0));
 #endif
@@ -342,7 +342,7 @@ INLINE Vec4 xxzx() const
 INLINE Vec4 yxzx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,x_,z_,x_);
+    return Vec4(y_, x_, z_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 2, 0, 1));
 #endif
@@ -351,7 +351,7 @@ INLINE Vec4 yxzx() const
 INLINE Vec4 zxzx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,x_,z_,x_);
+    return Vec4(z_, x_, z_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 2, 0, 2));
 #endif
@@ -360,7 +360,7 @@ INLINE Vec4 zxzx() const
 INLINE Vec4 wxzx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,x_,z_,x_);
+    return Vec4(w_, x_, z_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 2, 0, 3));
 #endif
@@ -369,7 +369,7 @@ INLINE Vec4 wxzx() const
 INLINE Vec4 xyzx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,y_,z_,x_);
+    return Vec4(x_, y_, z_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 2, 1, 0));
 #endif
@@ -378,7 +378,7 @@ INLINE Vec4 xyzx() const
 INLINE Vec4 yyzx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,y_,z_,x_);
+    return Vec4(y_, y_, z_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 2, 1, 1));
 #endif
@@ -387,7 +387,7 @@ INLINE Vec4 yyzx() const
 INLINE Vec4 zyzx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,y_,z_,x_);
+    return Vec4(z_, y_, z_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 2, 1, 2));
 #endif
@@ -396,7 +396,7 @@ INLINE Vec4 zyzx() const
 INLINE Vec4 wyzx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,y_,z_,x_);
+    return Vec4(w_, y_, z_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 2, 1, 3));
 #endif
@@ -405,7 +405,7 @@ INLINE Vec4 wyzx() const
 INLINE Vec4 xzzx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,z_,z_,x_);
+    return Vec4(x_, z_, z_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 2, 2, 0));
 #endif
@@ -414,7 +414,7 @@ INLINE Vec4 xzzx() const
 INLINE Vec4 yzzx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,z_,z_,x_);
+    return Vec4(y_, z_, z_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 2, 2, 1));
 #endif
@@ -423,7 +423,7 @@ INLINE Vec4 yzzx() const
 INLINE Vec4 zzzx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,z_,z_,x_);
+    return Vec4(z_, z_, z_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 2, 2, 2));
 #endif
@@ -432,7 +432,7 @@ INLINE Vec4 zzzx() const
 INLINE Vec4 wzzx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,z_,z_,x_);
+    return Vec4(w_, z_, z_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 2, 2, 3));
 #endif
@@ -441,7 +441,7 @@ INLINE Vec4 wzzx() const
 INLINE Vec4 xwzx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,w_,z_,x_);
+    return Vec4(x_, w_, z_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 2, 3, 0));
 #endif
@@ -450,7 +450,7 @@ INLINE Vec4 xwzx() const
 INLINE Vec4 ywzx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,w_,z_,x_);
+    return Vec4(y_, w_, z_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 2, 3, 1));
 #endif
@@ -459,7 +459,7 @@ INLINE Vec4 ywzx() const
 INLINE Vec4 zwzx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,w_,z_,x_);
+    return Vec4(z_, w_, z_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 2, 3, 2));
 #endif
@@ -468,7 +468,7 @@ INLINE Vec4 zwzx() const
 INLINE Vec4 wwzx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,w_,z_,x_);
+    return Vec4(w_, w_, z_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 2, 3, 3));
 #endif
@@ -477,7 +477,7 @@ INLINE Vec4 wwzx() const
 INLINE Vec4 xxwx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,x_,w_,x_);
+    return Vec4(x_, x_, w_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 3, 0, 0));
 #endif
@@ -486,7 +486,7 @@ INLINE Vec4 xxwx() const
 INLINE Vec4 yxwx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,x_,w_,x_);
+    return Vec4(y_, x_, w_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 3, 0, 1));
 #endif
@@ -495,7 +495,7 @@ INLINE Vec4 yxwx() const
 INLINE Vec4 zxwx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,x_,w_,x_);
+    return Vec4(z_, x_, w_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 3, 0, 2));
 #endif
@@ -504,7 +504,7 @@ INLINE Vec4 zxwx() const
 INLINE Vec4 wxwx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,x_,w_,x_);
+    return Vec4(w_, x_, w_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 3, 0, 3));
 #endif
@@ -513,7 +513,7 @@ INLINE Vec4 wxwx() const
 INLINE Vec4 xywx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,y_,w_,x_);
+    return Vec4(x_, y_, w_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 3, 1, 0));
 #endif
@@ -522,7 +522,7 @@ INLINE Vec4 xywx() const
 INLINE Vec4 yywx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,y_,w_,x_);
+    return Vec4(y_, y_, w_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 3, 1, 1));
 #endif
@@ -531,7 +531,7 @@ INLINE Vec4 yywx() const
 INLINE Vec4 zywx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,y_,w_,x_);
+    return Vec4(z_, y_, w_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 3, 1, 2));
 #endif
@@ -540,7 +540,7 @@ INLINE Vec4 zywx() const
 INLINE Vec4 wywx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,y_,w_,x_);
+    return Vec4(w_, y_, w_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 3, 1, 3));
 #endif
@@ -549,7 +549,7 @@ INLINE Vec4 wywx() const
 INLINE Vec4 xzwx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,z_,w_,x_);
+    return Vec4(x_, z_, w_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 3, 2, 0));
 #endif
@@ -558,7 +558,7 @@ INLINE Vec4 xzwx() const
 INLINE Vec4 yzwx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,z_,w_,x_);
+    return Vec4(y_, z_, w_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 3, 2, 1));
 #endif
@@ -567,7 +567,7 @@ INLINE Vec4 yzwx() const
 INLINE Vec4 zzwx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,z_,w_,x_);
+    return Vec4(z_, z_, w_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 3, 2, 2));
 #endif
@@ -576,7 +576,7 @@ INLINE Vec4 zzwx() const
 INLINE Vec4 wzwx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,z_,w_,x_);
+    return Vec4(w_, z_, w_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 3, 2, 3));
 #endif
@@ -585,7 +585,7 @@ INLINE Vec4 wzwx() const
 INLINE Vec4 xwwx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,w_,w_,x_);
+    return Vec4(x_, w_, w_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 3, 3, 0));
 #endif
@@ -594,7 +594,7 @@ INLINE Vec4 xwwx() const
 INLINE Vec4 ywwx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,w_,w_,x_);
+    return Vec4(y_, w_, w_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 3, 3, 1));
 #endif
@@ -603,7 +603,7 @@ INLINE Vec4 ywwx() const
 INLINE Vec4 zwwx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,w_,w_,x_);
+    return Vec4(z_, w_, w_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 3, 3, 2));
 #endif
@@ -612,7 +612,7 @@ INLINE Vec4 zwwx() const
 INLINE Vec4 wwwx() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,w_,w_,x_);
+    return Vec4(w_, w_, w_, x_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 3, 3, 3));
 #endif
@@ -621,7 +621,7 @@ INLINE Vec4 wwwx() const
 INLINE Vec4 xxxy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,x_,x_,y_);
+    return Vec4(x_, x_, x_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 0, 0, 0));
 #endif
@@ -630,7 +630,7 @@ INLINE Vec4 xxxy() const
 INLINE Vec4 yxxy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,x_,x_,y_);
+    return Vec4(y_, x_, x_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 0, 0, 1));
 #endif
@@ -639,7 +639,7 @@ INLINE Vec4 yxxy() const
 INLINE Vec4 zxxy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,x_,x_,y_);
+    return Vec4(z_, x_, x_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 0, 0, 2));
 #endif
@@ -648,7 +648,7 @@ INLINE Vec4 zxxy() const
 INLINE Vec4 wxxy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,x_,x_,y_);
+    return Vec4(w_, x_, x_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 0, 0, 3));
 #endif
@@ -657,7 +657,7 @@ INLINE Vec4 wxxy() const
 INLINE Vec4 xyxy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,y_,x_,y_);
+    return Vec4(x_, y_, x_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 0, 1, 0));
 #endif
@@ -666,7 +666,7 @@ INLINE Vec4 xyxy() const
 INLINE Vec4 yyxy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,y_,x_,y_);
+    return Vec4(y_, y_, x_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 0, 1, 1));
 #endif
@@ -675,7 +675,7 @@ INLINE Vec4 yyxy() const
 INLINE Vec4 zyxy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,y_,x_,y_);
+    return Vec4(z_, y_, x_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 0, 1, 2));
 #endif
@@ -684,7 +684,7 @@ INLINE Vec4 zyxy() const
 INLINE Vec4 wyxy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,y_,x_,y_);
+    return Vec4(w_, y_, x_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 0, 1, 3));
 #endif
@@ -693,7 +693,7 @@ INLINE Vec4 wyxy() const
 INLINE Vec4 xzxy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,z_,x_,y_);
+    return Vec4(x_, z_, x_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 0, 2, 0));
 #endif
@@ -702,7 +702,7 @@ INLINE Vec4 xzxy() const
 INLINE Vec4 yzxy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,z_,x_,y_);
+    return Vec4(y_, z_, x_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 0, 2, 1));
 #endif
@@ -711,7 +711,7 @@ INLINE Vec4 yzxy() const
 INLINE Vec4 zzxy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,z_,x_,y_);
+    return Vec4(z_, z_, x_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 0, 2, 2));
 #endif
@@ -720,7 +720,7 @@ INLINE Vec4 zzxy() const
 INLINE Vec4 wzxy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,z_,x_,y_);
+    return Vec4(w_, z_, x_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 0, 2, 3));
 #endif
@@ -729,7 +729,7 @@ INLINE Vec4 wzxy() const
 INLINE Vec4 xwxy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,w_,x_,y_);
+    return Vec4(x_, w_, x_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 0, 3, 0));
 #endif
@@ -738,7 +738,7 @@ INLINE Vec4 xwxy() const
 INLINE Vec4 ywxy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,w_,x_,y_);
+    return Vec4(y_, w_, x_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 0, 3, 1));
 #endif
@@ -747,7 +747,7 @@ INLINE Vec4 ywxy() const
 INLINE Vec4 zwxy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,w_,x_,y_);
+    return Vec4(z_, w_, x_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 0, 3, 2));
 #endif
@@ -756,7 +756,7 @@ INLINE Vec4 zwxy() const
 INLINE Vec4 wwxy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,w_,x_,y_);
+    return Vec4(w_, w_, x_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 0, 3, 3));
 #endif
@@ -765,7 +765,7 @@ INLINE Vec4 wwxy() const
 INLINE Vec4 xxyy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,x_,y_,y_);
+    return Vec4(x_, x_, y_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 1, 0, 0));
 #endif
@@ -774,7 +774,7 @@ INLINE Vec4 xxyy() const
 INLINE Vec4 yxyy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,x_,y_,y_);
+    return Vec4(y_, x_, y_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 1, 0, 1));
 #endif
@@ -783,7 +783,7 @@ INLINE Vec4 yxyy() const
 INLINE Vec4 zxyy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,x_,y_,y_);
+    return Vec4(z_, x_, y_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 1, 0, 2));
 #endif
@@ -792,7 +792,7 @@ INLINE Vec4 zxyy() const
 INLINE Vec4 wxyy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,x_,y_,y_);
+    return Vec4(w_, x_, y_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 1, 0, 3));
 #endif
@@ -801,7 +801,7 @@ INLINE Vec4 wxyy() const
 INLINE Vec4 xyyy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,y_,y_,y_);
+    return Vec4(x_, y_, y_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 1, 1, 0));
 #endif
@@ -810,7 +810,7 @@ INLINE Vec4 xyyy() const
 INLINE Vec4 yyyy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,y_,y_,y_);
+    return Vec4(y_, y_, y_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 1, 1, 1));
 #endif
@@ -819,7 +819,7 @@ INLINE Vec4 yyyy() const
 INLINE Vec4 zyyy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,y_,y_,y_);
+    return Vec4(z_, y_, y_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 1, 1, 2));
 #endif
@@ -828,7 +828,7 @@ INLINE Vec4 zyyy() const
 INLINE Vec4 wyyy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,y_,y_,y_);
+    return Vec4(w_, y_, y_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 1, 1, 3));
 #endif
@@ -837,7 +837,7 @@ INLINE Vec4 wyyy() const
 INLINE Vec4 xzyy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,z_,y_,y_);
+    return Vec4(x_, z_, y_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 1, 2, 0));
 #endif
@@ -846,7 +846,7 @@ INLINE Vec4 xzyy() const
 INLINE Vec4 yzyy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,z_,y_,y_);
+    return Vec4(y_, z_, y_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 1, 2, 1));
 #endif
@@ -855,7 +855,7 @@ INLINE Vec4 yzyy() const
 INLINE Vec4 zzyy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,z_,y_,y_);
+    return Vec4(z_, z_, y_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 1, 2, 2));
 #endif
@@ -864,7 +864,7 @@ INLINE Vec4 zzyy() const
 INLINE Vec4 wzyy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,z_,y_,y_);
+    return Vec4(w_, z_, y_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 1, 2, 3));
 #endif
@@ -873,7 +873,7 @@ INLINE Vec4 wzyy() const
 INLINE Vec4 xwyy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,w_,y_,y_);
+    return Vec4(x_, w_, y_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 1, 3, 0));
 #endif
@@ -882,7 +882,7 @@ INLINE Vec4 xwyy() const
 INLINE Vec4 ywyy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,w_,y_,y_);
+    return Vec4(y_, w_, y_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 1, 3, 1));
 #endif
@@ -891,7 +891,7 @@ INLINE Vec4 ywyy() const
 INLINE Vec4 zwyy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,w_,y_,y_);
+    return Vec4(z_, w_, y_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 1, 3, 2));
 #endif
@@ -900,7 +900,7 @@ INLINE Vec4 zwyy() const
 INLINE Vec4 wwyy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,w_,y_,y_);
+    return Vec4(w_, w_, y_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 1, 3, 3));
 #endif
@@ -909,7 +909,7 @@ INLINE Vec4 wwyy() const
 INLINE Vec4 xxzy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,x_,z_,y_);
+    return Vec4(x_, x_, z_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 2, 0, 0));
 #endif
@@ -918,7 +918,7 @@ INLINE Vec4 xxzy() const
 INLINE Vec4 yxzy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,x_,z_,y_);
+    return Vec4(y_, x_, z_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 2, 0, 1));
 #endif
@@ -927,7 +927,7 @@ INLINE Vec4 yxzy() const
 INLINE Vec4 zxzy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,x_,z_,y_);
+    return Vec4(z_, x_, z_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 2, 0, 2));
 #endif
@@ -936,7 +936,7 @@ INLINE Vec4 zxzy() const
 INLINE Vec4 wxzy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,x_,z_,y_);
+    return Vec4(w_, x_, z_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 2, 0, 3));
 #endif
@@ -945,7 +945,7 @@ INLINE Vec4 wxzy() const
 INLINE Vec4 xyzy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,y_,z_,y_);
+    return Vec4(x_, y_, z_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 2, 1, 0));
 #endif
@@ -954,7 +954,7 @@ INLINE Vec4 xyzy() const
 INLINE Vec4 yyzy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,y_,z_,y_);
+    return Vec4(y_, y_, z_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 2, 1, 1));
 #endif
@@ -963,7 +963,7 @@ INLINE Vec4 yyzy() const
 INLINE Vec4 zyzy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,y_,z_,y_);
+    return Vec4(z_, y_, z_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 2, 1, 2));
 #endif
@@ -972,7 +972,7 @@ INLINE Vec4 zyzy() const
 INLINE Vec4 wyzy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,y_,z_,y_);
+    return Vec4(w_, y_, z_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 2, 1, 3));
 #endif
@@ -981,7 +981,7 @@ INLINE Vec4 wyzy() const
 INLINE Vec4 xzzy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,z_,z_,y_);
+    return Vec4(x_, z_, z_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 2, 2, 0));
 #endif
@@ -990,7 +990,7 @@ INLINE Vec4 xzzy() const
 INLINE Vec4 yzzy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,z_,z_,y_);
+    return Vec4(y_, z_, z_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 2, 2, 1));
 #endif
@@ -999,7 +999,7 @@ INLINE Vec4 yzzy() const
 INLINE Vec4 zzzy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,z_,z_,y_);
+    return Vec4(z_, z_, z_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 2, 2, 2));
 #endif
@@ -1008,7 +1008,7 @@ INLINE Vec4 zzzy() const
 INLINE Vec4 wzzy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,z_,z_,y_);
+    return Vec4(w_, z_, z_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 2, 2, 3));
 #endif
@@ -1017,7 +1017,7 @@ INLINE Vec4 wzzy() const
 INLINE Vec4 xwzy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,w_,z_,y_);
+    return Vec4(x_, w_, z_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 2, 3, 0));
 #endif
@@ -1026,7 +1026,7 @@ INLINE Vec4 xwzy() const
 INLINE Vec4 ywzy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,w_,z_,y_);
+    return Vec4(y_, w_, z_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 2, 3, 1));
 #endif
@@ -1035,7 +1035,7 @@ INLINE Vec4 ywzy() const
 INLINE Vec4 zwzy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,w_,z_,y_);
+    return Vec4(z_, w_, z_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 2, 3, 2));
 #endif
@@ -1044,7 +1044,7 @@ INLINE Vec4 zwzy() const
 INLINE Vec4 wwzy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,w_,z_,y_);
+    return Vec4(w_, w_, z_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 2, 3, 3));
 #endif
@@ -1053,7 +1053,7 @@ INLINE Vec4 wwzy() const
 INLINE Vec4 xxwy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,x_,w_,y_);
+    return Vec4(x_, x_, w_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 3, 0, 0));
 #endif
@@ -1062,7 +1062,7 @@ INLINE Vec4 xxwy() const
 INLINE Vec4 yxwy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,x_,w_,y_);
+    return Vec4(y_, x_, w_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 3, 0, 1));
 #endif
@@ -1071,7 +1071,7 @@ INLINE Vec4 yxwy() const
 INLINE Vec4 zxwy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,x_,w_,y_);
+    return Vec4(z_, x_, w_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 3, 0, 2));
 #endif
@@ -1080,7 +1080,7 @@ INLINE Vec4 zxwy() const
 INLINE Vec4 wxwy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,x_,w_,y_);
+    return Vec4(w_, x_, w_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 3, 0, 3));
 #endif
@@ -1089,7 +1089,7 @@ INLINE Vec4 wxwy() const
 INLINE Vec4 xywy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,y_,w_,y_);
+    return Vec4(x_, y_, w_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 3, 1, 0));
 #endif
@@ -1098,7 +1098,7 @@ INLINE Vec4 xywy() const
 INLINE Vec4 yywy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,y_,w_,y_);
+    return Vec4(y_, y_, w_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 3, 1, 1));
 #endif
@@ -1107,7 +1107,7 @@ INLINE Vec4 yywy() const
 INLINE Vec4 zywy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,y_,w_,y_);
+    return Vec4(z_, y_, w_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 3, 1, 2));
 #endif
@@ -1116,7 +1116,7 @@ INLINE Vec4 zywy() const
 INLINE Vec4 wywy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,y_,w_,y_);
+    return Vec4(w_, y_, w_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 3, 1, 3));
 #endif
@@ -1125,7 +1125,7 @@ INLINE Vec4 wywy() const
 INLINE Vec4 xzwy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,z_,w_,y_);
+    return Vec4(x_, z_, w_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 3, 2, 0));
 #endif
@@ -1134,7 +1134,7 @@ INLINE Vec4 xzwy() const
 INLINE Vec4 yzwy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,z_,w_,y_);
+    return Vec4(y_, z_, w_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 3, 2, 1));
 #endif
@@ -1143,7 +1143,7 @@ INLINE Vec4 yzwy() const
 INLINE Vec4 zzwy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,z_,w_,y_);
+    return Vec4(z_, z_, w_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 3, 2, 2));
 #endif
@@ -1152,7 +1152,7 @@ INLINE Vec4 zzwy() const
 INLINE Vec4 wzwy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,z_,w_,y_);
+    return Vec4(w_, z_, w_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 3, 2, 3));
 #endif
@@ -1161,7 +1161,7 @@ INLINE Vec4 wzwy() const
 INLINE Vec4 xwwy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,w_,w_,y_);
+    return Vec4(x_, w_, w_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 3, 3, 0));
 #endif
@@ -1170,7 +1170,7 @@ INLINE Vec4 xwwy() const
 INLINE Vec4 ywwy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,w_,w_,y_);
+    return Vec4(y_, w_, w_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 3, 3, 1));
 #endif
@@ -1179,7 +1179,7 @@ INLINE Vec4 ywwy() const
 INLINE Vec4 zwwy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,w_,w_,y_);
+    return Vec4(z_, w_, w_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 3, 3, 2));
 #endif
@@ -1188,7 +1188,7 @@ INLINE Vec4 zwwy() const
 INLINE Vec4 wwwy() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,w_,w_,y_);
+    return Vec4(w_, w_, w_, y_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 3, 3, 3));
 #endif
@@ -1197,7 +1197,7 @@ INLINE Vec4 wwwy() const
 INLINE Vec4 xxxz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,x_,x_,z_);
+    return Vec4(x_, x_, x_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 0, 0, 0));
 #endif
@@ -1206,7 +1206,7 @@ INLINE Vec4 xxxz() const
 INLINE Vec4 yxxz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,x_,x_,z_);
+    return Vec4(y_, x_, x_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 0, 0, 1));
 #endif
@@ -1215,7 +1215,7 @@ INLINE Vec4 yxxz() const
 INLINE Vec4 zxxz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,x_,x_,z_);
+    return Vec4(z_, x_, x_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 0, 0, 2));
 #endif
@@ -1224,7 +1224,7 @@ INLINE Vec4 zxxz() const
 INLINE Vec4 wxxz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,x_,x_,z_);
+    return Vec4(w_, x_, x_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 0, 0, 3));
 #endif
@@ -1233,7 +1233,7 @@ INLINE Vec4 wxxz() const
 INLINE Vec4 xyxz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,y_,x_,z_);
+    return Vec4(x_, y_, x_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 0, 1, 0));
 #endif
@@ -1242,7 +1242,7 @@ INLINE Vec4 xyxz() const
 INLINE Vec4 yyxz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,y_,x_,z_);
+    return Vec4(y_, y_, x_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 0, 1, 1));
 #endif
@@ -1251,7 +1251,7 @@ INLINE Vec4 yyxz() const
 INLINE Vec4 zyxz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,y_,x_,z_);
+    return Vec4(z_, y_, x_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 0, 1, 2));
 #endif
@@ -1260,7 +1260,7 @@ INLINE Vec4 zyxz() const
 INLINE Vec4 wyxz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,y_,x_,z_);
+    return Vec4(w_, y_, x_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 0, 1, 3));
 #endif
@@ -1269,7 +1269,7 @@ INLINE Vec4 wyxz() const
 INLINE Vec4 xzxz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,z_,x_,z_);
+    return Vec4(x_, z_, x_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 0, 2, 0));
 #endif
@@ -1278,7 +1278,7 @@ INLINE Vec4 xzxz() const
 INLINE Vec4 yzxz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,z_,x_,z_);
+    return Vec4(y_, z_, x_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 0, 2, 1));
 #endif
@@ -1287,7 +1287,7 @@ INLINE Vec4 yzxz() const
 INLINE Vec4 zzxz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,z_,x_,z_);
+    return Vec4(z_, z_, x_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 0, 2, 2));
 #endif
@@ -1296,7 +1296,7 @@ INLINE Vec4 zzxz() const
 INLINE Vec4 wzxz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,z_,x_,z_);
+    return Vec4(w_, z_, x_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 0, 2, 3));
 #endif
@@ -1305,7 +1305,7 @@ INLINE Vec4 wzxz() const
 INLINE Vec4 xwxz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,w_,x_,z_);
+    return Vec4(x_, w_, x_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 0, 3, 0));
 #endif
@@ -1314,7 +1314,7 @@ INLINE Vec4 xwxz() const
 INLINE Vec4 ywxz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,w_,x_,z_);
+    return Vec4(y_, w_, x_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 0, 3, 1));
 #endif
@@ -1323,7 +1323,7 @@ INLINE Vec4 ywxz() const
 INLINE Vec4 zwxz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,w_,x_,z_);
+    return Vec4(z_, w_, x_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 0, 3, 2));
 #endif
@@ -1332,7 +1332,7 @@ INLINE Vec4 zwxz() const
 INLINE Vec4 wwxz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,w_,x_,z_);
+    return Vec4(w_, w_, x_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 0, 3, 3));
 #endif
@@ -1341,7 +1341,7 @@ INLINE Vec4 wwxz() const
 INLINE Vec4 xxyz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,x_,y_,z_);
+    return Vec4(x_, x_, y_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 1, 0, 0));
 #endif
@@ -1350,7 +1350,7 @@ INLINE Vec4 xxyz() const
 INLINE Vec4 yxyz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,x_,y_,z_);
+    return Vec4(y_, x_, y_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 1, 0, 1));
 #endif
@@ -1359,7 +1359,7 @@ INLINE Vec4 yxyz() const
 INLINE Vec4 zxyz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,x_,y_,z_);
+    return Vec4(z_, x_, y_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 1, 0, 2));
 #endif
@@ -1368,7 +1368,7 @@ INLINE Vec4 zxyz() const
 INLINE Vec4 wxyz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,x_,y_,z_);
+    return Vec4(w_, x_, y_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 1, 0, 3));
 #endif
@@ -1377,7 +1377,7 @@ INLINE Vec4 wxyz() const
 INLINE Vec4 xyyz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,y_,y_,z_);
+    return Vec4(x_, y_, y_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 1, 1, 0));
 #endif
@@ -1386,7 +1386,7 @@ INLINE Vec4 xyyz() const
 INLINE Vec4 yyyz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,y_,y_,z_);
+    return Vec4(y_, y_, y_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 1, 1, 1));
 #endif
@@ -1395,7 +1395,7 @@ INLINE Vec4 yyyz() const
 INLINE Vec4 zyyz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,y_,y_,z_);
+    return Vec4(z_, y_, y_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 1, 1, 2));
 #endif
@@ -1404,7 +1404,7 @@ INLINE Vec4 zyyz() const
 INLINE Vec4 wyyz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,y_,y_,z_);
+    return Vec4(w_, y_, y_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 1, 1, 3));
 #endif
@@ -1413,7 +1413,7 @@ INLINE Vec4 wyyz() const
 INLINE Vec4 xzyz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,z_,y_,z_);
+    return Vec4(x_, z_, y_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 1, 2, 0));
 #endif
@@ -1422,7 +1422,7 @@ INLINE Vec4 xzyz() const
 INLINE Vec4 yzyz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,z_,y_,z_);
+    return Vec4(y_, z_, y_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 1, 2, 1));
 #endif
@@ -1431,7 +1431,7 @@ INLINE Vec4 yzyz() const
 INLINE Vec4 zzyz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,z_,y_,z_);
+    return Vec4(z_, z_, y_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 1, 2, 2));
 #endif
@@ -1440,7 +1440,7 @@ INLINE Vec4 zzyz() const
 INLINE Vec4 wzyz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,z_,y_,z_);
+    return Vec4(w_, z_, y_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 1, 2, 3));
 #endif
@@ -1449,7 +1449,7 @@ INLINE Vec4 wzyz() const
 INLINE Vec4 xwyz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,w_,y_,z_);
+    return Vec4(x_, w_, y_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 1, 3, 0));
 #endif
@@ -1458,7 +1458,7 @@ INLINE Vec4 xwyz() const
 INLINE Vec4 ywyz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,w_,y_,z_);
+    return Vec4(y_, w_, y_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 1, 3, 1));
 #endif
@@ -1467,7 +1467,7 @@ INLINE Vec4 ywyz() const
 INLINE Vec4 zwyz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,w_,y_,z_);
+    return Vec4(z_, w_, y_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 1, 3, 2));
 #endif
@@ -1476,7 +1476,7 @@ INLINE Vec4 zwyz() const
 INLINE Vec4 wwyz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,w_,y_,z_);
+    return Vec4(w_, w_, y_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 1, 3, 3));
 #endif
@@ -1485,7 +1485,7 @@ INLINE Vec4 wwyz() const
 INLINE Vec4 xxzz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,x_,z_,z_);
+    return Vec4(x_, x_, z_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 2, 0, 0));
 #endif
@@ -1494,7 +1494,7 @@ INLINE Vec4 xxzz() const
 INLINE Vec4 yxzz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,x_,z_,z_);
+    return Vec4(y_, x_, z_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 2, 0, 1));
 #endif
@@ -1503,7 +1503,7 @@ INLINE Vec4 yxzz() const
 INLINE Vec4 zxzz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,x_,z_,z_);
+    return Vec4(z_, x_, z_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 2, 0, 2));
 #endif
@@ -1512,7 +1512,7 @@ INLINE Vec4 zxzz() const
 INLINE Vec4 wxzz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,x_,z_,z_);
+    return Vec4(w_, x_, z_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 2, 0, 3));
 #endif
@@ -1521,7 +1521,7 @@ INLINE Vec4 wxzz() const
 INLINE Vec4 xyzz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,y_,z_,z_);
+    return Vec4(x_, y_, z_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 2, 1, 0));
 #endif
@@ -1530,7 +1530,7 @@ INLINE Vec4 xyzz() const
 INLINE Vec4 yyzz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,y_,z_,z_);
+    return Vec4(y_, y_, z_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 2, 1, 1));
 #endif
@@ -1539,7 +1539,7 @@ INLINE Vec4 yyzz() const
 INLINE Vec4 zyzz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,y_,z_,z_);
+    return Vec4(z_, y_, z_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 2, 1, 2));
 #endif
@@ -1548,7 +1548,7 @@ INLINE Vec4 zyzz() const
 INLINE Vec4 wyzz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,y_,z_,z_);
+    return Vec4(w_, y_, z_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 2, 1, 3));
 #endif
@@ -1557,7 +1557,7 @@ INLINE Vec4 wyzz() const
 INLINE Vec4 xzzz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,z_,z_,z_);
+    return Vec4(x_, z_, z_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 2, 2, 0));
 #endif
@@ -1566,7 +1566,7 @@ INLINE Vec4 xzzz() const
 INLINE Vec4 yzzz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,z_,z_,z_);
+    return Vec4(y_, z_, z_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 2, 2, 1));
 #endif
@@ -1575,7 +1575,7 @@ INLINE Vec4 yzzz() const
 INLINE Vec4 zzzz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,z_,z_,z_);
+    return Vec4(z_, z_, z_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 2, 2, 2));
 #endif
@@ -1584,7 +1584,7 @@ INLINE Vec4 zzzz() const
 INLINE Vec4 wzzz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,z_,z_,z_);
+    return Vec4(w_, z_, z_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 2, 2, 3));
 #endif
@@ -1593,7 +1593,7 @@ INLINE Vec4 wzzz() const
 INLINE Vec4 xwzz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,w_,z_,z_);
+    return Vec4(x_, w_, z_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 2, 3, 0));
 #endif
@@ -1602,7 +1602,7 @@ INLINE Vec4 xwzz() const
 INLINE Vec4 ywzz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,w_,z_,z_);
+    return Vec4(y_, w_, z_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 2, 3, 1));
 #endif
@@ -1611,7 +1611,7 @@ INLINE Vec4 ywzz() const
 INLINE Vec4 zwzz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,w_,z_,z_);
+    return Vec4(z_, w_, z_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 2, 3, 2));
 #endif
@@ -1620,7 +1620,7 @@ INLINE Vec4 zwzz() const
 INLINE Vec4 wwzz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,w_,z_,z_);
+    return Vec4(w_, w_, z_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 2, 3, 3));
 #endif
@@ -1629,7 +1629,7 @@ INLINE Vec4 wwzz() const
 INLINE Vec4 xxwz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,x_,w_,z_);
+    return Vec4(x_, x_, w_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 3, 0, 0));
 #endif
@@ -1638,7 +1638,7 @@ INLINE Vec4 xxwz() const
 INLINE Vec4 yxwz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,x_,w_,z_);
+    return Vec4(y_, x_, w_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 3, 0, 1));
 #endif
@@ -1647,7 +1647,7 @@ INLINE Vec4 yxwz() const
 INLINE Vec4 zxwz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,x_,w_,z_);
+    return Vec4(z_, x_, w_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 3, 0, 2));
 #endif
@@ -1656,7 +1656,7 @@ INLINE Vec4 zxwz() const
 INLINE Vec4 wxwz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,x_,w_,z_);
+    return Vec4(w_, x_, w_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 3, 0, 3));
 #endif
@@ -1665,7 +1665,7 @@ INLINE Vec4 wxwz() const
 INLINE Vec4 xywz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,y_,w_,z_);
+    return Vec4(x_, y_, w_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 3, 1, 0));
 #endif
@@ -1674,7 +1674,7 @@ INLINE Vec4 xywz() const
 INLINE Vec4 yywz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,y_,w_,z_);
+    return Vec4(y_, y_, w_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 3, 1, 1));
 #endif
@@ -1683,7 +1683,7 @@ INLINE Vec4 yywz() const
 INLINE Vec4 zywz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,y_,w_,z_);
+    return Vec4(z_, y_, w_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 3, 1, 2));
 #endif
@@ -1692,7 +1692,7 @@ INLINE Vec4 zywz() const
 INLINE Vec4 wywz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,y_,w_,z_);
+    return Vec4(w_, y_, w_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 3, 1, 3));
 #endif
@@ -1701,7 +1701,7 @@ INLINE Vec4 wywz() const
 INLINE Vec4 xzwz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,z_,w_,z_);
+    return Vec4(x_, z_, w_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 3, 2, 0));
 #endif
@@ -1710,7 +1710,7 @@ INLINE Vec4 xzwz() const
 INLINE Vec4 yzwz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,z_,w_,z_);
+    return Vec4(y_, z_, w_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 3, 2, 1));
 #endif
@@ -1719,7 +1719,7 @@ INLINE Vec4 yzwz() const
 INLINE Vec4 zzwz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,z_,w_,z_);
+    return Vec4(z_, z_, w_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 3, 2, 2));
 #endif
@@ -1728,7 +1728,7 @@ INLINE Vec4 zzwz() const
 INLINE Vec4 wzwz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,z_,w_,z_);
+    return Vec4(w_, z_, w_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 3, 2, 3));
 #endif
@@ -1737,7 +1737,7 @@ INLINE Vec4 wzwz() const
 INLINE Vec4 xwwz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,w_,w_,z_);
+    return Vec4(x_, w_, w_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 3, 3, 0));
 #endif
@@ -1746,7 +1746,7 @@ INLINE Vec4 xwwz() const
 INLINE Vec4 ywwz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,w_,w_,z_);
+    return Vec4(y_, w_, w_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 3, 3, 1));
 #endif
@@ -1755,7 +1755,7 @@ INLINE Vec4 ywwz() const
 INLINE Vec4 zwwz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,w_,w_,z_);
+    return Vec4(z_, w_, w_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 3, 3, 2));
 #endif
@@ -1764,7 +1764,7 @@ INLINE Vec4 zwwz() const
 INLINE Vec4 wwwz() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,w_,w_,z_);
+    return Vec4(w_, w_, w_, z_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 3, 3, 3));
 #endif
@@ -1773,7 +1773,7 @@ INLINE Vec4 wwwz() const
 INLINE Vec4 xxxw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,x_,x_,w_);
+    return Vec4(x_, x_, x_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 0, 0, 0));
 #endif
@@ -1782,7 +1782,7 @@ INLINE Vec4 xxxw() const
 INLINE Vec4 yxxw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,x_,x_,w_);
+    return Vec4(y_, x_, x_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 0, 0, 1));
 #endif
@@ -1791,7 +1791,7 @@ INLINE Vec4 yxxw() const
 INLINE Vec4 zxxw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,x_,x_,w_);
+    return Vec4(z_, x_, x_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 0, 0, 2));
 #endif
@@ -1800,7 +1800,7 @@ INLINE Vec4 zxxw() const
 INLINE Vec4 wxxw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,x_,x_,w_);
+    return Vec4(w_, x_, x_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 0, 0, 3));
 #endif
@@ -1809,7 +1809,7 @@ INLINE Vec4 wxxw() const
 INLINE Vec4 xyxw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,y_,x_,w_);
+    return Vec4(x_, y_, x_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 0, 1, 0));
 #endif
@@ -1818,7 +1818,7 @@ INLINE Vec4 xyxw() const
 INLINE Vec4 yyxw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,y_,x_,w_);
+    return Vec4(y_, y_, x_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 0, 1, 1));
 #endif
@@ -1827,7 +1827,7 @@ INLINE Vec4 yyxw() const
 INLINE Vec4 zyxw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,y_,x_,w_);
+    return Vec4(z_, y_, x_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 0, 1, 2));
 #endif
@@ -1836,7 +1836,7 @@ INLINE Vec4 zyxw() const
 INLINE Vec4 wyxw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,y_,x_,w_);
+    return Vec4(w_, y_, x_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 0, 1, 3));
 #endif
@@ -1845,7 +1845,7 @@ INLINE Vec4 wyxw() const
 INLINE Vec4 xzxw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,z_,x_,w_);
+    return Vec4(x_, z_, x_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 0, 2, 0));
 #endif
@@ -1854,7 +1854,7 @@ INLINE Vec4 xzxw() const
 INLINE Vec4 yzxw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,z_,x_,w_);
+    return Vec4(y_, z_, x_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 0, 2, 1));
 #endif
@@ -1863,7 +1863,7 @@ INLINE Vec4 yzxw() const
 INLINE Vec4 zzxw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,z_,x_,w_);
+    return Vec4(z_, z_, x_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 0, 2, 2));
 #endif
@@ -1872,7 +1872,7 @@ INLINE Vec4 zzxw() const
 INLINE Vec4 wzxw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,z_,x_,w_);
+    return Vec4(w_, z_, x_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 0, 2, 3));
 #endif
@@ -1881,7 +1881,7 @@ INLINE Vec4 wzxw() const
 INLINE Vec4 xwxw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,w_,x_,w_);
+    return Vec4(x_, w_, x_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 0, 3, 0));
 #endif
@@ -1890,7 +1890,7 @@ INLINE Vec4 xwxw() const
 INLINE Vec4 ywxw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,w_,x_,w_);
+    return Vec4(y_, w_, x_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 0, 3, 1));
 #endif
@@ -1899,7 +1899,7 @@ INLINE Vec4 ywxw() const
 INLINE Vec4 zwxw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,w_,x_,w_);
+    return Vec4(z_, w_, x_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 0, 3, 2));
 #endif
@@ -1908,7 +1908,7 @@ INLINE Vec4 zwxw() const
 INLINE Vec4 wwxw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,w_,x_,w_);
+    return Vec4(w_, w_, x_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 0, 3, 3));
 #endif
@@ -1917,7 +1917,7 @@ INLINE Vec4 wwxw() const
 INLINE Vec4 xxyw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,x_,y_,w_);
+    return Vec4(x_, x_, y_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 1, 0, 0));
 #endif
@@ -1926,7 +1926,7 @@ INLINE Vec4 xxyw() const
 INLINE Vec4 yxyw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,x_,y_,w_);
+    return Vec4(y_, x_, y_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 1, 0, 1));
 #endif
@@ -1935,7 +1935,7 @@ INLINE Vec4 yxyw() const
 INLINE Vec4 zxyw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,x_,y_,w_);
+    return Vec4(z_, x_, y_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 1, 0, 2));
 #endif
@@ -1944,7 +1944,7 @@ INLINE Vec4 zxyw() const
 INLINE Vec4 wxyw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,x_,y_,w_);
+    return Vec4(w_, x_, y_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 1, 0, 3));
 #endif
@@ -1953,7 +1953,7 @@ INLINE Vec4 wxyw() const
 INLINE Vec4 xyyw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,y_,y_,w_);
+    return Vec4(x_, y_, y_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 1, 1, 0));
 #endif
@@ -1962,7 +1962,7 @@ INLINE Vec4 xyyw() const
 INLINE Vec4 yyyw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,y_,y_,w_);
+    return Vec4(y_, y_, y_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 1, 1, 1));
 #endif
@@ -1971,7 +1971,7 @@ INLINE Vec4 yyyw() const
 INLINE Vec4 zyyw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,y_,y_,w_);
+    return Vec4(z_, y_, y_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 1, 1, 2));
 #endif
@@ -1980,7 +1980,7 @@ INLINE Vec4 zyyw() const
 INLINE Vec4 wyyw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,y_,y_,w_);
+    return Vec4(w_, y_, y_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 1, 1, 3));
 #endif
@@ -1989,7 +1989,7 @@ INLINE Vec4 wyyw() const
 INLINE Vec4 xzyw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,z_,y_,w_);
+    return Vec4(x_, z_, y_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 1, 2, 0));
 #endif
@@ -1998,7 +1998,7 @@ INLINE Vec4 xzyw() const
 INLINE Vec4 yzyw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,z_,y_,w_);
+    return Vec4(y_, z_, y_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 1, 2, 1));
 #endif
@@ -2007,7 +2007,7 @@ INLINE Vec4 yzyw() const
 INLINE Vec4 zzyw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,z_,y_,w_);
+    return Vec4(z_, z_, y_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 1, 2, 2));
 #endif
@@ -2016,7 +2016,7 @@ INLINE Vec4 zzyw() const
 INLINE Vec4 wzyw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,z_,y_,w_);
+    return Vec4(w_, z_, y_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 1, 2, 3));
 #endif
@@ -2025,7 +2025,7 @@ INLINE Vec4 wzyw() const
 INLINE Vec4 xwyw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,w_,y_,w_);
+    return Vec4(x_, w_, y_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 1, 3, 0));
 #endif
@@ -2034,7 +2034,7 @@ INLINE Vec4 xwyw() const
 INLINE Vec4 ywyw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,w_,y_,w_);
+    return Vec4(y_, w_, y_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 1, 3, 1));
 #endif
@@ -2043,7 +2043,7 @@ INLINE Vec4 ywyw() const
 INLINE Vec4 zwyw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,w_,y_,w_);
+    return Vec4(z_, w_, y_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 1, 3, 2));
 #endif
@@ -2052,7 +2052,7 @@ INLINE Vec4 zwyw() const
 INLINE Vec4 wwyw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,w_,y_,w_);
+    return Vec4(w_, w_, y_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 1, 3, 3));
 #endif
@@ -2061,7 +2061,7 @@ INLINE Vec4 wwyw() const
 INLINE Vec4 xxzw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,x_,z_,w_);
+    return Vec4(x_, x_, z_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 2, 0, 0));
 #endif
@@ -2070,7 +2070,7 @@ INLINE Vec4 xxzw() const
 INLINE Vec4 yxzw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,x_,z_,w_);
+    return Vec4(y_, x_, z_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 2, 0, 1));
 #endif
@@ -2079,7 +2079,7 @@ INLINE Vec4 yxzw() const
 INLINE Vec4 zxzw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,x_,z_,w_);
+    return Vec4(z_, x_, z_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 2, 0, 2));
 #endif
@@ -2088,7 +2088,7 @@ INLINE Vec4 zxzw() const
 INLINE Vec4 wxzw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,x_,z_,w_);
+    return Vec4(w_, x_, z_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 2, 0, 3));
 #endif
@@ -2097,7 +2097,7 @@ INLINE Vec4 wxzw() const
 INLINE Vec4 yyzw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,y_,z_,w_);
+    return Vec4(y_, y_, z_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 2, 1, 1));
 #endif
@@ -2106,7 +2106,7 @@ INLINE Vec4 yyzw() const
 INLINE Vec4 zyzw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,y_,z_,w_);
+    return Vec4(z_, y_, z_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 2, 1, 2));
 #endif
@@ -2115,7 +2115,7 @@ INLINE Vec4 zyzw() const
 INLINE Vec4 wyzw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,y_,z_,w_);
+    return Vec4(w_, y_, z_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 2, 1, 3));
 #endif
@@ -2124,7 +2124,7 @@ INLINE Vec4 wyzw() const
 INLINE Vec4 xzzw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,z_,z_,w_);
+    return Vec4(x_, z_, z_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 2, 2, 0));
 #endif
@@ -2133,7 +2133,7 @@ INLINE Vec4 xzzw() const
 INLINE Vec4 yzzw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,z_,z_,w_);
+    return Vec4(y_, z_, z_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 2, 2, 1));
 #endif
@@ -2142,7 +2142,7 @@ INLINE Vec4 yzzw() const
 INLINE Vec4 zzzw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,z_,z_,w_);
+    return Vec4(z_, z_, z_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 2, 2, 2));
 #endif
@@ -2151,7 +2151,7 @@ INLINE Vec4 zzzw() const
 INLINE Vec4 wzzw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,z_,z_,w_);
+    return Vec4(w_, z_, z_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 2, 2, 3));
 #endif
@@ -2160,7 +2160,7 @@ INLINE Vec4 wzzw() const
 INLINE Vec4 xwzw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,w_,z_,w_);
+    return Vec4(x_, w_, z_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 2, 3, 0));
 #endif
@@ -2169,7 +2169,7 @@ INLINE Vec4 xwzw() const
 INLINE Vec4 ywzw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,w_,z_,w_);
+    return Vec4(y_, w_, z_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 2, 3, 1));
 #endif
@@ -2178,7 +2178,7 @@ INLINE Vec4 ywzw() const
 INLINE Vec4 zwzw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,w_,z_,w_);
+    return Vec4(z_, w_, z_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 2, 3, 2));
 #endif
@@ -2187,7 +2187,7 @@ INLINE Vec4 zwzw() const
 INLINE Vec4 wwzw() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,w_,z_,w_);
+    return Vec4(w_, w_, z_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 2, 3, 3));
 #endif
@@ -2196,7 +2196,7 @@ INLINE Vec4 wwzw() const
 INLINE Vec4 xxww() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,x_,w_,w_);
+    return Vec4(x_, x_, w_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 3, 0, 0));
 #endif
@@ -2205,7 +2205,7 @@ INLINE Vec4 xxww() const
 INLINE Vec4 yxww() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,x_,w_,w_);
+    return Vec4(y_, x_, w_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 3, 0, 1));
 #endif
@@ -2214,7 +2214,7 @@ INLINE Vec4 yxww() const
 INLINE Vec4 zxww() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,x_,w_,w_);
+    return Vec4(z_, x_, w_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 3, 0, 2));
 #endif
@@ -2223,7 +2223,7 @@ INLINE Vec4 zxww() const
 INLINE Vec4 wxww() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,x_,w_,w_);
+    return Vec4(w_, x_, w_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 3, 0, 3));
 #endif
@@ -2232,7 +2232,7 @@ INLINE Vec4 wxww() const
 INLINE Vec4 xyww() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,y_,w_,w_);
+    return Vec4(x_, y_, w_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 3, 1, 0));
 #endif
@@ -2241,7 +2241,7 @@ INLINE Vec4 xyww() const
 INLINE Vec4 yyww() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,y_,w_,w_);
+    return Vec4(y_, y_, w_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 3, 1, 1));
 #endif
@@ -2250,7 +2250,7 @@ INLINE Vec4 yyww() const
 INLINE Vec4 zyww() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,y_,w_,w_);
+    return Vec4(z_, y_, w_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 3, 1, 2));
 #endif
@@ -2259,7 +2259,7 @@ INLINE Vec4 zyww() const
 INLINE Vec4 wyww() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,y_,w_,w_);
+    return Vec4(w_, y_, w_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 3, 1, 3));
 #endif
@@ -2268,7 +2268,7 @@ INLINE Vec4 wyww() const
 INLINE Vec4 xzww() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,z_,w_,w_);
+    return Vec4(x_, z_, w_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 3, 2, 0));
 #endif
@@ -2277,7 +2277,7 @@ INLINE Vec4 xzww() const
 INLINE Vec4 yzww() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,z_,w_,w_);
+    return Vec4(y_, z_, w_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 3, 2, 1));
 #endif
@@ -2286,7 +2286,7 @@ INLINE Vec4 yzww() const
 INLINE Vec4 zzww() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,z_,w_,w_);
+    return Vec4(z_, z_, w_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 3, 2, 2));
 #endif
@@ -2295,7 +2295,7 @@ INLINE Vec4 zzww() const
 INLINE Vec4 wzww() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,z_,w_,w_);
+    return Vec4(w_, z_, w_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 3, 2, 3));
 #endif
@@ -2304,7 +2304,7 @@ INLINE Vec4 wzww() const
 INLINE Vec4 xwww() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(x_,w_,w_,w_);
+    return Vec4(x_, w_, w_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 3, 3, 0));
 #endif
@@ -2313,7 +2313,7 @@ INLINE Vec4 xwww() const
 INLINE Vec4 ywww() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(y_,w_,w_,w_);
+    return Vec4(y_, w_, w_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 3, 3, 1));
 #endif
@@ -2322,7 +2322,7 @@ INLINE Vec4 ywww() const
 INLINE Vec4 zwww() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(z_,w_,w_,w_);
+    return Vec4(z_, w_, w_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 3, 3, 2));
 #endif
@@ -2331,7 +2331,7 @@ INLINE Vec4 zwww() const
 INLINE Vec4 wwww() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return Vec4(w_,w_,w_,w_);
+    return Vec4(w_, w_, w_, w_);
 #else
     return _mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 3, 3, 3));
 #endif

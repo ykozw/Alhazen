@@ -65,8 +65,8 @@ public:
     // 波長
     __m128 lamda; // (lamda0,lamda1,lamda2,lamda3)
     //
-    RaySIMD(const Ray& ray )
-        :origRay( ray )
+    RaySIMD(const Ray& ray)
+        :origRay(ray)
     {
         const Vec3& ro = ray.o;
         const Vec3& rdi = ray.dinv;

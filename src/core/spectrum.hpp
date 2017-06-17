@@ -71,24 +71,24 @@ SpectrumRGB lerp(const SpectrumRGB& lhs, const SpectrumRGB& rhs, float factor);
 class SpectrumSampled
 {
 public:
-	std::array<float, SPECTRUM_SAMPLED_NUM_SAMPLES> samples;
+    std::array<float, SPECTRUM_SAMPLED_NUM_SAMPLES> samples;
 public:
     static SpectrumSampled createAsBlack();
     static SpectrumSampled createAsWhite();
     static SpectrumSampled createFromRGB(const std::array<float, 3>& rgb, bool asIllumination);
     static SpectrumSampled createFromColorTemp(const float kelvin);
     static float energyDif(const SpectrumSampled& lhs, const SpectrumSampled& rhs);
-	SpectrumSampled();
+    SpectrumSampled();
     explicit SpectrumSampled(float v);
     explicit SpectrumSampled(const std::array<float, SPECTRUM_SAMPLED_NUM_SAMPLES>& samples);
-	void clear();
-	bool isBlack() const;
-	SpectrumSampled sqrt() const;
-	void toXYZ(std::array<float, 3>& xyz_) const;
+    void clear();
+    bool isBlack() const;
+    SpectrumSampled sqrt() const;
+    void toXYZ(std::array<float, 3>& xyz_) const;
     void toRGB(SpectrumRGB& rgb) const;
-	void clamp( float mn, float mx );
-	bool hasNaN() const;
-	float maxValue() const;
+    void clamp(float mn, float mx);
+    bool hasNaN() const;
+    float maxValue() const;
     float sample(float wavelength) const;
     float accumrate() const;
     float y() const;
@@ -102,7 +102,7 @@ SpectrumSampled operator / (const SpectrumSampled& spectrum, float v);
 SpectrumSampled operator / (const SpectrumSampled& lhs, const SpectrumSampled& rhs);
 SpectrumSampled& operator += (SpectrumSampled& lhs, const SpectrumSampled& rhs);
 SpectrumSampled& operator -= (SpectrumSampled& lhs, const SpectrumSampled& rhs);
-SpectrumSampled& operator *= (SpectrumSampled& spectrum, float scale );
+SpectrumSampled& operator *= (SpectrumSampled& spectrum, float scale);
 SpectrumSampled lerp(const SpectrumSampled& lhs, const SpectrumSampled& rhs, float factor);
 
 //-------------------------------------------------
@@ -150,7 +150,7 @@ SpectrumHerowavelength operator * (const SpectrumSampled& ss, const SpectrumHero
 template<int32_t NUM_SAMPLE>
 SpectrumSampled sample2SpectrumSampled(
     const std::array<float, NUM_SAMPLE>& lambdas,
-    const std::array<float, NUM_SAMPLE>& intensity );
+    const std::array<float, NUM_SAMPLE>& intensity);
 
 //
 //typedef SpectrumSampled Spectrum;

@@ -19,7 +19,7 @@ public:
     {
         return numElements_;
     }
-    RefArray<T> subArray( int32_t start, int32_t end )
+    RefArray<T> subArray(int32_t start, int32_t end)
     {
         assert(0 <= start && start < numElements_);
         assert(0 <= end && end <= numElements_);

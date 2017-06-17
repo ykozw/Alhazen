@@ -14,9 +14,9 @@ public:
     Distribution1D_Naive(const float* values, int32_t num);
     Distribution1D_Naive(std::function<float(float)> valueGen, int32_t split);
     float sample(float u, _Out_ float* pdf, int32_t* offset = NULL) const;
-    float pdf( int32_t index ) const;
+    float pdf(int32_t index) const;
 private:
-    void construct(const std::vector<float>& pdf );
+    void construct(const std::vector<float>& pdf);
 private:
     float numValue_;
     float invNumValue_;

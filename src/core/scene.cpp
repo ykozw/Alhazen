@@ -215,7 +215,7 @@ SubFilm& Scene::render(int32_t taskNo)
         for (int32_t x = region.left; x < region.right; ++x)
         {
             //
-            sampler->setHash(calcPixelHash(x,y,image.width()));
+            sampler->setHash(calcPixelHash(x, y, image.width()));
             //
             Spectrum spectrumTotal(0.0f);
             // TODO: ちゃんとシーンファイルから取ってくるようにする
@@ -284,35 +284,35 @@ Spectrum Scene::renderPixel(int32_t x, int32_t y)
 void Scene::developLDR(const std::string& filmName, bool isFinal, bool isPreview)
 {
     AL_ASSERT_DEBUG(Job::threadId == 0 || Job::threadId == 1);
-	// FIXME: renderが走っていないかを確認する
+    // FIXME: renderが走っていないかを確認する
 
-	// 最終スナップは必ずデノイズを掛ける
-	const bool denoise = isFinal || snapshotDenoise_;
-	const Image& radianceImage = sensor_->film()->image();
-	// ノイズを除去する
-	if (denoise)
-	{
+    // 最終スナップは必ずデノイズを掛ける
+    const bool denoise = isFinal || snapshotDenoise_;
+    const Image& radianceImage = sensor_->film()->image();
+    // ノイズを除去する
+    if (denoise)
+    {
         //
-        AL_ASSERT_DEBUG( 
-            (radianceImage.width() == denoiseBuffer_.width()) && 
+        AL_ASSERT_DEBUG(
+            (radianceImage.width() == denoiseBuffer_.width()) &&
             (radianceImage.height() == denoiseBuffer_.height()));
-		denoiser_->denoise(radianceImage, denoiseBuffer_);
-	}
-	const Image& image = denoise ? denoiseBuffer_ : radianceImage;
-	// Tonemappingを掛けつつ出力する
-	const std::string fullPath = g_fileSystem.getOutputFolderPath() + filmName;
-	tonemapper_->process(image, tonemmappedImage_);
+        denoiser_->denoise(radianceImage, denoiseBuffer_);
+    }
+    const Image& image = denoise ? denoiseBuffer_ : radianceImage;
+    // Tonemappingを掛けつつ出力する
+    const std::string fullPath = g_fileSystem.getOutputFolderPath() + filmName;
+    tonemapper_->process(image, tonemmappedImage_);
 #if defined(WINDOWS)
-	tonemmappedImage_.writeBmp(fullPath);
+    tonemmappedImage_.writeBmp(fullPath);
 #else
     AL_ASSERT_ALWAYS(false);
 #endif
-	// 出力ファイルのプレビュー
-	if (isPreview)
-	{
-		const std::string openFileCmd = std::string("start ") + fullPath.c_str();
-		system(openFileCmd.c_str());
-	}
+    // 出力ファイルのプレビュー
+    if (isPreview)
+    {
+        const std::string openFileCmd = std::string("start ") + fullPath.c_str();
+        system(openFileCmd.c_str());
+    }
 }
 
 //-------------------------------------------------

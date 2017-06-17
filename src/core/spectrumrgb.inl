@@ -96,9 +96,9 @@ INLINE SpectrumRGB SpectrumRGB::sqrt() const
 {
     return
         SpectrumRGB(
-        sqrtf(r),
-        sqrtf(g),
-        sqrtf(b));
+            sqrtf(r),
+            sqrtf(g),
+            sqrtf(b));
 }
 
 //-------------------------------------------------

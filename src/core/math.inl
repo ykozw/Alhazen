@@ -1639,8 +1639,16 @@ INLINE static Vec3Pack8 operator / (const Vec3Pack8& v, float f)
 //
 //-------------------------------------------------
 INLINE Vec4::Vec4(_In_reads_(4) const float* es)
-	:x(es[0]), y(es[1]), z(es[2]), w(es[3])
-{}
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    x_ = es[0];
+    y_ = es[1];
+    z_ = es[2];
+    w_ = es[3];
+#else
+    xyzw_ = _mm_set_ps(es[3], es[2], es[1], es[0]);
+#endif
+}
 
 //-------------------------------------------------
 //
@@ -1648,12 +1656,12 @@ INLINE Vec4::Vec4(_In_reads_(4) const float* es)
 INLINE Vec4::Vec4(float ax, float ay, float az, float aw)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    x = ax;
-    y = ay;
-    z = az;
-    w = aw;
+    x_ = ax;
+    y_ = ay;
+    z_ = az;
+    w_ = aw;
 #elif defined(AL_MATH_USE_AVX2)
-    xyzw = _mm_set_ps(aw, az, ay, ax);
+    xyzw_ = _mm_set_ps(aw, az, ay, ax);
 #endif
 }
 
@@ -1663,12 +1671,12 @@ INLINE Vec4::Vec4(float ax, float ay, float az, float aw)
 INLINE Vec4::Vec4(float e)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-	x = e;
-	y = e;
-	z = e;
-	w = e;
+	x_ = e;
+	y_ = e;
+	z_ = e;
+	w_ = e;
 #elif defined(AL_MATH_USE_AVX2)
-    xyzw = _mm_set_ps(e, e, e, e);
+    xyzw_ = _mm_set_ps(e, e, e, e);
 #endif
 }
 
@@ -1679,56 +1687,105 @@ INLINE Vec4::Vec4(float e)
 INLINE Vec4::Vec4(__m128 other)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    x = _mm_cvtss_f32(_mm_shuffle_ps(other, other, _MM_SHUFFLE(0, 0, 0, 0)));
-    y = _mm_cvtss_f32(_mm_shuffle_ps(other, other, _MM_SHUFFLE(0, 0, 0, 1)));
-    z = _mm_cvtss_f32(_mm_shuffle_ps(other, other, _MM_SHUFFLE(0, 0, 0, 2)));
-    w = _mm_cvtss_f32(_mm_shuffle_ps(other, other, _MM_SHUFFLE(0, 0, 0, 3)));
+    x_ = _mm_cvtss_f32(_mm_shuffle_ps(other, other, _MM_SHUFFLE(0, 0, 0, 0)));
+    y_ = _mm_cvtss_f32(_mm_shuffle_ps(other, other, _MM_SHUFFLE(0, 0, 0, 1)));
+    z_ = _mm_cvtss_f32(_mm_shuffle_ps(other, other, _MM_SHUFFLE(0, 0, 0, 2)));
+    w_ = _mm_cvtss_f32(_mm_shuffle_ps(other, other, _MM_SHUFFLE(0, 0, 0, 3)));
 #elif defined(AL_MATH_USE_AVX2)
-    xyzw = other;
+    xyzw_ = other;
 #endif
 }
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-//FloatInVec Vec4::length() const
-//{
-//    return Vec4::length(*this);
-//}
 
 /*
  -------------------------------------------------
  -------------------------------------------------
  */
-//FloatInVec Vec4::lengthSq() const
-//{
-//    return Vec4::lengthSq(*this);
-//}
+INLINE float Vec4::x()const
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    return x_;
+#else
+    return _mm_cvtss_f32(_mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 0, 0, 0)));
+#endif
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE float Vec4::y()const
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    return y_;
+#else
+    return _mm_cvtss_f32(_mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 0, 0, 1)));
+#endif
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE float Vec4::z()const
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    return z_;
+#else
+    return _mm_cvtss_f32(_mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 0, 0, 2)));
+#endif
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE float Vec4::w()const
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    return w_;
+#else
+    return _mm_cvtss_f32(_mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 0, 0, 3)));
+#endif
+}
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-#if 0
+INLINE FloatInVec Vec4::length() const
+{
+    return Vec4::length(*this);
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE FloatInVec Vec4::lengthSq() const
+{
+    return Vec4::lengthSq(*this);
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE Vec4& Vec4::normalize()
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     const float invLen = 1.0f / length();
-    x *= invLen;
-    y *= invLen;
-    z *= invLen;
-    w *= invLen;
+    x_ *= invLen;
+    y_ *= invLen;
+    z_ *= invLen;
+    w_ *= invLen;
 #elif defined(AL_MATH_USE_AVX2)
-    const __m128 dp = _mm_dp_ps(xyzw, xyzw, 0xFF);
+    const __m128 dp = _mm_dp_ps(xyzw_, xyzw_, 0xFF);
     const __m128 idp = _mm_rsqrt_ps_accurate(dp);
-    xyzw = _mm_mul_ps(xyzw, idp);
+    xyzw_ = _mm_mul_ps(xyzw_, idp);
 #endif
     return *this;
 }
-#endif
 
-#if 0
 /*
  -------------------------------------------------
  -------------------------------------------------
@@ -1739,7 +1796,6 @@ Vec4 Vec4::normalized() const
     ret.normalize();
     return ret;
 }
-#endif
 
 //-------------------------------------------------
 //
@@ -1747,7 +1803,14 @@ Vec4 Vec4::normalized() const
 INLINE float Vec4::operator[](int32_t index) const
 {
     AL_ASSERT_DEBUG(0 <= index && index <= 3);
-    return *(&x+ index);
+    switch(index)
+    {
+        case 0: return x();
+        case 1: return y();
+        case 2: return z();
+        case 3: return w();
+        default: return 0.0f;
+    }
 }
 
 //-------------------------------------------------
@@ -1755,15 +1818,18 @@ INLINE float Vec4::operator[](int32_t index) const
 //-------------------------------------------------
 INLINE float Vec4::dot(Vec4 lhs, Vec4 rhs)
 {
-    // TODO: optimize
+#if defined(AL_MATH_USE_NO_SIMD)
 	return
-		lhs.x * rhs.x +
-		lhs.y * rhs.y +
-		lhs.z * rhs.z +
-		lhs.w * rhs.w;
+		lhs.x_ * rhs.x_ +
+		lhs.y_ * rhs.y_ +
+		lhs.z_ * rhs.z_ +
+		lhs.w_ * rhs.w_;
+#else
+    AL_ASSERT_ALWAYS(false);
+    return 0.0f;
+#endif
 }
 
-#if 0
 /*
 -------------------------------------------------
 -------------------------------------------------
@@ -1788,7 +1854,6 @@ INLINE FloatInVec Vec4::lengthSq(Vec4 v)
     return dot(v, v);
 #endif
 }
-#endif
 
 //-------------------------------------------------
 //
@@ -2341,12 +2406,17 @@ INLINE Matrix4x4 Matrix4x4::mul(const Matrix4x4& lhs, const Matrix4x4& rhs)
 //-------------------------------------------------
 INLINE Vec4 Matrix4x4::mul(const Vec4& v, const Matrix4x4& m)
 {
+#if defined(AL_MATH_USE_NO_SIMD)
 	Vec4 r;
-	r.x = v.x * m.e11 + v.y * m.e12 + v.z * m.e13 + v.w * m.e14;
-	r.y = v.x * m.e21 + v.y * m.e22 + v.z * m.e23 + v.w * m.e24;
-	r.z = v.x * m.e31 + v.y * m.e32 + v.z * m.e33 + v.w * m.e34;
-	r.w = v.x * m.e41 + v.y * m.e42 + v.z * m.e43 + v.w * m.e44;
+	r.x_ = v.x_ * m.e11 + v.y_ * m.e12 + v.z_ * m.e13 + v.w_ * m.e14;
+	r.y_ = v.x_ * m.e21 + v.y_ * m.e22 + v.z_ * m.e23 + v.w_ * m.e24;
+	r.z_ = v.x_ * m.e31 + v.y_ * m.e32 + v.z_ * m.e33 + v.w_ * m.e34;
+	r.w_ = v.x_ * m.e41 + v.y_ * m.e42 + v.z_ * m.e43 + v.w_ * m.e44;
 	return r;
+#else
+    AL_ASSERT_ALWAYS(false);
+    return Vec4();
+#endif
 }
 
 //-------------------------------------------------

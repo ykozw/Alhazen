@@ -404,46 +404,40 @@ Vec4
 struct Vec4
 {
 public:
-	union
-	{
-		__m128 xyzw;
-		struct
-		{
-			float x;
-			float y;
-			float z;
-			float w;
-		};
-	};
-public:
-	Vec4() = default;
-	Vec4(const Vec4& other) = default;
-	Vec4(Vec4&& other) = default;
-	Vec4(_In_reads_(4) const float* es);
-	Vec4(float x, float y, float z, float w);
-	explicit Vec4(float e);
-	Vec4(__m128 other);
-#if 0
-    // アクセッサを分けるようにする
-    //float x()const;
-    //float y()const;
-    //float z()const;
-    //float w()const;
-    // TODO: スイズルを作成する
-    FloatInVec length() const;
-    FloatInVec lengthSq() const;
-    Vec4& normalize();
-    Vec4 normalized() const;
-    //
+#if defined(AL_MATH_USE_NO_SIMD)
+    float x_;
+    float y_;
+    float z_;
+    float w_;
+#else
+    __m128 xyzw_;
 #endif
+public:
+	INLINE Vec4() = default;
+	INLINE Vec4(const Vec4& other) = default;
+	INLINE Vec4(Vec4&& other) = default;
+	INLINE Vec4(_In_reads_(4) const float* es);
+	INLINE Vec4(float x, float y, float z, float w);
+	INLINE explicit Vec4(float e);
+	INLINE Vec4(__m128 other);
+    // アクセッサ
+    INLINE float x()const;
+    INLINE float y()const;
+    INLINE float z()const;
+    INLINE float w()const;
+    // swizzle
+#include "swizzle_vec4.inl"
+    //
+    INLINE FloatInVec length() const;
+    INLINE FloatInVec lengthSq() const;
+    INLINE Vec4& normalize();
+    INLINE Vec4 normalized() const;
+    //
     float operator[](int32_t index) const;
     Vec4& operator=(const Vec4& other)  = default;
     static float dot(Vec4 lhs, Vec4 rhs);
-#if 0
     static FloatInVec length(Vec4 v);
     static FloatInVec lengthSq(Vec4 v);
-#endif
-    #include "swizzle_v4.inl"
 };
 
 /*

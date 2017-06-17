@@ -508,7 +508,7 @@ public:
     void constructAsTranslation(const Vec3& v);
     void constructAsScale(const Vec3& scale);
     void constructAsRotation(const Vec3& xyz_, float angle);
-    void constructAsViewMatrix(const Vec3& origin, const Vec3& target, const Vec3& up);
+    void constructAsViewMatrix(Vec3 origin, Vec3 target, Vec3 up);
     void fillZero();
     void identity();
     Vec3 transform(const Vec3& v) const;

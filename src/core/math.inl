@@ -1656,10 +1656,10 @@ INLINE Vec4::Vec4(_In_reads_(4) const float* es)
 INLINE Vec4::Vec4(float ax, float ay, float az, float aw)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    x = ax;
-    y = ay;
-    z = az;
-    w = aw;
+    x_ = ax;
+    y_ = ay;
+    z_ = az;
+    w_ = aw;
 #elif defined(AL_MATH_USE_AVX2)
     xyzw_ = _mm_set_ps(aw, az, ay, ax);
 #endif
@@ -1752,43 +1752,40 @@ INLINE float Vec4::w()const
 -------------------------------------------------
 -------------------------------------------------
 */
-//FloatInVec Vec4::length() const
-//{
-//    return Vec4::length(*this);
-//}
+INLINE FloatInVec Vec4::length() const
+{
+    return Vec4::length(*this);
+}
 
 /*
  -------------------------------------------------
  -------------------------------------------------
  */
-//FloatInVec Vec4::lengthSq() const
-//{
-//    return Vec4::lengthSq(*this);
-//}
+INLINE FloatInVec Vec4::lengthSq() const
+{
+    return Vec4::lengthSq(*this);
+}
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-#if 0
 INLINE Vec4& Vec4::normalize()
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     const float invLen = 1.0f / length();
-    x *= invLen;
-    y *= invLen;
-    z *= invLen;
-    w *= invLen;
+    x_ *= invLen;
+    y_ *= invLen;
+    z_ *= invLen;
+    w_ *= invLen;
 #elif defined(AL_MATH_USE_AVX2)
-    const __m128 dp = _mm_dp_ps(xyzw, xyzw, 0xFF);
+    const __m128 dp = _mm_dp_ps(xyzw_, xyzw_, 0xFF);
     const __m128 idp = _mm_rsqrt_ps_accurate(dp);
-    xyzw = _mm_mul_ps(xyzw, idp);
+    xyzw_ = _mm_mul_ps(xyzw_, idp);
 #endif
     return *this;
 }
-#endif
 
-#if 0
 /*
  -------------------------------------------------
  -------------------------------------------------
@@ -1799,7 +1796,6 @@ Vec4 Vec4::normalized() const
     ret.normalize();
     return ret;
 }
-#endif
 
 //-------------------------------------------------
 //
@@ -1824,17 +1820,16 @@ INLINE float Vec4::dot(Vec4 lhs, Vec4 rhs)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
 	return
-		lhs.x * rhs.x +
-		lhs.y * rhs.y +
-		lhs.z * rhs.z +
-		lhs.w * rhs.w;
+		lhs.x_ * rhs.x_ +
+		lhs.y_ * rhs.y_ +
+		lhs.z_ * rhs.z_ +
+		lhs.w_ * rhs.w_;
 #else
     AL_ASSERT_ALWAYS(false);
     return 0.0f;
 #endif
 }
 
-#if 0
 /*
 -------------------------------------------------
 -------------------------------------------------
@@ -1859,7 +1854,6 @@ INLINE FloatInVec Vec4::lengthSq(Vec4 v)
     return dot(v, v);
 #endif
 }
-#endif
 
 //-------------------------------------------------
 //

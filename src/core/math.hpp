@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "pch.hpp"
 
 // VectorMathでSIMDを使うか否か。AVX2まで仮定する。
@@ -243,14 +243,15 @@ struct FloatInVec
 public:
     __m128 v;
 public:
-    INLINE FloatInVec() = default;
-    INLINE FloatInVec(const FloatInVec& other) = default;
-    INLINE FloatInVec(FloatInVec&& other) = default;
-    INLINE FloatInVec(__m128 v);
-    INLINE FloatInVec(float v);
-    INLINE operator __m128 () const;
-    INLINE operator float() const;
-    INLINE float value() const;
+	INLINE FloatInVec() = default;
+	INLINE FloatInVec(const FloatInVec& other) = default;
+	INLINE FloatInVec(FloatInVec&& other) = default;
+	INLINE FloatInVec(__m128 v);
+	INLINE FloatInVec(float v);
+	INLINE operator __m128 () const;
+	INLINE operator float() const;
+    INLINE FloatInVec operator - ()const;
+	INLINE float value() const;
     INLINE bool isNan() const;
 };
 INLINE bool operator < (FloatInVec lhs, FloatInVec rhs);

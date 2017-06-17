@@ -427,23 +427,17 @@ public:
     INLINE float w()const;
     // swizzle
 #include "swizzle_vec4.inl"
-    
-#if 0
-    // TODO: スイズルを作成する
-    FloatInVec length() const;
-    FloatInVec lengthSq() const;
-    Vec4& normalize();
-    Vec4 normalized() const;
     //
-#endif
+    INLINE FloatInVec length() const;
+    INLINE FloatInVec lengthSq() const;
+    INLINE Vec4& normalize();
+    INLINE Vec4 normalized() const;
+    //
     float operator[](int32_t index) const;
     Vec4& operator=(const Vec4& other)  = default;
     static float dot(Vec4 lhs, Vec4 rhs);
-#if 0
     static FloatInVec length(Vec4 v);
     static FloatInVec lengthSq(Vec4 v);
-#endif
-    
 };
 
 /*

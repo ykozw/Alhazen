@@ -369,6 +369,17 @@ INLINE FloatInVec::operator float() const
     return value();
 }
 
+
+//-------------------------------------------------
+// 反転した値を返す
+//-------------------------------------------------
+INLINE FloatInVec FloatInVec::operator -() const
+{
+    const __m128 neg = _mm_set_ss(-1.0f);
+    const __m128 negv = _mm_mul_ps(neg,v);
+    return negv;
+}
+
 //-------------------------------------------------
 //
 //-------------------------------------------------
@@ -2062,22 +2073,20 @@ INLINE void Matrix4x4::constructAsRotation(const Vec3& xyz_, float angle)
 //-------------------------------------------------
 //
 //-------------------------------------------------
-INLINE void Matrix4x4::constructAsViewMatrix(const Vec3& origin, const Vec3& target, const Vec3& up)
+INLINE void Matrix4x4::constructAsViewMatrix(Vec3 origin,
+                                             Vec3 target,
+                                             Vec3 up)
 {
-#if !defined(WINDOWS)
-    AL_ASSERT_ALWAYS(false);
-#else
 	const Vec3 zaxis = (target - origin).normalized();
 	const Vec3 xaxis = Vec3::cross(up, zaxis).normalized();
 	const Vec3 yaxis = Vec3::cross(zaxis, xaxis);
 	e11 = xaxis.x(); e12 = yaxis.x(); e13 = zaxis.x(); e14 = 0.0f;
 	e21 = xaxis.y(); e22 = yaxis.y(); e23 = zaxis.y(); e24 = 0.0f;
 	e31 = xaxis.z(); e32 = yaxis.z(); e33 = zaxis.z(); e34 = 0.0f;
-	e41 = -Vec3::dot(xaxis, origin);
-	e42 = -Vec3::dot(yaxis, origin);
+	e41 = -float(Vec3::dot(xaxis, origin));
+	e42 = -float(Vec3::dot(yaxis, origin));
 	e43 = -Vec3::dot(zaxis, origin);
 	e44 = 1.0f;
-#endif
 }
 
 //-------------------------------------------------

@@ -59,9 +59,20 @@ std::string getElapseStr()
 //-------------------------------------------------
 //
 //-------------------------------------------------
-void loggingCore(int level, const char* format, ...)
+void loggingCore(LoggingLevel level, const char* format, ...)
 {
 #if !defined(WINDOWS)
+    // 細かく対応するまではとりあえずただのprintfにしておく
+    va_list valist;
+    va_start(valist, format);
+    vprintf(format, valist);
+    va_end(valist);
+    // errorの場合はここで終了させてしまう
+    if(level == LoggingLevel::ERROR)
+    {
+        fflush(stdout);
+        exit(-1);
+    }
 #else
     //
     AL_ASSERT_DEBUG(level == 0 || level == 1 || level == 2);

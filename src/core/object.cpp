@@ -90,6 +90,9 @@ Object* createObjectCore(
     const std::string& targetClassName,
     const ObjectProp& objectProp)
 {
+    //
+    logging("CreateObject BaseClass:%s TargetClass:%s", baseClassType.name(), targetClassName.c_str());
+    //
     auto baseClassTypeIte = g_allObjectCreateFuncs.find(baseClassType);
     AL_ASSERT_DEBUG(baseClassTypeIte != g_allObjectCreateFuncs.end());
     CreateObjectFunList& createObjectFunList = baseClassTypeIte->second;

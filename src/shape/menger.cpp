@@ -145,7 +145,7 @@ static Vec4 mapFunc(Vec3 p)
         if (c>d)
         {
             d = c;
-            res = Vec4(d, std::min(res.y, 0.2f*da*db*dc), (1.0f + float(m)) / 4.0f, 0.0f);
+            res = Vec4(d, std::min(res.y(), 0.2f*da*db*dc), (1.0f + float(m)) / 4.0f, 0.0f);
         }
     }
 
@@ -164,8 +164,8 @@ Vec4 intersectMenger(Vec3 ro, Vec3 rd)
     {
         /*if (h.x<0.002 || t>10.0) break;*/
         h = mapFunc(ro + rd*t);
-        res = Vec4(t,h.y, h.z, h.w);
-        t += h.x;
+        res = Vec4(t,h.y(), h.z(), h.w());
+        t += h.x();
     }
     if (t>10.0) res = Vec4(-1.0);
     return res;
@@ -191,9 +191,9 @@ Vec3 calcNormal(Vec3 pos)
     nor.y = mapFunc(pos + eps.yxy).x - map(pos - eps.yxy).x;
     nor.z = mapFunc(pos + eps.yyx).x - map(pos - eps.yyx).x;
     */
-    nor.setX(mapFunc(pos + sel(eps,0,1,1)).x - mapFunc(pos - sel(eps, 0, 1, 1)).x);
-    nor.setY(mapFunc(pos + sel(eps,1,0,1)).x - mapFunc(pos - sel(eps, 1, 0, 1)).x);
-    nor.setZ(mapFunc(pos + sel(eps,1,1,0)).x - mapFunc(pos - sel(eps, 1, 1, 0)).x);
+    nor.setX(mapFunc(pos + sel(eps,0,1,1)).x() - mapFunc(pos - sel(eps, 0, 1, 1)).x());
+    nor.setY(mapFunc(pos + sel(eps,1,0,1)).x() - mapFunc(pos - sel(eps, 1, 0, 1)).x());
+    nor.setZ(mapFunc(pos + sel(eps,1,1,0)).x() - mapFunc(pos - sel(eps, 1, 1, 0)).x());
     return nor.normalized();
 }
 
@@ -204,12 +204,12 @@ INLINE bool Menger::intersect(const Ray& ray, _Inout_ Intersect* isect) const
 {
     //
     Vec4 tmat = intersectMenger(ray.o, ray.d);
-    if (tmat.x > 0.0)
+    if (tmat.x() > 0.0)
     {
-        const Vec3 pos = ray.o + tmat.x * ray.d;
+        const Vec3 pos = ray.o + tmat.x() * ray.d;
         const Vec3 nor = calcNormal(pos);
         //
-        isect->t = tmat.x;
+        isect->t = tmat.x();
         isect->position = pos;
         isect->normal = nor;
         return true;

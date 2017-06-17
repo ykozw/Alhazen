@@ -15,7 +15,7 @@ private:
     float invGamma_;
 };
 
-REGISTER_OBJECT(Tonemapper,Degamma);
+REGISTER_OBJECT(Tonemapper, Degamma);
 
 //-------------------------------------------------
 // Degamma

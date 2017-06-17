@@ -41,7 +41,7 @@ INLINE Vec3 SpectrumHerowavelength::toXYZ() const
     float x = 0.0f;
     float y = 0.0f;
     float z = 0.0f;
-    for (int32_t i = 0; i < 4;++i)
+    for (int32_t i = 0; i < 4; ++i)
     {
         const float lambda = lambdas[i];
         const float intensity = intensitys[i];

@@ -29,11 +29,11 @@ template<ONB_METHOD method = ONB_METHOD::Frisvad12>
 class OrthonormalBasis
 {
 public:
-	OrthonormalBasis();
+    OrthonormalBasis();
     OrthonormalBasis(const Vec3& n);
     OrthonormalBasis(const Vec3& n, const Vec3& t);
-	void set(const Vec3& n);
-	void set(const Vec3& n, const Vec3& t);
+    void set(const Vec3& n);
+    void set(const Vec3& n, const Vec3& t);
     void set(const Vec3& n, const Vec3& t, const Vec3& s);
     Vec3 n() const { return n_; }
     Vec3 t() const { return t_; }

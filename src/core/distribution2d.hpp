@@ -14,9 +14,9 @@ public:
     Distribution2D(const std::vector<std::vector<float>>& values);
     Distribution2D(const std::initializer_list<std::initializer_list<float>>& values);
     Distribution2D(const float* values, int32_t raw, int32_t column);
-    Distribution2D(std::function<float(float,float)> valueGen, int32_t raw, int32_t column );
+    Distribution2D(std::function<float(float, float)> valueGen, int32_t raw, int32_t column);
     void construct(const std::vector<std::vector<float>>& valules);
-    void sample(float u, float v, _Out_ float* pdf, _Out_ Vec2* samplePoint, int32_t* offsetU = NULL, int32_t* offsetV = NULL ) const;
+    void sample(float u, float v, _Out_ float* pdf, _Out_ Vec2* samplePoint, int32_t* offsetU = NULL, int32_t* offsetV = NULL) const;
     int32_t row() const;
     int32_t column() const;
     float invRow() const;

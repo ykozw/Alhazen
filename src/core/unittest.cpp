@@ -24,8 +24,8 @@ public:
         std::function<void(detail::TestContext& tcx)> aTestFunc,
         bool aDoTestImplicit)
         :testName(aTestName),
-         testFunc(aTestFunc),
-         doTestImplicit(aDoTestImplicit)
+        testFunc(aTestFunc),
+        doTestImplicit(aDoTestImplicit)
     {}
 };
 
@@ -70,7 +70,7 @@ void detail::addTestResult(TestContext& tcx, bool result, const char* fileName, 
     else
     {
         // テストが通らなかったところは行数を表示
-        logging("TEST FAILED %s:%d", fileName, line );
+        logging("TEST FAILED %s:%d", fileName, line);
     }
 }
 
@@ -89,7 +89,7 @@ void doTest()
         {
             const std::string& testName = test.first;
             const auto testDesc = test.second;
-            if( !testDesc.doTestImplicit )
+            if (!testDesc.doTestImplicit)
             {
                 continue;
             }

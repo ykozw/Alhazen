@@ -6,7 +6,7 @@
 //-------------------------------------------------
 INLINE Ray::Ray()
     :o(Vec3(0.0f)),
-    d(Vec3(1.0f,0.0f,0.0)),
+    d(Vec3(1.0f, 0.0f, 0.0)),
     waveLength(WAVE_LENGTH_D),
     mint(0.0f),
     maxt(std::numeric_limits <float>::max())

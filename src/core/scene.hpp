@@ -25,21 +25,21 @@ public:
     Scene(const ObjectProp& objectProp);
     ~Scene();
     std::shared_ptr<Scene> cloneForWorker();
-	int32_t totalTaskNum() const;
+    int32_t totalTaskNum() const;
     int32_t taskNumPerLoop() const;
-	uint32_t developIntervalInMs() const;
-	uint32_t timeOutInMs() const;
-    SubFilm& render( int32_t taskNo);
+    uint32_t developIntervalInMs() const;
+    uint32_t timeOutInMs() const;
+    SubFilm& render(int32_t taskNo);
     void renderDebug(int32_t px, int32_t py);
     Spectrum renderPixel(int32_t px, int32_t py);
-	void developLDR( const std::string& filmName, bool isFinal, bool isPreview );
-	void dumpHDR( const std::string& fileName );
+    void developLDR(const std::string& filmName, bool isFinal, bool isPreview);
+    void dumpHDR(const std::string& fileName);
 private:
-	SceneGeometory geometory_;
-	SensorPtr sensor_;
+    SceneGeometory geometory_;
+    SensorPtr sensor_;
     TonemapperPtr tonemapper_;
     DenoiserPtr denoiser_;
-	SurfaceIntegratorPtr integrator_;
+    SurfaceIntegratorPtr integrator_;
     int32_t totalTaskNum_;
     // トーンマッピングされた画像
     ImageLDR tonemmappedImage_;

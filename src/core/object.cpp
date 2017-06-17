@@ -30,7 +30,7 @@ public:
 //
 void ObjectProp::addAttribute(const std::string& tag, const std::string& value)
 {
-    attributes_.insert(std::pair<std::string,std::string>(tag,value));
+    attributes_.insert(std::pair<std::string, std::string>(tag, value));
 }
 
 //
@@ -76,7 +76,7 @@ void registerObject(
 //-------------------------------------------------
 Object* createObjectCore(const std::string& typeName, const ObjectProp& objectProp)
 {
-    AL_ASSERT_DEBUG( objectCreateFuncs.find(typeName) != objectCreateFuncs.end() );
+    AL_ASSERT_DEBUG(objectCreateFuncs.find(typeName) != objectCreateFuncs.end());
     const auto& objCreateFunc = objectCreateFuncs[typeName];
     AL_ASSERT_DEBUG(objCreateFunc != NULL);
     return objCreateFunc(objectProp);

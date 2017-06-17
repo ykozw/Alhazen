@@ -47,7 +47,7 @@ AL_TEST(spectrum, SampledSpectrumInterconversion)
     for (int32_t i = 0; i < 2000; ++i)
     {
         const int32_t ri = i % 10;
-        const int32_t gi = (i/10) % 10;
+        const int32_t gi = (i / 10) % 10;
         const int32_t bi = (i / 100) % 10;
         const bool asIllum = (i >= 1000);
         const float r = float(ri) / 10.0f;
@@ -86,7 +86,7 @@ AL_TEST(spectrum, SpectrumSampled_WhiteIlluminationIsD65)
     for (int32_t i = 0; i < SPECTRUM_SAMPLED_NUM_SAMPLES; ++i)
     {
 
-        const float d = alFabsf( 1.0f - d65Color.samples[i] / whiteColor.samples[i] );
+        const float d = alFabsf(1.0f - d65Color.samples[i] / whiteColor.samples[i]);
         const float d2 = alFabsf(1.0f - whiteIllum.samples[i] / whiteColor.samples[i]);
         if (d > 0.02f)
         {

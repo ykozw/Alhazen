@@ -6,9 +6,9 @@
 //-------------------------------------------------
 RussianRoulette::RussianRoulette()
     :numContribution_(0.0f),
-     aveRayCount_(0.0f),
-     cAve_(0.0f),
-     cM_(0.0f)
+    aveRayCount_(0.0f),
+    cAve_(0.0f),
+    cM_(0.0f)
 {
     reset();
 }
@@ -33,10 +33,10 @@ void RussianRoulette::addContribution(float contribtuion, int32_t rayCount)
 //-------------------------------------------------
 //
 //-------------------------------------------------
-void RussianRoulette:: reset()
+void RussianRoulette::reset()
 {
     numContribution_ = 0.0f;
-    aveRayCount_ =0.0f;
+    aveRayCount_ = 0.0f;
     cAve_ = 0.0f;
     cM_ = 0.0f;
 }

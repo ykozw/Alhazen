@@ -55,7 +55,7 @@ Distribution1D_Optimized::Distribution1D_Optimized(std::function<float(float)> g
 //-------------------------------------------------
 // roundupPowerOf2()
 //-------------------------------------------------
-static uint32_t roundupPowerOf2( uint32_t v )
+static uint32_t roundupPowerOf2(uint32_t v)
 {
     --v;
     v |= v >> 1;
@@ -73,7 +73,7 @@ static uint32_t roundupPowerOf2( uint32_t v )
 void Distribution1D_Optimized::construct(const std::vector<float>& values)
 {
     // CDFを2^n-1の形にしておくと、後段のオフセット計算が簡単になる
-    const uint32_t cdfSize = roundupPowerOf2((uint32_t)(values.size()+1));
+    const uint32_t cdfSize = roundupPowerOf2((uint32_t)(values.size() + 1));
     //
     // 昇順にソートされたCDF
     std::vector<float> cdf;
@@ -86,7 +86,7 @@ void Distribution1D_Optimized::construct(const std::vector<float>& values)
         cdf[i + 1] = cdf[i] + values[i];
     }
     // valueで加算が行われたよりも後ろは全て同じ値にしておく
-    for (uint32_t i = (uint32_t)values.size()+1; i < cdfSize; ++i)
+    for (uint32_t i = (uint32_t)values.size() + 1; i < cdfSize; ++i)
     {
         cdf[i] = cdf[values.size()];
     }
@@ -209,7 +209,7 @@ float Distribution1D_Optimized::pdf(int32_t index) const
 {
     // TODO: 本来のindexから専用cdf用のindexを逆算する
     // TODO: 実装
-    AL_ASSERT_DEBUG( false );
+    AL_ASSERT_DEBUG(false);
     return 0.0f;
 }
 
@@ -242,7 +242,7 @@ AL_TEST(Distribution, Optimized)
         float pdf1;
         volatile float v0 = naive.sample(samples[i], &pdf0);
         volatile float v1 = optimized.sample(samples[i], &pdf1);
-        AL_ASSERT_DEBUG( v0 == v1 );
+        AL_ASSERT_DEBUG(v0 == v1);
         AL_ASSERT_DEBUG(pdf0 == pdf1);
     }
     return;

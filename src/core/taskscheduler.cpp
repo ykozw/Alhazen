@@ -19,7 +19,7 @@ public:
     -------------------------------------------------
     -------------------------------------------------
     */
-    concurrent_queue(){}
+    concurrent_queue() {}
     concurrent_queue(const concurrent_queue&) = delete;
     concurrent_queue& operator=(const concurrent_queue&) = delete;
 

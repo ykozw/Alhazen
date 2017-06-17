@@ -147,7 +147,7 @@ int32_t FloatStreamStats2::size() const
 */
 FloatStreamStats2::float2 FloatStreamStats2::mean() const
 {
-    return { means_[0], means_[1] };
+    return{ means_[0], means_[1] };
 }
 
 /*
@@ -166,7 +166,7 @@ FloatStreamStats2::float2 FloatStreamStats2::variance() const
 FloatStreamStats2::float2 FloatStreamStats2::sigma() const
 {
     // TODO: 実装
-    return{0.0f, 0.0f};
+    return{ 0.0f, 0.0f };
 }
 
 /*

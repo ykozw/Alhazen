@@ -21,7 +21,7 @@ public:
     Vec3 size() const;
     void addAABB(const AABB& aabb);
     bool intersect(const Ray& ray, Intersect* isect) const;
-    bool intersectCheck(const Ray& ray, float currentIntersectT ) const;
+    bool intersectCheck(const Ray& ray, float currentIntersectT) const;
     bool validate() const;
     bool isInside(const Vec3& p) const;
     const Vec3& operator[](int32_t index) const;
@@ -50,7 +50,7 @@ public:
     const Vec2& min() const;
     const Vec2& max() const;
     Vec2 onCoord(const Vec2& coord) const;
-    static AABB2D lerp(const AABB2D& lhs, const AABB2D& rhs, float factor );
+    static AABB2D lerp(const AABB2D& lhs, const AABB2D& rhs, float factor);
 private:
     Vec2 mn;
     Vec2 mx;

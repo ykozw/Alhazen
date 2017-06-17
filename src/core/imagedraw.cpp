@@ -76,7 +76,7 @@ void ImageDraw::point(Image& image, int32_t px, int32_t py, int32_t r, const Spe
             }
             auto& p = image.pixel(x, y);
             const int32_t cr2 = (px - x)*(px - x) + (py - y)*(py - y);
-            if (cr2 > r2 )
+            if (cr2 > r2)
             {
                 continue;
             }

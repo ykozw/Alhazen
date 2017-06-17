@@ -75,7 +75,7 @@ bool SceneGeometory::intersect(
 // 交差があるかのチェック。
 // 交差がある場合はtrueが返る
 //-------------------------------------------------
-bool SceneGeometory::intersectCheck(const Ray& ray, bool skipLight ) const
+bool SceneGeometory::intersectCheck(const Ray& ray, bool skipLight) const
 {
     // Shapeを巡回する
     for (auto& shape : shapes_)

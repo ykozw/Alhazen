@@ -147,15 +147,15 @@ Size2D
 struct Size2D
 {
 public:
-	int32_t width = 0;
-	int32_t height = 0;
+    int32_t width = 0;
+    int32_t height = 0;
 public:
-	Size2D() = default;
-	Size2D(const Size2D& other) = default;
-	Size2D(Size2D&& other) = default;
-	Size2D(_In_reads_(2) int32_t* es);
-	Size2D(int32_t awidth, int32_t aheight);
-	int32_t index(int32_t x, int32_t y) const;
+    Size2D() = default;
+    Size2D(const Size2D& other) = default;
+    Size2D(Size2D&& other) = default;
+    Size2D(_In_reads_(2) int32_t* es);
+    Size2D(int32_t awidth, int32_t aheight);
+    int32_t index(int32_t x, int32_t y) const;
 };
 
 INLINE static Size2D operator + (const Size2D& lhs, const Size2D& rhs);
@@ -176,19 +176,19 @@ Region2D
 class Region2D
 {
 public:
-	int32_t left = 0;
-	int32_t top = 0;
-	int32_t right = 0;
-	int32_t bottom = 0;
+    int32_t left = 0;
+    int32_t top = 0;
+    int32_t right = 0;
+    int32_t bottom = 0;
 public:
-	Region2D() = default;
-	Region2D(const Region2D& other) = default;
-	Region2D(Region2D&& other) = default;
-	Region2D(int32_t left, int32_t top, int32_t right, int32_t bottom);
-	int32_t width() const;
-	int32_t height() const;
-	int32_t area() const;
-	Region2D& operator = (const Region2D& other) = default;
+    Region2D() = default;
+    Region2D(const Region2D& other) = default;
+    Region2D(Region2D&& other) = default;
+    Region2D(int32_t left, int32_t top, int32_t right, int32_t bottom);
+    int32_t width() const;
+    int32_t height() const;
+    int32_t area() const;
+    Region2D& operator = (const Region2D& other) = default;
 };
 
 /*
@@ -201,24 +201,24 @@ SIMD化してもあまり実行速度が向上しないのと、
 struct Vec2
 {
 public:
-	float x;
-	float y;
+    float x;
+    float y;
 public:
-	Vec2() = default;
-	Vec2(const Vec2& other) = default;
-	Vec2(Vec2&& other) = default;
-	Vec2(_In_reads_(2) float* es);
-	Vec2(float ax, float ay);
-	explicit Vec2(float e);
-	void normalize();
-	bool isNormalized() const;
-	float length() const;
-	float lengthSq() const;
-	float& operator[](int32_t index);
-	float operator[](int32_t index) const;
-	bool hasNan() const;
-	INLINE Vec2& operator = (const Vec2& other) = default;
-	static float dot(const Vec2& lhs, const Vec2& rhs);
+    Vec2() = default;
+    Vec2(const Vec2& other) = default;
+    Vec2(Vec2&& other) = default;
+    Vec2(_In_reads_(2) float* es);
+    Vec2(float ax, float ay);
+    explicit Vec2(float e);
+    void normalize();
+    bool isNormalized() const;
+    float length() const;
+    float lengthSq() const;
+    float& operator[](int32_t index);
+    float operator[](int32_t index) const;
+    bool hasNan() const;
+    INLINE Vec2& operator = (const Vec2& other) = default;
+    static float dot(const Vec2& lhs, const Vec2& rhs);
 };
 
 INLINE static Vec2 operator + (const Vec2& lhs, const Vec2& rhs);
@@ -241,16 +241,16 @@ FloatInVec
 struct FloatInVec
 {
 public:
-	__m128 v;
+    __m128 v;
 public:
-	INLINE FloatInVec() = default;
-	INLINE FloatInVec(const FloatInVec& other) = default;
-	INLINE FloatInVec(FloatInVec&& other) = default;
-	INLINE FloatInVec(__m128 v);
-	INLINE FloatInVec(float v);
-	INLINE operator __m128 () const;
-	INLINE operator float() const;
-	INLINE float value() const;
+    INLINE FloatInVec() = default;
+    INLINE FloatInVec(const FloatInVec& other) = default;
+    INLINE FloatInVec(FloatInVec&& other) = default;
+    INLINE FloatInVec(__m128 v);
+    INLINE FloatInVec(float v);
+    INLINE operator __m128 () const;
+    INLINE operator float() const;
+    INLINE float value() const;
     INLINE bool isNan() const;
 };
 INLINE bool operator < (FloatInVec lhs, FloatInVec rhs);
@@ -263,16 +263,16 @@ Float8
 struct Float8
 {
 public:
-	union
-	{
-		__m256 v;
-		float e[8];
-	};
-	INLINE Float8() = default;
-	INLINE Float8(const Float8& other) = default;
-	INLINE Float8(Float8&& other) = default;
-	INLINE Float8(__m256 other);
-	operator __m256()const;
+    union
+    {
+        __m256 v;
+        float e[8];
+    };
+    INLINE Float8() = default;
+    INLINE Float8(const Float8& other) = default;
+    INLINE Float8(Float8&& other) = default;
+    INLINE Float8(__m256 other);
+    operator __m256()const;
 };
 
 /*
@@ -284,16 +284,16 @@ Bool8
 struct Bool8
 {
 public:
-	union
-	{
-		__m256 v;
-		bool b[8];
-	};
-	INLINE Bool8() = default;
-	INLINE Bool8(const Bool8& other) = default;
-	INLINE Bool8(Bool8&& other) = default;
-	INLINE Bool8(__m256 other);
-	INLINE bool at(int32_t index) const;
+    union
+    {
+        __m256 v;
+        bool b[8];
+    };
+    INLINE Bool8() = default;
+    INLINE Bool8(const Bool8& other) = default;
+    INLINE Bool8(Bool8&& other) = default;
+    INLINE Bool8(__m256 other);
+    INLINE bool at(int32_t index) const;
 };
 
 /*
@@ -305,16 +305,16 @@ BoolInVec
 struct BoolInVec
 {
 public:
-	__m128i v;
+    __m128i v;
 public:
-	INLINE BoolInVec() = default;
-	INLINE BoolInVec(const BoolInVec& other) = default;
-	INLINE BoolInVec(BoolInVec&& other) = default;
-	INLINE BoolInVec(__m128i v);
-	INLINE BoolInVec(bool v);
-	INLINE operator __m128i () const;
-	INLINE operator bool() const;
-	INLINE bool value() const;
+    INLINE BoolInVec() = default;
+    INLINE BoolInVec(const BoolInVec& other) = default;
+    INLINE BoolInVec(BoolInVec&& other) = default;
+    INLINE BoolInVec(__m128i v);
+    INLINE BoolInVec(bool v);
+    INLINE operator __m128i () const;
+    INLINE operator bool() const;
+    INLINE bool value() const;
 };
 
 
@@ -335,34 +335,34 @@ public:
     __m128 xyz_;
 #endif
 public:
-	INLINE Vec3() = default;
-	INLINE Vec3(const Vec3& other) = default;
-	INLINE Vec3(Vec3&& other) = default;
-	INLINE Vec3(_In_reads_(3) float* es);
-	INLINE Vec3(float ax, float ay, float az);
-	INLINE Vec3(float e);
-	INLINE Vec3(__m128 other);
-	INLINE Vec3(const std::array<float, 3>& arr);
+    INLINE Vec3() = default;
+    INLINE Vec3(const Vec3& other) = default;
+    INLINE Vec3(Vec3&& other) = default;
+    INLINE Vec3(_In_reads_(3) float* es);
+    INLINE Vec3(float ax, float ay, float az);
+    INLINE Vec3(float e);
+    INLINE Vec3(__m128 other);
+    INLINE Vec3(const std::array<float, 3>& arr);
     INLINE Vec3(const Vec4& arr);
-	INLINE void zero();
-	INLINE bool isZero() const;
-	INLINE bool hasNan() const;
+    INLINE void zero();
+    INLINE bool isZero() const;
+    INLINE bool hasNan() const;
     INLINE bool any() const;
     INLINE bool all() const;
-	INLINE Vec3& normalize();
-	INLINE Vec3 normalized() const;
-	INLINE void scale(float scale);
-	INLINE bool isNormalized() const;
-	INLINE bool isNormalized(float eps) const;
-	INLINE FloatInVec length() const;
-	INLINE FloatInVec lengthSq() const;
-	INLINE bool isAllZero() const;
-	INLINE Vec3 inverted() const;
-	INLINE Vec3 invertedSafe(float defaultValue) const;
-	INLINE Vec3 reflect(const Vec3& v) const;
+    INLINE Vec3& normalize();
+    INLINE Vec3 normalized() const;
+    INLINE void scale(float scale);
+    INLINE bool isNormalized() const;
+    INLINE bool isNormalized(float eps) const;
+    INLINE FloatInVec length() const;
+    INLINE FloatInVec lengthSq() const;
+    INLINE bool isAllZero() const;
+    INLINE Vec3 inverted() const;
+    INLINE Vec3 invertedSafe(float defaultValue) const;
+    INLINE Vec3 reflect(const Vec3& v) const;
     //
-	INLINE float operator[](int32_t index) const;
-	INLINE Vec3& operator = (const Vec3& other) = default;
+    INLINE float operator[](int32_t index) const;
+    INLINE Vec3& operator = (const Vec3& other) = default;
     // アクセッサ
     INLINE float x() const;
     INLINE float y() const;
@@ -373,12 +373,12 @@ public:
     // swizzle
 #include "swizzle_vec3.inl"
     //
-	static FloatInVec length(const Vec3& v);
-	static FloatInVec lengthSq(const Vec3& v);
-	static FloatInVec distance(const Vec3& lhs, const Vec3& rhs);
-	static FloatInVec distanceSq(const Vec3& lhs, const Vec3& rhs);
-	static FloatInVec dot(const Vec3& lhs, const Vec3& rhs);
-	static Vec3 cross(const Vec3& lhs, const Vec3& rhs);
+    static FloatInVec length(const Vec3& v);
+    static FloatInVec lengthSq(const Vec3& v);
+    static FloatInVec distance(const Vec3& lhs, const Vec3& rhs);
+    static FloatInVec distanceSq(const Vec3& lhs, const Vec3& rhs);
+    static FloatInVec dot(const Vec3& lhs, const Vec3& rhs);
+    static Vec3 cross(const Vec3& lhs, const Vec3& rhs);
     static Vec3 mul(const Vec3& lhs, const Vec3& rhs);
     static Vec3 min(Vec3 lhs, Vec3 rhs);
     static Vec3 max(Vec3 lhs, Vec3 rhs);
@@ -413,13 +413,13 @@ public:
     __m128 xyzw_;
 #endif
 public:
-	INLINE Vec4() = default;
-	INLINE Vec4(const Vec4& other) = default;
-	INLINE Vec4(Vec4&& other) = default;
-	INLINE Vec4(_In_reads_(4) const float* es);
-	INLINE Vec4(float x, float y, float z, float w);
-	INLINE explicit Vec4(float e);
-	INLINE Vec4(__m128 other);
+    INLINE Vec4() = default;
+    INLINE Vec4(const Vec4& other) = default;
+    INLINE Vec4(Vec4&& other) = default;
+    INLINE Vec4(_In_reads_(4) const float* es);
+    INLINE Vec4(float x, float y, float z, float w);
+    INLINE explicit Vec4(float e);
+    INLINE Vec4(__m128 other);
     // アクセッサ
     INLINE float x()const;
     INLINE float y()const;
@@ -434,7 +434,7 @@ public:
     INLINE Vec4 normalized() const;
     //
     float operator[](int32_t index) const;
-    Vec4& operator=(const Vec4& other)  = default;
+    Vec4& operator=(const Vec4& other) = default;
     static float dot(Vec4 lhs, Vec4 rhs);
     static FloatInVec length(Vec4 v);
     static FloatInVec lengthSq(Vec4 v);
@@ -485,46 +485,46 @@ Row-Major/Row-Vectorの4x4行列
 class Matrix4x4
 {
 public:
-	union
-	{
-		float e[16];
-		struct
-		{
-			float e11, e12, e13, e14;
-			float e21, e22, e23, e24;
-			float e31, e32, e33, e34;
-			float e41, e42, e43, e44;
-		};
-	};
+    union
+    {
+        float e[16];
+        struct
+        {
+            float e11, e12, e13, e14;
+            float e21, e22, e23, e24;
+            float e31, e32, e33, e34;
+            float e41, e42, e43, e44;
+        };
+    };
 public:
-	Matrix4x4() = default;
-	Matrix4x4(const Matrix4x4& other) = default;
-	Matrix4x4(Matrix4x4&& other) = default;
+    Matrix4x4() = default;
+    Matrix4x4(const Matrix4x4& other) = default;
+    Matrix4x4(Matrix4x4&& other) = default;
     Matrix4x4(const Matrix3x3& m33);
-	Matrix4x4(_In_reads_(16) const float* es);
-	void constructAsProjectionLH();
-	void constructAsRotationAxis();
-	void constructAsTranslation(const Vec3& v);
-	void constructAsScale(const Vec3& scale);
-	void constructAsRotation(const Vec3& xyz_, float angle);
-	void constructAsViewMatrix(const Vec3& origin, const Vec3& target, const Vec3& up);
-	void fillZero();
-	void identity();
-	Vec3 transform(const Vec3& v) const;
-	Vec4 transform(const Vec4& v) const;
-	const Vec4& operator [] (int32_t index) const;
-	Vec4& operator [] (int32_t index);
+    Matrix4x4(_In_reads_(16) const float* es);
+    void constructAsProjectionLH();
+    void constructAsRotationAxis();
+    void constructAsTranslation(const Vec3& v);
+    void constructAsScale(const Vec3& scale);
+    void constructAsRotation(const Vec3& xyz_, float angle);
+    void constructAsViewMatrix(const Vec3& origin, const Vec3& target, const Vec3& up);
+    void fillZero();
+    void identity();
+    Vec3 transform(const Vec3& v) const;
+    Vec4 transform(const Vec4& v) const;
+    const Vec4& operator [] (int32_t index) const;
+    Vec4& operator [] (int32_t index);
     Vec4 rowVector(int32_t index) const;
-	Vec4 columnVector(int32_t index) const;
-	float det() const;
+    Vec4 columnVector(int32_t index) const;
+    float det() const;
     void inverse();
     void transpose();
     Matrix4x4 inversed() const;
     Matrix4x4 transposed() const;
     Matrix3x3 extract3x3() const;
-	static Matrix4x4 mul(const Matrix4x4& lhs, const Matrix4x4& rhs);
-	static Vec4 mul(const Vec4& v, const Matrix4x4& m);
-	Matrix4x4& operator = (const Matrix4x4& other);
+    static Matrix4x4 mul(const Matrix4x4& lhs, const Matrix4x4& rhs);
+    static Vec4 mul(const Vec4& v, const Matrix4x4& m);
+    Matrix4x4& operator = (const Matrix4x4& other);
 };
 INLINE static Matrix4x4 operator + (const Matrix4x4& lhs, const Matrix4x4& rhs);
 
@@ -556,21 +556,21 @@ public:
     Vec3Pack8(const Vec3Pack8& other) = default;
     Vec3Pack8(Vec3Pack8&& other) = default;
     Vec3Pack8(
-              __m256 v0,
-              __m256 v1,
-              __m256 v2);
+        __m256 v0,
+        __m256 v1,
+        __m256 v2);
     INLINE void set(
-                    // xyz_が8回
-                    float* xyzs);
+        // xyz_が8回
+        float* xyzs);
     INLINE void set(
-                    const Vec3& v0,
-                    const Vec3& v1,
-                    const Vec3& v2,
-                    const Vec3& v3,
-                    const Vec3& v4,
-                    const Vec3& v5,
-                    const Vec3& v6,
-                    const Vec3& v7);
+        const Vec3& v0,
+        const Vec3& v1,
+        const Vec3& v2,
+        const Vec3& v3,
+        const Vec3& v4,
+        const Vec3& v5,
+        const Vec3& v6,
+        const Vec3& v7);
     INLINE void setZero();
     INLINE Bool8 isZero() const;
     INLINE Bool8 hasNan() const;
@@ -585,7 +585,7 @@ public:
     INLINE Vec3Pack8 invertedSafe(float defaultValue) const;
     INLINE Vec3Pack8 reflect(const Vec3& v) const;
     INLINE Float8 operator[](int32_t index) const;
-    
+
     INLINE static Float8 length(const Vec3Pack8& v);
     INLINE static Float8 lengthSq(const Vec3Pack8& v);
     INLINE static Float8 distance(const Vec3Pack8& lhs, const Vec3Pack8& rhs);

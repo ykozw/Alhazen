@@ -404,31 +404,28 @@ Vec4
 struct Vec4
 {
 public:
-	union
-	{
-		__m128 xyzw;
-		struct
-		{
-			float x;
-			float y;
-			float z;
-			float w;
-		};
-	};
+#if defined(AL_MATH_USE_NO_SIMD)
+    float x_;
+    float y_;
+    float z_;
+    float w_;
+#else
+    __m128 xyzw_;
+#endif
 public:
-	Vec4() = default;
-	Vec4(const Vec4& other) = default;
-	Vec4(Vec4&& other) = default;
-	Vec4(_In_reads_(4) const float* es);
-	Vec4(float x, float y, float z, float w);
-	explicit Vec4(float e);
-	Vec4(__m128 other);
+	INLINE Vec4() = default;
+	INLINE Vec4(const Vec4& other) = default;
+	INLINE Vec4(Vec4&& other) = default;
+	INLINE Vec4(_In_reads_(4) const float* es);
+	INLINE Vec4(float x, float y, float z, float w);
+	INLINE explicit Vec4(float e);
+	INLINE Vec4(__m128 other);
+    // アクセッサ
+    INLINE float x()const;
+    INLINE float y()const;
+    INLINE float z()const;
+    INLINE float w()const;
 #if 0
-    // アクセッサを分けるようにする
-    //float x()const;
-    //float y()const;
-    //float z()const;
-    //float w()const;
     // TODO: スイズルを作成する
     FloatInVec length() const;
     FloatInVec lengthSq() const;
@@ -443,7 +440,7 @@ public:
     static FloatInVec length(Vec4 v);
     static FloatInVec lengthSq(Vec4 v);
 #endif
-    #include "swizzle_v4.inl"
+    //#include "swizzle_vec4.inl"
 };
 
 /*

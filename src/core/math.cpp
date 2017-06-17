@@ -222,17 +222,17 @@ AL_TEST_IMM(Math,V4)
     // 初期設定テスト
     {
         const Vec4 v(1.0f);
-        AL_TEST_CHECK(v.x == 1.0f);
-        AL_TEST_CHECK(v.y == 1.0f);
-        AL_TEST_CHECK(v.z == 1.0f);
-        AL_TEST_CHECK(v.w == 1.0f);
+        AL_TEST_CHECK(v.x() == 1.0f);
+        AL_TEST_CHECK(v.y() == 1.0f);
+        AL_TEST_CHECK(v.z() == 1.0f);
+        AL_TEST_CHECK(v.w() == 1.0f);
     }
     {
         const Vec4 v(0.0f,1.0f,2.0f,3.0f);
-        AL_TEST_CHECK(v.x == 0.0f);
-        AL_TEST_CHECK(v.y == 1.0f);
-        AL_TEST_CHECK(v.z == 2.0f);
-        AL_TEST_CHECK(v.w == 3.0f);
+        AL_TEST_CHECK(v.x() == 0.0f);
+        AL_TEST_CHECK(v.y() == 1.0f);
+        AL_TEST_CHECK(v.z() == 2.0f);
+        AL_TEST_CHECK(v.w() == 3.0f);
     }
 #if 0
     // 長さ
@@ -249,6 +249,7 @@ AL_TEST_IMM(Math,V4)
         const float z = 3.0f;
         const float w = 4.0f;
         const Vec4 v(x,y,z,w);
+#if 0
         AL_TEST_CHECK(v.xxxx() == Vec4(x,x,x,x));
         AL_TEST_CHECK(v.yxxx() == Vec4(y,x,x,x));
         AL_TEST_CHECK(v.zxxx() == Vec4(z,x,x,x));
@@ -283,6 +284,7 @@ AL_TEST_IMM(Math,V4)
         AL_TEST_CHECK(v.ywxx() == Vec4(y,w,x,x));
         AL_TEST_CHECK(v.zwxx() == Vec4(z,w,x,x));
         AL_TEST_CHECK(v.wwxx() == Vec4(y,w,x,x));
+#endif
     }
 }
 

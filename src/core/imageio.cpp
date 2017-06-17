@@ -43,7 +43,7 @@ void Image::readBmp(const std::string& fileName, float gamma)
     // HACK: なぜか2の累乗でない場合にロード結果がおかしくなるのでここで警告
     if (!alIsPowerOfTwo(w) || !alIsPowerOfTwo(h))
     {
-        loggingWarning("BMP [%s] size is not power of 2.", fileName.c_str() );
+        loggingWarning("BMP [%s] size is not power of 2.", fileName.c_str());
     }
 
     // 対応しているフォーマットかチェック
@@ -81,7 +81,7 @@ void Image::readBmp(const std::string& fileName, float gamma)
             r2 = powf(r2, 1.0f / gamma);
 
             // BMPなので反射率としてロード
-            sp = Spectrum::createFromRGB({{r2, g2, b2}}, false );
+            sp = Spectrum::createFromRGB({ {r2, g2, b2} }, false);
         }
     }
 #endif
@@ -97,7 +97,7 @@ void ImageLDR::writeBmp(const std::string& fileName) const
     AL_ASSERT_ALWAYS(false);
 #else
     //
-    logging("Write image [%s].", fileName.c_str() );
+    logging("Write image [%s].", fileName.c_str());
     //
     const auto& pixels = pixels_;
     const int32_t width = this->width();
@@ -145,7 +145,7 @@ void ImageLDR::writeBmp(const std::string& fileName) const
     // 全てのデータを書き込む
     for (int32_t y = height - 1; y >= 0; --y)
     {
-        for (int32_t x = 0; x<width; ++x)
+        for (int32_t x = 0; x < width; ++x)
         {
             const uint32_t srcBase = (x + (height - y - 1)*width);
             const uint32_t dstBase = x * 3;
@@ -223,7 +223,7 @@ void Image::readHdr(const std::string& fileName)
     std::getline(file, line);
     int32_t numScan = sscanf_s(line.c_str(), "-Y %d +X %d", &height, &width);
     loggingErrorIf(numScan != 2, "File format is not supported.[%s]", fileName.c_str());
-    resize( width, height );
+    resize(width, height);
     // 本体の読み込み
     std::vector<uint8_t> imageLineBuffer;
     for (int32_t y = 0; y < height; ++y)
@@ -245,14 +245,14 @@ void Image::readHdr(const std::string& fileName)
         do
         {
             //
-            ch = static_cast<uint8_t>( file.get() );
+            ch = static_cast<uint8_t>(file.get());
             // 無圧縮部
             if (ch <= 128)
             {
                 const uint8_t numNoCompressNum = ch;
                 for (int32_t i = 0; i < numNoCompressNum; ++i)
                 {
-                    ch = static_cast<uint8_t>( file.get() );
+                    ch = static_cast<uint8_t>(file.get());
                     imageLineBuffer.push_back(ch);
                 }
             }
@@ -260,14 +260,13 @@ void Image::readHdr(const std::string& fileName)
             else
             {
                 const uint8_t numCompress = ch - 128;
-                ch = static_cast<uint8_t>( file.get() );
+                ch = static_cast<uint8_t>(file.get());
                 for (int32_t i = 0; i < numCompress; ++i)
                 {
                     imageLineBuffer.push_back(ch);
                 }
             }
-        }
-        while (imageLineBuffer.size() < width * 4);
+        } while (imageLineBuffer.size() < width * 4);
         AL_ASSERT_DEBUG(imageLineBuffer.size() >= width * 4);
         // RGBEからRGBを復元する
         for (int32_t x = 0; x < width; ++x)
@@ -277,7 +276,7 @@ void Image::readHdr(const std::string& fileName)
             uint8_t g = imageLineBuffer[x + width * 1];
             uint8_t b = imageLineBuffer[x + width * 2];
             uint8_t e = imageLineBuffer[x + width * 3];
-            const float scale = powf(2,(float)e - 128.0f) / 256.0f;
+            const float scale = powf(2, (float)e - 128.0f) / 256.0f;
             // HDRファイルなので、光源としてロードする
             p = Spectrum::createFromRGB({ { float(r), float(g), float(b) } }, true);
             p *= scale;
@@ -361,8 +360,8 @@ void Image::writeHdr(const std::string& fileName) const
             lineB,
             lineE
         };
-        AL_ASSERT_DEBUG( !(width % 64) );
-        for (auto line : lines )
+        AL_ASSERT_DEBUG(!(width % 64));
+        for (auto line : lines)
         {
             for (int32_t x = 0; x < width;)
             {

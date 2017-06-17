@@ -20,9 +20,9 @@ struct IncrimentCounterValue
 class IncrimentCounter
 {
 public:
-    enum { NUM_COUNTERS = 128};
+    enum { NUM_COUNTERS = 128 };
 public:
-    IncrimentCounter( const std::string& name );
+    IncrimentCounter(const std::string& name);
     uint64_t operator ++ ();
     static void print();
 private:
@@ -31,7 +31,7 @@ private:
     void operator delete(void* p);
 private:
     std::string name_;
-    std::array<IncrimentCounterValue, NUM_COUNTERS> values_;    
+    std::array<IncrimentCounterValue, NUM_COUNTERS> values_;
     static std::vector<IncrimentCounter*> counters;
 };
 
@@ -70,7 +70,7 @@ public:
     enum { NUM_COUNTERS = 128 };
 public:
     StatCounter(const std::string& name);
-    void add( double newValue );
+    void add(double newValue);
     static void print();
 private:
     void* operator new(size_t size);

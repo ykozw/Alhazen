@@ -32,7 +32,7 @@ void testLocalCoord(Type localCoord)
     ns.push_back(Vec3(0.0003860202f, 0.0003860202f, -0.9999998808f));
 
     const auto startTime = std::chrono::system_clock::now();
-    
+
     //
     for (const Vec3 n : ns)
     {
@@ -77,7 +77,7 @@ AL_TEST(OrthonormalBasis, 0)
     length error max:2.38419e-07 mean:1.51295e-08
 
     ほとんどかわらないので、もう少し特異点などをついたテストにするべきなのかもしれない
-    */ 
+    */
     printf("ONB_METHOD::Naive\n");
     testLocalCoord(OrthonormalBasis<ONB_METHOD::Naive>());
     //

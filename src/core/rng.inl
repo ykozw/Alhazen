@@ -96,7 +96,7 @@ INLINE uint32_t XorShift128::nextSize(int32_t size) const
     const uint32_t mask = makeBitmask(size);
     //
     uint32_t result;
-    while ((result = (nextUint() & mask)) >= static_cast<uint32_t>(size)){}
+    while ((result = (nextUint() & mask)) >= static_cast<uint32_t>(size)) {}
     return result;
 }
 

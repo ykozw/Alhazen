@@ -58,26 +58,26 @@ Distribution1D_Naive::Distribution1D_Naive(std::function<float(float)> genFunc, 
 void Distribution1D_Naive::construct(const std::vector<float>& values)
 {
     uint32_t cdfSize = (uint32_t)values.size();
-    if (!alIsPowerOfTwo(cdfSize+1))
+    if (!alIsPowerOfTwo(cdfSize + 1))
     {
         const uint32_t x = (uint32_t)cdfSize;
         const uint32_t y = (x - ((x & (~x + 1)))) << 1;
         cdfSize = y;
     }
     //
-    cdf_.resize(values.size()+1);
+    cdf_.resize(values.size() + 1);
     cdf_[0] = 0.0f;
     for (int32_t i = 0; i < values.size(); ++i)
     {
         AL_ASSERT_DEBUG(values[i] >= 0.0f);
         AL_ASSERT_DEBUG(!isnan(values[i]));
-        cdf_[i+1] = cdf_[i] + values[i];
+        cdf_[i + 1] = cdf_[i] + values[i];
     }
     if (cdf_.back() == 0.0f)
     {
         cdf_.back() = 1.0f;
     }
-    const float scale = 1.0f/cdf_.back();
+    const float scale = 1.0f / cdf_.back();
     for (auto& v : cdf_)
     {
         v *= scale;

@@ -90,26 +90,26 @@ public:
     Image();
     Image(int32_t width, int32_t height);
     ~Image();
-    void resize( int32_t width, int32_t height );
-	void clear(const Spectrum& color);
-	int32_t index(int32_t x, int32_t y) const;
+    void resize(int32_t width, int32_t height);
+    void clear(const Spectrum& color);
+    int32_t index(int32_t x, int32_t y) const;
     void addTo(Image& dstImage, int32_t x, int32_t y) const;
-	const SpectrumType& pixel(int32_t x, int32_t y) const;
+    const SpectrumType& pixel(int32_t x, int32_t y) const;
     SpectrumType& pixel(int32_t x, int32_t y);
-	const SpectrumType& pixel(int32_t index) const;
+    const SpectrumType& pixel(int32_t index) const;
     SpectrumType& pixel(int32_t index);
-	//float weight(int32_t index) const;
+    //float weight(int32_t index) const;
     //float& weight(int32_t index);
-	void addPixel(int32_t x, int32_t y, const Spectrum& spectrum);
-	const std::vector<SpectrumType>& pixels() const;
+    void addPixel(int32_t x, int32_t y, const Spectrum& spectrum);
+    const std::vector<SpectrumType>& pixels() const;
     //const std::vector<float>& weights() const;
-	std::vector<SpectrumType>& pixels();
+    std::vector<SpectrumType>& pixels();
     SpectrumType sample(float u, float v) const;
     int32_t width() const;
     int32_t height() const;
-    void scale( float scale );
+    void scale(float scale);
     // read/write
-    void readBmp(const std::string& fileName, float gamma );
+    void readBmp(const std::string& fileName, float gamma);
     void readHdr(const std::string& fileName);
     void writeHdr(const std::string& fileName) const;
 private:
@@ -142,9 +142,9 @@ public:
     void clear(const PixelLDR& pixel);
     int32_t width() const;
     int32_t height() const;
-    const PixelLDR& pixel( uint32_t index ) const;
+    const PixelLDR& pixel(uint32_t index) const;
     PixelLDR& pixel(uint32_t index);
-    const std::vector<PixelLDR>& pixels()const ;
+    const std::vector<PixelLDR>& pixels()const;
     std::vector<PixelLDR>& pixels();
     // read/write
     void readBmp(const std::string& fileName, bool sRGB);

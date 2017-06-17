@@ -40,7 +40,7 @@ bool intersectTriangleCheck(
     const Ray& ray,
     const Vec3& v0,
     const Vec3& v1,
-    const Vec3& v2 );
+    const Vec3& v2);
 
 //-------------------------------------------------
 // Rectangle vs Ray

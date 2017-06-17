@@ -11,12 +11,12 @@ class RussianRoulette
 {
 public:
     RussianRoulette();
-    void addContribution( float contribtuion, int32_t rayCount );
+    void addContribution(float contribtuion, int32_t rayCount);
     void reset();
     float rouletteProb() const;
 private:
     float numContribution_;
     float aveRayCount_;
     float cAve_;
-    float cM_;  
+    float cM_;
 };

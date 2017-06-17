@@ -78,9 +78,9 @@ void loggingCore(int level, const char* format, ...)
     tm date;
     localtime_s(&date, &timer);
     char timeStamp[0xff];
-    asctime_s(timeStamp,&date);
+    asctime_s(timeStamp, &date);
     sprintf_s(timeStamp, "%04d/%02d/%02d %02d:%02d:%02d",
-              date.tm_year + 1900, date.tm_mon + 1, date.tm_mday, date.tm_hour, date.tm_min, date.tm_sec);
+        date.tm_year + 1900, date.tm_mon + 1, date.tm_mday, date.tm_hour, date.tm_min, date.tm_sec);
 
     // Warning/Error時の特別文字列
     const std::string warningErrorString = level == 1 ? "[WARNING]" : level == 2 ? "[ERROR]" : "";

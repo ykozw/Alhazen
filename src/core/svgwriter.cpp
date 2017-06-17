@@ -6,7 +6,7 @@
 //-------------------------------------------------
 //
 //-------------------------------------------------
-SVGPath::SVGPath(SVGWriter* svgWriter, float x, float y, float offsetX, float offsetY )
+SVGPath::SVGPath(SVGWriter* svgWriter, float x, float y, float offsetX, float offsetY)
 {
     svgWriter_ = svgWriter;
     strokeWidth_ = 0.1f;
@@ -23,8 +23,8 @@ SVGPath::SVGPath(SVGWriter* svgWriter, float x, float y, float offsetX, float of
 //-------------------------------------------------
 SVGPath::SVGPath(const SVGPath& other)
 {
-	// TODO: ちゃんと作る
-	assert(false);
+    // TODO: ちゃんと作る
+    assert(false);
 }
 
 //-------------------------------------------------
@@ -81,9 +81,9 @@ SVGPath& SVGPath::addArc(float r, float ex, float ey, bool isClockWise)
     const int32_t isLargeArc = 0;
     const int32_t sweapFlag = isClockWise ? 0 : 1;
     dAttribute_
-            << "A " << r << " " << r << " "
-            << xAxisRotation << " " << isLargeArc << " "
-            << sweapFlag << " " << ex + offsetX_ << " " << ey + offsetY_ << " ";
+        << "A " << r << " " << r << " "
+        << xAxisRotation << " " << isLargeArc << " "
+        << sweapFlag << " " << ex + offsetX_ << " " << ey + offsetY_ << " ";
     //
     return *this;
 }
@@ -109,7 +109,7 @@ void SVGPath::endPath()
 // SVGWriter()
 //-------------------------------------------------
 SVGWriter::SVGWriter(const std::string& fileName, float mnx, float mny, float mxx, float mxy)
-    :file_( NULL )
+    :file_(NULL)
 {
     // mnx/mnyが負の場合は全体のオフセットを計算しておく
     offsetX_ = 0.0f;
@@ -128,7 +128,7 @@ SVGWriter::SVGWriter(const std::string& fileName, float mnx, float mny, float mx
     }
     //
     fopen_s(&file_, fileName.c_str(), "wt");
-    AL_ASSERT_DEBUG(file_ != NULL );
+    AL_ASSERT_DEBUG(file_ != NULL);
     // ヘッダ書き込み
     const char* header =
         "<!DOCTYPE html>\n"
@@ -165,7 +165,7 @@ SVGWriter::~SVGWriter()
 //-------------------------------------------------
 SVGPath SVGWriter::beginPath(float x, float y)
 {
-    return SVGPath(this, x, y, offsetX_, offsetY_ );
+    return SVGPath(this, x, y, offsetX_, offsetY_);
 }
 
 //-------------------------------------------------
@@ -188,15 +188,15 @@ public:
         {
             SVGWriter svg("test.svg", 0.0f, 0.0f, 10.0f, 10.0f);
             svg.beginPath(0.0f, 0.0f)
-            .setStrokeColor("blue")
-            .setStrokeWidth(1.0f)
-            .addLine(10.0f, 0.0f)
-            .endPath();
+                .setStrokeColor("blue")
+                .setStrokeWidth(1.0f)
+                .addLine(10.0f, 0.0f)
+                .endPath();
             svg.beginPath(1.0f, -1.0f)
-            .setStrokeColor("green")
-            .setStrokeWidth(0.2f)
-            .addArc(5.0f, 1.0f, 1.0f, true)
-            .endPath();
+                .setStrokeColor("green")
+                .setStrokeWidth(0.2f)
+                .addArc(5.0f, 1.0f, 1.0f, true)
+                .endPath();
         }
     }
 } test;

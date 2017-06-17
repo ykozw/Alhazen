@@ -36,7 +36,7 @@ INLINE SpectrumRGB SpectrumSingleWavelength::toRGB() const
     std::array<float, 3> rgb;
     Vec3 xyz = toXYZ();
     xyz2rgb({ { xyz.x(), xyz.y(), xyz.z() } }, rgb);
-    return SpectrumRGB(rgb[0] * sr, rgb[1] * sg, rgb[2] * sb );
+    return SpectrumRGB(rgb[0] * sr, rgb[1] * sg, rgb[2] * sb);
 }
 
 //-------------------------------------------------
@@ -57,8 +57,8 @@ INLINE SpectrumSingleWavelength operator * (float scale, const SpectrumSingleWav
 {
     return
         SpectrumSingleWavelength(
-        spectrum.lambda,
-        spectrum.intensity * scale);
+            spectrum.lambda,
+            spectrum.intensity * scale);
 }
 
 //-------------------------------------------------
@@ -68,6 +68,6 @@ INLINE SpectrumSingleWavelength operator * (const SpectrumSampled& specrumSample
 {
     return
         SpectrumSingleWavelength(
-        specrumSingle.lambda,
-        specrumSampled.sample(specrumSingle.lambda));
+            specrumSingle.lambda,
+            specrumSampled.sample(specrumSingle.lambda));
 }

@@ -27,18 +27,18 @@ public:
 class IncrimentCounter
 {
 public:
-    enum { NUM_COUNTERS = 128};
+    enum { NUM_COUNTERS = 128 };
 public:
-    IncrimentCounter( const std::string& name );
+    IncrimentCounter(const std::string& name);
     uint64_t operator ++ ();
     static void print();
 private:
     // new経由では生成しないようにする
-    void* operator new(size_t size) =delete;
+    void* operator new(size_t size) = delete;
     void operator delete(void* p) = delete;
 private:
     std::string name_;
-    std::array<IncrimentCounterValue, NUM_COUNTERS> values_;    
+    std::array<IncrimentCounterValue, NUM_COUNTERS> values_;
     static std::vector<IncrimentCounter*> counters;
 };
 
@@ -50,8 +50,8 @@ INLINE uint64_t IncrimentCounter::operator++ ()
     std::this_thread::get_id();
     const int32_t threadNo = Job::threadId;
     AL_ASSERT_DEBUG(threadNo < NUM_COUNTERS);
-    std::atomic<uint64_t>& v =values_[threadNo].value;
-    const uint64_t oldValue = v.fetch_add(1,std::memory_order_relaxed);
+    std::atomic<uint64_t>& v = values_[threadNo].value;
+    const uint64_t oldValue = v.fetch_add(1, std::memory_order_relaxed);
     return oldValue;
 }
 #endif
@@ -79,7 +79,7 @@ public:
     enum { NUM_COUNTERS = 128 };
 public:
     StatCounter(const std::string& name);
-    void add( double newValue );
+    void add(double newValue);
     static void print();
 private:
     void* operator new(size_t size);

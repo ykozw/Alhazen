@@ -14,7 +14,7 @@ class SVGPath
 {
 public:
     friend class SVGWriter;
-	SVGPath(const SVGPath& other);
+    SVGPath(const SVGPath& other);
     ~SVGPath();
     // ストローク設定
     SVGPath& setStrokeWidth(float strokeWidth);
@@ -26,7 +26,7 @@ public:
     SVGPath& addArc(float r, float ex, float ey, bool isClockWise);
     void endPath();
 private:
-    SVGPath(SVGWriter* svgWriter, float x, float y, float offsetX, float offsetY );
+    SVGPath(SVGWriter* svgWriter, float x, float y, float offsetX, float offsetY);
 private:
     SVGWriter* svgWriter_;
     float offsetX_;
@@ -44,7 +44,7 @@ class SVGWriter
 {
 public:
     friend SVGPath;
-    SVGWriter( const std::string& fileName, float mnx, float mny, float mxx, float mxy );
+    SVGWriter(const std::string& fileName, float mnx, float mny, float mxx, float mxy);
     ~SVGWriter();
     SVGPath beginPath(float x, float y);
     void writeLine(const std::string& line);

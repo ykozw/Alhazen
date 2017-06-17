@@ -10,82 +10,33 @@
 */
 void Image::readBmp(const std::string& fileName, float gamma)
 {
-#if !defined(WINDOWS) || true
-    AL_ASSERT_ALWAYS(false);
-#else
-    // 拡張子チェック
-    if (strcmp(getExt(fileName.c_str()), ".bmp") != 0)
+    // ロード
+    int32_t comp;
+    uint8_t* image = stbi_load(fileName.c_str(), &width_, &height_, &comp, STBI_rgb);
+    if (image == nullptr)
     {
-        loggingError("Faild readBmp(). %s is not bmp.", fileName.c_str());
         return;
     }
-
-    //
-    logging("Read image [%s].", fileName.c_str());
-    // 指定されたファイルを開く
-    FILE* file = NULL;
-    fopen_s(&file, fileName.c_str(), "rb");
-    loggingErrorIf(!file, "File not found.[%s]", fileName.c_str());
-    fseek(file, 0, SEEK_END);
-    uint32_t fileSize = ftell(file);
-    fseek(file, 0, SEEK_SET);
-    std::vector<uint8_t> data;
-    data.resize(fileSize + 1);
-    fread(&data[0], fileSize, 1, file);
-    fclose(file);
-    //
-    BITMAPFILEHEADER* header = (BITMAPFILEHEADER*)data.data();
-    BITMAPINFOHEADER* infoHeader = (BITMAPINFOHEADER*)(data.data() + sizeof(BITMAPFILEHEADER));
-    //
-    const int32_t w = infoHeader->biWidth;
-    const int32_t h = infoHeader->biHeight;
-    const int32_t base = header->bfOffBits;
-
-    // HACK: なぜか2の累乗でない場合にロード結果がおかしくなるのでここで警告
-    if (!alIsPowerOfTwo(w) || !alIsPowerOfTwo(h))
+    // イメージを転写
+    spectrums_.resize(width_*height_);
+    for (int32_t y = 0; y < height_; ++y)
     {
-        loggingWarning("BMP [%s] size is not power of 2.", fileName.c_str());
-    }
-
-    // 対応しているフォーマットかチェック
-    AL_ASSERT_DEBUG(header->bfType == ('B' | ('M' << 8)));
-    AL_ASSERT_DEBUG(infoHeader->biPlanes == 1); // 1plane?
-    AL_ASSERT_DEBUG(infoHeader->biBitCount == 24);// 24bpp?
-    AL_ASSERT_DEBUG(infoHeader->biCompression == 0); // 0(無圧縮)?
-    AL_ASSERT_DEBUG(infoHeader->biClrUsed == 0); // パレット数。0?
-    AL_ASSERT_DEBUG(infoHeader->biClrImportant == 0); // 重要なパレットのインデックス
-    //AL_ASSERT_DEBUG(infoHeader->biSizeImage == w * h * 3);
-
-    // 4byteアライメント
-    const int32_t lineSizeRaw = w * 3;
-    const int32_t lineSize = (lineSizeRaw + 3) & ~3;
-
-    //
-    resize(w, h);
-    //
-    for (int32_t y = 0; y < h; ++y)
-    {
-        for (int32_t x = 0; x < w; ++x)
+        const int32_t sy = y*width_;
+        for (int32_t x = 0; x < width_; ++x)
         {
-            auto& sp = pixel(x, y);
-            const int32_t index = (x * 3) + y * lineSize;
-            const uint8_t r = data[base + index + 0];
-            const uint8_t g = data[base + index + 1];
-            const uint8_t b = data[base + index + 2];
-            float b2 = alClamp((float)r / 255.0f, 0.0f, 1.0f);
-            float g2 = alClamp((float)g / 255.0f, 0.0f, 1.0f);
-            float r2 = alClamp((float)b / 255.0f, 0.0f, 1.0f);
-
-            // HACK: cheap convert
-            b2 = powf(b2, 1.0f / gamma);
-            g2 = powf(g2, 1.0f / gamma);
-            r2 = powf(r2, 1.0f / gamma);
-
-            // BMPなので反射率としてロード
-            sp = Spectrum::createFromRGB({ {r2, g2, b2} }, false);
+            const int32_t idx = x + sy;
+            const uint8_t r = image[idx * 3 + 0];
+            const uint8_t g = image[idx * 3 + 1];
+            const uint8_t b = image[idx * 3 + 2];
+            const float fr = float(r) / float(255.0f);
+            const float fg = float(g) / float(255.0f);
+            const float fb = float(b) / float(255.0f);
+            spectrums_[idx] = Spectrum::createFromRGB({ fr,fg,fb }, false);
         }
     }
-#endif
+    //
+    stbi_image_free(image);
+    //
     return;
 }
 

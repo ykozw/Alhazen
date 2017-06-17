@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "pch.hpp"
 
 // VectorMathでSIMDを使うか否か。AVX2まで仮定する。
@@ -371,33 +371,7 @@ public:
     INLINE void setY(float y);
     INLINE void setZ(float z);
     // swizzle
-    INLINE Vec3 xxx() const;
-    INLINE Vec3 xxy() const;
-    INLINE Vec3 xxz() const;
-    INLINE Vec3 xyx() const;
-    INLINE Vec3 xyy() const;
-    //INLINE Vec3 xyz_() const;
-    INLINE Vec3 xzx() const;
-    INLINE Vec3 xzy() const;
-    INLINE Vec3 xzz() const;
-    INLINE Vec3 yxx() const;
-    INLINE Vec3 yxy() const;
-    INLINE Vec3 yxz() const;
-    INLINE Vec3 yyx() const;
-    INLINE Vec3 yyy() const;
-    INLINE Vec3 yyz() const;
-    INLINE Vec3 yzx() const;
-    INLINE Vec3 yzy() const;
-    INLINE Vec3 yzz() const;
-    INLINE Vec3 zxx() const;
-    INLINE Vec3 zxy() const;
-    INLINE Vec3 zxz() const;
-    INLINE Vec3 zyx() const;
-    INLINE Vec3 zyy() const;
-    INLINE Vec3 zyz() const;
-    INLINE Vec3 zzx() const;
-    INLINE Vec3 zzy() const;
-    INLINE Vec3 zzz() const;
+#include "swizzle_vec3.inl"
     //
 	static FloatInVec length(const Vec3& v);
 	static FloatInVec lengthSq(const Vec3& v);
@@ -637,4 +611,3 @@ INLINE static Vec3Pack8& operator *= (Vec3Pack8& v, float factor);
 INLINE static Vec3Pack8 operator / (const Vec3Pack8& v, float f);
 
 #include "math.inl"
-#include "swizzle.inl"

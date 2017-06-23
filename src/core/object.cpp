@@ -6,34 +6,67 @@
 
 namespace
 {
-#pragma warning(disable:4073) // init_segの使用
-#pragma warning(disable:4074) // init_segの使用
-#pragma init_seg(lib)
-std::unordered_map<std::string, std::function<Object*(const ObjectProp&)>> objectCreateFuncs;
-std::unordered_map<std::string, std::function<Object*(const ObjectProp&)>> objectCreateFuncs2;
-
-typedef std::function<Object*(const ObjectProp&)> CreateObjectFun;
-typedef std::unordered_map<std::string, CreateObjectFun> CreateObjectFunList;
-std::unordered_map<std::type_index, CreateObjectFunList> g_allObjectCreateFuncs;
-std::unordered_map<std::type_index, std::string> g_type2name;
-
-class Init
-{
-public:
-    Init()
+    /*
+     -------------------------------------------------
+     -------------------------------------------------
+     */
+    class Init
     {
-        Job::threadId = 0;
-    }
-}init;
+    public:
+        Init()
+        {
+            Job::threadId = 0;
+        }
+    }init;
+    
+    /*
+     -------------------------------------------------
+     -------------------------------------------------
+     */
+    typedef std::unordered_map<std::string, std::function<Object*(const ObjectProp&)>> ObjectCreateFuncs;
+    typedef std::function<Object*(const ObjectProp&)> CreateObjectFun;
+    typedef std::unordered_map<std::string, CreateObjectFun> CreateObjectFunList;
+    
+    /*
+     -------------------------------------------------
+     -------------------------------------------------
+     */
+    class Global
+    {
+    public:
+        ObjectCreateFuncs& objectCreateFuncs()
+        {
+            static std::unordered_map<std::string, std::function<Object*(const ObjectProp&)>> objectCreateFuncs;
+            return objectCreateFuncs;
+        }
+        std::unordered_map<std::type_index, CreateObjectFunList>& allObjectCreateFuncs()
+        {
+            static std::unordered_map<std::type_index, CreateObjectFunList> allObjectCreateFuncs;
+            return allObjectCreateFuncs;
+        }
+        std::unordered_map<std::type_index, std::string>& type2name()
+        {
+            static std::unordered_map<std::type_index, std::string> type2name;
+            return type2name;
+        }
+    }g;
 };
 
-//
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
 void ObjectProp::addAttribute(const std::string& tag, const std::string& value)
 {
     attributes_.insert(std::pair<std::string, std::string>(tag, value));
 }
 
-//
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
 void ObjectProp::addChild(const ObjectProp& child)
 {
     childProps_.push_back(child);
@@ -44,7 +77,7 @@ void ObjectProp::addChild(const ObjectProp& child)
 //-------------------------------------------------
 std::string typeid2name(const std::type_index& deriClass)
 {
-    return g_type2name[deriClass];
+    return g.type2name()[deriClass];
 }
 
 //-------------------------------------------------
@@ -63,12 +96,12 @@ void registerObject(
     AL_ASSERT_DEBUG(createObjectFunc != nullptr);
     // TODO: 二重登録検知ができるようにする
     //
-    objectCreateFuncs.insert(std::pair<std::string, std::function<Object*(const ObjectProp&)>>(targetClassName, createObjectFunc));
+    g.objectCreateFuncs().insert(std::pair<std::string, std::function<Object*(const ObjectProp&)>>(targetClassName, createObjectFunc));
     // 
-    g_type2name.insert(std::make_pair(baseClassType, baseClassName));
-    g_type2name.insert(std::make_pair(targetClassType, targetClassName));
+    g.type2name().insert(std::make_pair(baseClassType, baseClassName));
+    g.type2name().insert(std::make_pair(targetClassType, targetClassName));
     //
-    g_allObjectCreateFuncs[baseClassType][targetClassName] = createObjectFunc;
+    g.allObjectCreateFuncs()[baseClassType][targetClassName] = createObjectFunc;
 }
 
 //-------------------------------------------------
@@ -76,8 +109,8 @@ void registerObject(
 //-------------------------------------------------
 Object* createObjectCore(const std::string& typeName, const ObjectProp& objectProp)
 {
-    AL_ASSERT_DEBUG(objectCreateFuncs.find(typeName) != objectCreateFuncs.end());
-    const auto& objCreateFunc = objectCreateFuncs[typeName];
+    AL_ASSERT_DEBUG(g.objectCreateFuncs().find(typeName) != g.objectCreateFuncs().end());
+    const auto& objCreateFunc = g.objectCreateFuncs()[typeName];
     AL_ASSERT_DEBUG(objCreateFunc != NULL);
     return objCreateFunc(objectProp);
 }
@@ -93,8 +126,8 @@ Object* createObjectCore(
     //
     logging("CreateObject BaseClass:%s TargetClass:%s", baseClassType.name(), targetClassName.c_str());
     //
-    auto baseClassTypeIte = g_allObjectCreateFuncs.find(baseClassType);
-    AL_ASSERT_DEBUG(baseClassTypeIte != g_allObjectCreateFuncs.end());
+    auto baseClassTypeIte = g.allObjectCreateFuncs().find(baseClassType);
+    AL_ASSERT_DEBUG(baseClassTypeIte != g.allObjectCreateFuncs().end());
     CreateObjectFunList& createObjectFunList = baseClassTypeIte->second;
     auto createObjectIte = createObjectFunList.find(targetClassName);
     AL_ASSERT_DEBUG(createObjectIte != createObjectFunList.end());

@@ -138,6 +138,13 @@ AL_TEST(Math, Vec3)
         AL_ASSERT_ALWAYS(v.y() == 2.0f);
         AL_ASSERT_ALWAYS(v.z() == 3.0f);
     }
+    // 同値判定
+    {
+        // wは関係がないので同値になる
+        Vec3 v0(_mm_set_ps(1.0f, 0.0f, 0.0f, 0.0f));
+        Vec3 v1(_mm_set_ps(0.0f, 0.0f, 0.0f, 0.0f));
+        AL_ASSERT_ALWAYS(v1 == v0);
+    }
     // zero
     {
         Vec3 v;

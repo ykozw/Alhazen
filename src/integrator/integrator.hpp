@@ -11,9 +11,10 @@
 class SurfaceIntegrator;
 typedef std::shared_ptr<SurfaceIntegrator> SurfaceIntegratorPtr;
 
-//-------------------------------------------------
-// SurfaceIntegrator
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 class SurfaceIntegrator
 	:public Object
 {

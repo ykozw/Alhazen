@@ -6,10 +6,12 @@
 #include "tonemapper/tonemapper.hpp"
 
 
-//-------------------------------------------------
-// 全てのRGB値が同じであれば反射用のSpectrumSampledの係数も常に全て同じであることのチェック
-// cf. pbrt-v2 p275
-//-------------------------------------------------
+/*
+-------------------------------------------------
+全てのRGB値が同じであれば反射用のSpectrumSampledの係数も常に全て同じであることのチェック
+cf. pbrt-v2 p275
+-------------------------------------------------
+*/
 AL_TEST(spectrum, SpectrumSampled_SameAllCoeffWhenRGBisEqual)
 {
     for (float v = 0.0f; v <= 2.0f; v += 0.1f)
@@ -38,9 +40,11 @@ AL_TEST(spectrum, SpectrumSampled_SameAllCoeffWhenRGBisEqual)
     }
 }
 
-//-------------------------------------------------
-// RGB ⇔ SpectrumSampledの変換でおおよそ元に戻っていることのチェック
-//-------------------------------------------------
+/*
+-------------------------------------------------
+RGB ⇔ SpectrumSampledの変換でおおよそ元に戻っていることのチェック
+-------------------------------------------------
+*/
 AL_TEST(spectrum, SampledSpectrumInterconversion)
 {
     const float w = 1.0f;
@@ -67,10 +71,12 @@ AL_TEST(spectrum, SampledSpectrumInterconversion)
     }
 }
 
-//-------------------------------------------------
-// SpectrumSampledの白色指定(1,1,1)が、D65(色温度6500度)と同じになっているかのチェック
-// HACK: 色温度6500とD65は同じではない。何らかの方法でテストをする。
-//-------------------------------------------------
+/*
+-------------------------------------------------
+SpectrumSampledの白色指定(1,1,1)が、D65(色温度6500度)と同じになっているかのチェック
+HACK: 色温度6500とD65は同じではない。何らかの方法でテストをする。
+-------------------------------------------------
+*/
 AL_TEST(spectrum, SpectrumSampled_WhiteIlluminationIsD65)
 {
 #if 0
@@ -98,10 +104,12 @@ AL_TEST(spectrum, SpectrumSampled_WhiteIlluminationIsD65)
     return;
 }
 
-//-------------------------------------------------
-// test_SpectrumSampled_SamplingLambda()
-// RGB -> Spectrum -> Spectrumの波長サンプル -> RGBでちゃんと元におおよそ戻るかのチェック
-//-------------------------------------------------
+/*
+-------------------------------------------------
+test_SpectrumSampled_SamplingLambda()
+RGB -> Spectrum -> Spectrumの波長サンプル -> RGBでちゃんと元におおよそ戻るかのチェック
+-------------------------------------------------
+*/
 AL_TEST(spectrum, SpectrumSampled_SamplingLambda)
 {
     for (int32_t ci = 0; ci < 1000; ++ci)
@@ -139,10 +147,12 @@ AL_TEST(spectrum, SpectrumSampled_SamplingLambda)
     return;
 }
 
-//-------------------------------------------------
-// test_SpectrumSampled_SamplingLambdaHeroWavelength()
-// RGB -> Spectrum -> Spectrumの波長サンプル(HeroWaveLength使用) -> RGBでちゃんと元におおよそ戻るかのチェック
-//-------------------------------------------------
+/*
+-------------------------------------------------
+test_SpectrumSampled_SamplingLambdaHeroWavelength()
+RGB -> Spectrum -> Spectrumの波長サンプル(HeroWaveLength使用) -> RGBでちゃんと元におおよそ戻るかのチェック
+-------------------------------------------------
+*/
 AL_TEST(spectrum, SpectrumSampled_SamplingLambdaHeroWavelength)
 {
     for (int32_t ci = 0; ci < 1000; ++ci)
@@ -188,9 +198,11 @@ AL_TEST(spectrum, SpectrumSampled_SamplingLambdaHeroWavelength)
     return;
 }
 
-//-------------------------------------------------
-// sampleHerowavelength1()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+sampleHerowavelength1()
+-------------------------------------------------
+*/
 AL_TEST(spectrum, sampleHerowavelength1)
 {
 #if 0

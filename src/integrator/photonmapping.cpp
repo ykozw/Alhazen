@@ -6,9 +6,10 @@
 #include "sampler/sampler.hpp"
 #include "accelerator/kdtree.hpp"
 
-//-------------------------------------------------
-// PMSurfaceIntegrator
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 class PMSurfaceIntegrator
     :public SurfaceIntegrator
 {

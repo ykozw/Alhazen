@@ -5,7 +5,6 @@ FileSystem g_fileSystem;
 
 /*
 -------------------------------------------------
-
 -------------------------------------------------
 */
 void FileSystem::init(const char* sceneFilePath)

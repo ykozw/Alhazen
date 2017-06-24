@@ -1,33 +1,37 @@
 ﻿#include "spectrum.hpp"
 
-//-------------------------------------------------
-// createAsBlack()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumRGB SpectrumRGB::createAsBlack()
 {
     return SpectrumRGB(0.0f, 0.0f, 0.0f);
 }
 
-//-------------------------------------------------
-// createAsWhite()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumRGB SpectrumRGB::createAsWhite()
 {
     return SpectrumRGB(1.0f, 1.0f, 1.0f);
 }
 
-//-------------------------------------------------
-// fromRGB()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumRGB SpectrumRGB::createFromRGB(const std::array<float, 3>& rgb, bool asIllumination)
 {
     (void)asIllumination;
     return SpectrumRGB(rgb[0], rgb[1], rgb[2]);
 }
 
-//-------------------------------------------------
-// fromColorTemp()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumRGB SpectrumRGB::createFromColorTemp(const float kelvin)
 {
     SpectrumRGB ret;
@@ -35,9 +39,10 @@ INLINE SpectrumRGB SpectrumRGB::createFromColorTemp(const float kelvin)
     return ret;
 }
 
-//-------------------------------------------------
-// energyDif()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE float SpectrumRGB::energyDif(const SpectrumRGB& lhs, const SpectrumRGB& rhs)
 {
     const float rd = lhs.r - rhs.r;
@@ -46,31 +51,35 @@ INLINE float SpectrumRGB::energyDif(const SpectrumRGB& lhs, const SpectrumRGB& r
     return rd*rd + gd*gd + bd*bd;
 }
 
-//-------------------------------------------------
-// Spectrum()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumRGB::SpectrumRGB()
     :r(0.0f), g(0.0f), b(0.0f)
 {}
 
-//-------------------------------------------------
-// Spectrum()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumRGB::SpectrumRGB(float v)
     :r(v), g(v), b(v)
 {}
 
-//-------------------------------------------------
-// Spectrum()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumRGB::SpectrumRGB(float ar, float ag, float ab)
     :r(ar), g(ag), b(ab)
 {
 }
 
-//-------------------------------------------------
-// isBlack()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE void SpectrumRGB::clear()
 {
     r = 0.0f;
@@ -78,9 +87,10 @@ INLINE void SpectrumRGB::clear()
     b = 0.0f;
 }
 
-//-------------------------------------------------
-// isBlack()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE bool SpectrumRGB::isBlack() const
 {
     return
@@ -89,9 +99,10 @@ INLINE bool SpectrumRGB::isBlack() const
         b == 0.0f;
 }
 
-//-------------------------------------------------
-// sqrt()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumRGB SpectrumRGB::sqrt() const
 {
     return
@@ -101,9 +112,10 @@ INLINE SpectrumRGB SpectrumRGB::sqrt() const
             sqrtf(b));
 }
 
-//-------------------------------------------------
-// luminance()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE float SpectrumRGB::luminance() const
 {
     return
@@ -112,17 +124,19 @@ INLINE float SpectrumRGB::luminance() const
         0.0722f*b;
 }
 
-//-------------------------------------------------
-// toRGB()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE void SpectrumRGB::toRGB(SpectrumRGB& argb) const
 {
     argb = *this;
 }
 
-//-------------------------------------------------
-// clamp()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE void SpectrumRGB::clamp(float mn, float mx)
 {
     const auto clampSub = [&mn, &mx](float v)
@@ -142,9 +156,10 @@ INLINE void SpectrumRGB::clamp(float mn, float mx)
     b = clampSub(b);
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE bool SpectrumRGB::hasNaN() const
 {
     for (int32_t i = 0; i < 3; ++i)
@@ -157,9 +172,10 @@ INLINE bool SpectrumRGB::hasNaN() const
     return false;
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumRGB operator+(const SpectrumRGB& lhs, const SpectrumRGB& rhs)
 {
     SpectrumRGB ret;
@@ -169,9 +185,10 @@ INLINE SpectrumRGB operator+(const SpectrumRGB& lhs, const SpectrumRGB& rhs)
     return ret;
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumRGB operator - (const SpectrumRGB& lhs, const SpectrumRGB& rhs)
 {
     SpectrumRGB ret;
@@ -181,9 +198,10 @@ INLINE SpectrumRGB operator - (const SpectrumRGB& lhs, const SpectrumRGB& rhs)
     return ret;
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumRGB operator * (float scale, const SpectrumRGB& spectrum)
 {
     return SpectrumRGB(
@@ -192,9 +210,10 @@ INLINE SpectrumRGB operator * (float scale, const SpectrumRGB& spectrum)
         spectrum.b * scale);
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumRGB operator * (const SpectrumRGB& spectrum, float scale)
 {
     return SpectrumRGB(
@@ -203,9 +222,10 @@ INLINE SpectrumRGB operator * (const SpectrumRGB& spectrum, float scale)
         spectrum.b * scale);
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumRGB operator * (const SpectrumRGB& lhs, const SpectrumRGB& rhs)
 {
     return SpectrumRGB(
@@ -214,18 +234,20 @@ INLINE SpectrumRGB operator * (const SpectrumRGB& lhs, const SpectrumRGB& rhs)
         lhs.b * rhs.b);
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumRGB operator / (const SpectrumRGB& spectrum, float v)
 {
     const float iv = 1.0f / v;
     return iv * spectrum;
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumRGB operator / (const SpectrumRGB& lhs, const SpectrumRGB& rhs)
 {
     return SpectrumRGB(
@@ -234,9 +256,10 @@ INLINE SpectrumRGB operator / (const SpectrumRGB& lhs, const SpectrumRGB& rhs)
         lhs.b / rhs.b);
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE bool operator == (const SpectrumRGB& lhs, const SpectrumRGB& rhs)
 {
     return
@@ -245,9 +268,10 @@ INLINE bool operator == (const SpectrumRGB& lhs, const SpectrumRGB& rhs)
         (lhs.b == rhs.b);
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumRGB& operator += (SpectrumRGB& lhs, const SpectrumRGB& rhs)
 {
     lhs.r += rhs.r;
@@ -256,9 +280,10 @@ INLINE SpectrumRGB& operator += (SpectrumRGB& lhs, const SpectrumRGB& rhs)
     return lhs;
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumRGB& operator -= (SpectrumRGB& lhs, const SpectrumRGB& rhs)
 {
     lhs.r -= rhs.r;
@@ -267,9 +292,10 @@ INLINE SpectrumRGB& operator -= (SpectrumRGB& lhs, const SpectrumRGB& rhs)
     return lhs;
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumRGB& operator *= (SpectrumRGB& spectrum, float scale)
 {
     spectrum.r *= scale;
@@ -278,9 +304,10 @@ INLINE SpectrumRGB& operator *= (SpectrumRGB& spectrum, float scale)
     return spectrum;
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumRGB& operator *= (SpectrumRGB& lhs, const SpectrumRGB& rhs)
 {
     lhs.r *= rhs.r;
@@ -289,9 +316,10 @@ INLINE SpectrumRGB& operator *= (SpectrumRGB& lhs, const SpectrumRGB& rhs)
     return lhs;
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumRGB& operator /= (SpectrumRGB& spectrum, float div)
 {
     const float scale = 1.0f / div;
@@ -301,9 +329,10 @@ INLINE SpectrumRGB& operator /= (SpectrumRGB& spectrum, float div)
     return spectrum;
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumRGB lerp(const SpectrumRGB& lhs, const SpectrumRGB& rhs, float factor)
 {
     const float t0 = 1.0f - factor;

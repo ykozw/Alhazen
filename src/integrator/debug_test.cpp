@@ -2,9 +2,10 @@
 #include "integrator.hpp"
 #include "core/orthonormalbasis.hpp"
 
-//-------------------------------------------------
-// TestIntegrator
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 class TestIntegrator
     :public SurfaceIntegrator
 {
@@ -35,17 +36,19 @@ private:
 
 REGISTER_OBJECT(SurfaceIntegrator,TestIntegrator);
 
-//-------------------------------------------------
-// TestIntegrator()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 TestIntegrator::TestIntegrator(const ObjectProp& objectProp)
 {
     static_cast<void>(objectProp);
 }
 
-//-------------------------------------------------
-// radiance()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 Spectrum TestIntegrator::radiance(
     const Ray& screenRay,
     const SceneGeometory& scene,

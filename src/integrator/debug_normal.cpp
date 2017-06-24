@@ -1,9 +1,11 @@
 ﻿#include "pch.hpp"
 #include "integrator.hpp"
 
-//-------------------------------------------------
-// NormalSurfaceIntegrator
-//-------------------------------------------------
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 class NormalSurfaceIntegrator
     :public SurfaceIntegrator
 {
@@ -32,17 +34,19 @@ private:
 
 REGISTER_OBJECT(SurfaceIntegrator,NormalSurfaceIntegrator);
 
-//-------------------------------------------------
-// NormalSurfaceIntegrator()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 NormalSurfaceIntegrator::NormalSurfaceIntegrator(const ObjectProp& objectProp)
 {
     static_cast<void>(objectProp);
 }
 
-//-------------------------------------------------
-// radiance()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 Spectrum NormalSurfaceIntegrator::radiance(
     const Ray& screenRay,
     const SceneGeometory& scene,

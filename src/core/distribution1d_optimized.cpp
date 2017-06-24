@@ -5,41 +5,46 @@
 #include "core/rng.hpp"
 #include "core/unittest.hpp"
 
-//-------------------------------------------------
-// Distribution1D_Optimized
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 Distribution1D_Optimized::Distribution1D_Optimized()
 {
     construct({ {} });
 }
 
-//-------------------------------------------------
-// Distribution1D_Optimized
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 Distribution1D_Optimized::Distribution1D_Optimized(const std::vector<float>& values)
 {
     construct(values);
 }
 
-//-------------------------------------------------
-// Distribution1D_Optimized
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 Distribution1D_Optimized::Distribution1D_Optimized(const std::initializer_list<float>& values)
 {
     construct(values);
 }
 
-//-------------------------------------------------
-// Distribution1D
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 Distribution1D_Optimized::Distribution1D_Optimized(const float* values, int32_t num)
 {
     construct(std::vector<float>(values, values + num));
 }
 
-//-------------------------------------------------
-// Distribution1D
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 Distribution1D_Optimized::Distribution1D_Optimized(std::function<float(float)> genFunc, int32_t split)
 {
     std::vector<float> values;
@@ -52,9 +57,10 @@ Distribution1D_Optimized::Distribution1D_Optimized(std::function<float(float)> g
     construct(values);
 }
 
-//-------------------------------------------------
-// roundupPowerOf2()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 static uint32_t roundupPowerOf2(uint32_t v)
 {
     --v;
@@ -67,9 +73,10 @@ static uint32_t roundupPowerOf2(uint32_t v)
     return v;
 }
 
-//-------------------------------------------------
-// construct
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 void Distribution1D_Optimized::construct(const std::vector<float>& values)
 {
     // CDFを2^n-1の形にしておくと、後段のオフセット計算が簡単になる
@@ -132,9 +139,10 @@ void Distribution1D_Optimized::construct(const std::vector<float>& values)
     Local::insert(0, cdf.size() - 1, cdf.begin() + 1, cdfBreadthFirst_); // TODO:ここの-1があるせいで最後が0になってるのを直す
 }
 
-//-------------------------------------------------
-// sample()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 float Distribution1D_Optimized::sample(float u, _Out_ float* pdf, _Out_ int32_t* aOffset) const
 {
     //
@@ -202,9 +210,10 @@ float Distribution1D_Optimized::sample(float u, _Out_ float* pdf, _Out_ int32_t*
 #endif
 }
 
-//-------------------------------------------------
-// pdf()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 float Distribution1D_Optimized::pdf(int32_t index) const
 {
     // TODO: 本来のindexから専用cdf用のindexを逆算する
@@ -213,10 +222,12 @@ float Distribution1D_Optimized::pdf(int32_t index) const
     return 0.0f;
 }
 
-//-------------------------------------------------
-// TestNaiveAndOptimized
-// Distribution1D_Optimizedが、Naive版と同じ挙動になっているかのチェック
-//-------------------------------------------------
+/*
+-------------------------------------------------
+TestNaiveAndOptimized
+Distribution1D_Optimizedが、Naive版と同じ挙動になっているかのチェック
+-------------------------------------------------
+*/
 AL_TEST(Distribution, Optimized)
 {
     // データの作成

@@ -420,9 +420,10 @@ const float CIE_Z_ACM_INV = 1.0f / CIE_Z.accumrate();
 #pragma region ColorConstants
 
 const int32_t SPECTRUM_SAMPLED_NUM_SAMPLES_RGB = 32;
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 const std::array<float, SPECTRUM_SAMPLED_NUM_SAMPLES_RGB> whiteSample
 { {
         1.0618958571272863e+00f, 1.0615019980348779e+00f,
@@ -737,9 +738,10 @@ const SpectrumSampled greenIllum = sample2SpectrumSampled<SPECTRUM_SAMPLED_NUM_S
 const SpectrumSampled blueIllum = sample2SpectrumSampled<SPECTRUM_SAMPLED_NUM_SAMPLES_RGB>(rgbLambda, blueIllumSample);
 #pragma endregion
 
-//-------------------------------------------------
-// xyz2rgb()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE void xyz2rgb(const std::array<float, 3>& axyz, std::array<float, 3>& rgb)
 {
     const Vec3 XYZ(axyz);
@@ -748,9 +750,10 @@ INLINE void xyz2rgb(const std::array<float, 3>& axyz, std::array<float, 3>& rgb)
     rgb[2] = Vec3::dot(Vec3(+0.055648f, -0.204043f, +1.057311f), XYZ);
 }
 
-//-------------------------------------------------
-// rgb2xyz()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE void rgb2xyz(const std::array<float, 3>& argb, std::array<float, 3>& xyz_)
 {
     const Vec3 rgb(argb);
@@ -759,9 +762,10 @@ INLINE void rgb2xyz(const std::array<float, 3>& argb, std::array<float, 3>& xyz_
     xyz_[2] = Vec3::dot(Vec3(+0.019334f, +0.119193f, +0.950227f), rgb);
 }
 
-//-------------------------------------------------
-// evalAsSpectrum()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE Spectrum evalAsSpectrum(const std::string& str, bool asIllumination)
 {
     float r, g, b;
@@ -785,10 +789,12 @@ INLINE Spectrum evalAsSpectrum(const std::string& str, bool asIllumination)
     }
 }
 
-//-------------------------------------------------
-// createFromRGB()
-// B. Smits, “An RGB-to-Spectrum Conversion for Reflectances,” J. Graph. Tools, vol. 4, no. 4, pp. 11–22, 1999.
-//-------------------------------------------------
+/*
+-------------------------------------------------
+createFromRGB()
+B. Smits, “An RGB-to-Spectrum Conversion for Reflectances,” J. Graph. Tools, vol. 4, no. 4, pp. 11–22, 1999.
+-------------------------------------------------
+*/
 INLINE SpectrumSampled SpectrumSampled::createFromRGB(const std::array<float, 3>& rgb, bool asIllumination)
 {
     // asIlluminationがonの時の挙動がいまいち合っているのか不明なのでしばらく様子見。
@@ -880,9 +886,10 @@ INLINE SpectrumSampled SpectrumSampled::createFromRGB(const std::array<float, 3>
     return ret;
 }
 
-//-------------------------------------------------
-// createFromColorTemp()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumSampled SpectrumSampled::createFromColorTemp(const float temp)
 {
     SpectrumSampled ret;
@@ -899,9 +906,10 @@ INLINE SpectrumSampled SpectrumSampled::createFromColorTemp(const float temp)
     return ret;
 }
 
-//-------------------------------------------------
-// energyDif()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE float SpectrumSampled::energyDif(const SpectrumSampled& lhs, const SpectrumSampled& rhs)
 {
     // HACK: 「エネルギーの差」と言い切るなら、波長毎にちゃんと出るのだからそれを考慮した方がいい？
@@ -915,9 +923,10 @@ INLINE float SpectrumSampled::energyDif(const SpectrumSampled& lhs, const Spectr
     return sum;
 }
 
-//-------------------------------------------------
-// SpectrumSampled()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumSampled::SpectrumSampled()
 {
     for (int32_t i = 0; i < SPECTRUM_SAMPLED_NUM_SAMPLES; ++i)
@@ -926,9 +935,10 @@ INLINE SpectrumSampled::SpectrumSampled()
     }
 }
 
-//-------------------------------------------------
-// SpectrumSampled()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumSampled::SpectrumSampled(float v)
 {
     for (int32_t i = 0; i < SPECTRUM_SAMPLED_NUM_SAMPLES; ++i)
@@ -937,17 +947,19 @@ INLINE SpectrumSampled::SpectrumSampled(float v)
     }
 }
 
-//-------------------------------------------------
-// SpectrumSampled()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumSampled::SpectrumSampled(const std::array<float, SPECTRUM_SAMPLED_NUM_SAMPLES>& asamples)
 {
     samples = asamples;
 }
 
-//-------------------------------------------------
-// clear()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE void SpectrumSampled::clear()
 {
     for (int32_t i = 0; i < SPECTRUM_SAMPLED_NUM_SAMPLES; ++i)
@@ -956,9 +968,10 @@ INLINE void SpectrumSampled::clear()
     }
 }
 
-//-------------------------------------------------
-// isBlack()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE bool SpectrumSampled::isBlack() const
 {
     for (int32_t i = 0; i < SPECTRUM_SAMPLED_NUM_SAMPLES; ++i)
@@ -971,9 +984,10 @@ INLINE bool SpectrumSampled::isBlack() const
     return true;
 }
 
-//-------------------------------------------------
-// sqrt()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumSampled SpectrumSampled::sqrt() const
 {
     SpectrumSampled ret;
@@ -984,9 +998,10 @@ INLINE SpectrumSampled SpectrumSampled::sqrt() const
     return ret;
 }
 
-//-------------------------------------------------
-// toXYZ()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE void SpectrumSampled::toXYZ(std::array<float, 3>& xyz_) const
 {
     xyz_[0] = xyz_[1] = xyz_[2] = 0.0f;
@@ -1001,9 +1016,10 @@ INLINE void SpectrumSampled::toXYZ(std::array<float, 3>& xyz_) const
     xyz_[2] *= CIE_Z_ACM_INV;
 }
 
-//-------------------------------------------------
-// toRGB()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE void SpectrumSampled::toRGB(SpectrumRGB& spectrumRGB) const
 {
     std::array<float, 3> xyz_;
@@ -1016,9 +1032,10 @@ INLINE void SpectrumSampled::toRGB(SpectrumRGB& spectrumRGB) const
     spectrumRGB.b = alClamp(rgb[2], 0.0f, inf);
 }
 
-//-------------------------------------------------
-// clamp()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE void SpectrumSampled::clamp(float mn, float mx)
 {
     AL_ASSERT_DEBUG(mn < mx);
@@ -1037,9 +1054,10 @@ INLINE void SpectrumSampled::clamp(float mn, float mx)
     }
 }
 
-//-------------------------------------------------
-// hasNaN()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE bool SpectrumSampled::hasNaN() const
 {
     for (int32_t i = 0; i < SPECTRUM_SAMPLED_NUM_SAMPLES; ++i)
@@ -1053,9 +1071,10 @@ INLINE bool SpectrumSampled::hasNaN() const
     return false;
 }
 
-//-------------------------------------------------
-// maxValue()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE float SpectrumSampled::maxValue() const
 {
     float maxValue = 0.0f;
@@ -1066,9 +1085,10 @@ INLINE float SpectrumSampled::maxValue() const
     return maxValue;
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE float SpectrumSampled::sample(float wavelength) const
 {
     //
@@ -1093,17 +1113,19 @@ INLINE float SpectrumSampled::sample(float wavelength) const
     }
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE float SpectrumSampled::accumrate() const
 {
     return std::accumulate(samples.begin(), samples.end(), 0.0f);
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE float SpectrumSampled::y() const
 {
     float ret = 0.0f;
@@ -1115,9 +1137,10 @@ INLINE float SpectrumSampled::y() const
     return ret;
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumSampled operator+(const SpectrumSampled& lhs, const SpectrumSampled& rhs)
 {
     SpectrumSampled ret;
@@ -1128,9 +1151,10 @@ INLINE SpectrumSampled operator+(const SpectrumSampled& lhs, const SpectrumSampl
     return ret;
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumSampled operator-(const SpectrumSampled& lhs, const SpectrumSampled& rhs)
 {
     SpectrumSampled ret;
@@ -1141,9 +1165,10 @@ INLINE SpectrumSampled operator-(const SpectrumSampled& lhs, const SpectrumSampl
     return ret;
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumSampled operator* (float scale, const SpectrumSampled& spectrum)
 {
     SpectrumSampled ret;
@@ -1154,9 +1179,10 @@ INLINE SpectrumSampled operator* (float scale, const SpectrumSampled& spectrum)
     return ret;
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumSampled operator* (const SpectrumSampled& spectrum, float scale)
 {
     SpectrumSampled ret;
@@ -1167,9 +1193,10 @@ INLINE SpectrumSampled operator* (const SpectrumSampled& spectrum, float scale)
     return ret;
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumSampled operator * (const SpectrumSampled& lhs, const SpectrumSampled& rhs)
 {
     SpectrumSampled ret;
@@ -1180,9 +1207,10 @@ INLINE SpectrumSampled operator * (const SpectrumSampled& lhs, const SpectrumSam
     return ret;
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumSampled operator / (const SpectrumSampled& spectrum, float v)
 {
     SpectrumSampled ret;
@@ -1193,9 +1221,10 @@ INLINE SpectrumSampled operator / (const SpectrumSampled& spectrum, float v)
     return ret;
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumSampled operator / (const SpectrumSampled& lhs, const SpectrumSampled& rhs)
 {
     SpectrumSampled ret;
@@ -1206,36 +1235,40 @@ INLINE SpectrumSampled operator / (const SpectrumSampled& lhs, const SpectrumSam
     return ret;
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumSampled& operator += (SpectrumSampled& lhs, const SpectrumSampled& rhs)
 {
     lhs = lhs + rhs;
     return lhs;
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumSampled& operator -= (SpectrumSampled& lhs, const SpectrumSampled& rhs)
 {
     lhs = lhs - rhs;
     return lhs;
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumSampled& operator *= (SpectrumSampled& spectrum, float scale)
 {
     spectrum = scale * spectrum;
     return spectrum;
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumSampled lerp(const SpectrumSampled& lhs, const SpectrumSampled& rhs, float factor)
 {
     AL_ASSERT_DEBUG(0.0f <= factor && factor <= 1.0f);
@@ -1248,9 +1281,10 @@ INLINE SpectrumSampled lerp(const SpectrumSampled& lhs, const SpectrumSampled& r
     return ret;
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 template<int32_t NUM_SAMPLE>
 SpectrumSampled sample2SpectrumSampled(
     const std::array<float, NUM_SAMPLE>& lambda,

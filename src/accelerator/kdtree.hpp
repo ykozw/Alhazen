@@ -4,9 +4,10 @@
 #include "core/math.hpp"
 #include "core/aabb.hpp"
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 template<typename KdTreePoint>
 struct KdTreeNode
 {
@@ -19,9 +20,10 @@ struct KdTreeNode
     KdTreePoint point;
 };
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 template<typename KdTreePoint>
 class KdTree
 {
@@ -170,9 +172,10 @@ inline int32_t KdTree<KdTreePoint>::constructSub(
     return thisNodeIndex;
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 template<typename KdTreePoint>
 INLINE KdTreePoint KdTree<KdTreePoint>::findNearest(const Vec3& point, float* minDist) const
 {
@@ -187,9 +190,10 @@ INLINE KdTreePoint KdTree<KdTreePoint>::findNearest(const Vec3& point, float* mi
     return bestDistNode->point;
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 template<typename KdTreePoint>
 INLINE void KdTree<KdTreePoint>::findNearestSub(
     const Vec3& point,
@@ -236,9 +240,11 @@ INLINE void KdTree<KdTreePoint>::findNearestSub(
     }
 }
 
-//-------------------------------------------------
-// 総当たりで最近接を探す
-//-------------------------------------------------
+/*
+-------------------------------------------------
+総当たりで最近接を探す
+-------------------------------------------------
+*/
 template<typename KdTreePoint>
 KdTreePoint KdTree<KdTreePoint>::findNearestBF(const Vec3& point) const
 {
@@ -259,9 +265,11 @@ KdTreePoint KdTree<KdTreePoint>::findNearestBF(const Vec3& point) const
     return closestNode->point;
 }
 
-//-------------------------------------------------
-// KNN
-//-------------------------------------------------
+/*
+-------------------------------------------------
+KNN
+-------------------------------------------------
+*/
 template<typename KdTreePoint>
 float KdTree<KdTreePoint>::findKNN(
     const Vec3& targetPoint,
@@ -278,9 +286,10 @@ float KdTree<KdTreePoint>::findKNN(
     return farDist;
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 template<typename KdTreePoint>
 INLINE void KdTree<KdTreePoint>::findKNNSub(
     const Vec3& targetPos,
@@ -357,9 +366,11 @@ INLINE void KdTree<KdTreePoint>::findKNNSub(
     }
 }
 
-//-------------------------------------------------
-// KNN(総当たり)
-//-------------------------------------------------
+/*
+-------------------------------------------------
+KNN(総当たり)
+-------------------------------------------------
+*/
 template<typename KdTreePoint>
 float KdTree<KdTreePoint>::findKNNBF(
     const Vec3& targetPos,
@@ -412,9 +423,11 @@ float KdTree<KdTreePoint>::findKNNBF(
 }
 
 #if 0
-//-------------------------------------------------
-// 指定のBounding内の点を全て列挙する
-//-------------------------------------------------
+/*
+-------------------------------------------------
+指定のBounding内の点を全て列挙する
+-------------------------------------------------
+*/
 template<typename KdTreePoint>
 INLINE void KdTree<KdTreePoint>::requestInBounding(
     const AABB& aabb,
@@ -431,36 +444,40 @@ INLINE void KdTree<KdTreePoint>::requestInBounding(
 }
 #endif
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 template<typename KdTreePoint>
 INLINE float KdTree<KdTreePoint>::calcDist(const NodeType& node, const Vec3& pos) const
 {
     return Vec3::distance(pos, node.point.position());
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 template<typename KdTreePoint>
 INLINE float KdTree<KdTreePoint>::calcDist(const KdTreePoint* point, const Vec3& pos) const
 {
     return Vec3::distance(pos, point->position());
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 template<typename KdTreePoint>
 INLINE float KdTree<KdTreePoint>::calcDistSq(const NodeType& node, const Vec3& pos) const
 {
     return Vec3::distanceSq(pos, node.point.position());
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 template<typename KdTreePoint>
 INLINE float KdTree<KdTreePoint>::calcDistSq(const KdTreePoint* point, const Vec3& pos) const
 {
@@ -468,9 +485,10 @@ INLINE float KdTree<KdTreePoint>::calcDistSq(const KdTreePoint* point, const Vec
 }
 
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 template<typename KdTreePoint>
 INLINE void KdTree<KdTreePoint>::print() const
 {

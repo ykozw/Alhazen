@@ -3,9 +3,10 @@
 #include "pch.hpp"
 #include "intersect.hpp"
 
-//-------------------------------------------------
-// intersectSphereShapeCore()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE bool intersectSphereShapeCore(
     const Ray& ray,
     const Vec3& o,
@@ -50,9 +51,10 @@ INLINE bool intersectSphereShapeCore(
     return true;
 }
 
-//-------------------------------------------------
-// intersectSphereShape()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE bool intersectSphere(
     const Ray& ray,
     const Vec3& o,
@@ -82,9 +84,10 @@ INLINE bool intersectSphere(
     return true;
 }
 
-//-------------------------------------------------
-// hasIntersectSphereShape()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE bool intersectSphereCheck(const Ray& ray, const Vec3& pos, float r)
 {
     float t;
@@ -92,9 +95,10 @@ INLINE bool intersectSphereCheck(const Ray& ray, const Vec3& pos, float r)
     return intersectSphereShapeCore(ray, pos, r, &t, &intersectBackside);
 }
 
-//-------------------------------------------------
-// intersectTriangle()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE bool intersectTriangleCore(
     const Ray& ray,
     const Vec3& v0,
@@ -147,9 +151,10 @@ INLINE bool intersectTriangleCore(
     return true;
 }
 
-//-------------------------------------------------
-// intersectTriangle()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE bool intersectTriangle(
     const Ray& ray,
     const Vec3& v0,
@@ -201,9 +206,10 @@ INLINE bool intersectTriangle(
     return true;
 }
 
-//-------------------------------------------------
-// intersectTriangleCheck()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE bool intersectTriangleCheck(const Ray& ray, const Vec3& v0, const Vec3& v1, const Vec3& v2)
 {
     float t, u, v;
@@ -211,9 +217,10 @@ INLINE bool intersectTriangleCheck(const Ray& ray, const Vec3& v0, const Vec3& v
     return intersectTriangleCore(ray, v0, v1, v2, &t, &u, &v, &isFlip);
 }
 
-//-------------------------------------------------
-// intersectPlaneShapeCore()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE bool intersectPlaneShapeCore(
     const Ray& ray,
     const Vec3& dir,
@@ -242,9 +249,10 @@ INLINE bool intersectPlaneShapeCore(
     return true;
 }
 
-//-------------------------------------------------
-// intersectPlaneShape()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE bool intersectPlane(
     const Ray& ray,
     const Vec3& dir,
@@ -269,9 +277,10 @@ INLINE bool intersectPlane(
     return true;
 }
 
-//-------------------------------------------------
-// intersectPlaneCheck()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE bool intersectPlaneCheck(
     const Ray& ray,
     const Vec3& dir,

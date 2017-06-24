@@ -6,10 +6,6 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-#pragma warning(disable:4073) // init_segの使用
-#pragma warning(disable:4074) // init_segの使用
-#pragma init_seg(lib)
-
 struct TestDesc
 {
 public:
@@ -30,8 +26,16 @@ public:
     {}
 };
 
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 typedef std::unordered_map<std::string, TestDesc> TestsPerCategory;
-static std::unordered_map<std::string, TestsPerCategory> g_tests;
+static std::unordered_map<std::string, TestsPerCategory>& getTests()
+{
+    static std::unordered_map<std::string, TestsPerCategory> tests;
+    return tests;
+}
 
 /*
 -------------------------------------------------
@@ -44,11 +48,12 @@ void detail::registerTest(
     bool doTestImplicit)
 {
 #if defined(WINDOWS)
-    auto& nameCategory = g_tests.find(testCategory);
-    if (nameCategory == g_tests.end())
+    auto& tests = getTests();
+    auto& nameCategory = tests.find(testCategory);
+    if (nameCategory == tests.end())
     {
-        g_tests.insert(std::make_pair(testCategory, TestsPerCategory()));
-        nameCategory = g_tests.find(testCategory);
+        tests.insert(std::make_pair(testCategory, TestsPerCategory()));
+        nameCategory = tests.find(testCategory);
     }
     //
     TestsPerCategory& category = nameCategory->second;
@@ -84,7 +89,8 @@ void doTest()
 {
     const auto startTime = std::chrono::system_clock::now();
     //
-    for (const auto& testCategorys : g_tests)
+    auto& tests = getTests();
+    for (const auto& testCategorys : tests)
     {
         const std::string& categoryName = testCategorys.first;
         detail::TestContext tcx;
@@ -112,8 +118,9 @@ void doTest()
 */
 void doTest(const char* testCategory, const char* testName)
 {
-    const auto& category = g_tests.find(testCategory);
-    if (category == g_tests.end())
+    auto& tests = getTests();
+    const auto& category = tests.find(testCategory);
+    if (category == tests.end())
     {
         return;
     }

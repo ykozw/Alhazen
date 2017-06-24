@@ -295,7 +295,6 @@ Spectrum Scene::renderPixel(int32_t x, int32_t y)
 */
 void Scene::developLDR(const std::string& filmName, bool isFinal, bool isPreview)
 {
-    AL_ASSERT_DEBUG(Job::threadId == 0 || Job::threadId == 1);
     // FIXME: renderが走っていないかを確認する
 
     // 最終スナップは必ずデノイズを掛ける

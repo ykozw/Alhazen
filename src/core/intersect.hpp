@@ -2,7 +2,6 @@
 
 #include "pch.hpp"
 #include "core/ray.hpp"
-#include "stats.hpp"
 
 // レイの浮かしを決める定数(pbrt ch4参照)
 #define RAYEPSILON_SCALE_QUADRIC_SURFACE 5e-4f

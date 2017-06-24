@@ -2,9 +2,10 @@
 #include "core/logging.hpp"
 #include "core/unittest.hpp"
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 #pragma warning(disable:4073) // init_segの使用
 #pragma warning(disable:4074) // init_segの使用
 #pragma init_seg(lib)
@@ -32,9 +33,10 @@ public:
 typedef std::unordered_map<std::string, TestDesc> TestsPerCategory;
 static std::unordered_map<std::string, TestsPerCategory> g_tests;
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 void detail::registerTest(
     const char* testCategory,
     const char* testName,
@@ -74,9 +76,10 @@ void detail::addTestResult(TestContext& tcx, bool result, const char* fileName, 
     }
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 void doTest()
 {
     const auto startTime = std::chrono::system_clock::now();
@@ -103,9 +106,10 @@ void doTest()
     loggingWarningIf(elapseTimeInMs > 3000, "UnitTest is too waste time(%dms).", elapseTimeInMs);
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 void doTest(const char* testCategory, const char* testName)
 {
     const auto& category = g_tests.find(testCategory);

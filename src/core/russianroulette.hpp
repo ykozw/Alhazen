@@ -2,11 +2,13 @@
 
 #include "pch.hpp"
 
-//-------------------------------------------------
-// RussianRoulette
-// Efficiency-optimized Russian rouletteの実装
-// 将来的にBPTを実装したときに使う。
-//-------------------------------------------------
+/*
+-------------------------------------------------
+RussianRoulette
+Efficiency-optimized Russian rouletteの実装
+将来的にBPTを実装したときに使う。
+-------------------------------------------------
+*/
 class RussianRoulette
 {
 public:

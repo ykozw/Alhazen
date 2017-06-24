@@ -1,15 +1,17 @@
 ﻿
 
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumHerowavelength::SpectrumHerowavelength()
 {}
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumHerowavelength::SpectrumHerowavelength(
     std::array<float, 4> aLambdas,
     std::array<float, 4> aIntensitys)
@@ -17,9 +19,10 @@ INLINE SpectrumHerowavelength::SpectrumHerowavelength(
     intensitys(aIntensitys)
 {}
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumRGB SpectrumHerowavelength::toRGB() const
 {
     std::array<float, 3> rgb;
@@ -33,9 +36,10 @@ INLINE SpectrumRGB SpectrumHerowavelength::toRGB() const
     return SpectrumRGB(rgb[0] * sr, rgb[1] * sg, rgb[2] * sb);
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE Vec3 SpectrumHerowavelength::toXYZ() const
 {
     float x = 0.0f;
@@ -56,9 +60,10 @@ INLINE Vec3 SpectrumHerowavelength::toXYZ() const
     return Vec3(x, y, z);
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumHerowavelength SpectrumHerowavelength::createFromHerowavelength(float w0, bool isImportanceSamplingXYZ)
 {
     // 範囲チェック
@@ -83,18 +88,20 @@ INLINE SpectrumHerowavelength SpectrumHerowavelength::createFromHerowavelength(f
     }
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumHerowavelength SpectrumHerowavelength::createFromXYZImportanceSampling(float w0)
 {
     // TODO: 実装
     return SpectrumHerowavelength();
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumHerowavelength operator * (float scale, const SpectrumHerowavelength& spectrum)
 {
     SpectrumHerowavelength ret;
@@ -106,9 +113,10 @@ INLINE SpectrumHerowavelength operator * (float scale, const SpectrumHerowavelen
     return ret;
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumHerowavelength operator * (const SpectrumSampled& ss, const SpectrumHerowavelength& sh)
 {
     SpectrumHerowavelength ret;

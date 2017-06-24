@@ -9,16 +9,18 @@ const float SPECTRUM_LAMBDA_RANGE = SPECTRUM_LAMBDA_LAST - SPECTRUM_LAMBDA_START
 // SpectrumSampledクラスでのサンプル数
 const int32_t SPECTRUM_SAMPLED_NUM_SAMPLES = 30;
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 void xyz2rgb(const std::array<float, 3>& xyz_, std::array<float, 3>& rgb);
 void rgb2xyz(const std::array<float, 3>& rgb, std::array<float, 3>& xyz_);
 //Spectrum evalAsSpectrum(const std::string& str, bool asIllumination);
 
-//-------------------------------------------------
-// SpectrumRGB
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 class SpectrumRGB
 {
 public:
@@ -65,9 +67,10 @@ SpectrumRGB& operator *= (SpectrumRGB& lhs, const SpectrumRGB& rhs);
 SpectrumRGB& operator /= (SpectrumRGB& spectrum, float scale);
 SpectrumRGB lerp(const SpectrumRGB& lhs, const SpectrumRGB& rhs, float factor);
 
-//-------------------------------------------------
-// SpectrumSampled
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 class SpectrumSampled
 {
 public:
@@ -105,9 +108,10 @@ SpectrumSampled& operator -= (SpectrumSampled& lhs, const SpectrumSampled& rhs);
 SpectrumSampled& operator *= (SpectrumSampled& spectrum, float scale);
 SpectrumSampled lerp(const SpectrumSampled& lhs, const SpectrumSampled& rhs, float factor);
 
-//-------------------------------------------------
-// SpectrumSingleWavelength
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 class SpectrumSingleWavelength
 {
 public:
@@ -125,9 +129,10 @@ private:
 SpectrumSingleWavelength operator * (float scale, const SpectrumSingleWavelength& spectrum);
 SpectrumSingleWavelength operator * (const SpectrumSampled& ss, const SpectrumSingleWavelength& single);
 
-//-------------------------------------------------
-// SpectrumHerowavelength
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 class SpectrumHerowavelength
 {
 public:

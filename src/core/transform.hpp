@@ -4,11 +4,13 @@
 #include "core/object.hpp"
 #include "math.hpp"
 
-//-------------------------------------------------
-// Transform
-// WorldとLocalの間での全ての線形変換を扱う
-// WorldとLocalの間で回転だけを扱いたい場合はOrthonormalBasisクラスを使う
-//-------------------------------------------------
+/*
+-------------------------------------------------
+Transform
+WorldとLocalの間での全ての線形変換を扱う
+WorldとLocalの間で回転だけを扱いたい場合はOrthonormalBasisクラスを使う
+-------------------------------------------------
+*/
 class Transform
 {
 public:

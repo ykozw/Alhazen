@@ -72,17 +72,19 @@ void ObjectProp::addChild(const ObjectProp& child)
     childProps_.push_back(child);
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 std::string typeid2name(const std::type_index& deriClass)
 {
     return g.type2name()[deriClass];
 }
 
-//-------------------------------------------------
-// registerObject
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 void registerObject(
     const std::type_index& baseClassType,
     const std::type_index& targetClassType,
@@ -104,9 +106,10 @@ void registerObject(
     g.allObjectCreateFuncs()[baseClassType][targetClassName] = createObjectFunc;
 }
 
-//-------------------------------------------------
-// createObjectOld
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 Object* createObjectCore(const std::string& typeName, const ObjectProp& objectProp)
 {
     AL_ASSERT_DEBUG(g.objectCreateFuncs().find(typeName) != g.objectCreateFuncs().end());
@@ -115,9 +118,10 @@ Object* createObjectCore(const std::string& typeName, const ObjectProp& objectPr
     return objCreateFunc(objectProp);
 }
 
-//-------------------------------------------------
-// createObjectOld
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 Object* createObjectCore(
     std::type_index baseClassType,
     const std::string& targetClassName,

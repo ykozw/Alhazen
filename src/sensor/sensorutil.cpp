@@ -1,9 +1,10 @@
 ﻿#include "pch.hpp"
 #include "sensor/sensorutil.hpp"
 
-//-------------------------------------------------
-// getGlassSpec()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 void getGlassSpec(const std::string& glassName, float& nd, float& vd)
 {
     struct

@@ -3,9 +3,10 @@
 #include "core/image.hpp"
 #include "sampleable2d/sampleable2d.hpp"
 
-//-------------------------------------------------
-// SampleableImage
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 class SampleableImage
     :public Sampleable2d
 {
@@ -17,9 +18,10 @@ private:
 };
 REGISTER_OBJECT(Sampleable2d,SampleableImage);
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 SampleableImage::SampleableImage(const ObjectProp& prop)
 {
     const std::string fileName = prop.findChildBy("name","fileName").asString("none");
@@ -27,9 +29,10 @@ SampleableImage::SampleableImage(const ObjectProp& prop)
     image_.readBmp(fileName, gamma);
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 Spectrum SampleableImage::sample(float u, float v)
 {
     return image_.sample(u, v);

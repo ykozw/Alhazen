@@ -1,9 +1,10 @@
 ﻿#include "pch.hpp"
 #include "integrator.hpp"
 
-//-------------------------------------------------
-// DepthSurfaceIntegrator
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 class DepthSurfaceIntegrator
     :public SurfaceIntegrator
 {
@@ -29,17 +30,19 @@ private:
 
 REGISTER_OBJECT(SurfaceIntegrator,DepthSurfaceIntegrator);
 
-//-------------------------------------------------
-// DepthSurfaceIntegrator()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 DepthSurfaceIntegrator::DepthSurfaceIntegrator(const ObjectProp& objectProp)
 {
     static_cast<void>(objectProp);
 }
 
-//-------------------------------------------------
-// radiance()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 Spectrum DepthSurfaceIntegrator::radiance(
     const Ray& screenRay,
     const SceneGeometory& scene,

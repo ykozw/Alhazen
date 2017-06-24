@@ -207,5 +207,5 @@ AL_TEST(Accel, kdtree1)
             fail |= !same;
         }
     }
-    AL_TEST_CHECK(!fail);
+    AL_ASSERT_ALWAYS(!fail);
 }

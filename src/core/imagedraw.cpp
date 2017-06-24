@@ -1,9 +1,10 @@
 ﻿#include "pch.hpp"
 #include "imagedraw.hpp"
 
-//-------------------------------------------------
-// line()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 void ImageDraw::line(Image& image, int32_t sx, int32_t sy, int32_t ex, int32_t ey, const Spectrum& acolor)
 {
     Spectrum color = acolor;
@@ -53,9 +54,10 @@ void ImageDraw::line(Image& image, int32_t sx, int32_t sy, int32_t ex, int32_t e
     }
 }
 
-//-------------------------------------------------
-// point()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 void ImageDraw::point(Image& image, int32_t px, int32_t py, int32_t r, const Spectrum& acolor)
 {
     Spectrum color = acolor;

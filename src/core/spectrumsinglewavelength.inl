@@ -1,21 +1,24 @@
 ﻿
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumSingleWavelength::SpectrumSingleWavelength()
 {}
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumSingleWavelength::SpectrumSingleWavelength(float aLambda, float aIntensity)
     :lambda(aLambda), intensity(aIntensity)
 {
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumRGB SpectrumSingleWavelength::toRGB() const
 {
 #if 0
@@ -39,9 +42,10 @@ INLINE SpectrumRGB SpectrumSingleWavelength::toRGB() const
     return SpectrumRGB(rgb[0] * sr, rgb[1] * sg, rgb[2] * sb);
 }
 
-//-------------------------------------------------
-// 
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE Vec3 SpectrumSingleWavelength::toXYZ() const
 {
     const float x = CIE_X.sample(lambda) * intensity;
@@ -50,9 +54,10 @@ INLINE Vec3 SpectrumSingleWavelength::toXYZ() const
     return Vec3(x, y, z);
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumSingleWavelength operator * (float scale, const SpectrumSingleWavelength& spectrum)
 {
     return
@@ -61,9 +66,10 @@ INLINE SpectrumSingleWavelength operator * (float scale, const SpectrumSingleWav
             spectrum.intensity * scale);
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE SpectrumSingleWavelength operator * (const SpectrumSampled& specrumSampled, const SpectrumSingleWavelength& specrumSingle)
 {
     return

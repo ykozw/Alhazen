@@ -1,9 +1,10 @@
 ﻿#include "pch.hpp"
 #include "sensor/sensorutil.hpp"
 
-//-------------------------------------------------
-// getGlassSpec()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 // TODO: なぜかgetGlassSpecがsensoruti.cppにもある。どちらかを削除する
 void getGlassSpec___(const std::string& glassName, float& nd, float& vd)
 {

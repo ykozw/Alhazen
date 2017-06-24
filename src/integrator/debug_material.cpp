@@ -1,9 +1,10 @@
 ﻿#include "pch.hpp"
 #include "integrator.hpp"
 
-//-------------------------------------------------
-// MaterialIntegrator
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 class MaterialIntegrator
     :public SurfaceIntegrator
 {
@@ -32,18 +33,21 @@ private:
 
 REGISTER_OBJECT(SurfaceIntegrator,MaterialIntegrator);
 
-//-------------------------------------------------
-// DepthSurfaceIntegrator()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 MaterialIntegrator::MaterialIntegrator(const ObjectProp& objectProp)
 {
     static_cast<void>(objectProp);
 }
 
-//-------------------------------------------------
-// hashFunc()
-// HACK: 間に合わせ。
-//-------------------------------------------------
+/*
+-------------------------------------------------
+hashFunc()
+HACK: 間に合わせ。
+-------------------------------------------------
+*/
 static uint32_t hashFunc(const void* buf, size_t buflength)
 {
     const uint8_t* buffer = (const uint8_t*)buf;
@@ -59,9 +63,10 @@ static uint32_t hashFunc(const void* buf, size_t buflength)
     return (s2 << 16) | s1;
 }
 
-//-------------------------------------------------
-// radiance()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 Spectrum MaterialIntegrator::radiance(
     const Ray& screenRay,
     const SceneGeometory& scene,

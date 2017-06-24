@@ -4,9 +4,10 @@
 #include "math.hpp"
 #include "logging.hpp"
 
-//-------------------------------------------------
-// ObjectPropString
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 class ObjectPropString
 {
 public:
@@ -33,9 +34,10 @@ private:
     std::string value_;
 };
 
-//-------------------------------------------------
-// ObjectProp
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 struct ObjectProp
 {
 public:
@@ -75,18 +77,20 @@ private:
     ChildProps childProps_;
 };
 
-//-------------------------------------------------
-// Object
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 class Object
 {
 public:
     virtual ~Object() {}
 };
 
-//-------------------------------------------------
-// registerObject()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 void registerObject(
     const std::type_index& baseClassType,
     const std::type_index& targetClassType,
@@ -94,14 +98,16 @@ void registerObject(
     const std::string& targetClassName,
     std::function<Object*(const ObjectProp&)> createObjectFunc);
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 std::string typeid2name(const std::type_index& deriClass);
 
-//-------------------------------------------------
-// createObjectOld()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 Object* createObjectCore(
     const std::string& typeName,
     const ObjectProp& objectProp);
@@ -111,9 +117,10 @@ Object* createObjectCore(
     const std::string& targetClass,
     const ObjectProp& objectProp);
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 template<typename BaseClass>
 std::shared_ptr<BaseClass> createObject(const std::string& targetClassName)
 {
@@ -126,9 +133,10 @@ std::shared_ptr<BaseClass> createObject(const std::string& targetClassName)
                 ObjectProp())));
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 template<typename BaseClass>
 std::shared_ptr<BaseClass> createObject(const ObjectProp& objProp)
 {
@@ -149,9 +157,10 @@ std::shared_ptr<BaseClass> createObject(const ObjectProp& objProp)
                 targetProp)));
 }
 
-//-------------------------------------------------
-// REGISTER_OBJECT
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 #define REGISTER_OBJECT(BASE_CLASS_TYPE, CLASS_TYPE) \
 	class Register##CLASS_TYPE##CLASS_NAME \
 	{ \

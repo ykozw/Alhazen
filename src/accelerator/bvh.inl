@@ -3,9 +3,10 @@
 #include "core/intersect.hpp"
 #include "shape/shape.hpp"
 
-//-------------------------------------------------
-// intersect
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE bool BruteForceBVH::intersect(const Ray& ray, _Inout_ Intersect* isect) const
 {
     bool isHit = false;
@@ -30,9 +31,10 @@ INLINE bool BruteForceBVH::intersect(const Ray& ray, _Inout_ Intersect* isect) c
     return isHit;
 }
 
-//-------------------------------------------------
-// intersectCheck()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE bool BruteForceBVH::intersectCheck(const Ray& ray) const
 {
     bool isHit = false;
@@ -51,34 +53,38 @@ INLINE bool BruteForceBVH::intersectCheck(const Ray& ray) const
     return isHit;
 }
 
-//-------------------------------------------------
-// aabb
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE AABB SimpleBVH::aabb() const
 {
     AL_ASSERT_DEBUG(nodes_.size() != 0);
     return nodes_[0].aabb;
 }
 
-//-------------------------------------------------
-// maxDepth
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE int32_t SimpleBVH::maxDepth() const
 {
     return maxDepth_;
 }
 
-//-------------------------------------------------
-// intersect
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE bool SimpleBVH::intersect(const Ray& ray, _Inout_ Intersect* isect) const
 {
     return intersectSub(0, ray, isect);
 }
 
-//-------------------------------------------------
-// intersectCheck
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE bool SimpleBVH::intersectCheck(const Ray& ray) const
 {
     // TODO: もう少しちゃんと計算を省いたものを入れる
@@ -86,9 +92,10 @@ INLINE bool SimpleBVH::intersectCheck(const Ray& ray) const
     return intersectSub(0, ray, &isect);
 }
 
-//-------------------------------------------------
-// intersectSub
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE bool SimpleBVH::intersectSub(int32_t nodeIndex, const Ray& ray, _Inout_ Intersect* isect) const
 {
     /*
@@ -164,10 +171,12 @@ INLINE bool SimpleBVH::intersectSub(int32_t nodeIndex, const Ray& ray, _Inout_ I
 #endif
 }
 
-//-------------------------------------------------
-// intersectAABBSIMD()
-// 下位4bitに交差したか否かが格納されている
-//-------------------------------------------------
+/*
+-------------------------------------------------
+intersectAABBSIMD()
+下位4bitに交差したか否かが格納されている
+-------------------------------------------------
+*/
 INLINE int32_t testAABBSIMD(
     const QBVHNode& node,
     RaySIMD& ray,
@@ -195,10 +204,12 @@ INLINE int32_t testAABBSIMD(
     return hitMask;
 }
 
-//-------------------------------------------------
-// intersectAABBSIMD()
-// 下位4bitに交差したか否かが格納されている
-//-------------------------------------------------
+/*
+-------------------------------------------------
+intersectAABBSIMD()
+下位4bitに交差したか否かが格納されている
+-------------------------------------------------
+*/
 INLINE int32_t testAABB(
     const QBVHNode& node,
     RaySIMD& raySIMD
@@ -236,9 +247,10 @@ INLINE int32_t testAABB(
     return hitMask;
 }
 
-//-------------------------------------------------
-// select
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 AL_FORCEINLINE __m128 select(__m128 v0, __m128 v1, __m128 mask)
 {
     return _mm_or_ps(
@@ -246,9 +258,10 @@ AL_FORCEINLINE __m128 select(__m128 v0, __m128 v1, __m128 mask)
         _mm_and_ps(v1, mask));
 }
 
-//-------------------------------------------------
-// intersect
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE bool QBVH::intersect(
     const Ray& ray,
     _Out_ Intersect* isect,
@@ -445,9 +458,10 @@ INLINE bool QBVH::intersect(
     return isHit;
 }
 
-//-------------------------------------------------
-// intersectCheck
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE bool QBVH::intersectCheck(const Ray& ray) const
 {
     // TODO: 交差判定だけであれば、UVからの補間計算は要らないので、その部分を削除できるようにする

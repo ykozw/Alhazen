@@ -2,9 +2,10 @@
 #include "integrator.hpp"
 
 
-//-------------------------------------------------
-// UVSurfaceIntegrator
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 class UVSurfaceIntegrator
     :public SurfaceIntegrator
 {
@@ -32,17 +33,19 @@ private:
 };
 REGISTER_OBJECT(SurfaceIntegrator,UVSurfaceIntegrator);
 
-//-------------------------------------------------
-// NormalSurfaceIntegrator()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 UVSurfaceIntegrator::UVSurfaceIntegrator(const ObjectProp& objectProp)
 {
     static_cast<void>(objectProp);
 }
 
-//-------------------------------------------------
-// radiance()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 Spectrum UVSurfaceIntegrator::radiance(
     const Ray& screenRay,
     const SceneGeometory& scene,

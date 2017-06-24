@@ -181,8 +181,31 @@ AL_TEST_IMM(Math, Vec3)
         // w成分は関係がないのでall()の結果には影響を与えてはいけない
         AL_ASSERT_ALWAYS(Vec3(_mm_set_ps(0.0f, 1.0f, 1.0f, 1.0f)).all());
     }
-    // TODO: normalize
-    // TODO:
+    // normalize(1)
+    {
+        Vec3 v0(1.0f, 2.0f, 3.0f);
+        const Vec3 v1 = v0.normalized();
+        v0.normalize();
+        AL_ASSERT_ALWAYS(v1 == v0);
+        AL_ASSERT_ALWAYS(v0.length() == 1.0f);
+        AL_ASSERT_ALWAYS(v1.length() == 1.0f);
+        AL_ASSERT_ALWAYS(v0.isNormalized());
+        AL_ASSERT_ALWAYS(v1.isNormalized());
+        AL_ASSERT_ALWAYS(v0.length() == 1.0f);
+        AL_ASSERT_ALWAYS(v0.lengthSq() == 1.0f);
+        AL_ASSERT_ALWAYS(v1.length() == 1.0f);
+        AL_ASSERT_ALWAYS(v1.lengthSq() == 1.0f);
+    }
+    // normalize(2)
+    {
+        const Vec3 v0 = _mm_set_ps(1.0f,0.0f,0.0f,1.0f);
+        const Vec3 v1 = v0.normalized();
+        AL_ASSERT_ALWAYS((v1.x() == 1.0f) && (v1.x() == 0.0f) && (v1.x() == 0.0f));
+        AL_ASSERT_ALWAYS(v1.isNormalized());
+    }
+    // TODO: inverted/invertedSafe
+    // TODO: reflect
+    // TODO: operator[]
 }
 
 /*

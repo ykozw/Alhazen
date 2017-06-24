@@ -1152,7 +1152,7 @@ Spectrum TorranceSparrow::bsdf(
     }
     // マイクロファセットの法線
     Vec3 wh = (localWo + localWi);
-    if (wh.isAllZero())
+    if (!wh.any())
     {
         return Spectrum(0.0f);
     }
@@ -1659,8 +1659,6 @@ static float GTR2_aniso(float NdotH, float HdotX, float HdotY, float ax, float a
 }
 
 ///*
-//-------------------------------------------------
-//-------------------------------------------------
 //*/
 //static float smithG_GGX(float Ndotv, float alphaG)
 //{
@@ -1855,9 +1853,10 @@ Spectrum MeasuredBSDF::bsdf(
     return Spectrum(0.0f);
 }
 
-//-------------------------------------------------
-//
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 Spectrum MeasuredBSDF::bsdfSample(
     Vec3 localWo,
     SamplerPtr sampler,

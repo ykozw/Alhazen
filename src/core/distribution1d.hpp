@@ -2,9 +2,10 @@
 
 #include "pch.hpp"
 
-//-------------------------------------------------
-// Distribution1D_Naive
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 class Distribution1D_Naive
 {
 public:
@@ -24,11 +25,13 @@ private:
     std::vector<float> cdf_;
 };
 
-//-------------------------------------------------
-// Distribution1D_Optimized
-// キャッシュ効率を上げるためにCDFを幅優先で並び変える。2割程度の速度向上になる。
-// cf. http://bannalia.blogspot.jp/2015/06/cache-friendly-binary-search.html
-//-------------------------------------------------
+/*
+-------------------------------------------------
+Distribution1D_Optimized
+キャッシュ効率を上げるためにCDFを幅優先で並び変える。2割程度の速度向上になる。
+cf. http://bannalia.blogspot.jp/2015/06/cache-friendly-binary-search.html
+-------------------------------------------------
+*/
 class Distribution1D_Optimized
 {
 public:

@@ -6,9 +6,10 @@
 //
 #include "core/object.hpp"
 
-//-------------------------------------------------
-// BruteForceIntegrator
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 class BruteForceIntegrator
     :public SurfaceIntegrator
 {
@@ -36,18 +37,20 @@ private:
 
 REGISTER_OBJECT(SurfaceIntegrator,BruteForceIntegrator);
 
-//-------------------------------------------------
-// PTSurfaceIntegrator()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 BruteForceIntegrator::BruteForceIntegrator(const ObjectProp& objectProp)
     :rng_()
 {
     static_cast<void>(objectProp);
 }
 
-//-------------------------------------------------
-// preRendering()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 bool BruteForceIntegrator::preRendering(
     const SceneGeometory& scene,
     AllBSDFList& bsdfList)
@@ -55,9 +58,10 @@ bool BruteForceIntegrator::preRendering(
     return true;
 }
 
-//-------------------------------------------------
-// radiance()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 Spectrum BruteForceIntegrator::radiance(
     const Ray& screenRay,
     const SceneGeometory& scene,

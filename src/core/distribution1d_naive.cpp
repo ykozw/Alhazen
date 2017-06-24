@@ -5,41 +5,46 @@
 #include "core/rng.hpp"
 #include "core/unittest.hpp"
 
-//-------------------------------------------------
-// Distribution1D
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 Distribution1D_Naive::Distribution1D_Naive()
 {
     construct({ {} });
 }
 
-//-------------------------------------------------
-// Distribution1D
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 Distribution1D_Naive::Distribution1D_Naive(const std::vector<float>& values)
 {
     construct(values);
 }
 
-//-------------------------------------------------
-// Distribution1D
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 Distribution1D_Naive::Distribution1D_Naive(const std::initializer_list<float>& values)
 {
     construct(values);
 }
 
-//-------------------------------------------------
-// Distribution1D
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 Distribution1D_Naive::Distribution1D_Naive(const float* values, int32_t num)
 {
     construct(std::vector<float>(values, values + num));
 }
 
-//-------------------------------------------------
-// Distribution1D
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 Distribution1D_Naive::Distribution1D_Naive(std::function<float(float)> genFunc, int32_t split)
 {
     std::vector<float> values;
@@ -52,9 +57,10 @@ Distribution1D_Naive::Distribution1D_Naive(std::function<float(float)> genFunc, 
     construct(values);
 }
 
-//-------------------------------------------------
-// construct
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 void Distribution1D_Naive::construct(const std::vector<float>& values)
 {
     uint32_t cdfSize = (uint32_t)values.size();
@@ -86,9 +92,10 @@ void Distribution1D_Naive::construct(const std::vector<float>& values)
     invNumValue_ = 1.0f / numValue_;
 }
 
-//-------------------------------------------------
-// sample()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 float Distribution1D_Naive::sample(float u, _Out_ float* pdf, _Out_ int32_t* offset) const
 {
     const auto upperIte = std::lower_bound(cdf_.begin(), cdf_.end(), u);
@@ -104,17 +111,19 @@ float Distribution1D_Naive::sample(float u, _Out_ float* pdf, _Out_ int32_t* off
     return samplePoint;
 }
 
-//-------------------------------------------------
-// pdf()
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 float Distribution1D_Naive::pdf(int32_t index) const
 {
     return (cdf_[index + 1] - cdf_[index]) * numValue_;
 }
 
-//-------------------------------------------------
-// TestDistribution1D
-//-------------------------------------------------
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 AL_TEST(Distribution, OneDimention)
 {
     // 推定が正しいかチェック

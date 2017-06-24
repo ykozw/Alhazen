@@ -1,5 +1,6 @@
 ﻿#include "pch.hpp"
-#include "floatstreamstats.hpp"
+#include "core/floatstreamstats.hpp"
+#include "core/unittest.hpp"
 
 /*
 -------------------------------------------------
@@ -215,7 +216,7 @@ void FloatStreamStatsEx::add(float v)
 -------------------------------------------------
 -------------------------------------------------
 */
-void testFloatStreamStats()
+AL_TEST_IMM(testFloatStreamStats,0)
 {
     {
         FloatStreamStats stats;
@@ -224,8 +225,8 @@ void testFloatStreamStats()
         stats.add(12.0f);
         stats.add(44.0f);
         stats.add(55.0f);
-        AL_ASSERT_DEBUG(fabsf(stats.mean() / 29.4f - 1.0f) < 0.1f);
-        AL_ASSERT_DEBUG(fabsf(stats.variance() / 370.3f - 1.0f) < 0.1f);
-        AL_ASSERT_DEBUG(fabsf(stats.sigma() / 19.2f - 1.0f) < 0.1f);
+        AL_ASSERT_ALWAYS(fabsf(stats.mean() / 29.4f - 1.0f) < 0.1f);
+        AL_ASSERT_ALWAYS(fabsf(stats.variance() / 370.3f - 1.0f) < 0.1f);
+        AL_ASSERT_ALWAYS(fabsf(stats.sigma() / 19.2f - 1.0f) < 0.1f);
     }
 }

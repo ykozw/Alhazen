@@ -436,7 +436,7 @@ public:
     //
     float operator[](int32_t index) const;
     Vec4& operator=(const Vec4& other) = default;
-    static float dot(Vec4 lhs, Vec4 rhs);
+    static FloatInVec dot(Vec4 lhs, Vec4 rhs);
     static FloatInVec length(Vec4 v);
     static FloatInVec lengthSq(Vec4 v);
 };

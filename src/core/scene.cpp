@@ -151,7 +151,7 @@ uint32_t Scene::timeOutInMs() const
 */
 static uint64_t calcPixelHash(int32_t x, int32_t y, int32_t width)
 {
-    return std::hash<uint32_t>{}(x + y * width);
+    return Hash::hash(uint64_t(x + y * width));
 }
 
 //-------------------------------------------------

@@ -1,8 +1,8 @@
 ﻿#include "pch.hpp"
+#include "sampler/sampler.hpp"
 #include "core/floatutil.hpp"
 #include "core/unittest.hpp"
 #include "core/floatstreamstats.hpp"
-#include "sampler/sampler.hpp"
 
 /*
 -------------------------------------------------
@@ -16,6 +16,7 @@ const float ONE_MINUS_EPS = 0.999999940f; // nextFloatDown(1.0f);
 */
 void Sampler::setHash(uint64_t hash)
 {
+    AL_ASSERT_ALWAYS(hash != 0);
     hash_ = hash;
 }
 

@@ -1,6 +1,7 @@
 ﻿#include "pch.hpp"
 #include "core/unittest.hpp"
 #include "core/math.hpp"
+#include "core/logging.hpp"
 
 /*
 -------------------------------------------------
@@ -9,6 +10,7 @@ BoolInVecに関するテストコード
 */
 AL_TEST_IMM(Math, BoolInVec)
 {
+    logging("%d %f %s", 10, 12.0, "FUCK");
     // 基本的な真偽の設定
     {
         BoolInVec v(false);

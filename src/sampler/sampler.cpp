@@ -1,8 +1,8 @@
 ﻿#include "pch.hpp"
+#include "sampler/sampler.hpp"
 #include "core/floatutil.hpp"
 #include "core/unittest.hpp"
 #include "core/floatstreamstats.hpp"
-#include "sampler/sampler.hpp"
 
 /*
 -------------------------------------------------

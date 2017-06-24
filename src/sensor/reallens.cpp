@@ -10,7 +10,6 @@ TODO list
 #include "core/intersect.hpp"
 #include "core/orthonormalbasis.hpp"
 #include "core/aabb.hpp"
-#include "core/svgwriter.hpp"
 #include "sensor/sensor.hpp"
 #include "sensor/sensorutil.hpp"
 #include "sampler/sampler.hpp"
@@ -664,7 +663,7 @@ void RealSensor::calcPrecomputeTable()
 */
 void RealSensor::dumpLensSpecImage() const
 {
-#if defined(WINDOWS)
+#if 0
     // 最も高いレンズの高さを出す
     float apeYmax = 0.0f;
     for (const auto& surf : surfs_)

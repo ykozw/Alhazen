@@ -1,6 +1,5 @@
 ﻿#include "pch.hpp"
 #include "core/taskscheduler.hpp"
-#include "core/threadid.hpp"
 #include "core/logging.hpp"
 
 /*
@@ -170,15 +169,13 @@ void SimpleTaskScheduler::start(int32_t graySize)
 }
 void SimpleTaskScheduler::Impl::start(int32_t graySize)
 {
-    // 繝ッ繝シ繧ォ繝シ繧ケ繝ャ繝ラ繧ケ繝ャ繝ラ繧定オキ蜍輔☆繧
+    // ワーカースレッドスレッドを起動する
     const int32_t workerThreadNum = numThread();
     for (int32_t threadNo = 0; threadNo < workerThreadNum; ++threadNo)
     {
         threads_.push_back(
             std::thread([this, threadNo]()
         {
-            // スレッドIDを格納しておく
-            Job::threadId = threadNo + 1;
             //
             for (;;)
             {
@@ -206,8 +203,6 @@ void SimpleTaskScheduler::Impl::start(int32_t graySize)
                     task(threadNo);
                 }
             }
-            // スレッドIDを格納しておく
-            Job::threadId = threadNo; // TODO: 戻す操作がとても恰好が悪い
         }));
     }
 }

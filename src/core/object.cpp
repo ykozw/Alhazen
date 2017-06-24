@@ -2,54 +2,40 @@
 #include "core/object.hpp"
 #include "core/logging.hpp"
 #include "core/util.hpp"
-#include "core/threadid.hpp"
 
 namespace
 {
-    /*
-     -------------------------------------------------
-     -------------------------------------------------
-     */
-    class Init
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+typedef std::unordered_map<std::string, std::function<Object*(const ObjectProp&)>> ObjectCreateFuncs;
+typedef std::function<Object*(const ObjectProp&)> CreateObjectFun;
+typedef std::unordered_map<std::string, CreateObjectFun> CreateObjectFunList;
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+class Global
+{
+public:
+    ObjectCreateFuncs& objectCreateFuncs()
     {
-    public:
-        Init()
-        {
-            Job::threadId = 0;
-        }
-    }init;
-    
-    /*
-     -------------------------------------------------
-     -------------------------------------------------
-     */
-    typedef std::unordered_map<std::string, std::function<Object*(const ObjectProp&)>> ObjectCreateFuncs;
-    typedef std::function<Object*(const ObjectProp&)> CreateObjectFun;
-    typedef std::unordered_map<std::string, CreateObjectFun> CreateObjectFunList;
-    
-    /*
-     -------------------------------------------------
-     -------------------------------------------------
-     */
-    class Global
+        static std::unordered_map<std::string, std::function<Object*(const ObjectProp&)>> objectCreateFuncs;
+        return objectCreateFuncs;
+    }
+    std::unordered_map<std::type_index, CreateObjectFunList>& allObjectCreateFuncs()
     {
-    public:
-        ObjectCreateFuncs& objectCreateFuncs()
-        {
-            static std::unordered_map<std::string, std::function<Object*(const ObjectProp&)>> objectCreateFuncs;
-            return objectCreateFuncs;
-        }
-        std::unordered_map<std::type_index, CreateObjectFunList>& allObjectCreateFuncs()
-        {
-            static std::unordered_map<std::type_index, CreateObjectFunList> allObjectCreateFuncs;
-            return allObjectCreateFuncs;
-        }
-        std::unordered_map<std::type_index, std::string>& type2name()
-        {
-            static std::unordered_map<std::type_index, std::string> type2name;
-            return type2name;
-        }
-    }g;
+        static std::unordered_map<std::type_index, CreateObjectFunList> allObjectCreateFuncs;
+        return allObjectCreateFuncs;
+    }
+    std::unordered_map<std::type_index, std::string>& type2name()
+    {
+        static std::unordered_map<std::type_index, std::string> type2name;
+        return type2name;
+    }
+}g;
 };
 
 

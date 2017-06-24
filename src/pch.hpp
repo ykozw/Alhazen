@@ -72,6 +72,16 @@
 #define INV_PI float(M_1_PI)
 
 // 
+#if defined(WINDOWS)
+#define OPT_ON  __pragma(optimize("", on))
+#define OPT_OFF __pragma(optimize("", off))
+#else
+#define OPT_OFF _Pragma("clang optimize off")
+#define OPT_ON _Pragma("clang optimize on")
+#endif
+
+
+// 
 #define DEG2RAD(deg) ((deg) / 180.0f * PI)
 
 // 波長

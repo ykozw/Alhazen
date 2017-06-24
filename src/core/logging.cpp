@@ -61,7 +61,7 @@ std::string getElapseStr()
 //-------------------------------------------------
 void loggingCore(LoggingLevel level, const char* format, ...)
 {
-#if !defined(WINDOWS)
+#if !defined(WINDOWS) || true
     // 細かく対応するまではとりあえずただのprintfにしておく
     va_list valist;
     va_start(valist, format);

@@ -104,10 +104,10 @@
 #define AL_ASSERT_DEBUG(expr)
 #define AL_VALID(expr) expr
 #else
-#define AL_ASSERT_DEBUG(expr) if(!(expr)){ printf("%s %s %d\n",#expr, __FILE__, __LINE__); DBG_BREAK(); }
+#define AL_ASSERT_DEBUG(expr) if(!(expr)){ printf("\n%s %s %d\n",#expr, __FILE__, __LINE__); DBG_BREAK(); }
 #define AL_VALID(expr) AL_ASSERT_DEBUG(expr)
 #endif
-#define AL_ASSERT_ALWAYS(expr) if(!(expr)){ printf("%s %s %d\n",#expr, __FILE__, __LINE__); DBG_BREAK(); }
+#define AL_ASSERT_ALWAYS(expr) if(!(expr)){ printf("\n%s %s %d\n",#expr, __FILE__, __LINE__); DBG_BREAK(); }
 
 
 // aligin

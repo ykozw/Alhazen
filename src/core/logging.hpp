@@ -2,9 +2,6 @@
 
 #include "pch.hpp"
 
-void initialzeLog();
-void finalizeLog();
-
 /*
  -------------------------------------------------
  ログのレベル
@@ -33,4 +30,3 @@ enum class LoggingLevel
  -------------------------------------------------
  */
 void loggingCore(LoggingLevel level, const char* format, ...);
-

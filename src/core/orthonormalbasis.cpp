@@ -3,6 +3,7 @@
 #include "core/orthonormalbasis.hpp"
 #include "core/rng.hpp"
 #include "core/floatstreamstats.hpp"
+#include "core/logging.hpp"
 
 /*
 -------------------------------------------------
@@ -78,18 +79,18 @@ AL_TEST(OrthonormalBasis, 0)
 
     ほとんどかわらないので、もう少し特異点などをついたテストにするべきなのかもしれない
     */
-    printf("ONB_METHOD::Naive\n");
+    logging("ONB_METHOD::Naive\n");
     testLocalCoord(OrthonormalBasis<ONB_METHOD::Naive>());
     //
-    printf("ONB_METHOD::Moller99\n");
+    logging("ONB_METHOD::Moller99\n");
     testLocalCoord(OrthonormalBasis<ONB_METHOD::Moller99>());
     //
-    printf("ONB_METHOD::Frisvad12\n");
+    logging("ONB_METHOD::Frisvad12\n");
     testLocalCoord(OrthonormalBasis<ONB_METHOD::Frisvad12>());
     //
-    printf("ONB_METHOD::Duff17\n");
+    logging("ONB_METHOD::Duff17\n");
     testLocalCoord(OrthonormalBasis<ONB_METHOD::Duff17>());
     //
-    printf("ONB_METHOD::Nelson17\n");
+    logging("ONB_METHOD::Nelson17\n");
     testLocalCoord(OrthonormalBasis<ONB_METHOD::Nelson17>());
 }

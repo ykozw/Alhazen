@@ -43,7 +43,7 @@ void detail::registerTest(
     std::function<void(void)> testFunc )
 {
     auto& tests = getTests();
-    auto& nameCategory = tests.find(testCategory);
+    auto nameCategory = tests.find(testCategory);
     if (nameCategory == tests.end())
     {
         tests.insert(std::make_pair(testCategory, TestsPerCategory()));

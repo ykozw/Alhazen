@@ -16,10 +16,14 @@ void loggingCore(LoggingLevel level, const char* format, ...)
         (level == LoggingLevel::ERROR) ?  "[ERR]  " : 
                                           "[???]  ";
     const time_t timer = time(nullptr);
+    
+    
+#if defined(WINDOWS)
     tm date;
     localtime_s(&date, &timer);
-    char timeStamp[0xff];
-    asctime_s(timeStamp, &date);
+#else
+    const tm date = *localtime(&timer);
+#endif
     printf("%s [%04d/%02d/%02d %02d:%02d:%02d] ",
         levelStr,
         date.tm_year + 1900,

@@ -8,7 +8,7 @@
 BoolInVecに関するテストコード
 -------------------------------------------------
 */
-AL_TEST_IMM(Math, BoolInVec)
+AL_TEST(Math, BoolInVec)
 {
     logging("%d %f %s", 10, 12.0, "FUCK");
     // 基本的な真偽の設定
@@ -67,7 +67,7 @@ AL_TEST_IMM(Math, BoolInVec)
 FloatInVecに関するテスト
 -------------------------------------------------
 */
-AL_TEST_IMM(Math, FloatInVec)
+AL_TEST(Math, FloatInVec)
 {
     const float nan = std::numeric_limits<float>::quiet_NaN();
     // 基本的な設定
@@ -100,7 +100,7 @@ AL_TEST_IMM(Math, FloatInVec)
  Vec3に関するテスト
 -------------------------------------------------
 */
-AL_TEST_IMM(Math, Vec3)
+AL_TEST(Math, Vec3)
 {
     {
         Vec3 v(2.0f, 3.0f, 4.0f);
@@ -214,7 +214,7 @@ AL_TEST_IMM(Math, Vec3)
  -------------------------------------------------
  -------------------------------------------------
  */
-AL_TEST_IMM(Math, Matrix3x3)
+AL_TEST(Math, Matrix3x3)
 {
     // TODO: 実装
 }
@@ -223,7 +223,7 @@ AL_TEST_IMM(Math, Matrix3x3)
 -------------------------------------------------
 -------------------------------------------------
 */
-AL_TEST_IMM(Math, Matrix4x4)
+AL_TEST(Math, Matrix4x4)
 {
     // TODO: 実装
 }
@@ -232,7 +232,7 @@ AL_TEST_IMM(Math, Matrix4x4)
  -------------------------------------------------
  -------------------------------------------------
  */
-AL_TEST_IMM(Math, AABB)
+AL_TEST(Math, AABB)
 {
     // TODO: 実装
 }
@@ -242,7 +242,7 @@ AL_TEST_IMM(Math, AABB)
  Vec4に関するテスト
  -------------------------------------------------
  */
-AL_TEST_IMM(Math, V4)
+AL_TEST(Math, V4)
 {
     // 初期設定テスト
     {

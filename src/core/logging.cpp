@@ -34,6 +34,8 @@ void loggingCore(LoggingLevel level, const char* format, ...)
     va_start(valist, format);
     vprintf(format, valist);
     va_end(valist);
+    //
+    printf("\n");
     // errorの場合はここで終了させてしまう
     if(level == LoggingLevel::ERROR)
     {

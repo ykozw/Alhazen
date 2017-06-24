@@ -12,17 +12,13 @@ public:
     //
     std::string testName;
     // 実行されるテスト
-    std::function<void(detail::TestContext& tcx)> testFunc;
-    // doTest(void)により自動実行されるか
-    bool doTestImplicit;
+    std::function<void(void)> testFunc;
 public:
     TestDesc(
         const std::string& aTestName,
-        std::function<void(detail::TestContext& tcx)> aTestFunc,
-        bool aDoTestImplicit)
+        std::function<void(void)> aTestFunc)
         :testName(aTestName),
-        testFunc(aTestFunc),
-        doTestImplicit(aDoTestImplicit)
+        testFunc(aTestFunc)
     {}
 };
 
@@ -44,10 +40,8 @@ static std::unordered_map<std::string, TestsPerCategory>& getTests()
 void detail::registerTest(
     const char* testCategory,
     const char* testName,
-    std::function<void(TestContext& tcx)> testFunc,
-    bool doTestImplicit)
+    std::function<void(void)> testFunc )
 {
-#if defined(WINDOWS)
     auto& tests = getTests();
     auto& nameCategory = tests.find(testCategory);
     if (nameCategory == tests.end())
@@ -57,28 +51,7 @@ void detail::registerTest(
     }
     //
     TestsPerCategory& category = nameCategory->second;
-    category.insert(std::make_pair(testName, TestDesc(testName, testFunc, doTestImplicit)));
-#else
-    AL_ASSERT_ALWAYS(false);
-#endif
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-void detail::addTestResult(TestContext& tcx, bool result, const char* fileName, int32_t line)
-{
-    ++tcx.totalCheck;
-    if (result)
-    {
-        ++tcx.okayCheckCount;
-    }
-    else
-    {
-        // テストが通らなかったところは行数を表示
-        logging("TEST FAILED %s:%d", fileName, line);
-    }
+    category.insert(std::make_pair(testName, TestDesc(testName, testFunc)));
 }
 
 /*
@@ -90,46 +63,35 @@ void doTest()
     const auto startTime = std::chrono::system_clock::now();
     //
     auto& tests = getTests();
+    // 全てのテストの数をカウントする
+    const auto numTestTotal = [&tests]()
+    {
+        int32_t numTestTotal = 0;
+        for (const auto& testCategorys : tests)
+        {
+            numTestTotal += testCategorys.second.size();
+        }
+        return numTestTotal;
+    }();
+
+    //
+    int32_t testCount = 0;
     for (const auto& testCategorys : tests)
     {
         const std::string& categoryName = testCategorys.first;
-        detail::TestContext tcx;
         for (const auto& test : testCategorys.second)
         {
             const std::string& testName = test.first;
+            logging("UNIT TEST (%d/%d) [%s:%s]", testCount, numTestTotal, categoryName.c_str(), testName.c_str());
+            ++testCount;
+            //
             const auto testDesc = test.second;
-            if (!testDesc.doTestImplicit)
-            {
-                continue;
-            }
-            testDesc.testFunc(tcx);
+            testDesc.testFunc();
+            //
         }
-        logging("TEST CATEGORY: %s (%d/%d)", categoryName.c_str(), tcx.okayCheckCount, tcx.totalCheck);
     }
     // 一定時間以上時間をテストに使っていたら警告を出す
     const auto elapseTimeRaw = std::chrono::system_clock::now() - startTime;
     const int32_t elapseTimeInMs = int32_t(std::chrono::duration_cast<std::chrono::milliseconds>(elapseTimeRaw).count());
     loggingWarningIf(elapseTimeInMs > 3000, "UnitTest is too waste time(%dms).", elapseTimeInMs);
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-void doTest(const char* testCategory, const char* testName)
-{
-    auto& tests = getTests();
-    const auto& category = tests.find(testCategory);
-    if (category == tests.end())
-    {
-        return;
-    }
-    const auto& test = category->second.find(testName);
-    if (test == category->second.end())
-    {
-        return;
-    }
-    const auto& testDesc = test->second;
-    detail::TestContext tcx;
-    testDesc.testFunc(tcx);
 }

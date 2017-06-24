@@ -216,7 +216,7 @@ void FloatStreamStatsEx::add(float v)
 -------------------------------------------------
 -------------------------------------------------
 */
-AL_TEST_IMM(testFloatStreamStats,0)
+AL_TEST(testFloatStreamStats,0)
 {
     {
         FloatStreamStats stats;

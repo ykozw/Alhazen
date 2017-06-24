@@ -1,7 +1,9 @@
 ﻿#include "pch.hpp"
+#include "app/app.hpp"
 #include "core/util.hpp"
 #include "core/logging.hpp"
-#include "app/app.hpp"
+#include "core/unittest.hpp"
+
 
 /*
 -------------------------------------------------
@@ -39,6 +41,8 @@ bool parseArgs(int32_t argc, char* argv[], ArgConfig& config)
         case 'f':
             config.floatException = true;
             break;
+        case 'u':
+            config.unitTest = true;
         default:
             break;
         }
@@ -62,6 +66,12 @@ int32_t App::run(int32_t argc, char* argv[])
     if (!parseArgs(argc, argv, config))
     {
         return 0;
+    }
+
+    // 単体テスト
+    if (config.unitTest)
+    {
+        doTest();
     }
 
 #if defined(WINDOWS)

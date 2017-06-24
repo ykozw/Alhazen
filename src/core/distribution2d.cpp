@@ -182,7 +182,6 @@ float Distribution2D::pdf(int32_t x, int32_t y) const
 */
 AL_TEST(Distribution, TwoDimention)
 {
-    AL_ASSERT_ALWAYS(false);
     // 推定が正しいかチェック
     {
         XorShift128 rng;

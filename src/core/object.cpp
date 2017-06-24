@@ -76,7 +76,7 @@ void registerObject(
     const std::string& targetClassName,
     std::function<Object*(const ObjectProp&)> createObjectFunc)
 {
-    logging("registerObject[%s:%s]\n", baseClassType.name(), targetClassName.c_str());
+    logging("registerObject[%s:%s]", baseClassType.name(), targetClassName.c_str());
     AL_ASSERT_ALWAYS(createObjectFunc != nullptr);
     // TODO: 二重登録検知ができるようにする
     //

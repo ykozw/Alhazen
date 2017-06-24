@@ -12,11 +12,6 @@ main
 */
 int32_t main(int32_t argc, char* argv[])
 {
-#if defined(UNIT_TEST)
-    doTest();
-    return 0;
-#else
     Alhazen app;
     return app.run(argc, argv);
-#endif
 }

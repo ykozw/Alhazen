@@ -76,8 +76,3 @@ void doTest(const char* testCategory, const char* testName);
     }test2_##TEST_CATEGORY##TEST_NAME; \
     void TEST_CATEGORY##TEST_NAME##_MAIN(detail::TestContext& _txc)
 
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-#define AL_TEST_CHECK(expr)  detail::addTestResult(_txc, (expr),__FILE__,__LINE__);

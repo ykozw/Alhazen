@@ -222,24 +222,24 @@ AL_TEST_IMM(Math, V4)
     // 初期設定テスト
     {
         const Vec4 v(1.0f);
-        AL_TEST_CHECK(v.x() == 1.0f);
-        AL_TEST_CHECK(v.y() == 1.0f);
-        AL_TEST_CHECK(v.z() == 1.0f);
-        AL_TEST_CHECK(v.w() == 1.0f);
+        AL_ASSERT_ALWAYS(v.x() == 1.0f);
+        AL_ASSERT_ALWAYS(v.y() == 1.0f);
+        AL_ASSERT_ALWAYS(v.z() == 1.0f);
+        AL_ASSERT_ALWAYS(v.w() == 1.0f);
     }
     {
         const Vec4 v(0.0f, 1.0f, 2.0f, 3.0f);
-        AL_TEST_CHECK(v.x() == 0.0f);
-        AL_TEST_CHECK(v.y() == 1.0f);
-        AL_TEST_CHECK(v.z() == 2.0f);
-        AL_TEST_CHECK(v.w() == 3.0f);
+        AL_ASSERT_ALWAYS(v.x() == 0.0f);
+        AL_ASSERT_ALWAYS(v.y() == 1.0f);
+        AL_ASSERT_ALWAYS(v.z() == 2.0f);
+        AL_ASSERT_ALWAYS(v.w() == 3.0f);
     }
 #if 0
     // 長さ
     {
         Vec4 v(1.0f, 2.0f, 3.0f, 4.0f);
-        AL_TEST_CHECK(v.lengthSq() == 30.0f);
-        AL_TEST_CHECK(std::fabsf(v.length() - 5.477225575f));
+        AL_ASSERT_ALWAYS(v.lengthSq() == 30.0f);
+        AL_ASSERT_ALWAYS(std::fabsf(v.length() - 5.477225575f));
     }
 #endif
     // TODO: swizzleのテストコード
@@ -250,40 +250,40 @@ AL_TEST_IMM(Math, V4)
         const float w = 4.0f;
         const Vec4 v(x, y, z, w);
 #if 0
-        AL_TEST_CHECK(v.xxxx() == Vec4(x, x, x, x));
-        AL_TEST_CHECK(v.yxxx() == Vec4(y, x, x, x));
-        AL_TEST_CHECK(v.zxxx() == Vec4(z, x, x, x));
-        AL_TEST_CHECK(v.wxxx() == Vec4(y, x, x, x));
-        AL_TEST_CHECK(v.xyxx() == Vec4(x, y, x, x));
-        AL_TEST_CHECK(v.yyxx() == Vec4(y, y, x, x));
-        AL_TEST_CHECK(v.zyxx() == Vec4(z, y, x, x));
-        AL_TEST_CHECK(v.wyxx() == Vec4(y, y, x, x));
-        AL_TEST_CHECK(v.xzxx() == Vec4(x, z, x, x));
-        AL_TEST_CHECK(v.yzxx() == Vec4(y, z, x, x));
-        AL_TEST_CHECK(v.zzxx() == Vec4(z, z, x, x));
-        AL_TEST_CHECK(v.wzxx() == Vec4(y, z, x, x));
-        AL_TEST_CHECK(v.xwxx() == Vec4(x, w, x, x));
-        AL_TEST_CHECK(v.ywxx() == Vec4(y, w, x, x));
-        AL_TEST_CHECK(v.zwxx() == Vec4(z, w, x, x));
-        AL_TEST_CHECK(v.wwxx() == Vec4(y, w, x, x));
+        AL_ASSERT_ALWAYS(v.xxxx() == Vec4(x, x, x, x));
+        AL_ASSERT_ALWAYS(v.yxxx() == Vec4(y, x, x, x));
+        AL_ASSERT_ALWAYS(v.zxxx() == Vec4(z, x, x, x));
+        AL_ASSERT_ALWAYS(v.wxxx() == Vec4(y, x, x, x));
+        AL_ASSERT_ALWAYS(v.xyxx() == Vec4(x, y, x, x));
+        AL_ASSERT_ALWAYS(v.yyxx() == Vec4(y, y, x, x));
+        AL_ASSERT_ALWAYS(v.zyxx() == Vec4(z, y, x, x));
+        AL_ASSERT_ALWAYS(v.wyxx() == Vec4(y, y, x, x));
+        AL_ASSERT_ALWAYS(v.xzxx() == Vec4(x, z, x, x));
+        AL_ASSERT_ALWAYS(v.yzxx() == Vec4(y, z, x, x));
+        AL_ASSERT_ALWAYS(v.zzxx() == Vec4(z, z, x, x));
+        AL_ASSERT_ALWAYS(v.wzxx() == Vec4(y, z, x, x));
+        AL_ASSERT_ALWAYS(v.xwxx() == Vec4(x, w, x, x));
+        AL_ASSERT_ALWAYS(v.ywxx() == Vec4(y, w, x, x));
+        AL_ASSERT_ALWAYS(v.zwxx() == Vec4(z, w, x, x));
+        AL_ASSERT_ALWAYS(v.wwxx() == Vec4(y, w, x, x));
 
         // TODO: 参列目をyにするところから続き
-        AL_TEST_CHECK(v.xxxx() == Vec4(x, x, x, x));
-        AL_TEST_CHECK(v.yxxx() == Vec4(y, x, x, x));
-        AL_TEST_CHECK(v.zxxx() == Vec4(z, x, x, x));
-        AL_TEST_CHECK(v.wxxx() == Vec4(y, x, x, x));
-        AL_TEST_CHECK(v.xyxx() == Vec4(x, y, x, x));
-        AL_TEST_CHECK(v.yyxx() == Vec4(y, y, x, x));
-        AL_TEST_CHECK(v.zyxx() == Vec4(z, y, x, x));
-        AL_TEST_CHECK(v.wyxx() == Vec4(y, y, x, x));
-        AL_TEST_CHECK(v.xzxx() == Vec4(x, z, x, x));
-        AL_TEST_CHECK(v.yzxx() == Vec4(y, z, x, x));
-        AL_TEST_CHECK(v.zzxx() == Vec4(z, z, x, x));
-        AL_TEST_CHECK(v.wzxx() == Vec4(y, z, x, x));
-        AL_TEST_CHECK(v.xwxx() == Vec4(x, w, x, x));
-        AL_TEST_CHECK(v.ywxx() == Vec4(y, w, x, x));
-        AL_TEST_CHECK(v.zwxx() == Vec4(z, w, x, x));
-        AL_TEST_CHECK(v.wwxx() == Vec4(y, w, x, x));
+        AL_ASSERT_ALWAYS(v.xxxx() == Vec4(x, x, x, x));
+        AL_ASSERT_ALWAYS(v.yxxx() == Vec4(y, x, x, x));
+        AL_ASSERT_ALWAYS(v.zxxx() == Vec4(z, x, x, x));
+        AL_ASSERT_ALWAYS(v.wxxx() == Vec4(y, x, x, x));
+        AL_ASSERT_ALWAYS(v.xyxx() == Vec4(x, y, x, x));
+        AL_ASSERT_ALWAYS(v.yyxx() == Vec4(y, y, x, x));
+        AL_ASSERT_ALWAYS(v.zyxx() == Vec4(z, y, x, x));
+        AL_ASSERT_ALWAYS(v.wyxx() == Vec4(y, y, x, x));
+        AL_ASSERT_ALWAYS(v.xzxx() == Vec4(x, z, x, x));
+        AL_ASSERT_ALWAYS(v.yzxx() == Vec4(y, z, x, x));
+        AL_ASSERT_ALWAYS(v.zzxx() == Vec4(z, z, x, x));
+        AL_ASSERT_ALWAYS(v.wzxx() == Vec4(y, z, x, x));
+        AL_ASSERT_ALWAYS(v.xwxx() == Vec4(x, w, x, x));
+        AL_ASSERT_ALWAYS(v.ywxx() == Vec4(y, w, x, x));
+        AL_ASSERT_ALWAYS(v.zwxx() == Vec4(z, w, x, x));
+        AL_ASSERT_ALWAYS(v.wwxx() == Vec4(y, w, x, x));
 #endif
     }
 }

@@ -151,7 +151,7 @@ uint32_t Scene::timeOutInMs() const
 */
 static uint64_t calcPixelHash(int32_t x, int32_t y, int32_t width)
 {
-    return Hash::hash(uint64_t(x + y * width));
+    return Hash::hash(uint64_t(x + y * width + 1));
 }
 
 //-------------------------------------------------
@@ -302,11 +302,7 @@ void Scene::developLDR(const std::string& filmName, bool isFinal, bool isPreview
     // Tonemappingを掛けつつ出力する
     const std::string fullPath = g_fileSystem.getOutputFolderPath() + filmName;
     tonemapper_->process(image, tonemmappedImage_);
-#if defined(WINDOWS)
     tonemmappedImage_.writeBmp(fullPath);
-#else
-    AL_ASSERT_ALWAYS(false);
-#endif
     // 出力ファイルのプレビュー
     if (isPreview)
     {

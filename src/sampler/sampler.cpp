@@ -327,7 +327,7 @@ AL_TEST(Sampler, Halton)
         const float mean = stat.mean(); // TODO: sigmaが怪しい気がする
         //const float goal = PI * PI * 0.5f;
         const float goal = (4.0f / 3.0f * PI);
-        AL_TEST_CHECK(fabsf(mean / goal - 1.0f) < 0.1f);
+        AL_ASSERT_ALWAYS(fabsf(mean / goal - 1.0f) < 0.1f);
     }
 }
 
@@ -422,6 +422,6 @@ AL_TEST(Sampler, RadicalInverse)
                 fail |= (fabsf(v0 - v1) > 0.0001f);
             }
         }
-        AL_TEST_CHECK(!fail);
+        AL_ASSERT_ALWAYS(!fail);
     }
 }

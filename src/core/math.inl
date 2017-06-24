@@ -719,6 +719,7 @@ INLINE bool Vec3::isNormalized(float eps) const
 #if defined(AL_MATH_USE_NO_SIMD)
     return fabsf(lengthSq() - 1.0f) < eps;
 #elif defined(AL_MATH_USE_AVX2)
+    // TODO: SIMDにしてboolinvecを返すようにする
     return (std::fabsf(lengthSq() - 1.0f) < eps);
 #endif
 }
@@ -744,21 +745,6 @@ INLINE FloatInVec Vec3::lengthSq() const
     return x_*x_ + y_*y_ + z_*z_;
 #elif defined(AL_MATH_USE_AVX2)
     return lengthSq(xyz_);
-#endif
-}
-
-//-------------------------------------------------
-//
-//-------------------------------------------------
-INLINE bool Vec3::isAllZero() const
-{
-#if defined(AL_MATH_USE_NO_SIMD)
-    return
-        (x_ == 0.0f) &&
-        (y_ == 0.0f) &&
-        (z_ == 0.0f);
-#elif defined(AL_MATH_USE_AVX2)
-    return (_mm_movemask_ps(_mm_cmpeq_ps(xyz_, _mm_setzero_ps())) & 0x07) != 0;
 #endif
 }
 
@@ -803,7 +789,7 @@ INLINE Vec3 Vec3::invertedSafe(const float defaultValue) const
 //-------------------------------------------------
 //
 //-------------------------------------------------
-INLINE Vec3 Vec3::reflect(const Vec3& v) const
+INLINE Vec3 Vec3::reflect(Vec3 v) const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     const float factor = -2.0f * dot(*this, v);
@@ -915,7 +901,7 @@ INLINE float Vec3::operator[](int32_t index) const
 //-------------------------------------------------
 //
 //-------------------------------------------------
-INLINE FloatInVec Vec3::length(const Vec3& v)
+INLINE FloatInVec Vec3::length(Vec3 v)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     assert(false);
@@ -927,7 +913,7 @@ INLINE FloatInVec Vec3::length(const Vec3& v)
 //-------------------------------------------------
 //
 //-------------------------------------------------
-INLINE FloatInVec Vec3::lengthSq(const Vec3& v)
+INLINE FloatInVec Vec3::lengthSq(Vec3 v)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     assert(false);
@@ -969,7 +955,7 @@ INLINE Vec3 Vec3::max(Vec3 lhs, Vec3 rhs)
 //-------------------------------------------------
 //
 //-------------------------------------------------
-INLINE FloatInVec Vec3::distance(const Vec3& lhs, const Vec3& rhs)
+INLINE FloatInVec Vec3::distance(Vec3 lhs, Vec3 rhs)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     const Vec3 tmp = lhs - rhs;
@@ -983,7 +969,7 @@ INLINE FloatInVec Vec3::distance(const Vec3& lhs, const Vec3& rhs)
 //-------------------------------------------------
 //
 //-------------------------------------------------
-INLINE FloatInVec Vec3::distanceSq(const Vec3& lhs, const Vec3& rhs)
+INLINE FloatInVec Vec3::distanceSq(Vec3 lhs, Vec3 rhs)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     const Vec3 tmp = lhs - rhs;
@@ -997,7 +983,7 @@ INLINE FloatInVec Vec3::distanceSq(const Vec3& lhs, const Vec3& rhs)
 //-------------------------------------------------
 //
 //-------------------------------------------------
-INLINE FloatInVec Vec3::dot(const Vec3& lhs, const Vec3& rhs)
+INLINE FloatInVec Vec3::dot(Vec3 lhs, Vec3 rhs)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     return
@@ -1012,7 +998,7 @@ INLINE FloatInVec Vec3::dot(const Vec3& lhs, const Vec3& rhs)
 //-------------------------------------------------
 //
 //-------------------------------------------------
-INLINE Vec3 Vec3::cross(const Vec3& xyz_, const Vec3& abc)
+INLINE Vec3 Vec3::cross(Vec3 xyz_, Vec3 abc)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     return
@@ -1032,7 +1018,7 @@ INLINE Vec3 Vec3::cross(const Vec3& xyz_, const Vec3& abc)
 //-------------------------------------------------
 //
 //-------------------------------------------------
-INLINE Vec3 Vec3::mul(const Vec3& lhs, const Vec3& rhs)
+INLINE Vec3 Vec3::mul(Vec3 lhs, Vec3 rhs)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     return
@@ -1048,7 +1034,7 @@ INLINE Vec3 Vec3::mul(const Vec3& lhs, const Vec3& rhs)
 //-------------------------------------------------
 //
 //-------------------------------------------------
-INLINE static Vec3 operator + (const Vec3& lhs, const Vec3& rhs)
+INLINE static Vec3 operator + (Vec3 lhs, Vec3 rhs)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     return
@@ -1064,7 +1050,7 @@ INLINE static Vec3 operator + (const Vec3& lhs, const Vec3& rhs)
 //-------------------------------------------------
 //
 //-------------------------------------------------
-INLINE static Vec3 operator - (const Vec3& lhs, const Vec3& rhs)
+INLINE static Vec3 operator - (Vec3 lhs, Vec3 rhs)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     return
@@ -1080,7 +1066,7 @@ INLINE static Vec3 operator - (const Vec3& lhs, const Vec3& rhs)
 //-------------------------------------------------
 //
 //-------------------------------------------------
-INLINE static Vec3 operator - (const Vec3& v)
+INLINE static Vec3 operator - (Vec3 v)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     return  Vec3(-v.x_, -v.y_, -v.z_);
@@ -1091,7 +1077,7 @@ INLINE static Vec3 operator - (const Vec3& v)
 //-------------------------------------------------
 //
 //-------------------------------------------------
-INLINE static Vec3& operator += (Vec3& lhs, const Vec3& rhs)
+INLINE static Vec3& operator += (Vec3& lhs, Vec3 rhs)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     lhs = lhs + rhs;
@@ -1105,7 +1091,7 @@ INLINE static Vec3& operator += (Vec3& lhs, const Vec3& rhs)
 //-------------------------------------------------
 //
 //-------------------------------------------------
-INLINE static Vec3& operator -= (Vec3& lhs, const Vec3& rhs)
+INLINE static Vec3& operator -= (Vec3& lhs, Vec3 rhs)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     lhs = lhs - rhs;
@@ -1118,7 +1104,7 @@ INLINE static Vec3& operator -= (Vec3& lhs, const Vec3& rhs)
 //-------------------------------------------------
 //
 //-------------------------------------------------
-INLINE static BoolInVec operator == (const Vec3& lhs, const Vec3& rhs)
+INLINE static BoolInVec operator == (Vec3 lhs, Vec3 rhs)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     return
@@ -1135,7 +1121,7 @@ INLINE static BoolInVec operator == (const Vec3& lhs, const Vec3& rhs)
 //-------------------------------------------------
 //
 //-------------------------------------------------
-INLINE static BoolInVec operator != (const Vec3& lhs, const Vec3& rhs)
+INLINE static BoolInVec operator != (Vec3 lhs, Vec3 rhs)
 {
     return !(lhs == rhs);
 }
@@ -1143,7 +1129,7 @@ INLINE static BoolInVec operator != (const Vec3& lhs, const Vec3& rhs)
 //-------------------------------------------------
 //
 //-------------------------------------------------
-INLINE static Vec3 operator * (float f, const Vec3& v)
+INLINE static Vec3 operator * (float f, Vec3 v)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     return
@@ -1160,7 +1146,7 @@ INLINE static Vec3 operator * (float f, const Vec3& v)
 //-------------------------------------------------
 //
 //-------------------------------------------------
-INLINE static Vec3 operator * (const Vec3& v, float f)
+INLINE static Vec3 operator * (Vec3 v, float f)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     return f*v;
@@ -1188,7 +1174,7 @@ INLINE static Vec3& operator *= (Vec3& v, float f)
 //-------------------------------------------------
 //
 //-------------------------------------------------
-INLINE static Vec3 operator / (const Vec3& v, float f)
+INLINE static Vec3 operator / (Vec3 v, float f)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     const float inv = 1.0f / f;

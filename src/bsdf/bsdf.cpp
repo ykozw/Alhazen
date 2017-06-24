@@ -1152,7 +1152,7 @@ Spectrum TorranceSparrow::bsdf(
     }
     // マイクロファセットの法線
     Vec3 wh = (localWo + localWi);
-    if (wh.isAllZero())
+    if (!wh.any())
     {
         return Spectrum(0.0f);
     }

@@ -346,7 +346,7 @@ public:
     INLINE Vec3(const std::array<float, 3>& arr);
     INLINE Vec3(const Vec4& arr);
     INLINE void zero();
-    INLINE bool isZero() const;
+    INLINE bool isZero() const; // TODO: boolinvecにする
     INLINE bool hasNan() const;
     INLINE bool any() const;
     INLINE bool all() const;
@@ -357,15 +357,14 @@ public:
     INLINE bool isNormalized(float eps) const;
     INLINE FloatInVec length() const;
     INLINE FloatInVec lengthSq() const;
-    INLINE bool isAllZero() const;
     INLINE Vec3 inverted() const;
     INLINE Vec3 invertedSafe(float defaultValue) const;
-    INLINE Vec3 reflect(const Vec3& v) const;
+    INLINE Vec3 reflect(Vec3 v) const;
     //
-    INLINE float operator[](int32_t index) const;
+    INLINE float operator[](int32_t index) const; // TODO: FloatInVecにする
     INLINE Vec3& operator = (const Vec3& other) = default;
     // アクセッサ
-    INLINE float x() const;
+    INLINE float x() const; // TODO: FloatInVecにする
     INLINE float y() const;
     INLINE float z() const;
     INLINE void setX(float x);
@@ -374,28 +373,28 @@ public:
     // swizzle
 #include "swizzle_vec3.inl"
     //
-    static FloatInVec length(const Vec3& v);
-    static FloatInVec lengthSq(const Vec3& v);
-    static FloatInVec distance(const Vec3& lhs, const Vec3& rhs);
-    static FloatInVec distanceSq(const Vec3& lhs, const Vec3& rhs);
-    static FloatInVec dot(const Vec3& lhs, const Vec3& rhs);
-    static Vec3 cross(const Vec3& lhs, const Vec3& rhs);
-    static Vec3 mul(const Vec3& lhs, const Vec3& rhs);
+    static FloatInVec length(Vec3 v);
+    static FloatInVec lengthSq(Vec3 v);
+    static FloatInVec distance(Vec3 lhs, Vec3 rhs);
+    static FloatInVec distanceSq(Vec3 lhs, Vec3 rhs);
+    static FloatInVec dot(Vec3 lhs, Vec3 rhs);
+    static Vec3 cross(Vec3 lhs, Vec3 rhs);
+    static Vec3 mul(Vec3 lhs, Vec3 rhs);
     static Vec3 min(Vec3 lhs, Vec3 rhs);
     static Vec3 max(Vec3 lhs, Vec3 rhs);
 };
 
-INLINE static Vec3 operator + (const Vec3& lhs, const Vec3& rhs);
-INLINE static Vec3 operator - (const Vec3& lhs, const Vec3& rhs);
-INLINE static Vec3 operator - (const Vec3& v);
-INLINE static Vec3& operator += (Vec3& lhs, const Vec3& rhs);
-INLINE static Vec3& operator -= (Vec3& lhs, const Vec3& rhs);
-INLINE static BoolInVec operator == (const Vec3& lhs, const Vec3& rhs);
-INLINE static BoolInVec operator != (const Vec3& lhs, const Vec3& rhs);
-INLINE static Vec3 operator * (float f, const Vec3& v);
-INLINE static Vec3 operator * (const Vec3& v, float f);
+INLINE static Vec3 operator + (Vec3 lhs, Vec3 rhs);
+INLINE static Vec3 operator - (Vec3 lhs, Vec3 rhs);
+INLINE static Vec3 operator - (Vec3 v);
+INLINE static Vec3& operator += (Vec3& lhs, Vec3 rhs);
+INLINE static Vec3& operator -= (Vec3& lhs, Vec3 rhs);
+INLINE static BoolInVec operator == (Vec3 lhs, Vec3 rhs);
+INLINE static BoolInVec operator != (Vec3 lhs, Vec3 rhs);
+INLINE static Vec3 operator * (float f, Vec3 v);
+INLINE static Vec3 operator * (Vec3 v, float f);
 INLINE static Vec3& operator *= (Vec3& v, float factor);
-INLINE static Vec3 operator / (const Vec3& v, float f);
+INLINE static Vec3 operator / (Vec3 v, float f);
 
 /*
 -------------------------------------------------

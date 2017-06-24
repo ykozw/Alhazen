@@ -68,7 +68,6 @@ int32_t App::run(int32_t argc, char* argv[])
     _chdir(config.baseFileDir.c_str());
 #endif
     //
-    initialzeLog();
     // 浮動小数関係の例外をonにするか
     if (config.floatException)
     {
@@ -78,8 +77,5 @@ int32_t App::run(int32_t argc, char* argv[])
 #endif
     }
     //
-    const int32_t ret = runApp(config);
-    finalizeLog();
-    //
-    return ret;
+    return runApp(config);
 }

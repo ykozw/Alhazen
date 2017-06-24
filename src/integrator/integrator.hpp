@@ -3,7 +3,6 @@
 #include "pch.hpp"
 #include "core/spectrum.hpp"
 #include "core/ray.hpp"
-#include "core/stats.hpp"
 #include "core/ray.hpp"
 #include "core/scenegeometory.hpp"
 #include "sampler/sampler.hpp"

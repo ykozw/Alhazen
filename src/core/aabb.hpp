@@ -2,7 +2,6 @@
 
 #include "pch.hpp"
 #include "core/math.hpp"
-#include "core/stats.hpp"
 #include "core/ray.hpp"
 
 /*

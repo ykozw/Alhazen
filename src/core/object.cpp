@@ -2,71 +2,55 @@
 #include "core/object.hpp"
 #include "core/logging.hpp"
 #include "core/util.hpp"
-#include "core/threadid.hpp"
 
 namespace
 {
-    /*
-     -------------------------------------------------
-     -------------------------------------------------
-     */
-    class Init
-    {
-    public:
-        Init()
-        {
-            Job::threadId = 0;
-        }
-    }init;
-    
-    /*
-     -------------------------------------------------
-     -------------------------------------------------
-     */
-    typedef std::unordered_map<std::string, std::function<Object*(const ObjectProp&)>> ObjectCreateFuncs;
-    typedef std::function<Object*(const ObjectProp&)> CreateObjectFun;
-    typedef std::unordered_map<std::string, CreateObjectFun> CreateObjectFunList;
-    
-    /*
-     -------------------------------------------------
-     -------------------------------------------------
-     */
-    class Global
-    {
-    public:
-        ObjectCreateFuncs& objectCreateFuncs()
-        {
-            static std::unordered_map<std::string, std::function<Object*(const ObjectProp&)>> objectCreateFuncs;
-            return objectCreateFuncs;
-        }
-        std::unordered_map<std::type_index, CreateObjectFunList>& allObjectCreateFuncs()
-        {
-            static std::unordered_map<std::type_index, CreateObjectFunList> allObjectCreateFuncs;
-            return allObjectCreateFuncs;
-        }
-        std::unordered_map<std::type_index, std::string>& type2name()
-        {
-            static std::unordered_map<std::type_index, std::string> type2name;
-            return type2name;
-        }
-    }g;
-};
-
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+typedef std::unordered_map<std::string, std::function<Object*(const ObjectProp&)>> ObjectCreateFuncs;
+typedef std::function<Object*(const ObjectProp&)> CreateObjectFun;
+typedef std::unordered_map<std::string, CreateObjectFun> CreateObjectFunList;
 
 /*
- -------------------------------------------------
- -------------------------------------------------
- */
+-------------------------------------------------
+-------------------------------------------------
+*/
+class Global
+{
+public:
+    ObjectCreateFuncs& objectCreateFuncs()
+    {
+        static std::unordered_map<std::string, std::function<Object*(const ObjectProp&)>> objectCreateFuncs;
+        return objectCreateFuncs;
+    }
+    std::unordered_map<std::type_index, CreateObjectFunList>& allObjectCreateFuncs()
+    {
+        static std::unordered_map<std::type_index, CreateObjectFunList> allObjectCreateFuncs;
+        return allObjectCreateFuncs;
+    }
+    std::unordered_map<std::type_index, std::string>& type2name()
+    {
+        static std::unordered_map<std::type_index, std::string> type2name;
+        return type2name;
+    }
+}g;
+};
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 void ObjectProp::addAttribute(const std::string& tag, const std::string& value)
 {
     attributes_.insert(std::pair<std::string, std::string>(tag, value));
 }
 
-
 /*
- -------------------------------------------------
- -------------------------------------------------
- */
+-------------------------------------------------
+-------------------------------------------------
+*/
 void ObjectProp::addChild(const ObjectProp& child)
 {
     childProps_.push_back(child);
@@ -92,10 +76,8 @@ void registerObject(
     const std::string& targetClassName,
     std::function<Object*(const ObjectProp&)> createObjectFunc)
 {
-    printf("registerObject[%s:%s]\n", baseClassType.name(), targetClassName.c_str());
-    // Global Constructor内で行われること前提
-    // AL_ASSERT_DEBUG(Job::threadId == 0);
-    AL_ASSERT_DEBUG(createObjectFunc != nullptr);
+    logging("registerObject[%s:%s]\n", baseClassType.name(), targetClassName.c_str());
+    AL_ASSERT_ALWAYS(createObjectFunc != nullptr);
     // TODO: 二重登録検知ができるようにする
     //
     g.objectCreateFuncs().insert(std::pair<std::string, std::function<Object*(const ObjectProp&)>>(targetClassName, createObjectFunc));
@@ -112,9 +94,9 @@ void registerObject(
 */
 Object* createObjectCore(const std::string& typeName, const ObjectProp& objectProp)
 {
-    AL_ASSERT_DEBUG(g.objectCreateFuncs().find(typeName) != g.objectCreateFuncs().end());
+    AL_ASSERT_ALWAYS(g.objectCreateFuncs().find(typeName) != g.objectCreateFuncs().end());
     const auto& objCreateFunc = g.objectCreateFuncs()[typeName];
-    AL_ASSERT_DEBUG(objCreateFunc != NULL);
+    AL_ASSERT_ALWAYS(objCreateFunc != nullptr);
     return objCreateFunc(objectProp);
 }
 
@@ -131,10 +113,10 @@ Object* createObjectCore(
     logging("CreateObject BaseClass:%s TargetClass:%s", baseClassType.name(), targetClassName.c_str());
     //
     auto baseClassTypeIte = g.allObjectCreateFuncs().find(baseClassType);
-    AL_ASSERT_DEBUG(baseClassTypeIte != g.allObjectCreateFuncs().end());
+    AL_ASSERT_ALWAYS(baseClassTypeIte != g.allObjectCreateFuncs().end());
     CreateObjectFunList& createObjectFunList = baseClassTypeIte->second;
     auto createObjectIte = createObjectFunList.find(targetClassName);
-    AL_ASSERT_DEBUG(createObjectIte != createObjectFunList.end());
+    AL_ASSERT_ALWAYS(createObjectIte != createObjectFunList.end());
     const auto& objCreateFunc = createObjectIte->second;
     return objCreateFunc(objectProp);
 }

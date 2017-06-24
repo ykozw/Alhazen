@@ -126,7 +126,5 @@ EXIT:
     ss << std::setfill('0') << std::setw(3) << filmNo;
     masterScene.developLDR(ss.str() + ".bmp", true, isPreview);
     // masterScene.dumpHDR("result.hdr");
-    //
-    StatCounter::print();
     return 0;
 }

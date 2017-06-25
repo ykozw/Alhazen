@@ -56,9 +56,25 @@ void ImageLDR::writePNG(const std::string& fileName) const
 {
     // フルパスを得る
     const std::string fullPath = g_fileSystem.getOutputFolderPath() + fileName;
+
+    //
+    logging("writePNG [%s]", fullPath.c_str());
+
+    // フリップする
+    // HACK: stbで反転する機能がそのうち入るので待つ
+    std::vector<PixelLDR> tmp(pixels_.size());
+    for (int32_t y = 0; y < height_; ++y)
+    {
+        const int32_t y0 = y*width_;
+        const int32_t y1 = (height_ - y - 1)*width_;
+        for (int32_t x = 0; x < width_; ++x)
+        {
+            tmp[x + y0] = pixels_[x + y1];
+        }
+    }
     //
     const int32_t comp = 3;
-    const void* data = pixels_.data();
+    const void* data = tmp.data();
     const int32_t strideInBytes = width_ * comp;
     stbi_write_png(fullPath.c_str(), width_, height_, comp, data, strideInBytes);
 }
@@ -71,14 +87,14 @@ void ImageLDR::writePNG(const std::string& fileName) const
 AL_TEST(ImageLDR, write)
 {
     // グラデーションのファイルを出力する
-    ImageLDR image(256,256);
+    ImageLDR image(256, 256);
     auto& pixels = image.pixels();
     int32_t index = 0;
     for (int32_t y = 0; y < image.height(); ++y)
     {
         for (int32_t x = 0; x < image.width(); ++x)
         {
-            pixels[index] = {uint8_t(x),uint8_t(y),0};
+            pixels[index] = { uint8_t(x),uint8_t(y),0 };
             ++index;
         }
     }

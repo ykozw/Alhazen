@@ -2,13 +2,13 @@
 <scene version="0.4.0">
   
   <!--タイムアウト。300秒-->
-  <integer name="timeout" value="15" />
+  <integer name="timeout" value="1500" />
   
   <!--プログレッシブ動作-->
   <boolean name="progressive" value="true" />
   
   <!--スナップショット出力秒数設定-->
-  <integer name="snapshotinterval" value="10" />
+  <integer name="snapshotinterval" value="5" />
   
   <!--スナップショット毎にデノイズ-->
   <boolean name="snapshotdenoise" value="false"/>
@@ -25,9 +25,9 @@
   <!--<denoiser type="ap"/>-->
   
   <!--インテグレーター-->
-  <SurfaceIntegrator type="DebugSurfaceIntegrator">
+  <!--<SurfaceIntegrator type="DebugSurfaceIntegrator">-->
   <!--<SurfaceIntegrator type="AOSurfaceIntegrator">-->
-  <!--<SurfaceIntegrator type="PTSurfaceIntegrator">-->
+  <SurfaceIntegrator type="PTSurfaceIntegrator">
   <!--<SurfaceIntegrator type="BruteForceIntegrator">-->
   <!--<SurfaceIntegrator type="PMSurfaceIntegrator">-->
   </SurfaceIntegrator>

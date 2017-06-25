@@ -124,7 +124,6 @@ Object* createObjectCore(
 template<typename BaseClass>
 std::shared_ptr<BaseClass> createObject(const std::string& targetClassName)
 {
-    logging("Create Object[%s::%s]", typeid(BaseClass).name(), targetClassName.c_str());
     return std::shared_ptr<BaseClass>(
         dynamic_cast<BaseClass*>(
             createObjectCore(
@@ -148,7 +147,6 @@ std::shared_ptr<BaseClass> createObject(const ObjectProp& objProp)
         objProp :
         objProp.findChildByTag(baseClassName);
     const std::string& targetClassName = targetProp.attribute("type").asString("");
-    logging("Create Object[%s::%s]", typeid(BaseClass).name(), targetClassName.c_str());
     return std::shared_ptr<BaseClass>(
         dynamic_cast<BaseClass*>(
             createObjectCore(

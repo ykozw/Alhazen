@@ -110,7 +110,7 @@ Object* createObjectCore(
     const ObjectProp& objectProp)
 {
     //
-    logging("CreateObject BaseClass:%s TargetClass:%s", baseClassType.name(), targetClassName.c_str());
+    logging("Create Object[%s::%s]", baseClassType.name(), targetClassName.c_str());
     //
     auto baseClassTypeIte = g.allObjectCreateFuncs().find(baseClassType);
     AL_ASSERT_ALWAYS(baseClassTypeIte != g.allObjectCreateFuncs().end());

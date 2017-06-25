@@ -105,7 +105,7 @@ public:
 private:
     concurrent_queue<TaskFunc> tasks_;
     std::vector<std::thread> threads_;
-    std::atomic<bool> exitFlag_ = false;
+    std::atomic<bool> exitFlag_;
 };
 
 /*
@@ -117,6 +117,7 @@ SimpleTaskScheduler::SimpleTaskScheduler()
     impl_ = std::make_unique<SimpleTaskScheduler::Impl>();
 }
 SimpleTaskScheduler::Impl::Impl()
+:exitFlag_(false)
 {
 }
 

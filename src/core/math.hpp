@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "pch.hpp"
 
 // VectorMathでSIMDを使うか否か。AVX2まで仮定する。

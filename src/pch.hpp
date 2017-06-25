@@ -152,3 +152,6 @@
 #define AL_TLS __thread
 #endif
 
+// 全てのclassのリスト
+#include "core/fwd.hpp"
+

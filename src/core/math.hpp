@@ -173,7 +173,7 @@ INLINE static Size2D& operator *= (Size2D& v, int32_t f);
 Region2D
 -------------------------------------------------
 */
-class Region2D
+struct Region2D
 {
 public:
     int32_t left = 0;
@@ -333,7 +333,6 @@ public:
 Vec3
 -------------------------------------------------
 */
-struct Vec4;
 struct Vec3
 {
 public:
@@ -462,7 +461,7 @@ Matrix3x3
 Row-Major/Row-Vectorの4x4行列
 -------------------------------------------------
 */
-class Matrix3x3
+struct Matrix3x3
 {
 public:
     union
@@ -498,7 +497,7 @@ Matrix4x4
 Row-Major/Row-Vectorの4x4行列
 -------------------------------------------------
 */
-class Matrix4x4
+struct Matrix4x4
 {
 public:
     union

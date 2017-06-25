@@ -16,12 +16,6 @@ class BruteForceIntegrator
 public:
     BruteForceIntegrator() = default;
     BruteForceIntegrator(const ObjectProp& objectProp);
-    SurfaceIntegratorPtr clone() override
-    {
-        BruteForceIntegrator* it = new BruteForceIntegrator();
-        it->rng_ = rng_;
-        return SurfaceIntegratorPtr(it);
-    }
     bool preRendering(const SceneGeometory& scene, AllBSDFList& bsdfList) override;
     bool postRendering() override
     {
@@ -32,7 +26,6 @@ public:
         const SceneGeometory& scene,
         SamplerPtr sampler) override;
 private:
-    XorShift128 rng_;
 };
 
 REGISTER_OBJECT(SurfaceIntegrator,BruteForceIntegrator);
@@ -42,7 +35,6 @@ REGISTER_OBJECT(SurfaceIntegrator,BruteForceIntegrator);
 -------------------------------------------------
 */
 BruteForceIntegrator::BruteForceIntegrator(const ObjectProp& objectProp)
-    :rng_()
 {
     static_cast<void>(objectProp);
 }

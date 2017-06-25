@@ -1,4 +1,4 @@
-﻿#include "pch.hpp"
+#include "pch.hpp"
 #include "core/unittest.hpp"
 #include "core/math.hpp"
 #include "core/logging.hpp"
@@ -10,7 +10,6 @@ BoolInVecに関するテストコード
 */
 AL_TEST(Math, BoolInVec)
 {
-    logging("%d %f %s", 10, 12.0, "FUCK");
     // 基本的な真偽の設定
     {
         BoolInVec v(false);
@@ -140,10 +139,19 @@ AL_TEST(Math, Vec3)
     }
     // 同値判定
     {
+        // 同値
+        AL_ASSERT_ALWAYS(Vec3(1.0f,2.0f,3.0f) ==
+                         Vec3(1.0f,2.0f,3.0f));
+        // 非同値
+        AL_ASSERT_ALWAYS(Vec3(0.0f,2.0f,3.0f) !=
+                         Vec3(1.0f,2.0f,3.0f));
+        AL_ASSERT_ALWAYS(Vec3(1.0f,0.0f,3.0f) !=
+                         Vec3(1.0f,2.0f,3.0f));
+        AL_ASSERT_ALWAYS(Vec3(1.0f,2.0f,0.0f) !=
+                         Vec3(1.0f,2.0f,3.0f));
         // wは関係がないので同値になる
-        Vec3 v0(_mm_set_ps(1.0f, 0.0f, 0.0f, 0.0f));
-        Vec3 v1(_mm_set_ps(0.0f, 0.0f, 0.0f, 0.0f));
-        AL_ASSERT_ALWAYS(v1 == v0);
+        AL_ASSERT_ALWAYS(Vec3(_mm_set_ps(1.0f, 0.0f, 0.0f, 0.0f)) ==
+                         Vec3(_mm_set_ps(0.0f, 0.0f, 0.0f, 0.0f)));
     }
     // zero
     {
@@ -190,27 +198,41 @@ AL_TEST(Math, Vec3)
         // w成分は関係がないのでall()の結果には影響を与えてはいけない
         AL_ASSERT_ALWAYS(Vec3(_mm_set_ps(0.0f, 1.0f, 1.0f, 1.0f)).all());
     }
+    const auto sameV = [](float v0, float v1)
+    {
+        const float eps = 0.00001f;
+        return std::fabsf(v0 - v1) < eps;
+    };
+    const auto same1 = [&sameV](float v)
+    {
+        return sameV(v, 1.0f);
+    };
     // normalize(1)
     {
+        
         Vec3 v0(1.0f, 2.0f, 3.0f);
         const Vec3 v1 = v0.normalized();
         v0.normalize();
         AL_ASSERT_ALWAYS(v1 == v0);
-        AL_ASSERT_ALWAYS(v0.length() == 1.0f);
-        AL_ASSERT_ALWAYS(v1.length() == 1.0f);
+        AL_ASSERT_ALWAYS(same1(v0.length()));
+        AL_ASSERT_ALWAYS(same1(v1.length()));
         AL_ASSERT_ALWAYS(v0.isNormalized());
         AL_ASSERT_ALWAYS(v1.isNormalized());
-        AL_ASSERT_ALWAYS(v0.length() == 1.0f);
-        AL_ASSERT_ALWAYS(v0.lengthSq() == 1.0f);
-        AL_ASSERT_ALWAYS(v1.length() == 1.0f);
-        AL_ASSERT_ALWAYS(v1.lengthSq() == 1.0f);
+        AL_ASSERT_ALWAYS(same1(v0.length()));
+        AL_ASSERT_ALWAYS(same1(v0.lengthSq()));
+        AL_ASSERT_ALWAYS(same1(v1.length()));
+        AL_ASSERT_ALWAYS(same1(v1.lengthSq()));
     }
     // normalize(2)
     {
-        const Vec3 v0 = _mm_set_ps(1.0f,0.0f,0.0f,1.0f);
+        const Vec3 v0(_mm_set_ps(1.0f,0.0f,0.0f,1.0f));
         const Vec3 v1 = v0.normalized();
-        AL_ASSERT_ALWAYS((v1.x() == 1.0f) && (v1.x() == 0.0f) && (v1.x() == 0.0f));
+        AL_ASSERT_ALWAYS(same1(v1.x()) && (v1.y() == 0.0f) && (v1.z() == 0.0f));
         AL_ASSERT_ALWAYS(v1.isNormalized());
+    }
+    // scale
+    {
+        
     }
     // TODO: inverted/invertedSafe
     // TODO: reflect

@@ -77,7 +77,6 @@ public:
 	virtual Ray generateRay(float imageX, float imageY, float& pdf) const = 0;
     virtual Ray4 generateRay4(float imageX, float imageY, float pdf[4]) const{ return Ray4(); }
 	virtual FilmPtr film() const = 0;
-    virtual std::shared_ptr<Sensor> clone() const = 0;
 protected:
 };
 typedef std::shared_ptr<Sensor> SensorPtr;

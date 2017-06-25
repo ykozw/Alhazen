@@ -1,4 +1,4 @@
-﻿#include "math.hpp"
+#include "math.hpp"
 
 /*
 -------------------------------------------------
@@ -506,8 +506,13 @@ INLINE BoolInVec::BoolInVec(__m128i av)
 -------------------------------------------------
 */
 INLINE BoolInVec::BoolInVec(bool av)
-    :v(_mm_set1_epi32(av ? 0xFFFFFFFF : 0x00000000))
-{}
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    v = av;
+#else
+    v = (_mm_set1_epi32(av ? 0xFFFFFFFF : 0x00000000));
+#endif
+}
 
 /*
 -------------------------------------------------
@@ -537,11 +542,15 @@ INLINE BoolInVec::operator bool() const
 */
 INLINE bool BoolInVec::value() const
 {
+#if defined(AL_MATH_USE_NO_SIMD)
+    return v;
+#else
     const __m128i zero = _mm_set1_epi32(0);
     const int32_t zeromask =
         _mm_movemask_epi8(_mm_cmpeq_epi32(v, zero)) & 0x000000FFFF;
     const int32_t ret = zeromask & 0x01;
     return !ret;
+#endif
 }
 
 /*
@@ -757,22 +766,6 @@ INLINE Vec3 Vec3::normalized() const
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE void Vec3::scale(float scale)
-{
-#if defined(AL_MATH_USE_NO_SIMD)
-    x_ *= scale;
-    y_ *= scale;
-    z_ *= scale;
-#elif defined(AL_MATH_USE_AVX2)
-    const __m128 s = _mm_set1_ps(scale);
-    xyz_ = _mm_mul_ps(xyz_, s);
-#endif
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
 INLINE bool Vec3::isNormalized() const
 {
     // この数値は適当
@@ -791,6 +784,22 @@ INLINE bool Vec3::isNormalized(float eps) const
 #elif defined(AL_MATH_USE_AVX2)
     // TODO: SIMDにしてboolinvecを返すようにする
     return (std::fabsf(lengthSq() - 1.0f) < eps);
+#endif
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE void Vec3::scale(float scale)
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    x_ *= scale;
+    y_ *= scale;
+    z_ *= scale;
+#elif defined(AL_MATH_USE_AVX2)
+    const __m128 s = _mm_set1_ps(scale);
+    xyz_ = _mm_mul_ps(xyz_, s);
 #endif
 }
 
@@ -883,11 +892,7 @@ INLINE Vec3 Vec3::reflect(Vec3 v) const
 */
 INLINE float Vec3::x() const
 {
-#if defined(AL_MATH_USE_NO_SIMD)
-    return x_;
-#else
-    return _mm_cvtss_f32(_mm_shuffle_ps(xyz_, xyz_, _MM_SHUFFLE(0, 0, 0, 0)));
-#endif
+    return float(vx());
 }
 
 /*
@@ -896,11 +901,7 @@ INLINE float Vec3::x() const
 */
 INLINE float Vec3::y() const
 {
-#if defined(AL_MATH_USE_NO_SIMD)
-    return y_;
-#else
-    return _mm_cvtss_f32(_mm_shuffle_ps(xyz_, xyz_, _MM_SHUFFLE(0, 0, 0, 1)));
-#endif
+    return float(vy());
 }
 
 /*
@@ -909,10 +910,45 @@ INLINE float Vec3::y() const
 */
 INLINE float Vec3::z() const
 {
+    return float(vz());
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE FloatInVec Vec3::vx() const
+{
 #if defined(AL_MATH_USE_NO_SIMD)
-    return z_;
+    return FloatInVec(x_);
 #else
-    return _mm_cvtss_f32(_mm_shuffle_ps(xyz_, xyz_, _MM_SHUFFLE(0, 0, 0, 2)));
+    return FloatInVec(_mm_shuffle_ps(xyz_, xyz_, _MM_SHUFFLE(0, 0, 0, 0)));
+#endif
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE FloatInVec Vec3::vy() const
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    return FloatInVec(y_);
+#else
+    return FloatInVec(_mm_shuffle_ps(xyz_, xyz_, _MM_SHUFFLE(0, 0, 0, 1)));
+#endif
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE FloatInVec Vec3::vz() const
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    return FloatInVec(z_);
+#else
+    return FloatInVec(_mm_shuffle_ps(xyz_, xyz_, _MM_SHUFFLE(0, 0, 0, 2)));
 #endif
 }
 
@@ -961,6 +997,55 @@ INLINE void Vec3::setZ(float z)
 #else
     // xyv
     const __m128 tmp1 = _mm_shuffle_ps(xyz_, _mm_set_ps1(z), _MM_SHUFFLE(3, 3, 1, 0));
+    xyz_ = tmp1;
+#endif
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE void Vec3::setVX(FloatInVec x)
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    x_ = float(x);
+#else
+    // vvyy
+    const __m128 tmp0 = _mm_shuffle_ps(x, xyz_, _MM_SHUFFLE(1, 1, 0, 0));
+    // vyz
+    const __m128 tmp1 = _mm_shuffle_ps(tmp0, xyz_, _MM_SHUFFLE(2, 2, 2, 0));
+    xyz_ = tmp1;
+#endif
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE void Vec3::setVY(FloatInVec y)
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    y_ = float(y);
+#else
+    // xxvv
+    const __m128 tmp0 = _mm_shuffle_ps(xyz_, y, _MM_SHUFFLE(1, 1, 0, 0));
+    // vyz
+    const __m128 tmp1 = _mm_shuffle_ps(tmp0, xyz_, _MM_SHUFFLE(2, 2, 2, 0));
+    xyz_ = tmp1;
+#endif
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE void Vec3::setVZ(FloatInVec z)
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    z_ = float(z);
+#else
+    // xyv
+    const __m128 tmp1 = _mm_shuffle_ps(xyz_, z, _MM_SHUFFLE(3, 3, 1, 0));
     xyz_ = tmp1;
 #endif
 }
@@ -1212,7 +1297,7 @@ INLINE static BoolInVec operator == (Vec3 lhs, Vec3 rhs)
 #elif defined(AL_MATH_USE_AVX2)
     const __m128 mask = _mm_cmpeq_ps(lhs.xyz_, rhs.xyz_);
     const int32_t maskPacked = _mm_movemask_ps(mask);
-    return (maskPacked == 0x0F);
+    return (maskPacked & 0x07) == 0x07;
 #endif
 }
 

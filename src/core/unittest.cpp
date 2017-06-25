@@ -69,7 +69,7 @@ void doTest()
         int32_t numTestTotal = 0;
         for (const auto& testCategorys : tests)
         {
-            numTestTotal += testCategorys.second.size();
+            numTestTotal += int32_t(testCategorys.second.size());
         }
         return numTestTotal;
     }();

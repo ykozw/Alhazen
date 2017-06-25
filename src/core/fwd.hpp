@@ -6,27 +6,27 @@ class ObjectProp;
 class Object;
 
 // core/math.hpp
-class Size2D;
-class Region2D;
-class FloatInVec;
-class BoolInVec;
-class Vec2;
-class Vec3;
-class Vec4;
-class Matrix3x3;
-class Matrix4x4;
-class Vec3Pack8;
+struct Size2D;
+struct Region2D;
+struct FloatInVec;
+struct BoolInVec;
+struct Vec2;
+struct Vec3;
+struct Vec4;
+struct Matrix3x3;
+struct Matrix4x4;
+struct Vec3Pack8;
 
 // core/rng.hpp
 class XorShift128;
 
 // core/ray.hpp
-class Ray;
-class Intersect;
+struct Ray;
+struct Intersect;
 
 // core/image.hpp
 class Image;
-class PixelLDR;
+struct PixelLDR;
 class ImageLDR;
 
 // core/scene.hpp

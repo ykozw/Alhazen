@@ -320,7 +320,6 @@ public:
     RealSensor(const ObjectProp& objectProp);
     Ray generateRay(float imageX, float imageY, float& pdf) const override;
     FilmPtr film() const override;
-    SensorPtr clone() const override;
 private:
     void calcExitPupile();
     void calcPrecomputeTable();
@@ -1252,33 +1251,4 @@ Ray RealSensor::generateRay(float imageX, float imageY, float& pdf ) const
 FilmPtr RealSensor::film() const
 {
     return film_;
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-SensorPtr RealSensor::clone() const
-{
-    RealSensor* sensor = new RealSensor();
-    sensor->film_ = film_;
-    sensor->screenWidth_ = screenWidth_;
-    sensor->screenHeight_ = screenWidth_;
-    sensor->screenAspect_ = screenAspect_;
-    sensor->invScreenWidth_ = invScreenWidth_;
-    sensor->invScreenHeight_ = invScreenHeight_;
-    sensor->perspectivePos_ = perspectivePos_;
-    sensor->rightDir_ = rightDir_;
-    sensor->upDir_ = upDir_;
-    sensor->forwardDir_ = forwardDir_;
-    sensor->perspectiveFovy_ = perspectiveFovy_;
-    sensor->surfs_ = surfs_;
-    sensor->exitPupils_ = exitPupils_;
-    sensor->lcoal_ = lcoal_;
-    sensor->scale_ = scale_;
-    sensor->imageSensorOffset_ = imageSensorOffset_;
-    sensor->filmWidthInMM_ = filmWidthInMM_;
-    sensor->filmHeightInMM_ = filmHeightInMM_;
-
-    return SensorPtr(sensor);
 }

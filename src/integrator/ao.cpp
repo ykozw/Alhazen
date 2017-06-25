@@ -15,7 +15,6 @@ class AOSurfaceIntegrator
 public:
     AOSurfaceIntegrator() {}
     AOSurfaceIntegrator(const ObjectProp& objectProp);
-    SurfaceIntegratorPtr clone() override;
     bool preRendering(const SceneGeometory& scene, AllBSDFList& bsdfList) override;
     bool postRendering() override
     {
@@ -34,17 +33,6 @@ REGISTER_OBJECT(SurfaceIntegrator, AOSurfaceIntegrator);
 AOSurfaceIntegrator::AOSurfaceIntegrator(const ObjectProp& objectProp)
 {
     sampleNum_ = objectProp.findChildBy("name","sampleNum").asInt(64);
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-SurfaceIntegratorPtr AOSurfaceIntegrator::clone()
-{
-    AOSurfaceIntegrator* ao = new AOSurfaceIntegrator;
-    ao->sampleNum_ = sampleNum_;
-    return SurfaceIntegratorPtr(ao);
 }
 
 /*

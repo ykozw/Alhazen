@@ -12,6 +12,8 @@ typedef std::shared_ptr<SurfaceIntegrator> SurfaceIntegratorPtr;
 
 /*
 -------------------------------------------------
+レンダリングアルゴリズムはこれを継承して実装される
+radiance()は複数のスレッドから呼ばれても問題のない作りにする
 -------------------------------------------------
 */
 class SurfaceIntegrator
@@ -19,7 +21,6 @@ class SurfaceIntegrator
 {
 public:
     virtual ~SurfaceIntegrator(){}
-    virtual SurfaceIntegratorPtr clone() = 0;
     virtual bool preRendering(
         const SceneGeometory& scene,
         AllBSDFList& bsdfList ) = 0;

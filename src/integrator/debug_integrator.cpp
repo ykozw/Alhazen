@@ -10,12 +10,6 @@ class DebugSurfaceIntegrator
 {
 public:
     DebugSurfaceIntegrator(const ObjectProp& objectProp);
-    SurfaceIntegratorPtr clone() override
-    {
-        // TODO: 実装
-        AL_ASSERT_DEBUG(false);
-        return nullptr;
-    }
     bool preRendering(const SceneGeometory& scene, AllBSDFList& bsdfList) override
     {
         return true;

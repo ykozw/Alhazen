@@ -15,7 +15,6 @@ public:
     Perspective(const ObjectProp& objectProp);
     Ray generateRay(float imageX, float imageY, float& pdf) const override;
     FilmPtr film() const override;
-    SensorPtr clone() const override;
 private:
     FilmPtr film_;
     float screenWidth_;
@@ -82,7 +81,9 @@ Perspective::Perspective(const ObjectProp& objectProp)
 -------------------------------------------------
 -------------------------------------------------
 */
-Ray Perspective::generateRay(float imageX, float imageY, float& pdf) const
+Ray Perspective::generateRay(float imageX,
+                             float imageY,
+                             float& pdf) const
 {
 #if 1
     // レイ方向の作成
@@ -107,25 +108,4 @@ Ray Perspective::generateRay(float imageX, float imageY, float& pdf) const
 FilmPtr Perspective::film() const
 {
     return film_;
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-SensorPtr Perspective::clone() const
-{
-    Perspective* sensor = new Perspective();
-    sensor->film_ = film_;
-    sensor->screenWidth_ = screenWidth_;
-    sensor->screenHeight_ = screenWidth_;
-    sensor->screenAspect_ = screenAspect_;
-    sensor->invScreenWidth_ = invScreenWidth_;
-    sensor->invScreenHeight_ = invScreenHeight_;
-    sensor->perspectivePos_ = perspectivePos_;
-    sensor->rightDir_ = rightDir_;
-    sensor->upDir_ = upDir_;
-    sensor->forwardDir_ = forwardDir_;
-    sensor->perspectiveFovy_ = perspectiveFovy_;
-    return SensorPtr(sensor);
 }

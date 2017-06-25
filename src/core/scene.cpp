@@ -94,25 +94,6 @@ Scene::~Scene()
 -------------------------------------------------
 -------------------------------------------------
 */
-std::shared_ptr<Scene> Scene::cloneForWorker()
-{
-    std::shared_ptr<Scene> newScene = std::make_shared<Scene>();
-    newScene->geometory_ = geometory_;
-    newScene->sensor_ = sensor_->clone();
-    newScene->tonemapper_ = tonemapper_;
-    newScene->integrator_ = integrator_->clone();
-    newScene->totalTaskNum_ = totalTaskNum_;
-    newScene->tonemmappedImage_ = tonemmappedImage_;
-    newScene->timeout_ = timeout_;
-    newScene->isProgressive_ = isProgressive_;
-    newScene->snapshotInterval_ = snapshotInterval_;
-    return newScene;
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
 int32_t Scene::totalTaskNum() const
 {
     if (isProgressive_)

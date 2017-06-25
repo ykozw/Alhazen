@@ -23,24 +23,17 @@ int32_t Alhazen::runApp(const ArgConfig& config)
     // シーンの構築
     ObjectProp sceneProp;
     sceneProp.load(config.sceneFilePath);
-    Scene masterScene(sceneProp);
+    Scene scene(sceneProp);
     
-    // スレッド毎にシーンのcloneを作成する
-    std::vector<ScenePtr> scenes;
-    scenes.resize(taskScheduler.numThread());
-    for (auto& scene : scenes)
-    {
-        scene = masterScene.cloneForWorker();
-    }
     //
     std::vector<ImageLDR> ldrImages;
     ldrImages.resize(taskScheduler.numThread());
     //
     const bool isPreview = false;
-    const int32_t totalTaskNum = masterScene.totalTaskNum();
-    const int32_t taskNumPerLoop = masterScene.taskNumPerLoop();
-    const uint32_t developIntervalInMs = masterScene.developIntervalInMs();
-    const uint32_t timeOutInMs = masterScene.timeOutInMs();
+    const int32_t totalTaskNum = scene.totalTaskNum();
+    const int32_t taskNumPerLoop = scene.taskNumPerLoop();
+    const uint32_t developIntervalInMs = scene.developIntervalInMs();
+    const uint32_t timeOutInMs = scene.timeOutInMs();
 
 #if 0
     // デバッグ用の直呼び出し
@@ -79,14 +72,14 @@ int32_t Alhazen::runApp(const ArgConfig& config)
         for (int32_t taskNoOffset = 0; taskNoOffset < TASK_NUM_UNTILL_BY_JOIN; ++taskNoOffset)
         {
             taskScheduler.add([
-                &scenes, taskNo,
+                    taskNo,
                     totalTaskNum,
                     taskNoOffset,
                     &nextDevelopTime,
                     developIntervalInMs,
                     isPreview,
                     &filmNo,
-                    &masterScene,
+                    &scene,
                     &taskNumPerLoop](int32_t threadNo)
             {
                 const int32_t taskNoLocal = taskNo + taskNoOffset;
@@ -94,8 +87,7 @@ int32_t Alhazen::runApp(const ArgConfig& config)
                 {
                     return;
                 }
-                auto& scene = scenes[threadNo];
-                SubFilm& subFilm = scene->render(taskNoLocal);
+                scene.render(taskNoLocal);
                 // マスタースレッドでのみ実行する
                 if (threadNo == 0)
                 {
@@ -107,8 +99,8 @@ int32_t Alhazen::runApp(const ArgConfig& config)
                         // 最終ショット以外はdenoiseは走らせない
                         std::ostringstream ss;
                         ss << std::setfill('0') << std::setw(3) << filmNo;
-                        masterScene.developLDR(ss.str() + ".bmp", false, isPreview);
-                        masterScene.dumpHDR(ss.str() + ".bhdr");
+                        scene.developLDR(ss.str() + ".bmp", false, isPreview);
+                        scene.dumpHDR(ss.str() + ".bhdr");
                     }
                 }
             });
@@ -124,7 +116,7 @@ EXIT:
     filmNo++;
     std::ostringstream ss;
     ss << std::setfill('0') << std::setw(3) << filmNo;
-    masterScene.developLDR(ss.str() + ".bmp", true, isPreview);
+    scene.developLDR(ss.str() + ".bmp", true, isPreview);
     // masterScene.dumpHDR("result.hdr");
     return 0;
 }

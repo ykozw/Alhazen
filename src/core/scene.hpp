@@ -26,7 +26,6 @@ public:
     Scene();
     Scene(const ObjectProp& objectProp);
     ~Scene();
-    std::shared_ptr<Scene> cloneForWorker();
     int32_t totalTaskNum() const;
     int32_t taskNumPerLoop() const;
     uint32_t developIntervalInMs() const;

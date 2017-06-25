@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "pch.hpp"
 
 // VectorMathでSIMDを使うか否か。AVX2まで仮定する。
@@ -241,8 +241,13 @@ FloatInVec
 struct FloatInVec
 {
 public:
+#if defined(AL_MATH_USE_NO_SIMD)
+    float v;
+#else
     __m128 v;
+#endif
 public:
+    // TODO: no simd版を作成する
 	INLINE FloatInVec() = default;
 	INLINE FloatInVec(const FloatInVec& other) = default;
 	INLINE FloatInVec(FloatInVec&& other) = default;
@@ -306,7 +311,11 @@ BoolInVec
 struct BoolInVec
 {
 public:
+#if defined(AL_MATH_USE_NO_SIMD)
+    bool v;
+#else
     __m128i v;
+#endif
 public:
     INLINE BoolInVec() = default;
     INLINE BoolInVec(const BoolInVec& other) = default;
@@ -352,9 +361,9 @@ public:
     INLINE bool all() const;
     INLINE Vec3& normalize();
     INLINE Vec3 normalized() const;
-    INLINE void scale(float scale);
     INLINE bool isNormalized() const;
     INLINE bool isNormalized(float eps) const;
+    INLINE void scale(float scale);
     INLINE FloatInVec length() const;
     INLINE FloatInVec lengthSq() const;
     INLINE Vec3 inverted() const;
@@ -364,12 +373,19 @@ public:
     INLINE float operator[](int32_t index) const; // TODO: FloatInVecにする
     INLINE Vec3& operator = (const Vec3& other) = default;
     // アクセッサ
-    INLINE float x() const; // TODO: FloatInVecにする
+    INLINE float x() const;
     INLINE float y() const;
     INLINE float z() const;
+    INLINE FloatInVec vx() const;
+    INLINE FloatInVec vy() const;
+    INLINE FloatInVec vz() const;
+    // セッター
     INLINE void setX(float x);
     INLINE void setY(float y);
     INLINE void setZ(float z);
+    INLINE void setVX(FloatInVec x);
+    INLINE void setVY(FloatInVec y);
+    INLINE void setVZ(FloatInVec z);
     // swizzle
 #include "swizzle_vec3.inl"
     //

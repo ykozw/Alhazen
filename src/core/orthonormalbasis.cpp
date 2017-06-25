@@ -50,8 +50,8 @@ void testLocalCoord(Type localCoord)
     }
     //const uint32_t elapsed = timeGetTime() - start;
     //printf("Elapsed: %d\n", elapsed);
-    printf("dot error    max:%g mean:%g\n", dotErrorStats.max(), dotErrorStats.mean());
-    printf("length error max:%g mean:%g\n", lengthErrorStats.max(), lengthErrorStats.mean());
+    logging("dot error    max:%g mean:%g", dotErrorStats.max(), dotErrorStats.mean());
+    logging("length error max:%g mean:%g", lengthErrorStats.max(), lengthErrorStats.mean());
 }
 
 /*
@@ -79,18 +79,18 @@ AL_TEST(OrthonormalBasis, 0)
 
     ほとんどかわらないので、もう少し特異点などをついたテストにするべきなのかもしれない
     */
-    logging("ONB_METHOD::Naive\n");
+    logging("ONB_METHOD::Naive");
     testLocalCoord(OrthonormalBasis<ONB_METHOD::Naive>());
     //
-    logging("ONB_METHOD::Moller99\n");
+    logging("ONB_METHOD::Moller99");
     testLocalCoord(OrthonormalBasis<ONB_METHOD::Moller99>());
     //
-    logging("ONB_METHOD::Frisvad12\n");
+    logging("ONB_METHOD::Frisvad12");
     testLocalCoord(OrthonormalBasis<ONB_METHOD::Frisvad12>());
     //
-    logging("ONB_METHOD::Duff17\n");
+    logging("ONB_METHOD::Duff17");
     testLocalCoord(OrthonormalBasis<ONB_METHOD::Duff17>());
     //
-    logging("ONB_METHOD::Nelson17\n");
+    logging("ONB_METHOD::Nelson17");
     testLocalCoord(OrthonormalBasis<ONB_METHOD::Nelson17>());
 }

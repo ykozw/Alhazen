@@ -29,7 +29,6 @@ int32_t Alhazen::runApp(const ArgConfig& config)
     std::vector<ImageLDR> ldrImages;
     ldrImages.resize(taskScheduler.numThread());
     //
-    const bool isPreview = false;
     const int32_t totalTaskNum = scene.totalTaskNum();
     const int32_t taskNumPerLoop = scene.taskNumPerLoop();
     const uint32_t developIntervalInMs = scene.developIntervalInMs();
@@ -77,7 +76,6 @@ int32_t Alhazen::runApp(const ArgConfig& config)
                     taskNoOffset,
                     &nextDevelopTime,
                     developIntervalInMs,
-                    isPreview,
                     &filmNo,
                     &scene,
                     &taskNumPerLoop](int32_t threadNo)
@@ -99,7 +97,7 @@ int32_t Alhazen::runApp(const ArgConfig& config)
                         // 最終ショット以外はdenoiseは走らせない
                         std::ostringstream ss;
                         ss << std::setfill('0') << std::setw(3) << filmNo;
-                        scene.developLDR(ss.str() + ".bmp", false, isPreview);
+                        scene.developLDR(ss.str() + ".png", false);
                         scene.dumpHDR(ss.str() + ".bhdr");
                     }
                 }
@@ -116,7 +114,7 @@ EXIT:
     filmNo++;
     std::ostringstream ss;
     ss << std::setfill('0') << std::setw(3) << filmNo;
-    scene.developLDR(ss.str() + ".bmp", true, isPreview);
+    scene.developLDR(ss.str() + ".png", true);
     // masterScene.dumpHDR("result.hdr");
     return 0;
 }

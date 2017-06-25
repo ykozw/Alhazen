@@ -13,6 +13,7 @@ project "Alhazen"
    includedirs {
      "src",
      "thirdparty/tinyxml2",
+     "thirdparty/stb",
      -- XCode対策(途中)
      "../src",
      "../../src"

@@ -33,7 +33,7 @@ public:
     SubFilm& render(int32_t taskNo);
     void renderDebug(int32_t px, int32_t py);
     Spectrum renderPixel(int32_t px, int32_t py);
-    void developLDR(const std::string& filmName, bool isFinal, bool isPreview);
+    void developLDR(const std::string& filmName, bool isFinal);
     void dumpHDR(const std::string& fileName);
 private:
     SceneGeometory geometory_;

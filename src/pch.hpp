@@ -67,9 +67,6 @@
 // Third party
 #include "tinyxml2.h"
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
-
 // macro
 #define PI float(M_PI)
 #define INV_PI float(M_1_PI)

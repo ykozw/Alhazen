@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 // core/obuject.hpp
 class ObjectPropString;

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #define _CRT_SECURE_NO_WARNINGS 1
 
@@ -151,4 +151,7 @@
 #else
 #define AL_TLS __thread
 #endif
+
+// 全てのclassのリスト
+#include "core/fwd.hpp"
 

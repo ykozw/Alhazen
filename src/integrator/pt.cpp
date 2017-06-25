@@ -26,13 +26,6 @@ public:
         const Ray& ray,
         const SceneGeometory& scene,
         SamplerPtr sampler) override;
-    //
-    SurfaceIntegratorPtr clone() override
-    {
-        PTSurfaceIntegrator* pt = new PTSurfaceIntegrator;
-        pt->defaultBSDF_ = defaultBSDF_;
-        return SurfaceIntegratorPtr(pt);
-    }
 private:
     Spectrum estimateDirectLight(
         const SceneGeometory& scene,

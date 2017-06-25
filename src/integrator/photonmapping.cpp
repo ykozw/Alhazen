@@ -16,7 +16,6 @@ class PMSurfaceIntegrator
 public:
     PMSurfaceIntegrator() {}
     PMSurfaceIntegrator(const ObjectProp& objectProp);
-    SurfaceIntegratorPtr clone() override;
     bool preRendering(const SceneGeometory& scene, AllBSDFList& bsdfList) override;
     bool postRendering() override
     {
@@ -53,19 +52,6 @@ REGISTER_OBJECT(SurfaceIntegrator, PMSurfaceIntegrator);
 PMSurfaceIntegrator::PMSurfaceIntegrator(const ObjectProp& objectProp)
 {
     numPhoton_ = 1024 * 16;
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-SurfaceIntegratorPtr PMSurfaceIntegrator::clone()
-{
-    PMSurfaceIntegrator* pm = new PMSurfaceIntegrator;
-    pm->photons_ = photons_;
-    pm->photonMap_ = photonMap_;
-    pm->photonsSrc_ = photonsSrc_;
-    return SurfaceIntegratorPtr(pm);
 }
 
 /*

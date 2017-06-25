@@ -1,4 +1,4 @@
-#include "pch.hpp"
+﻿#include "pch.hpp"
 #include "core/unittest.hpp"
 #include "core/math.hpp"
 #include "core/logging.hpp"
@@ -232,10 +232,22 @@ AL_TEST(Math, Vec3)
     }
     // scale
     {
-        
+        Vec3 v0(1.0f,2.0f,3.0f);
+        v0.scale(2.0f);
+        sameV(v0.x(),2.0f);
+        sameV(v0.y(),3.0f);
+        sameV(v0.z(),6.0f);
     }
     // TODO: inverted/invertedSafe
-    // TODO: reflect
+    // reflect
+    {
+        const Vec3 v0(1.0f,-1.0f,0.0f);
+        const Vec3 v1(0.0f,1.0f,0.0f);
+        const Vec3 v2 = v0.reflect(v1);
+        sameV(v2.x(),1.0f);
+        sameV(v2.y(),1.0f);
+        sameV(v2.z(),0.0f);
+    }
     // TODO: operator[]
 }
 

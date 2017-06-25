@@ -98,18 +98,15 @@ public:
     SpectrumType& pixel(int32_t x, int32_t y);
     const SpectrumType& pixel(int32_t index) const;
     SpectrumType& pixel(int32_t index);
-    //float weight(int32_t index) const;
-    //float& weight(int32_t index);
     void addPixel(int32_t x, int32_t y, const Spectrum& spectrum);
     const std::vector<SpectrumType>& pixels() const;
-    //const std::vector<float>& weights() const;
     std::vector<SpectrumType>& pixels();
     SpectrumType sample(float u, float v) const;
     int32_t width() const;
     int32_t height() const;
     void scale(float scale);
     // read/write
-    void readBmp(const std::string& fileName, float gamma);
+    void readBmp(const std::string& fileName, bool sRGB);
     void readHdr(const std::string& fileName);
     void writeHdr(const std::string& fileName) const;
 private:
@@ -151,8 +148,8 @@ public:
     const std::vector<PixelLDR>& pixels()const;
     std::vector<PixelLDR>& pixels();
     // read/write
-    void readBmp(const std::string& fileName, bool sRGB);
-    void writeBmp(const std::string& fileName) const;
+    //void readBmp(const std::string& fileName, bool sRGB);
+    void writePNG(const std::string& fileName) const;
 private:
     int32_t width_;
     int32_t height_;

@@ -65,7 +65,7 @@ Spectrum DebugSurfaceIntegrator::radiance(
     float c = isect.t / 10.0f;
     c = alClamp(c, 0.0f, 1.0f);
     return Spectrum::createFromRGB({ { c, c, c } }, false);
-#elif 0 // Normalデバッグ
+#elif 1 // Normalデバッグ
     Intersect isect;
     // 何もない場合は0を返す
     const bool skipLight = true;

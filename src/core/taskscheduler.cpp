@@ -105,7 +105,7 @@ public:
 private:
     concurrent_queue<TaskFunc> tasks_;
     std::vector<std::thread> threads_;
-    std::atomic<bool> exitFlag_;
+    std::atomic<bool> exitFlag_ = false;
 };
 
 /*
@@ -188,12 +188,7 @@ void SimpleTaskScheduler::Impl::start(int32_t graySize)
                 // タスクがなければ停止して待つ
                 if (tasks_.empty())
                 {
-#if 0
-                    using namespace std::chrono_literals;
-                    std::this_thread::sleep_for(10ms);
-#else
                     std::this_thread::yield();
-#endif
                     continue;
                 }
                 // タスクの取り出しと実行

@@ -274,7 +274,7 @@ Spectrum Scene::renderPixel(int32_t x, int32_t y)
 -------------------------------------------------
 -------------------------------------------------
 */
-void Scene::developLDR(const std::string& filmName, bool isFinal, bool isPreview)
+void Scene::developLDR(const std::string& filmName, bool isFinal)
 {
     // FIXME: renderが走っていないかを確認する
 
@@ -292,15 +292,8 @@ void Scene::developLDR(const std::string& filmName, bool isFinal, bool isPreview
     }
     const Image& image = denoise ? denoiseBuffer_ : radianceImage;
     // Tonemappingを掛けつつ出力する
-    const std::string fullPath = g_fileSystem.getOutputFolderPath() + filmName;
     tonemapper_->process(image, tonemmappedImage_);
-    tonemmappedImage_.writeBmp(fullPath);
-    // 出力ファイルのプレビュー
-    if (isPreview)
-    {
-        const std::string openFileCmd = std::string("start ") + fullPath.c_str();
-        system(openFileCmd.c_str());
-    }
+    tonemmappedImage_.writePNG(filmName);
 }
 
 /*

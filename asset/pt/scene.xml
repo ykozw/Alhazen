@@ -25,11 +25,9 @@
   <!--<denoiser type="ap"/>-->
   
   <!--インテグレーター-->
-  <!--<integrator type="debug_depth">-->
-  <!--<integrator type="debug_id">-->
-  <!--<SurfaceIntegrator type="NormalSurfaceIntegrator">-->
+  <SurfaceIntegrator type="DebugSurfaceIntegrator">
   <!--<SurfaceIntegrator type="AOSurfaceIntegrator">-->
-  <SurfaceIntegrator type="PTSurfaceIntegrator">
+  <!--<SurfaceIntegrator type="PTSurfaceIntegrator">-->
   <!--<SurfaceIntegrator type="BruteForceIntegrator">-->
   <!--<SurfaceIntegrator type="PMSurfaceIntegrator">-->
   </SurfaceIntegrator>

@@ -34,20 +34,20 @@ float estimateStarDiscrepancy(const std::vector<Vec2>& srcSamples)
     std::sort(samples.begin(), samples.end(), [](const Vec2& lhs, const Vec2& rhs)
     {
         //
-        if (lhs.x < rhs.x)
+        if (lhs.x() < rhs.x())
         {
             return true;
         }
-        else if (lhs.x > rhs.x)
+        else if (lhs.x() > rhs.x())
         {
             return false;
         }
         //
-        else if (lhs.y < rhs.y)
+        else if (lhs.y() < rhs.y())
         {
             return true;
         }
-        else if (lhs.y > rhs.y)
+        else if (lhs.y() > rhs.y())
         {
             return false;
         }
@@ -66,17 +66,17 @@ float estimateStarDiscrepancy(const std::vector<Vec2>& srcSamples)
         const int32_t si1 = rng.nextSize((int32_t)samples.size());
         const Vec2 s0 = samples[si0];
         const Vec2 s1 = samples[si1];
-        const Vec2 mn = Vec2(std::min(s0.x, s1.x), std::min(s0.y, s1.y));
-        const Vec2 mx = Vec2(std::max(s0.x, s1.x), std::max(s0.y, s1.y));
+        const Vec2 mn = Vec2(std::min(s0.x(), s1.x()), std::min(s0.y(), s1.y()));
+        const Vec2 mx = Vec2(std::max(s0.x(), s1.x()), std::max(s0.y(), s1.y()));
         // 
         // TODO: そのサンプルの範囲内に含まれるサンプル数を算出
         const auto beginX = std::lower_bound(samples.begin(), samples.end(), mn, [](const Vec2& lhs, const Vec2& rhs)
         {
-            if (lhs.x < rhs.x)
+            if (lhs.x() < rhs.x())
             {
                 return true;
             }
-            else if (lhs.x > rhs.x)
+            else if (lhs.x() > rhs.x())
             {
                 return false;
             }
@@ -84,11 +84,11 @@ float estimateStarDiscrepancy(const std::vector<Vec2>& srcSamples)
         });
         const auto lastX = std::upper_bound(samples.begin(), samples.end(), mn, [](const Vec2& lhs, const Vec2& rhs)
         {
-            if (lhs.x < rhs.x)
+            if (lhs.x() < rhs.x())
             {
                 return true;
             }
-            else if (lhs.x > rhs.x)
+            else if (lhs.x() > rhs.x())
             {
                 return false;
             }
@@ -97,7 +97,7 @@ float estimateStarDiscrepancy(const std::vector<Vec2>& srcSamples)
         int32_t count = 0;
         for (auto ite = beginX; ite != lastX; ++ite)
         {
-            if ((mn.y <= ite->y) && (ite->y <= mx.y))
+            if ((mn.y() <= ite->y()) && (ite->y() <= mx.y()))
             {
                 ++count;
             }
@@ -105,7 +105,7 @@ float estimateStarDiscrepancy(const std::vector<Vec2>& srcSamples)
         // 最初と最後は必ず含まれてしまうから2を取り除く
         count -= 2;
         //
-        const float area = (mx.x - mn.x) * (mx.y - mn.y);
+        const float area = (mx.x() - mn.x()) * (mx.y() - mn.y());
         maxDiscrepancy = std::max((float(count) / float(samples.size()) - area), maxDiscrepancy);
     }
     return maxDiscrepancy;
@@ -124,7 +124,7 @@ float minimumDisptance(const std::vector<Vec2>& samples)
         Vec2 pos;
         Vec3 position() const
         {
-            return Vec3(pos.x, pos.y, 0.0f);
+            return Vec3(pos.x(), pos.y(), 0.0f);
         }
     };
     static_assert(sizeof(KDP) == sizeof(Vec2), "");
@@ -136,7 +136,7 @@ float minimumDisptance(const std::vector<Vec2>& samples)
     {
         float minDist = 0.0;
         AL_ASSERT_DEBUG(false); // TODO: 現在の方法だとサンプル点自身が返されてしまう。どうにかする。
-        kdtree.findNearest(Vec3(s.x, s.y, 0.0f), &minDist);
+        kdtree.findNearest(Vec3(s.x(), s.y(), 0.0f), &minDist);
         minMinDist = std::min(minMinDist, minDist);
     }
     return minMinDist;

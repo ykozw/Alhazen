@@ -411,8 +411,8 @@ INLINE bool QBVH::intersect(
                         ALIGN32 float b2f[4];
                         _mm_store_ps(b1f, b1);
                         _mm_store_ps(b2f, b2);
-                        hitUVOnTri.x = b1f[i];
-                        hitUVOnTri.y = b2f[i];
+                        hitUVOnTri.setX(b1f[i]);
+                        hitUVOnTri.setY(b2f[i]);
                     }
                 }
                 // 衝突していたらそれにを衝突情報に記録
@@ -422,8 +422,8 @@ INLINE bool QBVH::intersect(
                     const auto& ns = leaf.n[hitTriangleIndex];
                     const auto& ts = leaf.t[hitTriangleIndex];
                     *materialId = leaf.m[hitTriangleIndex];
-                    const float u = hitUVOnTri.x;
-                    const float v = hitUVOnTri.y;
+                    const float u = hitUVOnTri.x();
+                    const float v = hitUVOnTri.y();
                     isect->normal =
                         ns[0] * (1.0f - u - v) +
                         ns[1] * u +
@@ -442,8 +442,8 @@ INLINE bool QBVH::intersect(
                         ts[2] * v;
                     //
                     
-                    isect->uv.x = alClamp(isect->uv.x, 0.0f, 1.0f);
-                    isect->uv.y = alClamp(isect->uv.y, 0.0f, 1.0f);
+                    isect->uv.setX( alClamp(isect->uv.x(), 0.0f, 1.0f) );
+                    isect->uv.setY( alClamp(isect->uv.y(), 0.0f, 1.0f) );
                 }
 #endif
             }

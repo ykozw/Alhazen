@@ -74,8 +74,8 @@ Vec2 Sampler::getDiscAccurate()
 {
     const Vec2 xy = get2d();
     //
-    const float r = std::sqrtf(xy.x);
-    const float theta = xy.y * PI * 2.0f;
+    const float r = std::sqrtf(xy.x());
+    const float theta = xy.y() * PI * 2.0f;
     return Vec2( r * std::cosf(theta), r * sin(theta) );
 }
 
@@ -88,14 +88,13 @@ Vec2 Sampler::getDiscConcentric()
     const Vec2 xy = get2d();
     //
     // [0,1] -> [-1,1]
-    const float sx = 2.0f * xy.x - 1.0f;
-    const float sy = 2.0f * xy.y - 1.0f;
+    const float sx = 2.0f * xy.x() - 1.0f;
+    const float sy = 2.0f * xy.y() - 1.0f;
     //
     Vec2 uv;
     if (sx == 0.0 && sy == 0.0)
     {
-        uv.x = 0.0f;
-        uv.y = 0.0f;
+        uv = Vec2(0.0f,0.0f);
         return uv;
     }
     //
@@ -140,10 +139,10 @@ Vec2 Sampler::getDiscConcentric()
     }
     //
     theta *= PI * 0.25f;
-    uv.x = r * std::cosf(theta);
-    uv.y = r * std::sinf(theta);
-    AL_ASSERT_DEBUG(-1.0f <= uv.x && uv.x <= 1.0f);
-    AL_ASSERT_DEBUG(-1.0f <= uv.y && uv.y <= 1.0f);
+    uv.setX( r * std::cosf(theta) );
+    uv.setY( r * std::sinf(theta) );
+    AL_ASSERT_DEBUG(-1.0f <= uv.x() && uv.x() <= 1.0f);
+    AL_ASSERT_DEBUG(-1.0f <= uv.y() && uv.y() <= 1.0f);
     return uv;
 }
 
@@ -157,10 +156,10 @@ Vec3 Sampler::getHemisphere()
 {
     //
     const Vec2 xy = get2d();
-    const float phi = 2.0f * PI * xy.x;
+    const float phi = 2.0f * PI * xy.x();
     const float sinPhi = std::sinf(phi);
     const float cosPhi = std::cosf(phi);
-    const float cosTheta = 1.0f - xy.y;
+    const float cosTheta = 1.0f - xy.y();
     const float sinTheta = std::sqrtf(1 - cosTheta * cosTheta);
     const Vec3 r = { sinTheta * cosPhi, sinTheta * sinPhi, cosTheta };
     //
@@ -179,13 +178,13 @@ Vec3 Sampler::getHemisphereCosineWeighted(_Out_ float* pdf)
     //
     const Vec2 uv = getDiscConcentric();
     //
-    AL_ASSERT_DEBUG(-1.0f <= uv.x && uv.x <= +1.0f);
-    AL_ASSERT_DEBUG(-1.0f <= uv.y && uv.y <= +1.0f);
+    AL_ASSERT_DEBUG(-1.0f <= uv.x() && uv.x() <= +1.0f);
+    AL_ASSERT_DEBUG(-1.0f <= uv.y() && uv.y() <= +1.0f);
     AL_ASSERT_DEBUG(uv.lengthSq() <= 1.0001f);
     //
     const float lenSq = Vec2::dot(uv, uv);
     const float z = std::sqrtf(std::max(1.0f - lenSq, 0.0f));
-    const Vec3 r = { uv.x, uv.y, z };
+    const Vec3 r = { uv.x(), uv.y(), z };
     const float cosTheta = z;
     *pdf = cosTheta;
     //
@@ -201,8 +200,8 @@ Sphere(xyz_)
 Vec3 Sampler::getSphere()
 {
     const Vec2 xy = get2d();
-    const float z = 2.0f * xy.x - 1.0f;
-    const float theta = (2.0f * xy.y - 1.0f) * PI;
+    const float z = 2.0f * xy.x() - 1.0f;
+    const float theta = (2.0f * xy.y() - 1.0f) * PI;
     const float iz = sqrtf(1.0f - z * z);
     const float x = sinf(theta) * iz;
     const float y = cosf(theta) * iz;
@@ -218,9 +217,9 @@ Coneの球冠をサンプル。-1を指定すると球面上と同等になる�
 Vec3 Sampler::getCone(float cosThetaMax)
 {
     const Vec2 xy = get2d();
-    const float cosTheta = alLerp2(cosThetaMax, 1.0f, xy.x);
+    const float cosTheta = alLerp2(cosThetaMax, 1.0f, xy.x());
     const float sinTheta = std::sqrtf(1.0f - cosTheta * cosTheta);
-    const float phi = 2.0f * PI * xy.y;
+    const float phi = 2.0f * PI * xy.y();
     const float cosPhi = std::cosf(phi);
     const float sinPhi = std::sinf(phi);
     return Vec3{ cosPhi * sinTheta, sinPhi * sinTheta, cosTheta };
@@ -307,10 +306,10 @@ AL_TEST(Sampler, Halton)
         // 4次元の球の体積を求める
         const auto isInside = [](Vec2 v0, Vec2 v1) -> float
         {
-            const float d0 = std::fabsf(v0.x - 0.5f);
-            const float d1 = std::fabsf(v0.y - 0.5f);
-            const float d2 = std::fabsf(v1.x - 0.5f);
-            const float d3 = std::fabsf(v1.y - 0.5f);
+            const float d0 = std::fabsf(v0.x() - 0.5f);
+            const float d1 = std::fabsf(v0.y() - 0.5f);
+            const float d2 = std::fabsf(v1.x() - 0.5f);
+            const float d3 = std::fabsf(v1.y() - 0.5f);
             const float lenSq = std::sqrtf(d0 * d0 + d1 * d1 + d2 * d2/* + d3 * d3*/ );
             const bool isInside = lenSq < 0.5f;
             return isInside ? 8.0f : 0.0f;

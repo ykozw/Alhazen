@@ -897,8 +897,8 @@ Spectrum Glass::bsdfSample(
         else
         {
             const float s = sqrtf((1.0f - cost*cost) / lensq);
-            x = xy.x * s;
-            y = xy.y * s;
+            x = xy.x() * s;
+            y = xy.y() * s;
         }
         Vec3 refractDir(x,y,z);
         AL_ASSERT_DEBUG(refractDir.isNormalized());

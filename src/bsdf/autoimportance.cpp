@@ -170,14 +170,14 @@ void AutoImportance::sample(
     int32_t offsetV;
     dist2d.sample(rng.nextFloat(), rng.nextFloat(), pdf, &samplePointOrig, &offsetU, &offsetV);
     Vec2 samplePoint;
-    samplePoint.x = samplePointOrig.x - 0.5f;
-    samplePoint.y = samplePointOrig.y - 0.5f;
-    samplePoint.x *= 2.0f;
-    samplePoint.y *= 2.0f;
+    samplePoint.setX( samplePointOrig.x() - 0.5f );
+    samplePoint.setY( samplePointOrig.y() - 0.5f );
+    samplePoint.setX( samplePoint.x() * 2.0f);
+    samplePoint.setY( samplePoint.y() * 2.0f);
 #if 1
     // セル内で摂動
-    samplePoint.x += (rng.nextFloat() - 0.5f) *dist2d.invRow();
-    samplePoint.y += (rng.nextFloat() - 0.5f) *dist2d.invColumn();
+    samplePoint.setX(samplePoint.x() + (rng.nextFloat() - 0.5f) *dist2d.invRow());
+    samplePoint.setY(samplePoint.y() + (rng.nextFloat() - 0.5f) *dist2d.invColumn());
 #endif
     // HACK: どうしても円から外れる場合があり得るため正規化
     //samplePoint.normalize();
@@ -185,8 +185,8 @@ void AutoImportance::sample(
     const float phi = atan2f(localWo.y(), localWo.x());
     const float cosft = cosf(phi);
     const float sinft = sinf(phi);
-    const float x = samplePoint.x * cosft - samplePoint.y * sinft;
-    const float y = samplePoint.x * sinft + samplePoint.y * cosft;
+    const float x = samplePoint.x() * cosft - samplePoint.x() * sinft;
+    const float y = samplePoint.y() * sinft + samplePoint.y() * cosft;
     // 1を超えることはあり得るため少し甘めに見える
     const float lenSq = x*x + y*y;
     //AL_ASSERT_DEBUG(lenSq  <= 1.02f);

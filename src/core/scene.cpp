@@ -167,8 +167,8 @@ void Scene::renderDebug(int32_t x, int32_t y)
         const Vec2 subPixelOffset = sampler->get2d();
         // TODO: フィルターインターフェイスからweightを取ってくる
         const float weight = 1.0f;
-        const float spx = x + subPixelOffset.x;
-        const float spy = y + subPixelOffset.y;
+        const float spx = x + subPixelOffset.x();
+        const float spy = y + subPixelOffset.y();
         const float spWeight = weight;
         //
         float pdf = 0.0f;
@@ -220,8 +220,8 @@ SubFilm& Scene::render(int32_t taskNo)
                 const Vec2 subPixelOffset = sampler->get2d();
                 // TODO: フィルターインターフェイスからweightを取ってくる
                 const float weight = 1.0f;
-                const float spx = x + subPixelOffset.x;
-                const float spy = y + subPixelOffset.y;
+                const float spx = x + subPixelOffset.x();
+                const float spy = y + subPixelOffset.y();
                 const float spWeight = weight;
                 //
                 float pdf = 0.0f;

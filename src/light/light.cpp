@@ -344,7 +344,7 @@ Spectrum RectangleLight::sampleLe(
 {
     // 位置を一様にサンプルする
     const Vec2 uv = sampler->get2d();
-    *samplePos = xaxis2_ * uv.x + yaxis2_ * uv.y + origin_;
+    *samplePos = xaxis2_ * uv.x() + yaxis2_ * uv.y() + origin_;
     // 測度を変換
     const Vec3 toLight = *samplePos - targetPos;
     const float distSqr = Vec3::dot(toLight, toLight);
@@ -823,8 +823,9 @@ dir2tex()
 static void dir2tex(const Vec3& dir, _Out_ Vec2* uv)
 {
     const float invPI = 1.0f / PI;
-    uv->x = (atan2f(dir.x(), -dir.y()) * invPI + 1.0f) * 0.5f;
-    uv->y = acosf(dir.z()) * invPI;
+    const float x = (atan2f(dir.x(), -dir.y()) * invPI + 1.0f) * 0.5f;
+    const float y = acosf(dir.z()) * invPI;
+    *uv = Vec2(x,y);
 }
 
 /*
@@ -834,8 +835,8 @@ tex2dir()
 */
 static void tex2dir(const Vec2& uv, _Out_ Vec3* dir)
 {
-    const float u = 2.0f * uv.x;
-    const float v = uv.y;
+    const float u = 2.0f * uv.x();
+    const float v = uv.y();
     const float theta2 = PI * (u - 1.0f);
     const float phi2 = PI * v;
     dir->setX( sinf(phi2) * sinf(theta2) );
@@ -916,7 +917,7 @@ Spectrum EnviromentLight::emittion(Vec3 pos, Vec3 dir) const
 {
     Vec2 uv;
     dir2tex(dir, &uv);
-    return image_.sample(uv.x, uv.y);
+    return image_.sample(uv.x(), uv.y());
 }
 
 /*
@@ -937,10 +938,10 @@ Spectrum EnviromentLight::sampleLe(
     distribution_.sample(u1, u2, pdf, &uv);
     tex2dir(uv, &worldDir);
     // HACK: この係数がどのように算出されたかを説明を入れる
-    const float theta = uv.y * PI;
+    const float theta = uv.y() * PI;
     *pdf *= 2.0f / (PI*sinf(theta));
     //
-    return image_.sample(uv.x, uv.y);;
+    return image_.sample(uv.x(), uv.y());
 }
 
 /*

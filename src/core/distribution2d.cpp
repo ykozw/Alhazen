@@ -113,8 +113,8 @@ void Distribution2D::sample(
     int32_t xOffset;
     float pdfY;
     float pdfX;
-    samplePoint->y = columns_.sample(v, &pdfY, &yOffset);
-    samplePoint->x = raws_[yOffset].sample(u, &pdfX, &xOffset);
+    samplePoint->setY( columns_.sample(v, &pdfY, &yOffset) );
+    samplePoint->setX( raws_[yOffset].sample(u, &pdfX, &xOffset) );
     // PDFの算出
     *pdf = pdfY * pdfX;
     //
@@ -195,9 +195,9 @@ AL_TEST(Distribution, TwoDimention)
             float pdf;
             Vec2 sp;
             d2.sample(rng.nextFloat(), rng.nextFloat(), &pdf, &sp);
-            const float v0 = alLerp(samples[0][0], samples[0][1], sp.x);
-            const float v1 = alLerp(samples[1][0], samples[1][1], sp.x);
-            const float v = alLerp(v0, v1, sp.y);
+            const float v0 = alLerp(samples[0][0], samples[0][1], sp.x());
+            const float v1 = alLerp(samples[1][0], samples[1][1], sp.x());
+            const float v = alLerp(v0, v1, sp.y());
             total += v / pdf;
         }
         total /= (float)NUM_SAMPLE;

@@ -88,8 +88,9 @@ bool PlaneShape::intersect(const Ray& ray, _Inout_ Intersect* isect) const
     const float uvSpaceWidth = 1.0;
     const Vec3 localPos = local_.world2local(isect->position);
     Vec2& uv = isect->uv;
-    uv.x = fmodf(fabsf(localPos.x()), uvSpaceWidth);
-    uv.y = fmodf(fabsf(localPos.y()), uvSpaceWidth);
+    const float x = fmodf(fabsf(localPos.x()), uvSpaceWidth);
+    const float y = fmodf(fabsf(localPos.y()), uvSpaceWidth);
+    uv = Vec2(x,y);
     isect->bsdf = bsdf_;
     return true;
 }

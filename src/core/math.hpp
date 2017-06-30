@@ -192,101 +192,11 @@ public:
 };
 
 /*
--------------------------------------------------
-Vec2
-SIMD化してもあまり実行速度が向上しないのと、
-ランタイムであまり利用されていないのでSIMDは使わない
--------------------------------------------------
-*/
-struct Vec2
-{
-public:
-    float x;
-    float y;
-public:
-    Vec2() = default;
-    Vec2(const Vec2& other) = default;
-    Vec2(Vec2&& other) = default;
-    Vec2(_In_reads_(2) float* es);
-    Vec2(float ax, float ay);
-    explicit Vec2(float e);
-    void normalize();
-    bool isNormalized() const;
-    float length() const;
-    float lengthSq() const;
-    float& operator[](int32_t index);
-    float operator[](int32_t index) const;
-    bool hasNan() const;
-    INLINE Vec2& operator = (const Vec2& other) = default;
-    static float dot(const Vec2& lhs, const Vec2& rhs);
-};
-
-INLINE static Vec2 operator + (const Vec2& lhs, const Vec2& rhs);
-INLINE static Vec2 operator - (const Vec2& lhs, const Vec2& rhs);
-INLINE static Vec2 operator - (const Vec2& v);
-INLINE static Vec2& operator += (Vec2& lhs, const Vec2& rhs);
-INLINE static Vec2& operator -= (Vec2& lhs, const Vec2& rhs);
-INLINE static bool operator == (const Vec2& lhs, const Vec2& rhs);
-INLINE static Vec2 operator * (float f, const Vec2& v);
-INLINE static Vec2 operator * (const Vec2& v, float f);
-INLINE static Vec2& operator *= (Vec2& v, float factor);
-INLINE static Vec2 operator / (const Vec2& v, float f);
-
-/*
--------------------------------------------------
-FloatInVec
-0レーンにデータが入っていることのみを保証したデータ
--------------------------------------------------
-*/
-struct FloatInVec
-{
-public:
-#if defined(AL_MATH_USE_NO_SIMD)
-    float v;
-#else
-    __m128 v;
-#endif
-public:
-    // TODO: no simd版を作成する
-	INLINE FloatInVec() = default;
-	INLINE FloatInVec(const FloatInVec& other) = default;
-	INLINE FloatInVec(FloatInVec&& other) = default;
-	INLINE FloatInVec(__m128 v);
-	INLINE FloatInVec(float v);
-	INLINE operator __m128 () const;
-	INLINE operator float() const;
-    INLINE FloatInVec operator - ()const;
-	INLINE float value() const;
-    INLINE bool isNan() const;
-};
-INLINE bool operator < (FloatInVec lhs, FloatInVec rhs);
-
-/*
--------------------------------------------------
-Float8
--------------------------------------------------
-*/
-struct Float8
-{
-public:
-    union
-    {
-        __m256 v;
-        float e[8];
-    };
-    INLINE Float8() = default;
-    INLINE Float8(const Float8& other) = default;
-    INLINE Float8(Float8&& other) = default;
-    INLINE Float8(__m256 other);
-    operator __m256()const;
-};
-
-/*
--------------------------------------------------
-Bool8
-0xFFFFFFFFか0x00000000が各レーンに入っている
--------------------------------------------------
-*/
+ -------------------------------------------------
+ Bool8
+ 0xFFFFFFFFか0x00000000が各レーンに入っている
+ -------------------------------------------------
+ */
 struct Bool8
 {
 public:
@@ -303,11 +213,11 @@ public:
 };
 
 /*
--------------------------------------------------
-BoolInVec
-0レーンにデータが入っていることのみを保証したデータ
--------------------------------------------------
-*/
+ -------------------------------------------------
+ BoolInVec
+ 0レーンにデータが入っていることのみを保証したデータ
+ -------------------------------------------------
+ */
 struct BoolInVec
 {
 public:
@@ -326,6 +236,120 @@ public:
     INLINE operator bool() const;
     INLINE bool value() const;
 };
+
+/*
+ -------------------------------------------------
+ FloatInVec
+ 0レーンにデータが入っていることのみを保証したデータ
+ -------------------------------------------------
+ */
+struct FloatInVec
+{
+public:
+#if defined(AL_MATH_USE_NO_SIMD)
+    float v;
+#else
+    __m128 v;
+#endif
+public:
+    // TODO: no simd版を作成する
+    INLINE FloatInVec() = default;
+    INLINE FloatInVec(const FloatInVec& other) = default;
+    INLINE FloatInVec(FloatInVec&& other) = default;
+    INLINE FloatInVec(__m128 v);
+    INLINE FloatInVec(float v);
+    INLINE operator __m128 () const;
+    INLINE operator float() const;
+    INLINE FloatInVec operator - ()const;
+    INLINE float value() const;
+    INLINE bool isNan() const;
+};
+INLINE bool operator < (FloatInVec lhs, FloatInVec rhs);
+
+/*
+ -------------------------------------------------
+ Float8
+ -------------------------------------------------
+ */
+struct Float8
+{
+public:
+    union
+    {
+        __m256 v;
+        float e[8];
+    };
+    INLINE Float8() = default;
+    INLINE Float8(const Float8& other) = default;
+    INLINE Float8(Float8&& other) = default;
+    INLINE Float8(__m256 other);
+    operator __m256()const;
+};
+
+/*
+-------------------------------------------------
+Vec2
+SIMD化してもあまり実行速度が向上しないのと、
+ランタイムであまり利用されていないのでSIMDは使わない
+-------------------------------------------------
+*/
+struct Vec2
+{
+public:
+#if defined(AL_MATH_USE_NO_SIMD)
+    float x_;
+    float y_;
+#else
+    __m128 xy_;
+#endif
+public:
+    Vec2() = default;
+    Vec2(const Vec2& other) = default;
+    Vec2(Vec2&& other) = default;
+    Vec2(_In_reads_(2) float* es);
+    Vec2(float ax, float ay);
+    Vec2(__m128 other);
+    explicit Vec2(float e);
+    //
+    INLINE float x() const;
+    INLINE float y() const;
+    //
+    INLINE void setX(float x);
+    INLINE void setY(float y);
+    //
+    void zero();
+    BoolInVec isZero() const;
+    BoolInVec hasNan() const;
+    BoolInVec any() const;
+    BoolInVec all() const;
+    Vec2& normalize();
+    Vec2 normalized() const;
+    bool isNormalized() const;
+    bool isNormalized(float eps) const;
+    FloatInVec length() const;
+    FloatInVec lengthSq() const;
+    float operator[](int32_t index) const;
+    INLINE Vec2& operator = (const Vec2& other) = default;
+    // static
+    static FloatInVec length(Vec2 v);
+    static FloatInVec lengthSq(Vec2 v);
+    static FloatInVec dot(Vec2 lhs, Vec2 rhs);
+    static Vec2 min(Vec2 lhs, Vec2 rhs);
+    static Vec2 max(Vec2 lhs, Vec2 rhs);
+    
+};
+
+INLINE static Vec2 operator + (const Vec2& lhs, const Vec2& rhs);
+INLINE static Vec2 operator - (const Vec2& lhs, const Vec2& rhs);
+INLINE static Vec2 operator - (const Vec2& v);
+INLINE static Vec2& operator += (Vec2& lhs, const Vec2& rhs);
+INLINE static Vec2& operator -= (Vec2& lhs, const Vec2& rhs);
+INLINE static BoolInVec operator == (Vec2 lhs, Vec2 rhs);
+INLINE static BoolInVec operator != (Vec2 lhs, Vec2 rhs);
+INLINE static Vec2 operator * (float f, const Vec2& v);
+INLINE static Vec2 operator * (const Vec2& v, float f);
+INLINE static Vec2& operator *= (Vec2& v, float factor);
+INLINE static Vec2 operator / (const Vec2& v, float f);
 
 
 /*

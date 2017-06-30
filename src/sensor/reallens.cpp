@@ -572,11 +572,11 @@ void RealSensor::calcExitPupile()
             // そのまま使える
             exitPupilsCoarse[cx + (cy * cw)] = exitPupil;
             // X反転
-            exitPupilsCoarse[(cw1 - cx) + (cy * cw)] = AABB2D(-mx.x, mn.y, -mn.x, mx.y);
+            exitPupilsCoarse[(cw1 - cx) + (cy * cw)] = AABB2D(-mx.x(), mn.y(), -mn.x(), mx.y());
             // Y反転
-            exitPupilsCoarse[cx + ((ch1 - cy) * cw)] = AABB2D(mn.x, -mx.y, mx.x, -mn.y);
+            exitPupilsCoarse[cx + ((ch1 - cy) * cw)] = AABB2D(mn.x(), -mx.y(), mx.x(), -mn.y());
             // XY反転
-            exitPupilsCoarse[(cw1 - cx) + ((ch1 - cy) * cw)] = AABB2D(-mx.x, -mx.y, -mn.x, -mn.y);
+            exitPupilsCoarse[(cw1 - cx) + ((ch1 - cy) * cw)] = AABB2D(-mx.x(), -mx.y(), -mn.x(), -mn.y());
         }
     }
 
@@ -1207,8 +1207,8 @@ Ray RealSensor::generateRay(float imageX, float imageY, float& pdf ) const
     const LensSurface& lastLensSurf = surfs_.back();
     const float sampleOnLensZ = lastLensSurf.distance;
 #if 1
-    sampleOnLens.x *= lastLensSurf.apeX;
-    sampleOnLens.y *= lastLensSurf.apeY;
+    sampleOnLens.setX(sampleOnLens.x() * lastLensSurf.apeX);
+    sampleOnLens.setY(sampleOnLens.y() * lastLensSurf.apeY);
 #else
     const int32_t epIndex = (int32_t)imageX + (int32_t)imageY * imageWidth;
     const auto& ep = exitPupils_[epIndex];
@@ -1219,7 +1219,7 @@ Ray RealSensor::generateRay(float imageX, float imageY, float& pdf ) const
 #endif
 
     // HACK: 光学系だけでも波長を見る予定だったがうまくいかないのでD線固定
-    Vec3 rayDir(sampleOnLens.x - xOnFilmInMM, sampleOnLens.y - yOnFilmInMM, sampleOnLensZ);
+    Vec3 rayDir(sampleOnLens.x() - xOnFilmInMM, sampleOnLens.y() - yOnFilmInMM, sampleOnLensZ);
     rayDir.normalize();
     Ray outRay;
     if (!lensTrace(xOnFilmInMM, yOnFilmInMM, rayDir, WAVE_LENGTH_D, imageSensorOffset_, NULL, &outRay))

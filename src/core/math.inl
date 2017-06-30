@@ -1,10 +1,15 @@
-﻿#include "math.hpp"
+#include "math.hpp"
 
 /*
 -------------------------------------------------
-_mm_rsqrt_ps_accurate()は単体では精度が非常に低いので
+_mm_rsqrt_ps()は単体では精度が非常に低いので
 ニュートンラフソンを挟み精度を上げる
 http://www.bulletphysics.org/Bullet/phpBB3/viewtopic.php?f=9&t=1551
+f(y) = y^{-2} - x = 0
+となるxを求めるので
+f'(y) = -2*y^{-3}
+より次の漸化式を解くことになる
+y_{n+1} = y_{n} * ( 1.5 - 0.5 * x * y_{n}^{3} )
 -------------------------------------------------
 */
 static INLINE __m128 _mm_rsqrt_ps_accurate(const __m128 v)
@@ -14,6 +19,26 @@ static INLINE __m128 _mm_rsqrt_ps_accurate(const __m128 v)
     const __m128 approx = _mm_rsqrt_ps(v);
     const __m128 muls = _mm_mul_ps(_mm_mul_ps(v, approx), approx);
     return _mm_mul_ps(_mm_mul_ps(half, approx), _mm_sub_ps(three, muls));
+}
+
+/*
+ -------------------------------------------------
+ _mm_rcp_ps()は精度が低いので、これもニュートンラフソン法を使って精度を上げる
+ f(y) = y^{-1} - x = 0
+ となるxを求めるので
+ f'(y) = -y^{-2}
+ より次の漸化式を解くことになる
+ y_{n+1} = y_{n}*(2 - x * y_{n})
+ -------------------------------------------------
+ */
+static INLINE __m128 _mm_rcp_ps_accurate(const __m128 v)
+{
+    static const __m128 two = _mm_set1_ps(2.0f);
+    const __m128 approx = _mm_rcp_ps(v);
+    const __m128 tmp0 = _mm_mul_ps(approx, v);
+    const __m128 tmp1 = _mm_sub_ps(two, tmp0);
+    const __m128 tmp2 = _mm_mul_ps(approx, tmp1);
+    return tmp2;
 }
 
 /*
@@ -160,15 +185,194 @@ INLINE int32_t Region2D::area() const
     return width() * height();
 }
 
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE FloatInVec::FloatInVec(__m128 av)
+:v(av)
+{}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE FloatInVec::FloatInVec(float av)
+:v(_mm_set_ss(av))
+{}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE FloatInVec::operator __m128 () const
+{
+    return v;
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE FloatInVec::operator float() const
+{
+    return value();
+}
+
+/*
+ -------------------------------------------------
+ 反転した値を返す
+ -------------------------------------------------
+ */
+INLINE FloatInVec FloatInVec::operator -() const
+{
+    const __m128 neg = _mm_set_ss(-1.0f);
+    const __m128 negv = _mm_mul_ps(neg,v);
+    return negv;
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE float FloatInVec::value() const
+{
+    /*
+     _mm_extract_ps()を使ってはいけない
+     cf. https://stackoverflow.com/a/17258448
+     */
+    return _mm_cvtss_f32(_mm_shuffle_ps(v, v, _MM_SHUFFLE(0, 0, 0, 0)));
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE bool FloatInVec::isNan() const
+{
+    return std::isnan(value());
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE bool operator < (FloatInVec lhs, FloatInVec rhs)
+{
+    return float(lhs) < float(rhs);
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE Float8::Float8(__m256 other)
+:v(other)
+{}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE Float8::operator __m256()const
+{
+    return v;
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE Bool8::Bool8(__m256 other)
+:v(other)
+{}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE bool Bool8::at(int32_t index) const
+{
+#if defined(WINDOWS)
+    return v.m256_f32[index] != 0;
+#else
+    return v[index];
+#endif
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE BoolInVec::BoolInVec(__m128i av)
+:v(av)
+{}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE BoolInVec::BoolInVec(bool av)
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    v = av;
+#else
+    v = (_mm_set1_epi32(av ? 0xFFFFFFFF : 0x00000000));
+#endif
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE BoolInVec::operator __m128i () const
+{
+    return v;
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE BoolInVec::operator bool() const
+{
+#if defined(WINDOWS)
+    return (v.m128i_i32[0] != 0x00000000);
+#else
+    return value();
+#endif
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE bool BoolInVec::value() const
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    return v;
+#else
+    const __m128i zero = _mm_set1_epi32(0);
+    const int32_t zeromask =
+    _mm_movemask_epi8(_mm_cmpeq_epi32(v, zero)) & 0x000000FFFF;
+    const int32_t ret = zeromask & 0x01;
+    return !ret;
+#endif
+}
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
 INLINE Vec2::Vec2(_In_reads_(2) float* es)
-    :x(es[0]), y(es[1])
 {
-
+#if defined(AL_MATH_USE_NO_SIMD)
+    x_ = es[0];
+    y_ = es[1];
+#else
+    // TODO: 配列をそのまま受けられるのに変更しておく
+    xy_ = (_mm_set_ps(0.0f, 0.0f, es[1], es[0]));
+#endif
 }
 
 /*
@@ -176,63 +380,254 @@ INLINE Vec2::Vec2(_In_reads_(2) float* es)
 -------------------------------------------------
 */
 INLINE Vec2::Vec2(float ax, float ay)
-    :x(ax), y(ay)
-{}
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    x_ = ax;
+    y_ = ay;
+#else
+    xy_ = (_mm_set_ps(0.0f, 0.0f, ay, ax));
+#endif
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE Vec2::Vec2(__m128 other)
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    x_ = _mm_cvtss_f32(_mm_shuffle_ps(other, other, _MM_SHUFFLE(0, 0, 0, 0)));
+    y_ = _mm_cvtss_f32(_mm_shuffle_ps(other, other, _MM_SHUFFLE(0, 0, 0, 1)));
+#else
+    xy_ = other;
+#endif
+}
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
 INLINE Vec2::Vec2(float e)
-    : x(e), y(e)
-{}
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    x_ = e;
+    y_ = e;
+#else
+    xy_ = (_mm_set_ps(0.0f, 0.0f, e, e));
+#endif
+}
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE void Vec2::normalize()
+INLINE float Vec2::x() const
 {
+    return _mm_cvtss_f32(_mm_shuffle_ps(xy_, xy_, _MM_SHUFFLE(0, 0, 0, 0)));
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE float Vec2::y() const
+{
+    return _mm_cvtss_f32(_mm_shuffle_ps(xy_, xy_, _MM_SHUFFLE(0, 0, 0, 1)));
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE void Vec2::setX(float x)
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    x_ = x;
+#else
+    // vvyy
+    const __m128 tmp0 = _mm_shuffle_ps(_mm_set_ps1(x), xy_, _MM_SHUFFLE(1, 1, 0, 0));
+    // vyz
+    const __m128 tmp1 = _mm_shuffle_ps(tmp0, xy_, _MM_SHUFFLE(2, 2, 2, 0));
+    xy_ = tmp1;
+#endif
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE void Vec2::setY(float y)
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    y_ = y;
+#else
+    // xxvv
+    const __m128 tmp0 = _mm_shuffle_ps(xy_, _mm_set_ps1(y), _MM_SHUFFLE(1, 1, 0, 0));
+    // vyz
+    const __m128 tmp1 = _mm_shuffle_ps(tmp0, xy_, _MM_SHUFFLE(2, 2, 2, 0));
+    xy_ = tmp1;
+#endif
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE void Vec2::zero()
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    x_ = 0.0f;
+    y_ = 0.0f;
+#else
+    xy_ = _mm_set1_ps(0.0f);
+#endif
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE BoolInVec Vec2::isZero() const
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    const float d = 0.0001f;
+    return
+    fabsf(x_) < d &&
+    fabsf(y_) < d;
+#elif defined(AL_MATH_USE_AVX2)
+    const __m128 zero = _mm_setzero_ps();
+    const __m128 mask = _mm_cmpeq_ps(zero, xy_);
+    return ((_mm_movemask_ps(mask) & 0x03) == 0x03);
+#endif
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE BoolInVec Vec2::hasNan() const
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    return
+    std::isnan(x()) ||
+    std::isnan(y());
+#else
+    const __m128 mask = _mm_cmpeq_ps(xy_, xy_);
+    return (_mm_movemask_ps(mask) & 0x03) != 0x03;
+#endif
+}
+
+/*
+ -------------------------------------------------
+ いずれかの要素が非0かを返す
+ -------------------------------------------------
+ */
+INLINE BoolInVec Vec2::any() const
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    return (x_ != 0.0f) || (y_ != 0.0f);
+#else
+    const __m128 zero = _mm_setzero_ps();
+    const __m128 mask = _mm_cmpeq_ps(zero, xy_);
+    return (_mm_movemask_ps(mask) & 0x03) != 0x03;
+#endif
+}
+
+/*
+ -------------------------------------------------
+ 全ての要素が非0かを返す
+ -------------------------------------------------
+ */
+INLINE BoolInVec Vec2::all() const
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    return (x_ != 0.0f) && (y_ != 0.0f) && (z_ != 0.0f);
+#else
+    const __m128 zero = _mm_setzero_ps();
+    const __m128 mask = _mm_cmpeq_ps(zero, xy_);
+    return (_mm_movemask_ps(mask) & 0x03) == 0x00;
+#endif
+    
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE Vec2& Vec2::normalize()
+{
+#if defined(AL_MATH_USE_NO_SIMD)
     const float invLen = 1.0f / length();
     x /= invLen;
     y /= invLen;
+#else
+    const __m128 dp = _mm_dp_ps(xy_, xy_, 0x33);
+    const __m128 idp = _mm_rsqrt_ps_accurate(dp);
+    xy_ = _mm_mul_ps(xy_, idp);
+    return *this;
+#endif
 }
 
 /*
--------------------------------------------------
--------------------------------------------------
-*/
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE Vec2 Vec2::normalized() const
+{
+    Vec2 tmp = *this;
+    tmp.normalize();
+    return tmp;
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
 INLINE bool Vec2::isNormalized() const
 {
-    return fabsf(lengthSq() - 1.0f) < 1.0e-5; // HACK: この数値は適当
+    // この数値は適当
+    const float eps = 1.0e-3f;
+    return isNormalized(eps);
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE bool Vec2::isNormalized(float eps) const
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    return fabsf(lengthSq() - 1.0f) < eps;
+#elif defined(AL_MATH_USE_AVX2)
+    // TODO: SIMDにしてboolinvecを返すようにする
+    return (std::fabsf(lengthSq() - 1.0f) < eps);
+#endif
 }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE float Vec2::length() const
+INLINE FloatInVec Vec2::length() const
 {
+#if defined(AL_MATH_USE_NO_SIMD)
     return sqrtf(lengthSq());
+#else
+    return _mm_sqrt_ps(lengthSq(*this));
+#endif
 }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE float Vec2::lengthSq() const
+INLINE FloatInVec Vec2::lengthSq() const
 {
-    return x*x + y*y;
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE float& Vec2::operator[](int32_t index)
-{
-    AL_ASSERT_DEBUG(0 <= index && index <= 1);
-    return *(&x + index);
+#if defined(AL_MATH_USE_NO_SIMD)
+    return x_ * x_ + y_ * y_;
+#else
+    return Vec2::dot(xy_, xy_);
+#endif
 }
 
 /*
@@ -242,30 +637,84 @@ INLINE float& Vec2::operator[](int32_t index)
 INLINE float Vec2::operator[](int32_t index) const
 {
     AL_ASSERT_DEBUG(0 <= index && index <= 1);
-    return *(&x + index);
+    switch (index)
+    {
+        case 0: return x();
+        case 1: return y();
+        default: return 0.0f;
+    }
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE FloatInVec Vec2::length(Vec2 v)
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    AL_ASSERT_ALWAYS(false);
+#elif defined(AL_MATH_USE_AVX2)
+    return _mm_sqrt_ps(lengthSq(v));
+#endif
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE FloatInVec Vec2::lengthSq(Vec2 v)
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    AL_ASSERT_ALWAYS(false);
+#else
+    return Vec2::dot(v, v);
+#endif
 }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE bool Vec2::hasNan() const
+INLINE FloatInVec Vec2::dot(Vec2 lhs, Vec2 rhs)
 {
+#if defined(AL_MATH_USE_NO_SIMD)
     return
-        isnan(x) ||
-        isnan(y);
-
+    lhs.x_ * rhs.x_ +
+    lhs.y_ * rhs.y_;
+#elif defined(AL_MATH_USE_AVX2)
+    return _mm_dp_ps(lhs.xy_, rhs.xy_, 0x3F);
+#endif
 }
 
 /*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE float Vec2::dot(const Vec2& lhs, const Vec2& rhs)
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE Vec2 Vec2::min(Vec2 lhs, Vec2 rhs)
 {
-    return
-        lhs.x * rhs.x +
-        lhs.y * rhs.y;
+#if defined(AL_MATH_USE_NO_SIMD)
+    const float x = std::min(lhs.x(), rhs.x());
+    const float y = std::min(lhs.y(), rhs.y());
+    const float z = std::min(lhs.z(), rhs.z());
+    return Vec3(x, y, z);
+#else
+    return _mm_min_ps(lhs.xy_, rhs.xy_);
+#endif
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE Vec2 Vec2::max(Vec2 lhs, Vec2 rhs)
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    const float x = std::min(lhs.x(), rhs.x());
+    const float y = std::min(lhs.y(), rhs.y());
+    return Vec2(x, y);
+#else
+    return _mm_max_ps(lhs.xy_, rhs.xy_);
+#endif
 }
 
 /*
@@ -274,10 +723,14 @@ INLINE float Vec2::dot(const Vec2& lhs, const Vec2& rhs)
 */
 INLINE static Vec2 operator + (const Vec2& lhs, const Vec2& rhs)
 {
+#if defined(AL_MATH_USE_NO_SIMD)
     return
         Vec2(
             lhs.x + rhs.x,
             lhs.y + rhs.y);
+#else
+    return _mm_add_ps(lhs.xy_, rhs.xy_);
+#endif
 }
 
 /*
@@ -286,10 +739,14 @@ INLINE static Vec2 operator + (const Vec2& lhs, const Vec2& rhs)
 */
 INLINE static Vec2 operator - (const Vec2& lhs, const Vec2& rhs)
 {
+#if defined(AL_MATH_USE_NO_SIMD)
     return
         Vec2(
             lhs.x - rhs.x,
             lhs.y - rhs.y);
+#else
+    AL_ASSERT_ALWAYS(false);
+#endif
 }
 
 /*
@@ -298,7 +755,11 @@ INLINE static Vec2 operator - (const Vec2& lhs, const Vec2& rhs)
 */
 INLINE static Vec2 operator - (const Vec2& v)
 {
+#if defined(AL_MATH_USE_NO_SIMD)
     return  Vec2(-v.x, -v.y);
+#else
+    return _mm_sub_ps(_mm_setzero_ps(), v.xy_);
+#endif
 }
 
 /*
@@ -307,8 +768,7 @@ INLINE static Vec2 operator - (const Vec2& v)
 */
 INLINE static Vec2& operator += (Vec2& lhs, const Vec2& rhs)
 {
-    assert(false);
-    //lhs = lhs + rhs;
+    lhs = lhs + rhs;
     return lhs;
 }
 
@@ -318,8 +778,7 @@ INLINE static Vec2& operator += (Vec2& lhs, const Vec2& rhs)
 */
 INLINE static Vec2& operator -= (Vec2& lhs, const Vec2& rhs)
 {
-    assert(false);
-    //lhs = lhs - rhs;
+    lhs = lhs - rhs;
     return lhs;
 }
 
@@ -327,11 +786,26 @@ INLINE static Vec2& operator -= (Vec2& lhs, const Vec2& rhs)
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE static bool operator == (const Vec2& lhs, const Vec2& rhs)
+INLINE static BoolInVec operator == (Vec2 lhs, Vec2 rhs)
 {
+    return !(lhs != rhs);
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE static BoolInVec operator != (Vec2 lhs, Vec2 rhs)
+{
+#if defined(AL_MATH_USE_NO_SIMD)
     return
-        (lhs.x == rhs.x) &&
-        (lhs.y == rhs.y);
+    (lhs.x == rhs.x) &&
+    (lhs.y == rhs.y);
+#else
+    const __m128 mask = _mm_cmpeq_ps(lhs.xy_, rhs.xy_);
+    const int32_t maskPacked = _mm_movemask_ps(mask);
+    return (maskPacked & 0x03) != 0x03;
+#endif
 }
 
 /*
@@ -340,10 +814,15 @@ INLINE static bool operator == (const Vec2& lhs, const Vec2& rhs)
 */
 INLINE static Vec2 operator * (float f, const Vec2& v)
 {
+#if defined(AL_MATH_USE_NO_SIMD)
     return
         Vec2(
             f * v.x,
             f * v.y);
+#else
+    const __m128 s = _mm_set1_ps(f);
+    return _mm_mul_ps(s, v.xy_);
+#endif
 }
 
 /*
@@ -359,10 +838,9 @@ INLINE static Vec2 operator * (const Vec2& v, float f)
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE static Vec2& operator *= (Vec2& v, float factor)
+INLINE static Vec2& operator *= (Vec2& v, float f)
 {
-    assert(false);
-    //v = v * factor;
+    v = v * f;
     return v;
 }
 
@@ -370,186 +848,14 @@ INLINE static Vec2& operator *= (Vec2& v, float factor)
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE static Vec2 operator / (const Vec2& v, float factor)
-{
-    return
-        Vec2(
-            v.x / factor,
-            v.y / factor);
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE FloatInVec::FloatInVec(__m128 av)
-    :v(av)
-{}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE FloatInVec::FloatInVec(float av)
-    :v(_mm_set_ss(av))
-{}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE FloatInVec::operator __m128 () const
-{
-    return v;
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE FloatInVec::operator float() const
-{
-    return value();
-}
-
-/*
--------------------------------------------------
-反転した値を返す
--------------------------------------------------
-*/
-INLINE FloatInVec FloatInVec::operator -() const
-{
-    const __m128 neg = _mm_set_ss(-1.0f);
-    const __m128 negv = _mm_mul_ps(neg,v);
-    return negv;
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE float FloatInVec::value() const
-{
-    /*
-     _mm_extract_ps()を使ってはいけない
-     cf. https://stackoverflow.com/a/17258448
-     */
-    return _mm_cvtss_f32(_mm_shuffle_ps(v, v, _MM_SHUFFLE(0, 0, 0, 0)));
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE bool FloatInVec::isNan() const
-{
-    return std::isnan(value());
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE bool operator < (FloatInVec lhs, FloatInVec rhs)
-{
-    return float(lhs) < float(rhs);
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE Float8::Float8(__m256 other)
-    :v(other)
-{}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE Float8::operator __m256()const
-{
-    return v;
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE Bool8::Bool8(__m256 other)
-    :v(other)
-{}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE bool Bool8::at(int32_t index) const
-{
-#if defined(WINDOWS)
-    return v.m256_f32[index] != 0;
-#else
-    return v[index];
-#endif
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE BoolInVec::BoolInVec(__m128i av)
-    :v(av)
-{}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE BoolInVec::BoolInVec(bool av)
+INLINE static Vec2 operator / (const Vec2& v, float f)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    v = av;
-#else
-    v = (_mm_set1_epi32(av ? 0xFFFFFFFF : 0x00000000));
-#endif
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE BoolInVec::operator __m128i () const
-{
-    return v;
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE BoolInVec::operator bool() const
-{
-#if defined(WINDOWS)
-    return (v.m128i_i32[0] != 0x00000000);
-#else
-    return value();
-#endif
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE bool BoolInVec::value() const
-{
-#if defined(AL_MATH_USE_NO_SIMD)
-    return v;
-#else
-    const __m128i zero = _mm_set1_epi32(0);
-    const int32_t zeromask =
-        _mm_movemask_epi8(_mm_cmpeq_epi32(v, zero)) & 0x000000FFFF;
-    const int32_t ret = zeromask & 0x01;
-    return !ret;
+    const float inv = 1.0f / f;
+    return Vec2(v.x_ * inv, v.y_ * inv);
+#elif defined(AL_MATH_USE_AVX2)
+    const __m128 s = _mm_rcp_ps_accurate(_mm_set1_ps(f));
+    return _mm_mul_ps(v.xy_, s);
 #endif
 }
 
@@ -564,6 +870,7 @@ INLINE Vec3::Vec3(_In_reads_(3) float* es)
     y_ = es[1];
     z_ = es[2];
 #elif defined(AL_MATH_USE_AVX2)
+    // TODO: 配列をそのまま受けられるのに変更しておく
     xyz_ = (_mm_set_ps(0.0f, es[2], es[1], es[0]));
 #endif
 }
@@ -673,7 +980,7 @@ INLINE bool Vec3::isZero() const
 #elif defined(AL_MATH_USE_AVX2)
     const __m128 zero = _mm_setzero_ps();
     const __m128 mask = _mm_cmpeq_ps(zero, xyz_);
-    return (_mm_movemask_ps(mask) == 0);
+    return (_mm_movemask_ps(mask) & 0x07) == 0x07;
 #endif
 }
 /*
@@ -865,7 +1172,7 @@ INLINE Vec3 Vec3::invertedSafe(const float defaultValue) const
     //const __m128 dv = _mm_set_ps1(defaultValue);
     const __m128 zero = _mm_setzero_ps();
     const __m128 mask = _mm_cmpeq_ps(zero, xyz_);
-    const __m128 rcp = _mm_rcp_ps(xyz_);
+    const __m128 rcp = _mm_rcp_ps_accurate(xyz_);
     return _mm_andnot_ps(mask, rcp);
 #endif
 }
@@ -1088,7 +1395,7 @@ INLINE FloatInVec Vec3::lengthSq(Vec3 v)
 #if defined(AL_MATH_USE_NO_SIMD)
     assert(false);
 #else
-    return dot(v, v);
+    return Vec3::dot(v, v);
 #endif
 }
 
@@ -1104,7 +1411,7 @@ INLINE Vec3 Vec3::min(Vec3 lhs, Vec3 rhs)
     const float z = std::min(lhs.z(), rhs.z());
     return Vec3(x, y, z);
 #else
-    return _mm_max_ps(lhs.xyz_, rhs.xyz_);
+    return _mm_min_ps(lhs.xyz_, rhs.xyz_);
 #endif
 }
 
@@ -1368,7 +1675,7 @@ INLINE static Vec3 operator / (Vec3 v, float f)
     const float inv = 1.0f / f;
     return Vec3(v.x_ * inv, v.y_ * inv, v.z_ * inv);
 #elif defined(AL_MATH_USE_AVX2)
-    const __m128 s = _mm_rcp_ps(_mm_set1_ps(f));
+    const __m128 s = _mm_rcp_ps_accurate(_mm_set1_ps(f));
     return _mm_mul_ps(v.xyz_, s);
 #endif
 }

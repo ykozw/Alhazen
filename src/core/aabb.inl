@@ -17,7 +17,7 @@ INLINE AABB::AABB()
 INLINE void AABB::clear()
 {
     const float maxv = std::numeric_limits<float>::max();
-    const float minv = std::numeric_limits<float>::min();
+    const float minv = std::numeric_limits<float>::lowest();
     mn = Vec3(maxv, maxv, maxv);
     mx = Vec3(minv, minv, minv);
 }
@@ -28,9 +28,6 @@ INLINE void AABB::clear()
 */
 INLINE void AABB::addPoint(const Vec3& point)
 {
-    const float x = point.x();
-    const float y = point.y();
-    const float z = point.z();
     mn = Vec3::min(point, mn);
     mx = Vec3::max(point, mx);
 }
@@ -279,10 +276,8 @@ INLINE AABB2D::AABB2D(const Vec2& amn, const Vec2& amx)
 */
 INLINE AABB2D::AABB2D(float mnx, float mny, float mxx, float mxy)
 {
-    mn.x = mnx;
-    mn.y = mny;
-    mx.x = mxx;
-    mx.y = mxy;
+    mn = Vec2(mnx,mny);
+    mx = Vec2(mxx,mxy);
 }
 
 /*
@@ -291,10 +286,10 @@ INLINE AABB2D::AABB2D(float mnx, float mny, float mxx, float mxy)
 */
 INLINE void AABB2D::clear()
 {
-    mn.x = std::numeric_limits<float>::max();
-    mn.y = std::numeric_limits<float>::max();
-    mx.x = std::numeric_limits<float>::lowest();
-    mx.y = std::numeric_limits<float>::lowest();
+    const float fmx = std::numeric_limits<float>::max();
+    const float fmn = std::numeric_limits<float>::lowest();
+    mn = Vec2(fmx,fmx);
+    mx = Vec2(fmn,fmn);
 }
 
 /*
@@ -303,10 +298,8 @@ INLINE void AABB2D::clear()
 */
 INLINE void AABB2D::addPoint(const Vec2& point)
 {
-    mn.x = alMin(point.x, mn.x);
-    mn.y = alMin(point.y, mn.y);
-    mx.x = alMax(point.x, mx.x);
-    mx.y = alMax(point.y, mx.y);
+    mn = Vec2::min(mn,point);
+    mx = Vec2::max(mx,point);
 }
 
 /*
@@ -315,13 +308,9 @@ INLINE void AABB2D::addPoint(const Vec2& point)
 */
 INLINE void AABB2D::add(const AABB2D& aabb)
 {
-    mn.x = alMin(aabb.mn.x, mn.x);
-    mn.y = alMin(aabb.mn.y, mn.y);
-    mx.x = alMax(aabb.mx.x, mx.x);
-    mx.y = alMax(aabb.mx.y, mx.y);
+    mn = Vec2::min(mn,aabb.mn);
+    mx = Vec2::max(mx,aabb.mx);
 }
-
-void add(const AABB2D& aabb);
 
 /*
 -------------------------------------------------
@@ -329,7 +318,7 @@ void add(const AABB2D& aabb);
 */
 INLINE float AABB2D::width() const
 {
-    return mx.x - mn.x;
+    return mx.x() - mn.x();
 }
 
 /*
@@ -338,7 +327,7 @@ INLINE float AABB2D::width() const
 */
 INLINE float AABB2D::height() const
 {
-    return mx.y - mn.y;
+    return mx.y() - mn.y();
 }
 
 /*
@@ -377,8 +366,8 @@ INLINE Vec2 AABB2D::onCoord(const Vec2& coord) const
     const Vec2 d = mx - mn;
     return
         Vec2(
-            mn.x + d.x * coord.x,
-            mn.y + d.y * coord.y);
+            mn.x() + d.x() * coord.x(),
+            mn.y() + d.y() * coord.y());
 }
 
 /*

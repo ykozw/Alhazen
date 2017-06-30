@@ -13,11 +13,11 @@ Z-upであることに注意
 inline Vec3 remapSphericalCoordToDir(Vec2 tp)
 {
     //
-    AL_ASSERT_DEBUG(0.0f <= tp.x && tp.x <= 1.0f);
-    AL_ASSERT_DEBUG(0.0f <= tp.y && tp.y <= 1.0f);
+    AL_ASSERT_DEBUG(0.0f <= tp.x() && tp.x() <= 1.0f);
+    AL_ASSERT_DEBUG(0.0f <= tp.y() && tp.y() <= 1.0f);
     //
-    const float theta = 1.0f * PI * tp.x;
-    const float phi = 2.0f * PI * tp.y;
+    const float theta = 1.0f * PI * tp.x();
+    const float phi = 2.0f * PI * tp.y();
     const float sinPhi = std::sinf(phi);
     const float cosPhi = std::cosf(phi);
     const float cosTheta = std::cosf(theta);

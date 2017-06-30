@@ -95,6 +95,97 @@ AL_TEST(Math, FloatInVec)
 }
 
 /*
+ -------------------------------------------------
+ Vec2に関するテスト
+ -------------------------------------------------
+ */
+AL_TEST(Math, Vec2)
+{
+    {
+        Vec2 v(2.0f, 3.0f);
+        v.setX(5.0f);
+        AL_ASSERT_ALWAYS(v.x() == 5.0f);
+        AL_ASSERT_ALWAYS(v.y() == 3.0f);
+    }
+    {
+        Vec2 v(2.0f, 3.0f);
+        v.setY(5.0f);
+        AL_ASSERT_ALWAYS(v.x() == 2.0f);
+        AL_ASSERT_ALWAYS(v.y() == 5.0f);
+    }
+    // 全要素同じ設定をしての初期化
+    {
+        const Vec2 v(1.0f);
+        AL_ASSERT_ALWAYS(v.x() == 1.0f);
+        AL_ASSERT_ALWAYS(v.y() == 1.0f);
+    }
+    // 配列からの生成
+    {
+        const float arr[] = { 1.0f,2.0f };
+        const Vec3 v(arr);
+        AL_ASSERT_ALWAYS(v.x() == 1.0f);
+        AL_ASSERT_ALWAYS(v.y() == 2.0f);
+    }
+    // 同値判定
+    {
+        // 同値
+        AL_ASSERT_ALWAYS(Vec2(1.0f,2.0f) ==
+                         Vec2(1.0f,2.0f));
+        // 非同値
+        AL_ASSERT_ALWAYS(Vec2(0.0f,2.0f) !=
+                         Vec2(1.0f,2.0f));
+        AL_ASSERT_ALWAYS(Vec2(1.0f,0.0f) !=
+                         Vec2(1.0f,2.0f));
+        // zwは関係がないので同値になる
+        AL_ASSERT_ALWAYS(Vec2(_mm_set_ps(0.0f, 3.0f, 2.0f, 1.0f)) ==
+                         Vec2(_mm_set_ps(0.0f, 0.0f, 2.0f, 1.0f)));
+        AL_ASSERT_ALWAYS(Vec2(_mm_set_ps(4.0f, 0.0f, 2.0f, 1.0f)) ==
+                         Vec2(_mm_set_ps(0.0f, 0.0f, 2.0f, 1.0f)));
+        
+    }
+    const auto sameV = [](float v0, float v1)
+    {
+        const float eps = 0.00001f;
+        return std::fabsf(v0 - v1) < eps;
+    };
+    // normalize/length
+    {
+        Vec2 v0 = Vec2(0.1f,0.0f);
+        const Vec2 v1 = v0.normalized();
+        AL_ASSERT_ALWAYS(sameV(v0.x(), 0.1f));
+        AL_ASSERT_ALWAYS(sameV(v0.y(), 0.0f));
+        AL_ASSERT_ALWAYS(sameV(v1.length(),1.0f));
+        AL_ASSERT_ALWAYS(sameV(v1.x(), 1.0f));
+        AL_ASSERT_ALWAYS(sameV(v1.y(), 0.0f));
+        v0.normalize();
+        AL_ASSERT_ALWAYS(sameV(v0.length(),1.0f));
+        //
+        const Vec2 v2 = Vec2(12.0f,34.0f).normalized();
+        AL_ASSERT_ALWAYS(sameV(v2.length(), 1.0f));
+    }
+    // any
+    {
+        AL_ASSERT_ALWAYS(Vec2(0.0f,1.0f).any());
+        AL_ASSERT_ALWAYS(Vec2(1.0f,0.1f).any());
+        AL_ASSERT_ALWAYS(!Vec2(0.0f,0.0f).any());
+        AL_ASSERT_ALWAYS(!Vec2(_mm_set_ps(0.0f,1.0f,0.0f,0.0f)).any());
+        AL_ASSERT_ALWAYS(!Vec2(_mm_set_ps(1.0f,0.0f,0.0f,0.0f)).any());
+    }
+    // all
+    {
+        AL_ASSERT_ALWAYS(!Vec2(0.0f,0.0f).all());
+        AL_ASSERT_ALWAYS(!Vec2(0.0f,1.0f).all());
+        AL_ASSERT_ALWAYS(Vec2(1.0f,1.0f).all());
+        AL_ASSERT_ALWAYS(Vec2(_mm_set_ps(0.0f,0.0f,1.0f,1.0f)).all());
+        AL_ASSERT_ALWAYS(!Vec2(_mm_set_ps(0.0f,1.0f,0.0f,0.0f)).all());
+        AL_ASSERT_ALWAYS(!Vec2(_mm_set_ps(1.0f,0.0f,0.0f,0.0f)).all());
+    }
+    // TODO: hasNaN
+    // TODO: dot
+    // TODO: min
+    // TODO: max
+}
+/*
 -------------------------------------------------
  Vec3に関するテスト
 -------------------------------------------------
@@ -209,7 +300,6 @@ AL_TEST(Math, Vec3)
     };
     // normalize(1)
     {
-        
         Vec3 v0(1.0f, 2.0f, 3.0f);
         const Vec3 v1 = v0.normalized();
         v0.normalize();

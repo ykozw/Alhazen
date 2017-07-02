@@ -289,8 +289,6 @@ public:
 /*
 -------------------------------------------------
 Vec2
-SIMD化してもあまり実行速度が向上しないのと、
-ランタイムであまり利用されていないのでSIMDは使わない
 -------------------------------------------------
 */
 struct Vec2
@@ -319,7 +317,7 @@ public:
     //
     void zero();
     BoolInVec isZero() const;
-    BoolInVec hasNan() const;
+    BoolInVec hasNaN() const;
     BoolInVec any() const;
     BoolInVec all() const;
     Vec2& normalize();
@@ -389,6 +387,7 @@ public:
     INLINE void scale(float scale);
     INLINE FloatInVec length() const;
     INLINE FloatInVec lengthSq() const;
+    INLINE Vec3& invert();
     INLINE Vec3 inverted() const;
     INLINE Vec3 invertedSafe(float defaultValue) const;
     INLINE Vec3 reflect(Vec3 v) const;

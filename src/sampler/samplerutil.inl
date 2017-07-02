@@ -45,7 +45,7 @@ inline Vec2 remapDirToSphericalCoord(Vec3 xyz)
     AL_ASSERT_DEBUG(!std::isnan(theta));
     AL_ASSERT_DEBUG(!std::isnan(phi));
     //
-    return Vec2({ theta * INV_PI, phi * INV_PI * 0.5f });
+    return Vec2(theta * INV_PI, phi * INV_PI * 0.5f);
 }
 
 /*

@@ -3,6 +3,22 @@
 #include "core/math.hpp"
 #include "core/logging.hpp"
 
+namespace {
+    /*
+    -------------------------------------------------
+    テスト用のほぼ等しいかを判定
+    -------------------------------------------------
+    */
+    const auto sameV = [](float v0, float v1)
+    {
+        const float eps = 0.00001f;
+        return std::fabsf(v0 - v1) < eps;
+    };
+    //
+    const float NaN = std::numeric_limits<float>::quiet_NaN();
+    const float INF = std::numeric_limits<float>::infinity();
+}
+
 /*
 -------------------------------------------------
 BoolInVecに関するテストコード
@@ -137,11 +153,6 @@ AL_TEST(Math, Vec2)
                          Vec2(_mm_set_ps(0.0f, 0.0f, 2.0f, 1.0f)));
         
     }
-    const auto sameV = [](float v0, float v1)
-    {
-        const float eps = 0.00001f;
-        return std::fabsf(v0 - v1) < eps;
-    };
     // normalize/length
     {
         Vec2 v0 = Vec2(0.1f,0.0f);
@@ -174,10 +185,28 @@ AL_TEST(Math, Vec2)
         AL_ASSERT_ALWAYS(!Vec2(_mm_set_ps(0.0f,1.0f,0.0f,0.0f)).all());
         AL_ASSERT_ALWAYS(!Vec2(_mm_set_ps(1.0f,0.0f,0.0f,0.0f)).all());
     }
-    // TODO: hasNaN
-    // TODO: dot
-    // TODO: min
-    // TODO: max
+    // hasNaN
+    {
+        AL_ASSERT_ALWAYS(Vec2(NaN,0.0f).hasNaN());
+        AL_ASSERT_ALWAYS(Vec2(0.0f,NaN).hasNaN());
+        AL_ASSERT_ALWAYS(!Vec2(0.0f,INF).hasNaN());
+    }
+    // dot
+    {
+        sameV(Vec2::dot(Vec2(1.0f,2.0f),Vec2(1.0f,2.0f)), 5.0f);
+    }
+    // min
+    {
+        const Vec2 mn = Vec2::min(Vec2(1.0f,3.0f),Vec2(2.0f,2.0f));
+        sameV(mn.x(), 1.0f);
+        sameV(mn.y(), 2.0f);
+    }
+    // max
+    {
+        const Vec2 mx = Vec2::max(Vec2(1.0f,3.0f),Vec2(2.0f,2.0f));
+        sameV(mx.x(), 2.0f);
+        sameV(mx.y(), 3.0f);
+    }
 }
 /*
 -------------------------------------------------
@@ -258,12 +287,11 @@ AL_TEST(Math, Vec3)
     // hasNan
     {
         const float v = 1.0f;
-        const float n = std::numeric_limits<float>::quiet_NaN();
-        AL_ASSERT_ALWAYS(Vec3(n, v, v).hasNan());
-        AL_ASSERT_ALWAYS(Vec3(v, n, v).hasNan());
-        AL_ASSERT_ALWAYS(Vec3(v, v, n).hasNan());
+        AL_ASSERT_ALWAYS(Vec3(NaN, v, v).hasNan());
+        AL_ASSERT_ALWAYS(Vec3(v, NaN, v).hasNan());
+        AL_ASSERT_ALWAYS(Vec3(v, NaN, NaN).hasNan());
         // w成分は関係がないのでNaNになってはいけない
-        AL_ASSERT_ALWAYS(!Vec3(_mm_set_ps(n, v, v, v)).hasNan());
+        AL_ASSERT_ALWAYS(!Vec3(_mm_set_ps(NaN, v, v, v)).hasNan());
     }
     // any
     {
@@ -283,35 +311,26 @@ AL_TEST(Math, Vec3)
         // w成分は関係がないのでall()の結果には影響を与えてはいけない
         AL_ASSERT_ALWAYS(Vec3(_mm_set_ps(0.0f, 1.0f, 1.0f, 1.0f)).all());
     }
-    const auto sameV = [](float v0, float v1)
-    {
-        const float eps = 0.00001f;
-        return std::fabsf(v0 - v1) < eps;
-    };
-    const auto same1 = [&sameV](float v)
-    {
-        return sameV(v, 1.0f);
-    };
     // normalize(1)
     {
         Vec3 v0(1.0f, 2.0f, 3.0f);
         const Vec3 v1 = v0.normalized();
         v0.normalize();
         AL_ASSERT_ALWAYS(v1 == v0);
-        AL_ASSERT_ALWAYS(same1(v0.length()));
-        AL_ASSERT_ALWAYS(same1(v1.length()));
+        sameV(v0.length(), 1.0f);
+        sameV(v1.length(), 1.0f);
         AL_ASSERT_ALWAYS(v0.isNormalized());
         AL_ASSERT_ALWAYS(v1.isNormalized());
-        AL_ASSERT_ALWAYS(same1(v0.length()));
-        AL_ASSERT_ALWAYS(same1(v0.lengthSq()));
-        AL_ASSERT_ALWAYS(same1(v1.length()));
-        AL_ASSERT_ALWAYS(same1(v1.lengthSq()));
+        sameV(v0.length(), 1.0f);
+        sameV(v0.lengthSq(), 1.0f);
+        sameV(v1.length(), 1.0f);
+        sameV(v1.lengthSq(), 1.0f);
     }
     // normalize(2)
     {
         const Vec3 v0(_mm_set_ps(1.0f,0.0f,0.0f,1.0f));
         const Vec3 v1 = v0.normalized();
-        AL_ASSERT_ALWAYS(same1(v1.x()) && (v1.y() == 0.0f) && (v1.z() == 0.0f));
+        AL_ASSERT_ALWAYS(sameV(v1.x(),1.0f) && (v1.y() == 0.0f) && (v1.z() == 0.0f));
         AL_ASSERT_ALWAYS(v1.isNormalized());
     }
     // scale
@@ -322,7 +341,22 @@ AL_TEST(Math, Vec3)
         sameV(v0.y(),3.0f);
         sameV(v0.z(),6.0f);
     }
-    // TODO: inverted/invertedSafe
+    // inverted/invertedSafe
+    {
+        Vec3 v0(1.0f,2.0f,3.0f);
+        const Vec3 v1 = v0.inverted();
+        v0.invert();
+        AL_ASSERT_ALWAYS(v0 == v1);
+        sameV(v0.x(),1.0f/1.0f);
+        sameV(v0.y(),1.0f/2.0f);
+        sameV(v0.z(),1.0f/3.0f);
+        //
+        Vec3 v2(0.0f,1.0f,2.0f);
+        v2 = v2.invertedSafe(123.0f);
+        sameV(v2.x(),123.0f);
+        sameV(v2.y(),1.0f/2.0f);
+        sameV(v2.z(),1.0f/3.0f);
+    }
     // reflect
     {
         const Vec3 v0(1.0f,-1.0f,0.0f);
@@ -332,7 +366,13 @@ AL_TEST(Math, Vec3)
         sameV(v2.y(),1.0f);
         sameV(v2.z(),0.0f);
     }
-    // TODO: operator[]
+    // operator[]
+    {
+        const Vec3 v0(1.0f,2.0f,3.0f);
+        sameV(v0[0],1.0f);
+        sameV(v0[1],2.0f);
+        sameV(v0[2],3.0f);
+    }
 }
 
 /*
@@ -384,56 +424,75 @@ AL_TEST(Math, V4)
         AL_ASSERT_ALWAYS(v.z() == 2.0f);
         AL_ASSERT_ALWAYS(v.w() == 3.0f);
     }
-#if 0
     // 長さ
     {
-        Vec4 v(1.0f, 2.0f, 3.0f, 4.0f);
-        AL_ASSERT_ALWAYS(v.lengthSq() == 30.0f);
-        AL_ASSERT_ALWAYS(std::fabsf(v.length() - 5.477225575f));
+        const float x = 1.0f;
+        const float y = 2.0f;
+        const float z = 3.0f;
+        const float w = 4.0f;
+        Vec4 v(x, y, z, w);
+        const float lenSq =x*x + y*y + z*z + w*w;
+        const float len = std::sqrtf(lenSq);
+        sameV(v.lengthSq(),lenSq);
+        sameV(v.length(), len);
     }
-#endif
-    // TODO: swizzleのテストコード
+    // swizzleのテストコード
     {
         const float x = 1.0f;
         const float y = 2.0f;
         const float z = 3.0f;
         const float w = 4.0f;
         const Vec4 v(x, y, z, w);
-#if 0
+        //
         AL_ASSERT_ALWAYS(v.xxxx() == Vec4(x, x, x, x));
         AL_ASSERT_ALWAYS(v.yxxx() == Vec4(y, x, x, x));
         AL_ASSERT_ALWAYS(v.zxxx() == Vec4(z, x, x, x));
-        AL_ASSERT_ALWAYS(v.wxxx() == Vec4(y, x, x, x));
+        AL_ASSERT_ALWAYS(v.wxxx() == Vec4(w, x, x, x));
         AL_ASSERT_ALWAYS(v.xyxx() == Vec4(x, y, x, x));
         AL_ASSERT_ALWAYS(v.yyxx() == Vec4(y, y, x, x));
         AL_ASSERT_ALWAYS(v.zyxx() == Vec4(z, y, x, x));
-        AL_ASSERT_ALWAYS(v.wyxx() == Vec4(y, y, x, x));
+        AL_ASSERT_ALWAYS(v.wyxx() == Vec4(w, y, x, x));
         AL_ASSERT_ALWAYS(v.xzxx() == Vec4(x, z, x, x));
         AL_ASSERT_ALWAYS(v.yzxx() == Vec4(y, z, x, x));
         AL_ASSERT_ALWAYS(v.zzxx() == Vec4(z, z, x, x));
-        AL_ASSERT_ALWAYS(v.wzxx() == Vec4(y, z, x, x));
+        AL_ASSERT_ALWAYS(v.wzxx() == Vec4(w, z, x, x));
         AL_ASSERT_ALWAYS(v.xwxx() == Vec4(x, w, x, x));
         AL_ASSERT_ALWAYS(v.ywxx() == Vec4(y, w, x, x));
         AL_ASSERT_ALWAYS(v.zwxx() == Vec4(z, w, x, x));
-        AL_ASSERT_ALWAYS(v.wwxx() == Vec4(y, w, x, x));
-
-        // TODO: 参列目をyにするところから続き
-        AL_ASSERT_ALWAYS(v.xxxx() == Vec4(x, x, x, x));
-        AL_ASSERT_ALWAYS(v.yxxx() == Vec4(y, x, x, x));
-        AL_ASSERT_ALWAYS(v.zxxx() == Vec4(z, x, x, x));
-        AL_ASSERT_ALWAYS(v.wxxx() == Vec4(y, x, x, x));
-        AL_ASSERT_ALWAYS(v.xyxx() == Vec4(x, y, x, x));
-        AL_ASSERT_ALWAYS(v.yyxx() == Vec4(y, y, x, x));
-        AL_ASSERT_ALWAYS(v.zyxx() == Vec4(z, y, x, x));
-        AL_ASSERT_ALWAYS(v.wyxx() == Vec4(y, y, x, x));
-        AL_ASSERT_ALWAYS(v.xzxx() == Vec4(x, z, x, x));
-        AL_ASSERT_ALWAYS(v.yzxx() == Vec4(y, z, x, x));
-        AL_ASSERT_ALWAYS(v.zzxx() == Vec4(z, z, x, x));
-        AL_ASSERT_ALWAYS(v.wzxx() == Vec4(y, z, x, x));
-        AL_ASSERT_ALWAYS(v.xwxx() == Vec4(x, w, x, x));
-        AL_ASSERT_ALWAYS(v.ywxx() == Vec4(y, w, x, x));
-        AL_ASSERT_ALWAYS(v.zwxx() == Vec4(z, w, x, x));
-        AL_ASSERT_ALWAYS(v.wwxx() == Vec4(y, w, x, x));
-#endif
+        AL_ASSERT_ALWAYS(v.wwxx() == Vec4(w, w, x, x));
+        //
+        AL_ASSERT_ALWAYS(v.xxyx() == Vec4(x, x, y, x));
+        AL_ASSERT_ALWAYS(v.yxyx() == Vec4(y, x, y, x));
+        AL_ASSERT_ALWAYS(v.zxyx() == Vec4(z, x, y, x));
+        AL_ASSERT_ALWAYS(v.wxyx() == Vec4(w, x, y, x));
+        AL_ASSERT_ALWAYS(v.xyyx() == Vec4(x, y, y, x));
+        AL_ASSERT_ALWAYS(v.yyyx() == Vec4(y, y, y, x));
+        AL_ASSERT_ALWAYS(v.zyyx() == Vec4(z, y, y, x));
+        AL_ASSERT_ALWAYS(v.wyyx() == Vec4(w, y, y, x));
+        AL_ASSERT_ALWAYS(v.xzyx() == Vec4(x, z, y, x));
+        AL_ASSERT_ALWAYS(v.yzyx() == Vec4(y, z, y, x));
+        AL_ASSERT_ALWAYS(v.zzyx() == Vec4(z, z, y, x));
+        AL_ASSERT_ALWAYS(v.wzyx() == Vec4(w, z, y, x));
+        AL_ASSERT_ALWAYS(v.xwyx() == Vec4(x, w, y, x));
+        AL_ASSERT_ALWAYS(v.ywyx() == Vec4(y, w, y, x));
+        AL_ASSERT_ALWAYS(v.zwyx() == Vec4(z, w, y, x));
+        AL_ASSERT_ALWAYS(v.wwyx() == Vec4(w, w, y, x));
+        //
+        AL_ASSERT_ALWAYS(v.xxxy() == Vec4(x, x, x, y));
+        AL_ASSERT_ALWAYS(v.yxxy() == Vec4(y, x, x, y));
+        AL_ASSERT_ALWAYS(v.zxxy() == Vec4(z, x, x, y));
+        AL_ASSERT_ALWAYS(v.wxxy() == Vec4(w, x, x, y));
+        AL_ASSERT_ALWAYS(v.xyxy() == Vec4(x, y, x, y));
+        AL_ASSERT_ALWAYS(v.yyxy() == Vec4(y, y, x, y));
+        AL_ASSERT_ALWAYS(v.zyxy() == Vec4(z, y, x, y));
+        AL_ASSERT_ALWAYS(v.wyxy() == Vec4(w, y, x, y));
+        AL_ASSERT_ALWAYS(v.xzxy() == Vec4(x, z, x, y));
+        AL_ASSERT_ALWAYS(v.yzxy() == Vec4(y, z, x, y));
+        AL_ASSERT_ALWAYS(v.zzxy() == Vec4(z, z, x, y));
+        AL_ASSERT_ALWAYS(v.wzxy() == Vec4(w, z, x, y));
+        AL_ASSERT_ALWAYS(v.xwxy() == Vec4(x, w, x, y));
+        AL_ASSERT_ALWAYS(v.ywxy() == Vec4(y, w, x, y));
+        AL_ASSERT_ALWAYS(v.zwxy() == Vec4(z, w, x, y));
+        AL_ASSERT_ALWAYS(v.wwxy() == Vec4(w, w, x, y));
     }
 }

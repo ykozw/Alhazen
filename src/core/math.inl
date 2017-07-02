@@ -556,7 +556,7 @@ INLINE BoolInVec Vec2::isZero() const
  -------------------------------------------------
  -------------------------------------------------
  */
-INLINE BoolInVec Vec2::hasNan() const
+INLINE BoolInVec Vec2::hasNaN() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     return
@@ -1191,6 +1191,17 @@ INLINE FloatInVec Vec3::lengthSq() const
 -------------------------------------------------
 -------------------------------------------------
 */
+INLINE Vec3& Vec3::invert()
+{
+    Vec3 tmp = inverted();
+    *this = tmp;
+    return *this;
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE Vec3 Vec3::inverted() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
@@ -1199,7 +1210,6 @@ INLINE Vec3 Vec3::inverted() const
 #elif defined(AL_MATH_USE_AVX2)
     return _mm_rsqrt_ps_accurate(xyz_);
 #endif
-
 }
 
 /*

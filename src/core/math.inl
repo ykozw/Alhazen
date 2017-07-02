@@ -328,7 +328,8 @@ INLINE bool Bool8::at(int32_t index) const
 #else
     // TODO: SIMD化
     AL_ASSERT_ALWAYS(false);
-    return v[index];
+    //return v[index];
+    return 0.0f;
 #endif
 }
 

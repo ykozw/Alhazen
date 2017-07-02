@@ -44,19 +44,16 @@ AL_TEST(Math, BoolInVec)
     }
     // 非ゼロのtrueがちゃんと判定されるかを入れる
     {
-        BoolInVec v;
-        v.v = _mm_set1_epi32(2);
+        BoolInVec v(_mm_set1_epi32(2));
         AL_ASSERT_ALWAYS((bool)v);
     }
     // 他のレーンを汚した状態での真偽チェック
     {
-        BoolInVec v;
-        v.v = _mm_set_epi32(3, 2, 1, 0);
+        BoolInVec v(_mm_set_epi32(3, 2, 1, 0));
         AL_ASSERT_ALWAYS(!(bool)v);
     }
     {
-        BoolInVec v;
-        v.v = _mm_set_epi32(3, 2, 1, 1);
+        BoolInVec v(_mm_set_epi32(3, 2, 1, 1));
         AL_ASSERT_ALWAYS((bool)v);
     }
 }
@@ -77,18 +74,15 @@ AL_TEST(Math, FloatInVec)
     }
     // 他のレーンを汚染しても大丈夫かチェック
     {
-        FloatInVec v;
-        v.v = _mm_set_ps(2.0f, 3.0f, 4.0f, 5.0f);
+        FloatInVec v(_mm_set_ps(2.0f, 3.0f, 4.0f, 5.0f));
         AL_ASSERT_ALWAYS(float(v) == 5.0f);
     }
     {
-        FloatInVec v;
-        v.v = _mm_set_ps(2.0f, 3.0f, 4.0f, nan);
+        FloatInVec v(_mm_set_ps(2.0f, 3.0f, 4.0f, nan));
         AL_ASSERT_ALWAYS(v.isNan());
     }
     {
-        FloatInVec v;
-        v.v = _mm_set_ps(2.0f, 3.0f, nan, 1.0f);
+        FloatInVec v(_mm_set_ps(2.0f, 3.0f, nan, 1.0f));
         AL_ASSERT_ALWAYS(!v.isNan());
     }
     // TODO: floatを直接乗算できるようにする

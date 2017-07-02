@@ -190,16 +190,26 @@ INLINE int32_t Region2D::area() const
  -------------------------------------------------
  */
 INLINE FloatInVec::FloatInVec(__m128 av)
-:v(av)
-{}
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    v = _mm_cvtss_f32(av);
+#else
+    v = av;
+#endif
+}
 
 /*
  -------------------------------------------------
  -------------------------------------------------
  */
 INLINE FloatInVec::FloatInVec(float av)
-:v(_mm_set_ss(av))
-{}
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    v = av;
+#else
+    v = _mm_set_ss(av);
+#endif
+}
 
 /*
  -------------------------------------------------
@@ -207,7 +217,13 @@ INLINE FloatInVec::FloatInVec(float av)
  */
 INLINE FloatInVec::operator __m128 () const
 {
+#if defined(AL_MATH_USE_NO_SIMD)
+    AL_ASSERT_ALWAYS(false);
+    return _mm_set_ps1(0.0f);
+#else
     return v;
+#endif
+    
 }
 
 /*
@@ -226,9 +242,13 @@ INLINE FloatInVec::operator float() const
  */
 INLINE FloatInVec FloatInVec::operator -() const
 {
+#if defined(AL_MATH_USE_NO_SIMD)
+    return FloatInVec(-v);
+#else
     const __m128 neg = _mm_set_ss(-1.0f);
     const __m128 negv = _mm_mul_ps(neg,v);
     return negv;
+#endif
 }
 
 /*
@@ -237,11 +257,15 @@ INLINE FloatInVec FloatInVec::operator -() const
  */
 INLINE float FloatInVec::value() const
 {
+#if defined(AL_MATH_USE_NO_SIMD)
+    return v;
+#else
     /*
      _mm_extract_ps()を使ってはいけない
      cf. https://stackoverflow.com/a/17258448
      */
     return _mm_cvtss_f32(_mm_shuffle_ps(v, v, _MM_SHUFFLE(0, 0, 0, 0)));
+#endif
 }
 
 /*
@@ -284,8 +308,13 @@ INLINE Float8::operator __m256()const
  -------------------------------------------------
  */
 INLINE Bool8::Bool8(__m256 other)
-:v(other)
-{}
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    AL_ASSERT_ALWAYS(false);
+#else
+    v = other;
+#endif
+}
 
 /*
  -------------------------------------------------
@@ -293,9 +322,12 @@ INLINE Bool8::Bool8(__m256 other)
  */
 INLINE bool Bool8::at(int32_t index) const
 {
-#if defined(WINDOWS)
-    return v.m256_f32[index] != 0;
+#if defined(AL_MATH_USE_NO_SIMD)
+    AL_ASSERT_ALWAYS(false);
+    return false;
 #else
+    // TODO: SIMD化
+    AL_ASSERT_ALWAYS(false);
     return v[index];
 #endif
 }
@@ -305,8 +337,13 @@ INLINE bool Bool8::at(int32_t index) const
  -------------------------------------------------
  */
 INLINE BoolInVec::BoolInVec(__m128i av)
-:v(av)
-{}
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    v = (_mm_cvtsi128_si32(av) != 0);
+#else
+    v = av;
+#endif
+}
 
 /*
  -------------------------------------------------
@@ -327,7 +364,12 @@ INLINE BoolInVec::BoolInVec(bool av)
  */
 INLINE BoolInVec::operator __m128i () const
 {
+#if defined(AL_MATH_USE_NO_SIMD)
+    AL_ASSERT_ALWAYS(false);
+    return _mm_set_ps1(0.0f);
+#else
     return v;
+#endif
 }
 
 /*
@@ -423,7 +465,11 @@ INLINE Vec2::Vec2(float e)
 */
 INLINE float Vec2::x() const
 {
+#if defined(AL_MATH_USE_NO_SIMD)
+    return x_;
+#else
     return _mm_cvtss_f32(_mm_shuffle_ps(xy_, xy_, _MM_SHUFFLE(0, 0, 0, 0)));
+#endif
 }
 
 /*
@@ -432,7 +478,11 @@ INLINE float Vec2::x() const
 */
 INLINE float Vec2::y() const
 {
+#if defined(AL_MATH_USE_NO_SIMD)
+    return y_;
+#else
     return _mm_cvtss_f32(_mm_shuffle_ps(xy_, xy_, _MM_SHUFFLE(0, 0, 0, 1)));
+#endif
 }
 
 /*
@@ -541,7 +591,7 @@ INLINE BoolInVec Vec2::any() const
 INLINE BoolInVec Vec2::all() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return (x_ != 0.0f) && (y_ != 0.0f) && (z_ != 0.0f);
+    return (x_ != 0.0f) && (y_ != 0.0f);
 #else
     const __m128 zero = _mm_setzero_ps();
     const __m128 mask = _mm_cmpeq_ps(zero, xy_);
@@ -558,8 +608,9 @@ INLINE Vec2& Vec2::normalize()
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     const float invLen = 1.0f / length();
-    x /= invLen;
-    y /= invLen;
+    x_ *= invLen;
+    y_ *= invLen;
+    return *this;
 #else
     const __m128 dp = _mm_dp_ps(xy_, xy_, 0x33);
     const __m128 idp = _mm_rsqrt_ps_accurate(dp);
@@ -611,7 +662,7 @@ INLINE bool Vec2::isNormalized(float eps) const
 INLINE FloatInVec Vec2::length() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return sqrtf(lengthSq());
+    return std::sqrtf(lengthSq());
 #else
     return _mm_sqrt_ps(lengthSq(*this));
 #endif
@@ -695,8 +746,7 @@ INLINE Vec2 Vec2::min(Vec2 lhs, Vec2 rhs)
 #if defined(AL_MATH_USE_NO_SIMD)
     const float x = std::min(lhs.x(), rhs.x());
     const float y = std::min(lhs.y(), rhs.y());
-    const float z = std::min(lhs.z(), rhs.z());
-    return Vec3(x, y, z);
+    return Vec2(x, y);
 #else
     return _mm_min_ps(lhs.xy_, rhs.xy_);
 #endif
@@ -726,8 +776,8 @@ INLINE static Vec2 operator + (const Vec2& lhs, const Vec2& rhs)
 #if defined(AL_MATH_USE_NO_SIMD)
     return
         Vec2(
-            lhs.x + rhs.x,
-            lhs.y + rhs.y);
+            lhs.x_ + rhs.x_,
+            lhs.y_ + rhs.y_);
 #else
     return _mm_add_ps(lhs.xy_, rhs.xy_);
 #endif
@@ -742,8 +792,8 @@ INLINE static Vec2 operator - (const Vec2& lhs, const Vec2& rhs)
 #if defined(AL_MATH_USE_NO_SIMD)
     return
         Vec2(
-            lhs.x - rhs.x,
-            lhs.y - rhs.y);
+            lhs.x_ - rhs.x_,
+            lhs.y_ - rhs.y_);
 #else
     AL_ASSERT_ALWAYS(false);
 #endif
@@ -756,7 +806,7 @@ INLINE static Vec2 operator - (const Vec2& lhs, const Vec2& rhs)
 INLINE static Vec2 operator - (const Vec2& v)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return  Vec2(-v.x, -v.y);
+    return  Vec2(-v.x_, -v.y_);
 #else
     return _mm_sub_ps(_mm_setzero_ps(), v.xy_);
 #endif
@@ -799,8 +849,8 @@ INLINE static BoolInVec operator != (Vec2 lhs, Vec2 rhs)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     return
-    (lhs.x == rhs.x) &&
-    (lhs.y == rhs.y);
+    (lhs.x_ != rhs.x_) ||
+    (lhs.y_ != rhs.y_);
 #else
     const __m128 mask = _mm_cmpeq_ps(lhs.xy_, rhs.xy_);
     const int32_t maskPacked = _mm_movemask_ps(mask);
@@ -817,8 +867,8 @@ INLINE static Vec2 operator * (float f, const Vec2& v)
 #if defined(AL_MATH_USE_NO_SIMD)
     return
         Vec2(
-            f * v.x,
-            f * v.y);
+            f * v.x_,
+            f * v.y_);
 #else
     const __m128 s = _mm_set1_ps(f);
     return _mm_mul_ps(s, v.xy_);

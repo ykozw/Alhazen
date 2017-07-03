@@ -215,6 +215,20 @@ AL_TEST(Math, Vec2)
 */
 AL_TEST(Math, Vec3)
 {
+    // コンストラクタと設定
+    {
+        ALIGN32 const float e[3] = {2.0f, 3.0f, 4.0f};
+        Vec3 v(e);
+        AL_ASSERT_ALWAYS(v.x() == 2.0f);
+        AL_ASSERT_ALWAYS(v.y() == 3.0f);
+        AL_ASSERT_ALWAYS(v.z() == 4.0f);
+    }
+    {
+        Vec3 v(2.0f,3.0f,4.0f);
+        AL_ASSERT_ALWAYS(v.x() == 2.0f);
+        AL_ASSERT_ALWAYS(v.y() == 3.0f);
+        AL_ASSERT_ALWAYS(v.z() == 4.0f);
+    }
     {
         Vec3 v(2.0f, 3.0f, 4.0f);
         v.setX(5.0f);

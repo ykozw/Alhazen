@@ -19,7 +19,7 @@ bool parseArgs(int32_t argc, char* argv[], ArgConfig& config)
     }
     //
     config.sceneFilePath = argv[1];
-    g_fileSystem.init(config.sceneFilePath.c_str());
+    g_fileSystem.init(config.sceneFilePath.c_str(), argv[0]);
 
     // オプションの解釈
     bool doTest = false;

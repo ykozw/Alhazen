@@ -921,8 +921,8 @@ INLINE Vec3::Vec3(_In_reads_(3) float* es)
     y_ = es[1];
     z_ = es[2];
 #elif defined(AL_MATH_USE_AVX2)
-    // TODO: 配列をそのまま受けられるのに変更しておく
-    xyz_ = (_mm_set_ps(0.0f, es[2], es[1], es[0]));
+    // NOTE: 16byteアライメントでないといけない
+    xyz_ = _mm_load_ps(es);
 #endif
 }
 

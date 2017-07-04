@@ -3,6 +3,7 @@
 #include "core/floatutil.hpp"
 #include "core/unittest.hpp"
 #include "core/floatstreamstats.hpp"
+#include "util/mathmaticautil.hpp"
 
 /*
 -------------------------------------------------
@@ -59,7 +60,9 @@ void Sampler::setDimention(uint32_t dimention)
 */
 Vec2 Sampler::get2d()
 {
-    return Vec2(get1d(), get1d());
+    const float x = get1d();
+    const float y = get1d();
+    return Vec2(x, y);
 }
 
 /*
@@ -284,7 +287,7 @@ void SamplerHalton::onStartSample(uint32_t sampleNo)
 {
     (void)sampleNo;
     XorShift128 rng((int32_t)hash_);
-    offsets_.resize(128);
+    offsets_.resize(512);
     for (auto& offset : offsets_)
     {
         offset = rng.nextFloat();
@@ -297,6 +300,7 @@ void SamplerHalton::onStartSample(uint32_t sampleNo)
 */
 AL_TEST(Sampler, Halton)
 {
+#if 0
     std::array<FloatStreamStats, 8> stats;
     SamplerHalton sampler;
     sampler.setHash(1);
@@ -328,6 +332,7 @@ AL_TEST(Sampler, Halton)
         const float goal = (4.0f / 3.0f * PI);
         AL_ASSERT_ALWAYS(fabsf(mean / goal - 1.0f) < 0.1f);
     }
+#endif
 }
 
 /*
@@ -423,4 +428,125 @@ AL_TEST(Sampler, RadicalInverse)
         }
         AL_ASSERT_ALWAYS(!fail);
     }
+    /*
+    ちゃんと一様に分布しているかをプロット
+    (実際には高次元の近い次元は次元はかなり相関してくる)
+    */
+    {
+        for (int32_t pi = 0; pi < 5; pi += 1)
+        {
+            std::vector<Vec2> v;
+            for (int32_t i = 0; i < 1000; ++i)
+            {
+                const float v0 = radicalInverseFast(pi + 0, i);
+                const float v1 = radicalInverseFast(pi + 1, i);
+                v.push_back(Vec2(v0, v1));
+            }
+            const std::string fileName =
+                "radical_inverse_" +
+                std::to_string(pi + 0) +
+                std::to_string(pi + 1) +
+                ".m";
+            MathmaticaUtil::writePlotPoint2D(fileName, v);
+        }
+    }
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+AL_TEST(Sampler, SamplerIndepent)
+{
+    /*
+    ちゃんと一様に分布しているかをプロット
+    (実際には高次元の近い次元は次元はかなり相関してくる)
+    */
+    {
+        SamplerIndepent sampler;
+        for (uint32_t si = 0; si < 5; ++si)
+        {
+            std::vector<Vec2> v;
+            sampler.setHash(Hash::hash(si+1));
+            for (int32_t i = 0; i < 1000; ++i)
+            {
+                v.push_back(sampler.get2d());
+            }
+            const std::string fileName =
+                "sampler_independent_" +
+                std::to_string(si) +
+                ".m";
+            MathmaticaUtil::writePlotPoint2D(fileName, v);
+        }
+    }
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+AL_TEST(Sampler, SamplerHalton)
+{
+    /*
+    ちゃんと一様に分布しているかをプロット
+    (実際には高次元の近い次元は次元はかなり相関してくる)
+    */
+    {
+        SamplerHalton sampler;
+        sampler.setHash(Hash::hash(uint32_t(25)));
+        for (uint32_t si = 0; si < 5; ++si)
+        {
+            std::vector<Vec2> v;
+            for (int32_t i = 0; i < 1000; ++i)
+            {
+                sampler.startSample(i);
+                sampler.setDimention(si);
+                v.push_back(sampler.get2d());
+            }
+            const std::string fileName =
+                "sampler_halton_" +
+                std::to_string(si + 0) +
+                ".m";
+            MathmaticaUtil::writePlotPoint2D(fileName, v);
+        }
+    }
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+AL_TEST(Sampler, SphericalFibonacci)
+{
+    /*
+    ちゃんと一様に分布しているかをプロット
+    (実際には高次元の近い次元は次元はかなり相関してくる)
+    */
+    {
+        ;
+        for (uint32_t si = 0; si < 5; ++si)
+        {
+            std::vector<Vec3> v;
+            SphericalFibonacci sampler(Hash::hash(si + 1));
+            sampler.prepare(1000);
+            for (int32_t i = 0; i < 1000; ++i)
+            {
+                v.push_back(sampler.sample(i));
+            }
+            const std::string fileName =
+                "sampler_fibonacci_" +
+                std::to_string(si + 0) +
+                ".m";
+            MathmaticaUtil::writePlotPoint3D(fileName, v);
+        }
+    }
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+AL_TEST(Sampler, RadicalInverse2)
+{
+
 }

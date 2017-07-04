@@ -7,7 +7,7 @@ FileSystem g_fileSystem;
 -------------------------------------------------
 -------------------------------------------------
 */
-void FileSystem::init(const char* sceneFilePath)
+void FileSystem::init(const char* sceneFilePath, const char* exeFilePath)
 {
     // 出力フォルダを作成する
     std::string sceneFileDir;
@@ -20,6 +20,9 @@ void FileSystem::init(const char* sceneFilePath)
 #else
     mkdir(outputDir_.c_str(), 755);
 #endif
+    //
+    std::string exeFile;
+    getDirPath(std::string(exeFilePath), exeDir_, exeFile);
 }
 
 /*
@@ -29,7 +32,15 @@ void FileSystem::init(const char* sceneFilePath)
 */
 std::string FileSystem::getOutputFolderPath() const
 {
-    return outputDir_;
+    if (outputDir_ != "")
+    {
+        return outputDir_;
+    }
+    // 出力フォルダが決定していないときはexeがあるパスにする
+    else
+    {
+        return exeDir_;
+    }
 }
 
 /*

@@ -1947,7 +1947,7 @@ INLINE FloatInVec Vec4::dot(Vec4 lhs, Vec4 rhs)
 INLINE FloatInVec Vec4::length(Vec4 v)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    assert(false);
+    return std::sqrtf(v.lengthSq());
 #elif defined(AL_MATH_USE_AVX2)
     return _mm_sqrt_ps(lengthSq(v));
 #endif
@@ -1960,7 +1960,7 @@ INLINE FloatInVec Vec4::length(Vec4 v)
 INLINE FloatInVec Vec4::lengthSq(Vec4 v)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    assert(false);
+    return (v.x_ * v.x_)+(v.y_ * v.y_)+(v.z_ * v.z_)+(v.w_ * v.w_);
 #elif defined(AL_MATH_USE_AVX2)
     return dot(v, v);
 #endif

@@ -14,6 +14,7 @@ project "Alhazen"
      "src",
      "thirdparty/tinyxml2",
      "thirdparty/stb",
+     "thirdparty/vdb",
      -- XCode対策(途中)
      "../src",
      "../../src"

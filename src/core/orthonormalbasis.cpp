@@ -94,3 +94,13 @@ AL_TEST(OrthonormalBasis, 0)
     logging("ONB_METHOD::Nelson17");
     testLocalCoord(OrthonormalBasis<ONB_METHOD::Nelson17>());
 }
+
+AL_TEST(OrthonormalBasis, 1)
+{
+    // ちゃんと元の方向に戻るかテスト
+    const Vec3 n = Vec3(0.5f, 1.0f, 1.5f).normalized();
+    const OrthonormalBasis<> local(n);
+    const Vec3 d0 = Vec3(0.0f, -1.0f, 0.0f).normalized();
+    const Vec3 d1 = local.local2world(local.world2local(d0));
+    AL_ASSERT_ALWAYS(Vec3::dot(d0, d1) - 0.98f > 0.0f);
+}

@@ -193,9 +193,9 @@ template<ONB_METHOD METHOD>
 void OrthonormalBasis<METHOD>::updateNTS()
 {
     // TODO: 最適化
-    ntsX_ = Vec3(n_.x(), t_.x(), s_.x());
-    ntsY_ = Vec3(n_.y(), t_.y(), s_.y());
-    ntsZ_ = Vec3(n_.z(), t_.z(), s_.z());
+    ntsX_ = Vec3(s_.x(), t_.x(), n_.x());
+    ntsY_ = Vec3(s_.y(), t_.y(), n_.y());
+    ntsZ_ = Vec3(s_.z(), t_.z(), n_.z());
 }
 
 

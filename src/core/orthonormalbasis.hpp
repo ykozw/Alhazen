@@ -32,24 +32,19 @@ public:
     OrthonormalBasis();
     OrthonormalBasis(const Vec3& n);
     OrthonormalBasis(const Vec3& n, const Vec3& t);
-    void set(const Vec3& n);
+    void set(const Vec3& n); // TODO: 参照をやめる
     void set(const Vec3& n, const Vec3& t);
     void set(const Vec3& n, const Vec3& t, const Vec3& s);
-    Vec3 n() const { return n_; }
-    Vec3 t() const { return t_; }
-    Vec3 s() const { return s_; }
     Vec3 world2local(Vec3 world) const;
     Vec3 local2world(Vec3 local) const;
+    Vec3 getN() const;
+    Vec3 getT() const;
+    Vec3 getS() const;
 private:
     void updateNTS();
 private:
-    Vec3 n_;
-    Vec3 t_;
-    Vec3 s_;
-    // ntsをtransposeしたもの
-    Vec3 ntsX_;
-    Vec3 ntsY_;
-    Vec3 ntsZ_;
+    Matrix3x3_next nts;
+    Matrix3x3_next ntsInv;
 };
 
 #include "orthonormalbasis.inl"

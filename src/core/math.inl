@@ -2070,6 +2070,99 @@ INLINE Matrix3x3 Matrix3x3::transposed() const
 -------------------------------------------------
 -------------------------------------------------
 */
+INLINE Matrix3x3_next::Matrix3x3_next(
+    _In_reads_(9) const float* es)
+{
+    AL_ASSERT_ALWAYS(false);
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE Matrix3x3_next::Matrix3x3_next(
+    float e11, float e12, float e13,
+    float e21, float e22, float e23,
+    float e31, float e32, float e33)
+{
+    row0 = _mm_set_ps(e11, e12, e13, 0.0f);
+    row1 = _mm_set_ps(e21, e22, e23, 0.0f);
+    row2 = _mm_set_ps(e31, e32, e33, 0.0f);
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE float Matrix3x3_next::det() const
+{
+    AL_ASSERT_ALWAYS(false);
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE void Matrix3x3_next::inverse()
+{
+    AL_ASSERT_ALWAYS(false);
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE void Matrix3x3_next::transpose()
+{
+    const __m128 tmp0 = _mm_shuffle_ps(row0, row1, 0x44);
+    const __m128 tmp2 = _mm_shuffle_ps(row0, row1, 0xEE);
+    const __m128 tmp1 = _mm_shuffle_ps(row2, row2, 0x44);
+    const __m128 tmp3 = _mm_shuffle_ps(row2, row2, 0xEE);
+    row0 = _mm_shuffle_ps(tmp0, tmp1, 0x88);
+    row1 = _mm_shuffle_ps(tmp0, tmp1, 0xDD);
+    row2 = _mm_shuffle_ps(tmp2, tmp3, 0x88);
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE Vec3 Matrix3x3_next::transform(Vec3 v) const
+{
+    //
+    const __m128 v0 = _mm_dp_ps(row0, v.xyz_, 0x7F);
+    const __m128 v1 = _mm_dp_ps(row1, v.xyz_, 0x7F);
+    const __m128 v2 = _mm_dp_ps(row2, v.xyz_, 0x7F);
+    //
+    const __m128 tmp = _mm_shuffle_ps(v0, v1, 0x44);
+    const __m128 ret = _mm_shuffle_ps(tmp, v2, 0x88);
+    return ret;
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE Matrix3x3_next Matrix3x3_next::inversed() const
+{
+    AL_ASSERT_ALWAYS(false);
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE Matrix3x3_next Matrix3x3_next::transposed() const
+{
+    Matrix3x3_next ret = *this;
+    ret.transpose();
+    return ret;
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE Matrix4x4::Matrix4x4(const Matrix3x3& m33)
 {
     e11 = m33.e11; e12 = m33.e12; e13 = m33.e13; e14 = 0.0f;

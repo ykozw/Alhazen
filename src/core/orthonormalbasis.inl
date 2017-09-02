@@ -39,80 +39,81 @@ template<ONB_METHOD METHOD>
 void OrthonormalBasis<METHOD>::set(const Vec3& an)
 {
     AL_ASSERT_DEBUG(an.isNormalized());
-    n_ = an;
+    Vec3 n, s, t;
+    n = an;
     //
     switch (METHOD)
     {
     case ONB_METHOD::Naive:
         {
-            if (fabsf(n_.x()) < 0.99f)
+            if (fabsf(n.x()) < 0.99f)
             {
-                s_ = Vec3::cross(n_, Vec3(1.0f, 0.0f, 0.0));
+                s = Vec3::cross(n, Vec3(1.0f, 0.0f, 0.0));
             }
             else
             {
-                s_ = Vec3::cross(n_, Vec3(0.0f, 1.0f, 0.0f));
+                s = Vec3::cross(n, Vec3(0.0f, 1.0f, 0.0f));
             }
-            s_.normalize();
-            t_ = Vec3::cross(s_, n_);
+            s.normalize();
+            t = Vec3::cross(s, n);
         }
         break;
     case ONB_METHOD::Moller99:
         {
-            if (fabs(n_.x()) > fabs(n_.z()))
+            if (fabs(n.x()) > fabs(n.z()))
             {
-                t_ = Vec3(-n_.y(), n_.x(), 0.0f);
+                t = Vec3(-n.y(), n.x(), 0.0f);
             }
             else
             {
-                t_ = Vec3(0.0f, -n_.z(), n_.y());
+                t = Vec3(0.0f, -n.z(), n.y());
             }
-            t_ *= 1.0f / std::sqrtf(Vec3::dot(t_, t_));
-            s_ = Vec3::cross(t_, n_);
+            t *= 1.0f / std::sqrtf(Vec3::dot(t, t));
+            s = Vec3::cross(t, n);
         }
         break;
     case ONB_METHOD::Frisvad12:
         {
-            if (n_.z() < -0.9999999f)
+            if (n.z() < -0.9999999f)
             {
-                s_ = Vec3(0.0f, -1.0f, 0.0f);
-                t_ = Vec3(-1.0f, 0.0f, 0.0f);
+                s = Vec3(0.0f, -1.0f, 0.0f);
+                t = Vec3(-1.0f, 0.0f, 0.0f);
             }
             else
             {
-                const float a = 1.0f / (1.0f + n_.z());
-                const float b = -n_.x() * n_.y() * a;
-                s_ = Vec3(1.0f - n_.x() * n_.x() * a, b, -n_.x());
-                t_ = Vec3(b, 1.0f - n_.y() * n_.y() * a, -n_.y());
+                const float a = 1.0f / (1.0f + n.z());
+                const float b = -n.x() * n.y() * a;
+                s = Vec3(1.0f - n.x() * n.x() * a, b, -n.x());
+                t = Vec3(b, 1.0f - n.y() * n.y() * a, -n.y());
             }
         }
         break;
     case ONB_METHOD::Duff17:
         {
-            const float sign = copysignf(1.0f, n_.z());
-            const float a = -1.0f / (sign + n_.z());
-            const float b = n_.x() * n_.y() * a;
-            t_ = Vec3(1.0f + sign * n_.x() * n_.x() * a, sign * b, -sign * n_.x());
-            s_ = Vec3(b, sign + n_.y() * n_.y() * a, -n_.y());
+            const float sign = copysignf(1.0f, n.z());
+            const float a = -1.0f / (sign + n.z());
+            const float b = n.x() * n.y() * a;
+            t = Vec3(1.0f + sign * n.x() * n.x() * a, sign * b, -sign * n.x());
+            s = Vec3(b, sign + n.y() * n.y() * a, -n.y());
         }
         break;
     case ONB_METHOD::Nelson17:
         {
             const double dthreshold = -0.9999999999776;
             float rthreshold = -0.7f;
-            if (n_.z() >= rthreshold)
+            if (n.z() >= rthreshold)
             {
-                const float a = 1.0f / (1.0f + n_.z());
-                const float b = -n_.x() * n_.y() * a;
-                t_ = Vec3(1.0f - n_.x() * n_.x() * a, b, -n_.x());
-                s_ = Vec3(b, 1.0f - n_.y() * n_.y() * a, -n_.y());
+                const float a = 1.0f / (1.0f + n.z());
+                const float b = -n.x() * n.y() * a;
+                t = Vec3(1.0f - n.x() * n.x() * a, b, -n.x());
+                s = Vec3(b, 1.0f - n.y() * n.y() * a, -n.y());
             }
             else
             {
-                double x = (double)n_.x();
-                double y = (double)n_.y();
-                double z = (double)n_.z();
-                const double d = 1. / std::sqrt(x*x + y*y + z*z);
+                double x = (double)n.x();
+                double y = (double)n.y();
+                double z = (double)n.z();
+                const double d = 1.0 / std::sqrt(x*x + y*y + z*z);
                 x *= d;
                 y *= d;
                 z *= d;
@@ -120,13 +121,13 @@ void OrthonormalBasis<METHOD>::set(const Vec3& an)
                 {
                     const double a = 1.0 / (1.0 + z);
                     const double b = -x*y*a;
-                    t_ = Vec3(1.0f - (float)(x*x*a), (float)b, (float)(-x));
-                    s_ = Vec3((float)b, 1.0f - (float)(y*y*a), (float)(-y));
+                    t = Vec3(1.0f - (float)(x*x*a), (float)b, (float)(-x));
+                    s = Vec3((float)b, 1.0f - (float)(y*y*a), (float)(-y));
                 }
                 else
                 {
-                    t_ = Vec3(0.0f, -1.0f, 0.0f);
-                    s_ = Vec3(-1.0f, 0.0f, 0.0f);
+                    t = Vec3(0.0f, -1.0f, 0.0f);
+                    s = Vec3(-1.0f, 0.0f, 0.0f);
                 }
             }
         }
@@ -135,6 +136,10 @@ void OrthonormalBasis<METHOD>::set(const Vec3& an)
         AL_ASSERT_ALWAYS(false);
         break;
     }
+    //
+    nts.row0 = s.xyz_;
+    nts.row1 = t.xyz_;
+    nts.row2 = n.xyz_;
     //
     updateNTS();
 }
@@ -152,15 +157,20 @@ void OrthonormalBasis<METHOD>::set(const Vec3& an, const Vec3& at)
     // 法線と接ベクトルからローカル座標を作る
     // 与えられた法線と接ベクトルは正規化されていることを想定している
     // 与えられた法線と接ベクトルは直交していない場合もあることを想定している
-    n_ = an;
-    t_ = at;
-    s_ = Vec3::cross(n_, t_).normalize();
-    t_ = Vec3::cross(s_, n_).normalize();
+    Vec3 n, t, s;
+    n = an;
+    t = at;
+    s = Vec3::cross(n, t).normalize();
+    t = Vec3::cross(s, n).normalize();
     //
-    AL_ASSERT_DEBUG(s_.isNormalized());
-    AL_ASSERT_DEBUG(fabsf(Vec3::dot(n_, t_)) < 0.01f);
-    AL_ASSERT_DEBUG(fabsf(Vec3::dot(n_, s_)) < 0.01f);
-    AL_ASSERT_DEBUG(fabsf(Vec3::dot(t_, s_)) < 0.01f);
+    AL_ASSERT_DEBUG(s.isNormalized());
+    AL_ASSERT_DEBUG(fabsf(Vec3::dot(n, t)) < 0.01f);
+    AL_ASSERT_DEBUG(fabsf(Vec3::dot(n, s)) < 0.01f);
+    AL_ASSERT_DEBUG(fabsf(Vec3::dot(t, s)) < 0.01f);
+    //
+    nts.row0 = s.xyz_;
+    nts.row1 = t.xyz_;
+    nts.row2 = n.xyz_;
     //
     updateNTS();
 }
@@ -178,9 +188,14 @@ void OrthonormalBasis<METHOD>::set(const Vec3& an, const Vec3& at, const Vec3& a
     AL_ASSERT_DEBUG(fabsf(Vec3::dot(an, at)) < 0.0001f);
     AL_ASSERT_DEBUG(fabsf(Vec3::dot(an, as)) < 0.0001f);
     AL_ASSERT_DEBUG(fabsf(Vec3::dot(at, as)) < 0.0001f);
-    n_ = an;
-    t_ = at;
-    s_ = as;
+    Vec3 n, t, s;
+    n = an;
+    t = at;
+    s = as;
+    //
+    nts.row0 = s.xyz_;
+    nts.row1 = t.xyz_;
+    nts.row2 = n.xyz_;
     //
     updateNTS();
 }
@@ -192,10 +207,8 @@ void OrthonormalBasis<METHOD>::set(const Vec3& an, const Vec3& at, const Vec3& a
 template<ONB_METHOD METHOD>
 void OrthonormalBasis<METHOD>::updateNTS()
 {
-    // TODO: 最適化
-    ntsX_ = Vec3(s_.x(), t_.x(), n_.x());
-    ntsY_ = Vec3(s_.y(), t_.y(), n_.y());
-    ntsZ_ = Vec3(s_.z(), t_.z(), n_.z());
+    // 正規直交基底なので inverse(T) = transpose(T)
+    ntsInv = nts.transposed();
 }
 
 
@@ -207,11 +220,7 @@ world2local()
 template<ONB_METHOD METHOD>
 Vec3 OrthonormalBasis<METHOD>::world2local(Vec3 world) const
 {
-    return
-        Vec3(
-            Vec3::dot(world, s_),
-            Vec3::dot(world, t_),
-            Vec3::dot(world, n_));
+    return nts.transform(world);
 }
 
 /*
@@ -222,9 +231,35 @@ local2world()
 template<ONB_METHOD METHOD>
 Vec3 OrthonormalBasis<METHOD>::local2world(Vec3 local) const
 {
-    return
-        Vec3(
-            Vec3::dot(local, ntsX_),
-            Vec3::dot(local, ntsY_),
-            Vec3::dot(local, ntsZ_));
+    return ntsInv.transform(local);
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+template<ONB_METHOD METHOD>
+Vec3 OrthonormalBasis<METHOD>::getN() const
+{
+    return nts.row2;
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+template<ONB_METHOD METHOD>
+Vec3 OrthonormalBasis<METHOD>::getT() const
+{
+    return nts.row1;
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+template<ONB_METHOD METHOD>
+Vec3 OrthonormalBasis<METHOD>::getS() const
+{
+    return nts.row0;
 }

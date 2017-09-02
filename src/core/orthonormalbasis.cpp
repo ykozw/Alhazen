@@ -39,8 +39,8 @@ void testLocalCoord(Type localCoord)
     {
         localCoord.set(n);
 #if 1
-        const Vec3 s = localCoord.s();
-        const Vec3 t = localCoord.t();
+        const Vec3 s = localCoord.getS();
+        const Vec3 t = localCoord.getT();
         dotErrorStats.add(fabsf(Vec3::dot(n, s)));
         dotErrorStats.add(fabsf(Vec3::dot(n, t)));
         dotErrorStats.add(fabsf(Vec3::dot(s, t)));
@@ -95,6 +95,10 @@ AL_TEST(OrthonormalBasis, 0)
     testLocalCoord(OrthonormalBasis<ONB_METHOD::Nelson17>());
 }
 
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 AL_TEST(OrthonormalBasis, 1)
 {
     // ちゃんと元の方向に戻るかテスト

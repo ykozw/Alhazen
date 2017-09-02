@@ -31,13 +31,13 @@ private:
         const SceneGeometory& scene,
         const Intersect& isect,
         const OrthonormalBasis<>& local,
-        const Vec3& localWo,
+        const Vec3 localWo,
         SamplerPtr sampler);
     Spectrum estimateOneLight(
         const SceneGeometory& scene,
         const Intersect& isect,
         const OrthonormalBasis<>& local,
-        const Vec3& localWo,
+        const Vec3 localWo,
         const LightPtr& light,
         SamplerPtr samler);
 private:
@@ -176,7 +176,7 @@ Spectrum PTSurfaceIntegrator::estimateDirectLight(
     const SceneGeometory& scene,
     const Intersect& isect,
     const OrthonormalBasis<>& local,
-    const Vec3& localWo,
+    const Vec3 localWo,
     SamplerPtr sampler)
 {
     switch (directLighitingLightSelectStrategy_)
@@ -247,10 +247,11 @@ Spectrum PTSurfaceIntegrator::estimateOneLight(
     const SceneGeometory& scene,
     const Intersect& isect,
     const OrthonormalBasis<>& local,
-    const Vec3& localWo,
+    const Vec3 localWo,
     const LightPtr& light,
     SamplerPtr sampler)
 {
+    //
     BSDFPtr bsdf = isect.bsdf;
     /*
     サンプル方法の選択
@@ -294,7 +295,112 @@ Spectrum PTSurfaceIntegrator::estimateOneLight(
         }
     };
     const SampleStrategy sampleStrategy = takeStragety(bsdf, light);
+    
+    // ライトのサンプリング
+    const auto lightSampling = [](
+        SamplerPtr sampler,
+        LightPtr light,
+        BSDFPtr bsdf,
+        Vec3 isectPos,
+        const OrthonormalBasis<>& local,
+        const Vec3 localWo,
+        const SceneGeometory& scene,
+        bool isUseMIS)
+    {
+        // ライト上のサンプル
+        Vec3 lightSamplePos;
+        float pdfLight;
+        const Spectrum emittion =
+            light->sampleLe(
+                sampler,
+                isectPos,
+                &lightSamplePos,
+                &pdfLight);
 
+        // TODO: ガラス面を対応する
+        // 可視であれば、そのライトのSpectrumを足し上げる
+        const Vec3 p0 = isectPos;
+        const Vec3 p1 = lightSamplePos;
+        // NOTE: 本当はライトも含めて行わないといけない(ライトの前にライトがある可能性がある)
+        const bool skipLight = true;
+        const bool isVisible = scene.isVisible(p0, p1, skipLight);
+        if (!isVisible)
+        {
+            return Spectrum::createAsBlack();
+        }
+
+        // reflectanceの算出
+        const Vec3 toLight = lightSamplePos - isectPos;
+        const Vec3 worldWi = toLight.normalized();
+        const Vec3 localWi = local.world2local(worldWi);
+        const Spectrum reflectance = bsdf->bsdf(localWo, localWi);
+        float weight = 1.0f;
+        if (isUseMIS)
+        {
+            const float pdfBSDF = bsdf->pdf(localWo, localWi);
+            weight = misBalanceHeuristic(pdfLight, pdfBSDF);
+        }
+        else
+        {
+            weight = 1.0f;
+        }
+        //
+        // 最終的なspectrum値の算出
+        const Spectrum spectrum = reflectance * emittion * std::fabsf(localWi.z()) * weight / pdfLight;
+        //const Spectrum spectrum = Spectrum::createFromRGB({ weight ,0.0f, 0.0f }, false);
+        AL_ASSERT_DEBUG(!spectrum.hasNaN());
+        return spectrum;
+    };
+    // BSDFのサンプリング
+    const auto bsdfSampling = [](
+        SamplerPtr sampler,
+        LightPtr light,
+        BSDFPtr bsdf,
+        Vec3 isectPos,
+        const OrthonormalBasis<>& local,
+        const Vec3 localWo,
+        const SceneGeometory& scene,
+        bool isUseMIS)
+    {
+        Vec3 localWi;
+        float pdfBSDF;
+        const Spectrum f = bsdf->bsdfSample(localWo, sampler, &localWi, &pdfBSDF);
+        const Vec3 worldWi = local.local2world(localWi);
+
+        /*AL_ASSERT_ALWAYS(localWo.z() >= 0.0f);
+        AL_ASSERT_ALWAYS(localWi.z() >= 0.0f);*/
+
+        float weight = 1.0f;
+        if (isUseMIS)
+        {
+            const float pdfLight = light->pdf(isectPos, worldWi);
+            weight = misBalanceHeuristic(pdfBSDF, pdfLight);
+        }
+        else
+        {
+            weight = 1.0f;
+        }
+        const Spectrum L = light->emittion(isectPos, worldWi);
+        //
+        if (pdfBSDF == 0.0f || L.isBlack())
+        {
+            return Spectrum::createAsBlack();
+        }
+        //
+        const Vec3 p0 = isectPos;
+        const Vec3 p1 = p0 + worldWi * 100000.0f;
+        // NOTE: 本当はライトも含めて行わないといけない(ライトの前にライトがある可能性がある)
+        const bool skipLight = true;
+        const bool visible = scene.isVisible(p0, p1, skipLight);
+        if (!visible)
+        {
+            return Spectrum::createAsBlack();
+        }
+        const Spectrum spectrum = f * L * absCosTheta(localWo) * weight / pdfBSDF;
+        //const Spectrum spectrum = Spectrum::createFromRGB({ 0.0f, weight, 0.0f }, false);
+        AL_ASSERT_DEBUG(!spectrum.hasNaN());
+        return spectrum;
+    };
     //
     switch (sampleStrategy)
     {
@@ -320,6 +426,13 @@ Spectrum PTSurfaceIntegrator::estimateOneLight(
             return spectrum;
         }
         break;
+    case SampleStrategy::OnlyBSDFSample:
+        {
+            Spectrum spectrum(0.0f);
+            spectrum += bsdfSampling(sampler, light, bsdf, isect.uppserSideOrigin(), local, localWo, scene, false);
+            return spectrum;
+        }
+        break;
     case SampleStrategy::MISSample:
         {
             Spectrum spectrum(0.0f);
@@ -330,109 +443,6 @@ Spectrum PTSurfaceIntegrator::estimateOneLight(
             Spectrum weightResult(0.0f);
             for (int32_t sampleNo = 0; sampleNo < numLightSample; ++sampleNo)
             {
-                // ライトのサンプリング
-                const auto lightSampling = [](
-                    SamplerPtr sampler,
-                    LightPtr light,
-                    BSDFPtr bsdf,
-                    Vec3 isectPos,
-                    const OrthonormalBasis<>& local,
-                    const Vec3 localWo,
-                    const SceneGeometory& scene,
-                    bool isUseMIS )
-                {
-                    // ライト上のサンプル
-                    Vec3 lightSamplePos;
-                    float pdfLight;
-                    const Spectrum emittion =
-                        light->sampleLe(
-                            sampler,
-                            isectPos,
-                            &lightSamplePos,
-                            &pdfLight);
-
-                    // TODO: ガラス面を対応する
-                    // 可視であれば、そのライトのSpectrumを足し上げる
-                    const Vec3 p0 = isectPos;
-                    const Vec3 p1 = lightSamplePos;
-                    // NOTE: 本当はライトも含めて行わないといけない(ライトの前にライトがある可能性がある)
-                    const bool skipLight = true;
-                    const bool isVisible = scene.isVisible(p0, p1, skipLight);
-                    if (!isVisible)
-                    {
-                        return Spectrum::createAsBlack();
-                    }
-                    
-                    // reflectanceの算出
-                    const Vec3 toLight = lightSamplePos - isectPos;
-                    const Vec3 worldWi = toLight.normalized();
-                    const Vec3 localWi = local.world2local(worldWi);
-                    const Spectrum reflectance = bsdf->bsdf(localWo, localWi);
-                    float weight = 1.0f;
-                    if (isUseMIS)
-                    {
-                        const float pdfBSDF = bsdf->pdf(localWo, localWi);
-                        weight = misBalanceHeuristic(pdfLight, pdfBSDF);
-                    }
-                    else
-                    {
-                        weight = 1.0f;
-                    }
-                    //
-                    // 最終的なspectrum値の算出
-                    const Spectrum spectrum = reflectance * emittion * std::fabsf(localWi.z()) * weight / pdfLight;
-                    //const Spectrum spectrum = Spectrum::createFromRGB({ weight ,0.0f, 0.0f }, false);
-                    AL_ASSERT_DEBUG(!spectrum.hasNaN());
-                    return spectrum;
-                };
-
-                // BSDFのサンプリング
-                const auto bsdfSampling = [](
-                    SamplerPtr sampler,
-                    LightPtr light,
-                    BSDFPtr bsdf,
-                    Vec3 isectPos,
-                    const OrthonormalBasis<>& local,
-                    const Vec3 localWo,
-                    const SceneGeometory& scene,
-                    bool isUseMIS)
-                {
-                    Vec3 localWi;
-                    float pdfBSDF;
-                    const Spectrum f = bsdf->bsdfSample(localWo, sampler, &localWi, &pdfBSDF);
-                    const Vec3 worldWi = local.local2world(localWi);
-                    const float pdfLight = light->pdf(isectPos, worldWi);
-                    float weight = 1.0f;
-                    if (isUseMIS)
-                    {
-                        weight = misBalanceHeuristic(pdfBSDF, pdfLight);
-                    }
-                    else
-                    {
-                        weight = 1.0f;
-                    }
-                    const Spectrum L = light->emittion(isectPos, worldWi);
-                    //
-                    if (pdfBSDF == 0.0f || L.isBlack())
-                    {
-                        return Spectrum::createAsBlack();
-                    }
-                    //
-                    const Vec3 p0 = isectPos;
-                    const Vec3 p1 = p0 + worldWi * 100000.0f;
-                    // NOTE: 本当はライトも含めて行わないといけない(ライトの前にライトがある可能性がある)
-                    const bool skipLight = true;
-                    const bool visible = scene.isVisible(p0, p1, skipLight);
-                    if (!visible)
-                    {
-                        return Spectrum::createAsBlack();
-                    }
-                    const Spectrum spectrum = f * L * absCosTheta(localWo) * weight / pdfBSDF;
-                    //const Spectrum spectrum = Spectrum::createFromRGB({ 0.0f, weight, 0.0f }, false);
-                    AL_ASSERT_DEBUG(!spectrum.hasNaN());
-                    return spectrum;
-                };
-
                 // MISの選択
                 // TODO: 前の方にあるSampleStrategyとまとめて扱えるようにする。
                 enum class LightSampleStrategy

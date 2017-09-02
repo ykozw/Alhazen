@@ -269,7 +269,7 @@ BlinnNDF::BlinnNDF(float e)
 float BlinnNDF::eval(Vec3 wh)
 {
     float act = absCosTheta(wh);
-    return (e_ + 2.0f) * (INV_PI*0.5f) * powf(act, e_);
+    return (e_ + 2.0f) * (INV_PI*0.5f) * std::powf(act, e_);
 }
 
 /*
@@ -305,14 +305,13 @@ void BlinnNDF::sample(
 {
     const float u1 = sampler->get1d();
     const float u2 = sampler->get1d();
-    const float cosTheta = powf(u1, 1.0f / (e_ + 1.0f));
+    const float cosTheta = std::powf(u1, 1.0f / (e_ + 1.0f));
     AL_ASSERT_DEBUG(cosTheta <= 1.0f);
-    const float sinTheta = sqrtf(std::max(0.0f, 1.0f - cosTheta * cosTheta));
+    const float sinTheta = std::sqrtf(std::max(0.0f, 1.0f - cosTheta * cosTheta));
     const float phi = u2 * 2.0f * PI;
-    Vec3 wh(
-        sinTheta * cosf(phi),
-        sinTheta * sinf(phi),
-        cosTheta);
+    Vec3 wh(sinTheta * std::cosf(phi),
+            sinTheta * std::sinf(phi),
+            cosTheta);
     if (!sameHemisphere(wo, wh))
     {
         wh = -wh;
@@ -1049,7 +1048,8 @@ Spectrum MicrofacetBSDF::bsdf(
     }
     //
     Vec3 wh = wi + wo;
-    if (wh.x() == 0. && wh.y() == 0. && wh.z() == 0.)
+    // 全て0であったら無効
+    if (!wh.any())
     {
         return Spectrum(0.0f);
     }
@@ -1074,6 +1074,8 @@ float MicrofacetBSDF::pdf(
     }
     return distribution_->pdf(localWo, localWi);
 }
+
+
 
 /*
 -------------------------------------------------

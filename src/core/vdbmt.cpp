@@ -28,7 +28,7 @@ struct TLS_Data
     DirtyableValue<const char*> label;
     DirtyableValue<int32_t> label_i;
 };
-AL_TLS TLS_Data tls;
+AL_TLS TLS_Data tls = {};
 std::mutex global_vdmt_mutex;
 
 /*

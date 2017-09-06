@@ -32,7 +32,8 @@ void FileSystem::init(const char* sceneFilePath, const char* exeFilePath)
 */
 std::string FileSystem::getOutputFolderPath() const
 {
-    if (outputDir_ != "")
+    if (outputDir_ != "" &&
+        outputDir_ != "/output/" )
     {
         return outputDir_;
     }

@@ -35,3 +35,24 @@ private:
 };
 extern TimeUtil g_timeUtil;
 
+
+/*
+-------------------------------------------------
+スピンロック
+基本的にはスピンロックだが、
+lock() unlock()間の時間が平均よりも大幅に増えていたら
+std::mutex::lock()を呼び出す
+cf. https://hackernoon.com/building-a-c-hybrid-spin-mutex-f98de535b4ac
+
+平均的なロック時間は常にSpinLockになっていることに注意
+-------------------------------------------------
+*/
+class SpinLock
+{
+public:
+    void lock();
+    void unlock();
+private:
+    std::mutex mtx_;
+    std::atomic<long long> predictedWaitTime_ = 1;
+};

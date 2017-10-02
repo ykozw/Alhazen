@@ -864,7 +864,7 @@ EnviromentLight::EnviromentLight(const ObjectProp& objectProp)
     }
     else if (ext == ".bmp")
     {
-        image_.readBmp(fileName, 2.2f);
+        image_.readBmp(fileName, true);
     }
     else
     {

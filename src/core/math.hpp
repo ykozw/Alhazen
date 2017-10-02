@@ -487,6 +487,36 @@ Row-Major/Row-Vectorの4x4行列
 struct Matrix3x3
 {
 public:
+    Matrix3x3() = default;
+    Matrix3x3(const Matrix3x3& other) = default;
+    Matrix3x3(Matrix3x3&& other) = default;
+    Matrix3x3(_In_reads_(9) const float* es);
+    Matrix3x3(
+        float e11, float e12, float e13,
+        float e21, float e22, float e23,
+        float e31, float e32, float e33);
+    Matrix3x3(
+        Vec3 row0,
+        Vec3 row1,
+        Vec3 row2);
+    void set(
+        Vec3 row0,
+        Vec3 row1,
+        Vec3 row2);
+    float det() const;
+    void inverse();
+    void transpose();
+    Vec3 transform(Vec3 v) const;
+    Matrix3x3 inversed() const;
+    Matrix3x3 transposed() const;
+    template<int32_t index>
+    Vec3 row() const;
+    template<int32_t index>
+    void setRow(Vec3 v);
+    //
+    Matrix3x3& operator = (const Matrix3x3& other) = default;
+public:
+#if defined(AL_MATH_USE_NO_SIMD)
     union
     {
         float e[9];
@@ -497,52 +527,11 @@ public:
             float e31, e32, e33;
         };
     };
-public:
-    Matrix3x3() = default;
-    Matrix3x3(const Matrix3x3& other) = default;
-    Matrix3x3(Matrix3x3&& other) = default;
-    Matrix3x3(_In_reads_(9) const float* es);
-    Matrix3x3(
-        float e11, float e12, float e13,
-        float e21, float e22, float e23,
-        float e31, float e32, float e33);
-    float det() const;
-    void inverse();
-    void transpose();
-    Matrix3x3 inversed() const;
-    Matrix3x3 transposed() const;
-    Matrix3x3& operator = (const Matrix3x3& other) = default;
-};
-
-/*
--------------------------------------------------
-Matrix3x3
-Row-Major/Row-Vectorの4x4行列
-過渡期なのでMatrix4x4もSIMD版が出来たらこれは正式に採用する
--------------------------------------------------
-*/
-struct Matrix3x3_next
-{
-public:
+#else
     __m128 row0;
     __m128 row1;
     __m128 row2;
-public:
-    Matrix3x3_next() = default;
-    Matrix3x3_next(const Matrix3x3_next& other) = default;
-    Matrix3x3_next(Matrix3x3_next&& other) = default;
-    Matrix3x3_next(_In_reads_(9) const float* es);
-    Matrix3x3_next(
-        float e11, float e12, float e13,
-        float e21, float e22, float e23,
-        float e31, float e32, float e33);
-    float det() const;
-    void inverse();
-    void transpose();
-    Vec3 transform(Vec3 v) const;
-    Matrix3x3_next inversed() const;
-    Matrix3x3_next transposed() const;
-    Matrix3x3_next& operator = (const Matrix3x3_next& other) = default;
+#endif
 };
 
 /*

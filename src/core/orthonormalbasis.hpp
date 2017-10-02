@@ -43,8 +43,8 @@ public:
 private:
     void updateNTS();
 private:
-    Matrix3x3_next nts;
-    Matrix3x3_next ntsInv;
+    Matrix3x3 nts;
+    Matrix3x3 ntsInv;
 };
 
 #include "orthonormalbasis.inl"

@@ -2150,7 +2150,6 @@ INLINE Matrix3x3 Matrix3x3::inversed() const
     m.e33 = (e11 * e22 - e12 * e21) * id;
     return m;
 #else
-    const __m128 C_1_1_1_0 = _mm_set_ps(0.0f, 1.0f, 1.0f, 1.0f);
     //
     const __m128 e12_13_22_23 = _mm_shuffle_ps(row0, row1, _MM_SHUFFLE(2, 1, 2, 1));
     const __m128 e11_13_21_23 = _mm_shuffle_ps(row0, row1, _MM_SHUFFLE(2, 0, 2, 0));
@@ -2182,11 +2181,11 @@ INLINE Matrix3x3 Matrix3x3::inversed() const
     const __m128 e32_22_12 = _mm_shuffle_ps(e22_21x_31x_32, row0, _MM_SHUFFLE(0, 1, 0, 3));
     const __m128 e23_13_33 = _mm_shuffle_ps(e11x_13_21x_23, row2, _MM_SHUFFLE(0, 2, 1, 3));
     // det()
-    const __m128 tmp0 =
+    const __m128 tmp =
         _mm_sub_ps(
             _mm_mul_ps(_mm_mul_ps(e11_21_31, e22_32_12), e33_13_23),
             _mm_mul_ps(_mm_mul_ps(e11_31_21, e32_22_12), e23_13_33));
-    const __m128 detV = _mm_dp_ps(tmp0, C_1_1_1_0, 0x7F);
+    const __m128 detV = _mm_dp_ps(tmp, _mm_set_ps1(1.0f), 0x7F);
     const __m128 invDet = _mm_rcp_ps_accurate(detV);
     //
     Matrix3x3 m;

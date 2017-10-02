@@ -112,7 +112,7 @@ Film::Film(const ObjectProp& objectProp)
     // TODO: highQualityEdges
     const std::string rfilter = objectProp.findChildByTag("rfilter").attribute("type").asString("gaussian"); // TODO: デフォルト値を知る
     // タイルサイズで割り切れるかチェック
-    const int32_t tileSize = 32;
+    const int32_t tileSize = 8;
     AL_ASSERT_DEBUG(width%tileSize == 0);
     AL_ASSERT_DEBUG(height%tileSize == 0);
     //

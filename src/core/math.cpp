@@ -217,7 +217,7 @@ AL_TEST(Math, Vec3)
 {
     // コンストラクタと設定
     {
-        ALIGN32 const float e[3] = {2.0f, 3.0f, 4.0f};
+        ALIGN16 const float e[3] = {2.0f, 3.0f, 4.0f};
         Vec3 v(e);
         AL_ASSERT_ALWAYS(v.x() == 2.0f);
         AL_ASSERT_ALWAYS(v.y() == 3.0f);
@@ -406,11 +406,11 @@ AL_TEST(Math, Matrix3x3_next)
 {
     // transpose
     {
-        Matrix3x3_next m0;
-        m0.row0 = Vec3(0.0f, 1.0f, 2.0f).xyz_;
-        m0.row1 = Vec3(3.0f, 4.0f, 5.0f).xyz_;
-        m0.row2 = Vec3(6.0f, 7.0f, 8.0f).xyz_;
-        Matrix3x3_next m1 = m0.transposed();
+        const Matrix3x3 m0(
+            Vec3(0.0f, 1.0f, 2.0f),
+            Vec3(3.0f, 4.0f, 5.0f),
+            Vec3(6.0f, 7.0f, 8.0f));
+        Matrix3x3 m1 = m0.transposed();
         // TODO: 値を取り出せるようにする
         // TODO: Matrix3x3_nextの同値を実装する
     }

@@ -137,9 +137,7 @@ void OrthonormalBasis<METHOD>::set(const Vec3& an)
         break;
     }
     //
-    nts.row0 = s.xyz_;
-    nts.row1 = t.xyz_;
-    nts.row2 = n.xyz_;
+    nts.set(s, t, n);
     //
     updateNTS();
 }
@@ -168,9 +166,9 @@ void OrthonormalBasis<METHOD>::set(const Vec3& an, const Vec3& at)
     AL_ASSERT_DEBUG(fabsf(Vec3::dot(n, s)) < 0.01f);
     AL_ASSERT_DEBUG(fabsf(Vec3::dot(t, s)) < 0.01f);
     //
-    nts.row0 = s.xyz_;
-    nts.row1 = t.xyz_;
-    nts.row2 = n.xyz_;
+    nts.setRow<0>(s);
+    nts.setRow<1>(t);
+    nts.setRow<2>(n);
     //
     updateNTS();
 }
@@ -241,7 +239,7 @@ Vec3 OrthonormalBasis<METHOD>::local2world(Vec3 local) const
 template<ONB_METHOD METHOD>
 Vec3 OrthonormalBasis<METHOD>::getN() const
 {
-    return nts.row2;
+    return nts.row<2>();
 }
 
 /*
@@ -251,7 +249,7 @@ Vec3 OrthonormalBasis<METHOD>::getN() const
 template<ONB_METHOD METHOD>
 Vec3 OrthonormalBasis<METHOD>::getT() const
 {
-    return nts.row1;
+    return nts.row<1>();
 }
 
 /*
@@ -261,5 +259,5 @@ Vec3 OrthonormalBasis<METHOD>::getT() const
 template<ONB_METHOD METHOD>
 Vec3 OrthonormalBasis<METHOD>::getS() const
 {
-    return nts.row0;
+    return nts.row<0>();
 }

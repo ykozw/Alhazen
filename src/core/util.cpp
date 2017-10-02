@@ -32,7 +32,8 @@ void FileSystem::init(const char* sceneFilePath, const char* exeFilePath)
 */
 std::string FileSystem::getOutputFolderPath() const
 {
-    if (outputDir_ != "")
+    if (outputDir_ != "" &&
+        outputDir_ != "/output/" )
     {
         return outputDir_;
     }
@@ -131,4 +132,37 @@ uint32_t TimeUtil::elapseTimeInMs()
     const auto duration = std::chrono::system_clock::now() - startTime_;
     int64_t elapsedInMs = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
     return uint32_t(elapsedInMs);
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+void SpinLock::lock()
+{
+    using clock_t = std::chrono::high_resolution_clock;
+    const auto before = clock_t::now();
+    long long elapsed =  0;
+    //
+    while (!mtx_.try_lock())
+    {
+        elapsed = (clock_t::now() - before).count();
+        // いつもよりも2倍以上待ってもロックできなければ通常のロックに入る
+        if (elapsed >= predictedWaitTime_ * 2)
+        {
+            mtx_.lock();
+            break;
+        }
+    }
+    // 次回以降の予想時間を今回の待ち時間に少し近づける
+    predictedWaitTime_ += (elapsed - predictedWaitTime_) / 8;
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+void SpinLock::unlock()
+{
+    mtx_.unlock();
 }

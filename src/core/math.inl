@@ -43,6 +43,17 @@ static INLINE __m128 _mm_rcp_ps_accurate(const __m128 v)
 
 /*
 -------------------------------------------------
+_mm_extract_ps()を使ってはいけない
+cf. https://stackoverflow.com/a/17258448
+-------------------------------------------------
+*/
+INLINE float _mm_extract_ps_fast(__m128 v)
+{
+    return _mm_cvtss_f32(_mm_shuffle_ps(v, v, _MM_SHUFFLE(0, 0, 0, 0)));
+}
+
+/*
+-------------------------------------------------
 -------------------------------------------------
 */
 INLINE Size2D::Size2D(_In_reads_(2) int32_t* es)
@@ -260,11 +271,7 @@ INLINE float FloatInVec::value() const
 #if defined(AL_MATH_USE_NO_SIMD)
     return v;
 #else
-    /*
-     _mm_extract_ps()を使ってはいけない
-     cf. https://stackoverflow.com/a/17258448
-     */
-    return _mm_cvtss_f32(_mm_shuffle_ps(v, v, _MM_SHUFFLE(0, 0, 0, 0)));
+    return _mm_extract_ps_fast(v);
 #endif
 }
 
@@ -366,8 +373,7 @@ INLINE BoolInVec::BoolInVec(bool av)
 INLINE BoolInVec::operator __m128i () const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    AL_ASSERT_ALWAYS(false);
-    return _mm_set_ps1(0.0f);
+    return _mm_set1_epi32(v);
 #else
     return v;
 #endif
@@ -379,11 +385,7 @@ INLINE BoolInVec::operator __m128i () const
  */
 INLINE BoolInVec::operator bool() const
 {
-#if defined(WINDOWS)
-    return (v.m128i_i32[0] != 0x00000000);
-#else
     return value();
-#endif
 }
 
 /*
@@ -1972,6 +1974,7 @@ INLINE FloatInVec Vec4::lengthSq(Vec4 v)
 */
 INLINE Matrix3x3::Matrix3x3(_In_reads_(9) const float* es)
 {
+#if defined(AL_MATH_USE_NO_SIMD)
     e[0] = es[0];
     e[1] = es[1];
     e[2] = es[2];
@@ -1981,6 +1984,9 @@ INLINE Matrix3x3::Matrix3x3(_In_reads_(9) const float* es)
     e[6] = es[6];
     e[7] = es[7];
     e[8] = es[8];
+#else
+    AL_ASSERT_ALWAYS(false);
+#endif
 }
 
 /*
@@ -1992,6 +1998,7 @@ INLINE Matrix3x3::Matrix3x3(
     float ae21, float ae22, float ae23,
     float ae31, float ae32, float ae33)
 {
+#if defined(AL_MATH_USE_NO_SIMD)
     e11 = ae11;
     e12 = ae12;
     e13 = ae13;
@@ -2001,6 +2008,41 @@ INLINE Matrix3x3::Matrix3x3(
     e31 = ae31;
     e32 = ae32;
     e33 = ae33;
+#else
+    row0 = _mm_set_ps(0.0f, ae13, ae12, ae11);
+    row1 = _mm_set_ps(0.0f, ae23, ae22, ae21);
+    row2 = _mm_set_ps(0.0f, ae33, ae32, ae31);
+#endif
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE Matrix3x3::Matrix3x3(
+    Vec3 row0,
+    Vec3 row1,
+    Vec3 row2)
+{
+    set(row0, row1, row2);
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE void Matrix3x3::set(
+    Vec3 aRow0,
+    Vec3 aRow1,
+    Vec3 aRow2)
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    AL_ASSERT_ALWAYS(false);
+#else
+    row0 = aRow0.xyz_;
+    row1 = aRow1.xyz_;
+    row2 = aRow2.xyz_;
+#endif
 }
 
 /*
@@ -2009,10 +2051,33 @@ INLINE Matrix3x3::Matrix3x3(
 */
 INLINE float Matrix3x3::det() const
 {
+#if defined(AL_MATH_USE_NO_SIMD)
     const float d =
         (e11 * e22 * e33 + e21 * e32 * e13 + e31 * e12 * e23) -
         (e11 * e32 * e23 + e31 * e22 * e13 + e21 * e12 * e33);
     return d;
+#else
+    const __m128 C_1_1_1_0 = _mm_set_ps(0.0f, 1.0f, 1.0f, 1.0f);
+    const __m128 e11_12_21_22 = _mm_shuffle_ps(row0, row1, _MM_SHUFFLE(1, 0, 1, 0));
+    const __m128 e22_21x_31x_32 = _mm_shuffle_ps(row1, row2, _MM_SHUFFLE(1, 0, 0, 1));
+    const __m128 e11_13_31_33 = _mm_shuffle_ps(row0, row2, _MM_SHUFFLE(2, 0, 2, 0));
+    const __m128 e11x_13_21x_23 = _mm_shuffle_ps(row0, row1, _MM_SHUFFLE(2, 0, 2, 0));
+    //
+    const __m128 e11_21_31 = _mm_shuffle_ps(e11_12_21_22, row2, _MM_SHUFFLE(0, 0, 2, 0));
+    const __m128 e22_32_12 = _mm_shuffle_ps(e22_21x_31x_32, row0, _MM_SHUFFLE(0, 1, 3, 0));
+    const __m128 e33_13_23 = _mm_shuffle_ps(e11_13_31_33, row1, _MM_SHUFFLE(0, 2, 1, 3));
+    const __m128 e11_31_21 = _mm_shuffle_ps(e11_13_31_33, row1, _MM_SHUFFLE(0, 0, 2, 0));
+    const __m128 e32_22_12 = _mm_shuffle_ps(e22_21x_31x_32, row0, _MM_SHUFFLE(0, 1, 0, 3));
+    const __m128 e23_13_33 = _mm_shuffle_ps(e11x_13_21x_23, row2, _MM_SHUFFLE(0, 2, 1, 3));
+    const __m128 tmp0 =
+        _mm_sub_ps(
+            _mm_mul_ps(_mm_mul_ps(e11_21_31, e22_32_12), e33_13_23),
+            _mm_mul_ps(_mm_mul_ps(e11_31_21, e32_22_12), e23_13_33));
+    const __m128 detV = _mm_dp_ps(tmp0, C_1_1_1_0, 0x7F);
+    const __m128 invDet = _mm_rcp_ps_accurate(detV);
+    //
+    return _mm_extract_ps_fast(invDet);
+#endif
 }
 
 /*
@@ -2030,9 +2095,39 @@ INLINE void Matrix3x3::inverse()
 */
 INLINE void Matrix3x3::transpose()
 {
+#if defined(AL_MATH_USE_NO_SIMD)
     std::swap(e12, e21);
     std::swap(e13, e31);
     std::swap(e23, e32);
+#else
+    const __m128 tmp0 = _mm_shuffle_ps(row0, row1, 0x44);
+    const __m128 tmp2 = _mm_shuffle_ps(row0, row1, 0xEE);
+    const __m128 tmp1 = _mm_shuffle_ps(row2, row2, 0x44);
+    const __m128 tmp3 = _mm_shuffle_ps(row2, row2, 0xEE);
+    row0 = _mm_shuffle_ps(tmp0, tmp1, 0x88);
+    row1 = _mm_shuffle_ps(tmp0, tmp1, 0xDD);
+    row2 = _mm_shuffle_ps(tmp2, tmp3, 0x88);
+#endif
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE Vec3 Matrix3x3::transform(Vec3 v) const
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    AL_ASSERT_ALWAYS(false);
+    return Vec3();
+#else
+    const __m128 v0 = _mm_dp_ps(row0, v.xyz_, 0x7F);
+    const __m128 v1 = _mm_dp_ps(row1, v.xyz_, 0x7F);
+    const __m128 v2 = _mm_dp_ps(row2, v.xyz_, 0x7F);
+    //
+    const __m128 tmp = _mm_shuffle_ps(v0, v1, 0x44);
+    const __m128 ret = _mm_shuffle_ps(tmp, v2, 0x88);
+    return ret;
+#endif
 }
 
 /*
@@ -2041,6 +2136,7 @@ INLINE void Matrix3x3::transpose()
 */
 INLINE Matrix3x3 Matrix3x3::inversed() const
 {
+#if defined(AL_MATH_USE_NO_SIMD)
     Matrix3x3 m;
     const float id = 1.0f / det();
     m.e11 = (e22 * e33 - e23 * e32) * id;
@@ -2053,6 +2149,68 @@ INLINE Matrix3x3 Matrix3x3::inversed() const
     m.e32 = (e12 * e31 - e11 * e32) * id;
     m.e33 = (e11 * e22 - e12 * e21) * id;
     return m;
+#else
+    const __m128 C_1_1_1_0 = _mm_set_ps(0.0f, 1.0f, 1.0f, 1.0f);
+    //
+    const __m128 e12_13_22_23 = _mm_shuffle_ps(row0, row1, _MM_SHUFFLE(2, 1, 2, 1));
+    const __m128 e11_13_21_23 = _mm_shuffle_ps(row0, row1, _MM_SHUFFLE(2, 0, 2, 0));
+    const __m128 e11_12_21_22 = _mm_shuffle_ps(row0, row1, _MM_SHUFFLE(1, 0, 1, 0));
+    //
+    const __m128 e22_13_12 = _mm_shuffle_ps(e12_13_22_23, row0, _MM_SHUFFLE(0, 1, 1, 2));
+    const __m128 e33_32_23 = _mm_shuffle_ps(row2, row1, _MM_SHUFFLE(0, 2, 1, 2));
+    const __m128 e23_12_13 = _mm_shuffle_ps(e12_13_22_23, row0, _MM_SHUFFLE(0, 2, 0, 3));
+    const __m128 e32_33_22 = _mm_shuffle_ps(row2, row1, _MM_SHUFFLE(0, 1, 2, 1));
+    //
+    const __m128 e23_11_13 = _mm_shuffle_ps(e11_13_21_23, row0, _MM_SHUFFLE(0, 2, 0, 3));
+    const __m128 e31_33_21 = _mm_shuffle_ps(row2, row1, _MM_SHUFFLE(0, 0, 2, 0));
+    const __m128 e21_13_11 = _mm_shuffle_ps(e11_13_21_23, row0, _MM_SHUFFLE(0, 0, 1, 2));
+    const __m128 e33_31_23 = _mm_shuffle_ps(row2, row1, _MM_SHUFFLE(0, 2, 0, 2));
+    //
+    const __m128 e21_12_11 = _mm_shuffle_ps(e11_12_21_22, row0, _MM_SHUFFLE(0, 0, 1, 2));
+    const __m128 e32_31_22 = _mm_shuffle_ps(row2, row1, _MM_SHUFFLE(0, 1, 0, 1));
+    const __m128 e22_11_12 = _mm_shuffle_ps(e11_12_21_22, row0, _MM_SHUFFLE(0, 1, 0, 3));
+    const __m128 e31_32_21 = _mm_shuffle_ps(row2, row1, _MM_SHUFFLE(0, 0, 1, 0));
+    //
+    const __m128 e11_13_31_33 = _mm_shuffle_ps(row0, row2, _MM_SHUFFLE(2, 0, 2, 0));
+    const __m128 e22_21x_31x_32 = _mm_shuffle_ps(row1, row2, _MM_SHUFFLE(1, 0, 0, 1));
+    const __m128 e11x_13_21x_23 = _mm_shuffle_ps(row0, row1, _MM_SHUFFLE(2, 0, 2, 0));
+    //
+    const __m128 e11_21_31 = _mm_shuffle_ps(e11_12_21_22, row2, _MM_SHUFFLE(0, 0, 2, 0));
+    const __m128 e22_32_12 = _mm_shuffle_ps(e22_21x_31x_32, row0, _MM_SHUFFLE(0, 1, 3, 0));
+    const __m128 e33_13_23 = _mm_shuffle_ps(e11_13_31_33, row1, _MM_SHUFFLE(0, 2, 1, 3));
+    const __m128 e11_31_21 = _mm_shuffle_ps(e11_13_31_33, row1, _MM_SHUFFLE(0, 0, 2, 0));
+    const __m128 e32_22_12 = _mm_shuffle_ps(e22_21x_31x_32, row0, _MM_SHUFFLE(0, 1, 0, 3));
+    const __m128 e23_13_33 = _mm_shuffle_ps(e11x_13_21x_23, row2, _MM_SHUFFLE(0, 2, 1, 3));
+    // det()
+    const __m128 tmp0 =
+        _mm_sub_ps(
+            _mm_mul_ps(_mm_mul_ps(e11_21_31, e22_32_12), e33_13_23),
+            _mm_mul_ps(_mm_mul_ps(e11_31_21, e32_22_12), e23_13_33));
+    const __m128 detV = _mm_dp_ps(tmp0, C_1_1_1_0, 0x7F);
+    const __m128 invDet = _mm_rcp_ps_accurate(detV);
+    //
+    Matrix3x3 m;
+    m.row0 =
+        _mm_mul_ps(
+            _mm_sub_ps(
+                _mm_mul_ps(e22_13_12, e33_32_23),
+                _mm_mul_ps(e23_12_13, e32_33_22)),
+            invDet);
+    m.row1 =
+        _mm_mul_ps(
+            _mm_sub_ps(
+                _mm_mul_ps(e23_11_13, e31_33_21),
+                _mm_mul_ps(e21_13_11, e33_31_23)),
+            invDet);
+    m.row2 =
+        _mm_mul_ps(
+            _mm_sub_ps(
+                _mm_mul_ps(e21_12_11, e32_31_22),
+                _mm_mul_ps(e22_11_12, e31_32_21)),
+            invDet);
+    //
+    return m;
+#endif
 }
 
 /*
@@ -2070,12 +2228,54 @@ INLINE Matrix3x3 Matrix3x3::transposed() const
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE Matrix4x4::Matrix4x4(const Matrix3x3& m33)
+template<int32_t index>
+INLINE Vec3 Matrix3x3::row() const
 {
-    e11 = m33.e11; e12 = m33.e12; e13 = m33.e13; e14 = 0.0f;
-    e21 = m33.e21; e22 = m33.e22; e23 = m33.e23; e24 = 0.0f;
-    e31 = m33.e31; e32 = m33.e32; e33 = m33.e33; e34 = 0.0f;
-    e41 = 0.0f;    e42 = 0.0f;    e43 = 0.0f;    e44 = 1.0f;
+    static_assert((0 <= index) && (index <= 2), "");
+
+#if defined(AL_MATH_USE_NO_SIMD)
+    switch (index)
+    {
+    case 0: return Vec3(e11, e12, e13);
+    case 1: return Vec3(e21, e22, e23);
+    case 2: return Vec3(e31, e32, e33);
+    }
+    return Vec3(0.0f);
+#else
+    switch (index)
+    {
+    case 0: return row0;
+    case 1: return row1;
+    case 2: return row2;
+    }
+    return Vec3(0.0f);
+#endif
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+template<int32_t index>
+INLINE void Matrix3x3::setRow(Vec3 v)
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    AL_ASSERT_ALWAYS(false);
+#else
+    static_assert((0 <= index) && (index <= 2),"");
+    switch (index)
+    {
+    case 0:
+        row0 = v.xyz_;
+        break;
+    case 1:
+        row1 = v.xyz_;
+        break;
+    case 2:
+        row2 = v.xyz_;
+        break;
+    }
+#endif
 }
 
 /*
@@ -2101,6 +2301,44 @@ INLINE Matrix4x4::Matrix4x4(_In_reads_(16) const float* es)
     e[14] = es[14];
     e[15] = es[15];
 }
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE Matrix4x4::Matrix4x4(const Matrix3x3& m33)
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    e11 = m33.e11; e12 = m33.e12; e13 = m33.e13; e14 = 0.0f;
+    e21 = m33.e21; e22 = m33.e22; e23 = m33.e23; e24 = 0.0f;
+    e31 = m33.e31; e32 = m33.e32; e33 = m33.e33; e34 = 0.0f;
+    e41 = 0.0f;    e42 = 0.0f;    e43 = 0.0f;    e44 = 1.0f;
+#else
+    // w成分に0以外の値が入っていることがあり得ることに注意
+    ALIGN16 float ae[16];
+    _mm_store_ps(ae + 0, m33.row0);
+    _mm_store_ps(ae + 4, m33.row1);
+    _mm_store_ps(ae + 8, m33.row2);
+    //
+    e[0] = ae[0];
+    e[1] = ae[1];
+    e[2] = ae[2];
+    e[3] = 0.0f;
+    e[4] = ae[4];
+    e[5] = ae[5];
+    e[6] = ae[6];
+    e[7] = 0.0f;
+    e[8] = ae[8];
+    e[9] = ae[9];
+    e[10] = ae[10];
+    e[11] = 0.0f;
+    e[12] = ae[12];
+    e[13] = ae[13];
+    e[14] = ae[14];
+    e[15] = 1.0f;
+#endif
+}
+
 
 /*
 -------------------------------------------------
@@ -2500,6 +2738,7 @@ INLINE Matrix4x4 Matrix4x4::transposed() const
 */
 INLINE Matrix3x3 Matrix4x4::extract3x3() const
 {
+#if defined(AL_MATH_USE_NO_SIMD)
     Matrix3x3 m;
     m.e11 = e11;
     m.e12 = e12;
@@ -2511,6 +2750,12 @@ INLINE Matrix3x3 Matrix4x4::extract3x3() const
     m.e32 = e32;
     m.e33 = e33;
     return m;
+#else
+    return Matrix3x3(
+        e11, e12, e13,
+        e21, e22, e23,
+        e31, e32, e33);
+#endif
 }
 
 /*

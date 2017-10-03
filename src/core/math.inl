@@ -2074,9 +2074,8 @@ INLINE float Matrix3x3::det() const
             _mm_mul_ps(_mm_mul_ps(e11_21_31, e22_32_12), e33_13_23),
             _mm_mul_ps(_mm_mul_ps(e11_31_21, e32_22_12), e23_13_33));
     const __m128 detV = _mm_dp_ps(tmp0, C_1_1_1_0, 0x7F);
-    const __m128 invDet = _mm_rcp_ps_accurate(detV);
     //
-    return _mm_extract_ps_fast(invDet);
+    return _mm_extract_ps_fast(detV);
 #endif
 }
 
@@ -2314,7 +2313,7 @@ INLINE Matrix4x4::Matrix4x4(const Matrix3x3& m33)
     e41 = 0.0f;    e42 = 0.0f;    e43 = 0.0f;    e44 = 1.0f;
 #else
     // w成分に0以外の値が入っていることがあり得ることに注意
-    ALIGN16 float ae[16];
+    ALIGN16 float ae[12];
     _mm_store_ps(ae + 0, m33.row0);
     _mm_store_ps(ae + 4, m33.row1);
     _mm_store_ps(ae + 8, m33.row2);
@@ -2331,9 +2330,9 @@ INLINE Matrix4x4::Matrix4x4(const Matrix3x3& m33)
     e[9] = ae[9];
     e[10] = ae[10];
     e[11] = 0.0f;
-    e[12] = ae[12];
-    e[13] = ae[13];
-    e[14] = ae[14];
+    e[12] = 0.0f;
+    e[13] = 0.0f;
+    e[14] = 0.0f;
     e[15] = 1.0f;
 #endif
 }

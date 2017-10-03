@@ -10,12 +10,12 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-class PMSurfaceIntegrator
+class PMIntegrator
     :public LTEIntegrator
 {
 public:
-    PMSurfaceIntegrator() {}
-    PMSurfaceIntegrator(const ObjectProp& objectProp);
+    PMIntegrator() {}
+    PMIntegrator(const ObjectProp& objectProp);
     bool preRendering(const SceneGeometory& scene, AllBSDFList& bsdfList) override;
     bool postRendering() override
     {
@@ -27,7 +27,7 @@ public:
         SamplerPtr sampler) override;
 private:
     int32_t numPhoton_ = 0;
-    //
+    // フォトン
     struct Photon
     {
         Vec3 pos;
@@ -43,13 +43,13 @@ private:
     std::vector<const Photon*> photons_;
     std::vector<Photon> photonsSrc_;
 };
-REGISTER_OBJECT(LTEIntegrator, PMSurfaceIntegrator);
+REGISTER_OBJECT(LTEIntegrator, PMIntegrator);
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-PMSurfaceIntegrator::PMSurfaceIntegrator(const ObjectProp& objectProp)
+PMIntegrator::PMIntegrator(const ObjectProp& objectProp)
 {
     numPhoton_ = 1024 * 16;
 }
@@ -58,7 +58,7 @@ PMSurfaceIntegrator::PMSurfaceIntegrator(const ObjectProp& objectProp)
 -------------------------------------------------
 -------------------------------------------------
 */
-bool PMSurfaceIntegrator::preRendering(const SceneGeometory& scene, AllBSDFList& bsdfList)
+bool PMIntegrator::preRendering(const SceneGeometory& scene, AllBSDFList& bsdfList)
 {
     //
     const auto& lights = scene.lights();
@@ -139,7 +139,7 @@ bool PMSurfaceIntegrator::preRendering(const SceneGeometory& scene, AllBSDFList&
 -------------------------------------------------
 -------------------------------------------------
 */
-Spectrum PMSurfaceIntegrator::radiance(
+Spectrum PMIntegrator::radiance(
     const Ray& screenRay,
     const SceneGeometory& scene,
     SamplerPtr sampler)

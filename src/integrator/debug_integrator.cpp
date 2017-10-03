@@ -6,7 +6,7 @@
 -------------------------------------------------
 */
 class DebugSurfaceIntegrator
-    :public SurfaceIntegrator
+    :public LTEIntegrator
 {
 public:
     DebugSurfaceIntegrator(const ObjectProp& objectProp);
@@ -24,7 +24,7 @@ public:
         SamplerPtr sampler) override;
 private:
 };
-REGISTER_OBJECT(SurfaceIntegrator, DebugSurfaceIntegrator);
+REGISTER_OBJECT(LTEIntegrator, DebugSurfaceIntegrator);
 
 /*
 -------------------------------------------------

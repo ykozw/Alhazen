@@ -11,7 +11,7 @@
 -------------------------------------------------
 */
 class PTSurfaceIntegrator
-    :public SurfaceIntegrator
+    :public LTEIntegrator
 {
 public:
     PTSurfaceIntegrator() = default;
@@ -56,7 +56,7 @@ private:
     DirectLighitingSelectStrategy directLighitingLightSelectStrategy_ = DirectLighitingSelectStrategy::UniformOne;
 };
 
-REGISTER_OBJECT(SurfaceIntegrator,PTSurfaceIntegrator);
+REGISTER_OBJECT(LTEIntegrator,PTSurfaceIntegrator);
 
 /*
 -------------------------------------------------

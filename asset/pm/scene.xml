@@ -25,16 +25,16 @@
   <!--<denoiser type="ap"/>-->
   
   <!--インテグレーター-->
-  <!--<integrator type="debug_depth">-->
-  <!--<integrator type="debug_id">-->
-  <!--<integrator type="debug_normal">-->
-  <!--<integrator type="pt">-->
-  <SurfaceIntegrator type="AOSurfaceIntegrator">
-  <!--<SurfaceIntegrator type="TestIntegrator">-->
+  <!--<LTEIntegrator type="debug_depth">-->
+  <!--<LTEIntegrator type="debug_id">-->
+  <!--<LTEIntegrator type="debug_normal">-->
+  <!--<LTEIntegrator type="pt">-->
+  <!--<LTEIntegrator type="AOSurfaceIntegrator">-->
+  <LTEIntegrator type="PMIntegrator">
     <int name ="sampleNum" value="64"/>
-  </SurfaceIntegrator>
-  
-  <Tonemapper type="Degamma">
+  </LTEIntegrator>
+
+    <Tonemapper type="Degamma">
   </Tonemapper>
 
   <!--センサー-->
@@ -55,7 +55,14 @@
       <float name="filmHeightMM" value="60"/>
     </film>
   </Sensor>
-    
+
+
+  <Light type="SphereLight">
+    <float3 name="center" x="0.0" y="1.6" z="0.0"/>
+    <float name="radius" value="0.03"/>
+    <rgb name="radiance" value="30.0 4.0 4.0"/>
+  </Light>
+  
   <!--球1-->
   <Shape type="Sphere">
     <!--TODO: 移動変形はtransformで扱った方が綺麗かもしれない-->

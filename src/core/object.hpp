@@ -147,6 +147,7 @@ std::shared_ptr<BaseClass> createObject(const ObjectProp& objProp)
         objProp :
         objProp.findChildByTag(baseClassName);
     const std::string& targetClassName = targetProp.attribute("type").asString("");
+    AL_ASSERT_DEBUG(targetClassName != "");
     return std::shared_ptr<BaseClass>(
         dynamic_cast<BaseClass*>(
             createObjectCore(

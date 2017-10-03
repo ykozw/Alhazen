@@ -25,12 +25,12 @@
   <!--<denoiser type="ap"/>-->
   
   <!--インテグレーター-->
-  <!--<SurfaceIntegrator type="DebugSurfaceIntegrator">-->
-  <!--<SurfaceIntegrator type="AOSurfaceIntegrator">-->
-  <SurfaceIntegrator type="PTSurfaceIntegrator">
-  <!--<SurfaceIntegrator type="BruteForceIntegrator">-->
-  <!--<SurfaceIntegrator type="PMSurfaceIntegrator">-->
-  </SurfaceIntegrator>
+  <!--<LTEIntegrator type="DebugSurfaceIntegrator">-->
+  <!--<LTEIntegrator type="AOSurfaceIntegrator">-->
+  <LTEIntegrator type="PTSurfaceIntegrator">
+  <!--<LTEIntegrator type="BruteForceIntegrator">-->
+  <!--<LTEIntegrator type="PMSurfaceIntegrator">-->
+  </LTEIntegrator>
   
   <Tonemapper type="Degamma">
   </Tonemapper>

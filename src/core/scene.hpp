@@ -40,7 +40,7 @@ private:
     SensorPtr sensor_;
     TonemapperPtr tonemapper_;
     DenoiserPtr denoiser_;
-    SurfaceIntegratorPtr integrator_;
+    LTEIntegratorPtr integrator_;
     int32_t totalTaskNum_;
     // トーンマッピングされた画像
     ImageLDR tonemmappedImage_;

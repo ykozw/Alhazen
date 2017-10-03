@@ -11,7 +11,7 @@
 -------------------------------------------------
 */
 class BruteForceIntegrator
-    :public SurfaceIntegrator
+    :public LTEIntegrator
 {
 public:
     BruteForceIntegrator() = default;
@@ -28,7 +28,7 @@ public:
 private:
 };
 
-REGISTER_OBJECT(SurfaceIntegrator,BruteForceIntegrator);
+REGISTER_OBJECT(LTEIntegrator,BruteForceIntegrator);
 
 /*
 -------------------------------------------------

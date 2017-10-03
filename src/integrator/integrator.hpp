@@ -7,8 +7,8 @@
 #include "core/scenegeometory.hpp"
 #include "sampler/sampler.hpp"
 
-class SurfaceIntegrator;
-typedef std::shared_ptr<SurfaceIntegrator> SurfaceIntegratorPtr;
+class LTEIntegrator;
+typedef std::shared_ptr<LTEIntegrator> LTEIntegratorPtr;
 
 /*
 -------------------------------------------------
@@ -16,11 +16,11 @@ typedef std::shared_ptr<SurfaceIntegrator> SurfaceIntegratorPtr;
 radiance()は複数のスレッドから呼ばれても問題のない作りにする
 -------------------------------------------------
 */
-class SurfaceIntegrator
+class LTEIntegrator
 	:public Object
 {
 public:
-    virtual ~SurfaceIntegrator(){}
+    virtual ~LTEIntegrator(){}
     virtual bool preRendering(
         const SceneGeometory& scene,
         AllBSDFList& bsdfList ) = 0;

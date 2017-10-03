@@ -10,7 +10,7 @@
 -------------------------------------------------
 */
 class AOSurfaceIntegrator
-    :public SurfaceIntegrator
+    :public LTEIntegrator
 {
 public:
     AOSurfaceIntegrator() {}
@@ -24,7 +24,7 @@ public:
 private:
     int32_t sampleNum_ = 0;
 };
-REGISTER_OBJECT(SurfaceIntegrator, AOSurfaceIntegrator);
+REGISTER_OBJECT(LTEIntegrator, AOSurfaceIntegrator);
 
 /*
 -------------------------------------------------

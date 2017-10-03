@@ -21,7 +21,7 @@ Scene::Scene()
 Scene::Scene(const ObjectProp& objectProp)
 {
     //
-    integrator_ = createObject<SurfaceIntegrator>(objectProp);
+    integrator_ = createObject<LTEIntegrator>(objectProp);
     // センサーの作成
     sensor_ = createObject<Sensor>(objectProp);
     // トーンマッパーの作成

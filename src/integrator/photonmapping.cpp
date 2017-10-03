@@ -11,7 +11,7 @@
 -------------------------------------------------
 */
 class PMSurfaceIntegrator
-    :public SurfaceIntegrator
+    :public LTEIntegrator
 {
 public:
     PMSurfaceIntegrator() {}
@@ -43,7 +43,7 @@ private:
     std::vector<const Photon*> photons_;
     std::vector<Photon> photonsSrc_;
 };
-REGISTER_OBJECT(SurfaceIntegrator, PMSurfaceIntegrator);
+REGISTER_OBJECT(LTEIntegrator, PMSurfaceIntegrator);
 
 /*
 -------------------------------------------------

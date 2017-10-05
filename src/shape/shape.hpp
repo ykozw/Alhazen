@@ -9,15 +9,18 @@
 
 /*
 -------------------------------------------------
+シーン中に配置されるShapeの基底
+次のような前提を置く
+- 必ず有限のサイズであること。
+  これを満たすため、Planeなどの形状はサポートしない
 -------------------------------------------------
 */
 class Shape
-    :public Object
+    :public SceneObject
 {
 public:
     Shape(const ObjectProp& prop);
     virtual ~Shape() {}
-    virtual bool hasAABB() const = 0;
     virtual AABB aabb() const = 0;
     virtual bool intersect(const Ray& ray, _Inout_ Intersect* isect) const = 0;
     virtual bool intersectCheck(const Ray& ray) const = 0;

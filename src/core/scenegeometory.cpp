@@ -52,7 +52,7 @@ bool SceneGeometory::intersect(
                 isect->bsdf = shape->getBSDF();
             }
 #endif
-            isect->shape = shape.get();
+            isect->sceneObject = shape.get();
             isHit = true;
         }
     }
@@ -65,13 +65,14 @@ bool SceneGeometory::intersect(
             if (light->intersect(ray, isect))
             {
                 AL_ASSERT_DEBUG(isect->bsdf);
-                isect->shape = light.get();
-                isect->isLight = true;
+                isect->sceneObject = light.get();
                 isHit = true;
             }
         }
     }
-
+    //
+    isect->setHit(isHit);
+    //
     return isHit;
 }
 

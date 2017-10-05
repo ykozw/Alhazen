@@ -8,7 +8,6 @@
 #include "core/distribution2d.hpp"
 #include "core/orthonormalbasis.hpp"
 #include "sampler/sampler.hpp"
-#include "shape/shape.hpp"
 
 /*
 -------------------------------------------------
@@ -16,11 +15,15 @@ Light
 -------------------------------------------------
 */
 class Light
-    :public Shape
+    :public SceneObject
 {
 public:
     Light(const ObjectProp& objectProp);
     virtual ~Light() = default;
+    //
+    virtual bool intersect(const Ray& ray, _Inout_ Intersect* isect) const = 0;
+    virtual bool intersectCheck(const Ray& ray) const = 0;
+    //
     int32_t sampleNum() const;
     virtual bool isDeltaFunc() const = 0;
     virtual Spectrum emittion(
@@ -66,16 +69,6 @@ public:
         _Out_ float* pdf) const override;
 
     // ShapeのOverride
-    bool hasAABB() const override
-    {
-        AL_ASSERT_DEBUG(!"not impl");
-        return false;
-    }
-    AABB aabb() const override
-    {
-        AL_ASSERT_DEBUG(!"not impl");
-        return AABB();
-    }
     bool intersect(const Ray& ray, Intersect* isect) const override;
     bool intersectCheck(const Ray& ray) const override
     {
@@ -122,8 +115,6 @@ public:
     float area() const;
 
     // ShapeのOverride
-    bool hasAABB() const override;
-    AABB aabb() const override;
     bool intersect(const Ray& ray, _Inout_ Intersect* isect) const override;
     bool intersectCheck(const Ray& ray) const override;
 private:
@@ -176,17 +167,6 @@ public:
         Vec3 targetPos,
         _Out_ Vec3* samplePos,
         _Out_ float* pdf) const override;
-
-    bool hasAABB() const override
-    {
-        AL_ASSERT_ALWAYS(false);
-        return true;
-    }
-    AABB aabb() const override
-    {
-        AL_ASSERT_ALWAYS(false);
-        return AABB();
-    }
     bool intersect(const Ray& ray, _Inout_ Intersect* isect) const override;
     bool intersectCheck(const Ray& ray) const override
     {
@@ -233,16 +213,6 @@ public:
     const Image& image();
 
     // ShapeのOverride
-    bool hasAABB() const override
-    {
-        AL_ASSERT_DEBUG("not impl");
-        return false;
-    }
-    AABB aabb() const override
-    {
-        AL_ASSERT_DEBUG("not impl");
-        return AABB();
-    }
     bool intersect(const Ray& ray, Intersect* isect) const override
     {
         AL_ASSERT_DEBUG("not impl");

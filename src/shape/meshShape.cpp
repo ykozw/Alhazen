@@ -13,7 +13,6 @@ class ObjShape
 {
 public:
     ObjShape( const ObjectProp& objectProp );
-    bool hasAABB() const override;
     int32_t numVerts() const;
     int32_t numFaces() const;
     AABB aabb() const override;
@@ -48,15 +47,6 @@ ObjShape::ObjShape(const ObjectProp& objectProp)
     materialIds_ = mesh.materialIds();
     // bvhの構築
     bvh_.construct(mesh.vs, mesh.ns, mesh.ts, mesh.faces);
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-bool ObjShape::hasAABB() const
-{
-    return true;
 }
 
 /*

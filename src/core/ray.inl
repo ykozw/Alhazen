@@ -6,11 +6,6 @@
 -------------------------------------------------
 */
 INLINE Ray::Ray()
-    :o(Vec3(0.0f)),
-    d(Vec3(1.0f, 0.0f, 0.0)),
-    waveLength(WAVE_LENGTH_D),
-    mint(0.0f),
-    maxt(std::numeric_limits <float>::max())
 {
     d.normalize();
     dinv = d.invertedSafe(std::numeric_limits <float>::max());
@@ -23,7 +18,12 @@ INLINE Ray::Ray()
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE Ray::Ray(const Vec3& pos, const Vec3& dir, float awaveLength, float amint, float amaxt)
+INLINE Ray::Ray(
+    Vec3 pos,
+    Vec3 dir,
+    float awaveLength,
+    float amint,
+    float amaxt)
     :o(pos),
     d(dir),
     waveLength(awaveLength),
@@ -86,4 +86,31 @@ INLINE Vec3 Intersect::belowSideOrigin() const
 {
     // HACK: 本当にこの実装であっているのかかなり怪しい
     return position - normal * rayEpsilon;
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE void Intersect::setHit(bool hit)
+{
+    isHit_ = hit;
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE bool Intersect::isHit() const
+{
+    return isHit_;
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE bool Intersect::isHitWithInf() const
+{
+    return isHit_ && std::isinf(t);
 }

@@ -174,3 +174,12 @@ std::shared_ptr<BaseClass> createObject(const ObjectProp& objProp)
 		} \
 	}; \
     static Register##CLASS_TYPE##CLASS_NAME register##CLASS_TYPE;
+
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+class SceneObject
+    :public Object
+{};

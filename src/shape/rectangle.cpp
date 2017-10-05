@@ -14,7 +14,6 @@ class RectangleShape
 {
 public:
     RectangleShape(const ObjectProp& objectProp);
-    bool hasAABB() const override;
     AABB aabb() const override;
     bool intersect(const Ray& ray, Intersect* isect) const override;
     bool intersectCheck(const Ray& ray) const override;
@@ -54,15 +53,6 @@ RectangleShape::RectangleShape(const ObjectProp& objectProp)
     aabb_.addPoints(
         static_cast<Vec3*>(verts_.data()),
         static_cast<int32_t>(verts_.size()));
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE bool RectangleShape::hasAABB() const
-{
-    return true;
 }
 
 /*

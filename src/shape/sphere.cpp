@@ -15,7 +15,6 @@ class Sphere
 public:
     Sphere(const ObjectProp& prop );
     Sphere(const Vec3& pos, float r);
-    bool hasAABB() const override;
     AABB aabb() const override;
     bool intersect(const Ray& ray, Intersect* isect) const override;
     bool intersectCheck(const Ray& ray) const override;
@@ -45,15 +44,6 @@ Sphere::Sphere(const ObjectProp& prop)
     aabb_.addPoint(pos_ - ydir);
     aabb_.addPoint(pos_ + zdir);
     aabb_.addPoint(pos_ - zdir);
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-bool Sphere::hasAABB() const
-{
-    return true;
 }
 
 /*

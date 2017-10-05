@@ -14,7 +14,6 @@ class BoxShape
 {
 public:
     BoxShape(const ObjectProp& objectProp);
-    bool hasAABB() const override;
     AABB aabb() const override;
     bool intersect(const Ray& ray, Intersect* isect) const override;
     bool intersectCheck(const Ray& ray) const override;
@@ -96,16 +95,6 @@ BoxShape::BoxShape(const ObjectProp& objectProp)
     // +X
     faces_[5] = createFace(vs[1], vs[3], vs[5], vs[7]);
 #endif
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE bool BoxShape::hasAABB() const
-{
-    AL_ASSERT_DEBUG(false);
-    return true;
 }
 
 /*

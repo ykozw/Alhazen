@@ -35,9 +35,12 @@ private:
 #else
     struct Face
     {
-        Vec3 vs[4];
+        std::array<Vec3, 4> vs;
         Vec3 n;
-    }faces_[6];
+    };
+    std::array<Face, 6> faces_;
+    //
+    AABB aabb_;
 #endif
 };
 REGISTER_OBJECT(Shape,BoxShape);
@@ -66,7 +69,7 @@ BoxShape::BoxShape(const ObjectProp& objectProp)
 #else
     Transform transform(objectProp.findChildByTag("transform"));
     //
-    Vec3 vs[8];
+    std::array<Vec3, 8> vs;
     vs[0] = transform.toWorld(Vec3(-1.0f, -1.0f, -1.0f));
     vs[1] = transform.toWorld(Vec3(+1.0f, -1.0f, -1.0f));
     vs[2] = transform.toWorld(Vec3(-1.0f, +1.0f, -1.0f));
@@ -104,6 +107,11 @@ BoxShape::BoxShape(const ObjectProp& objectProp)
     // +X
     faces_[5] = createFace(vs[1], vs[3], vs[5], vs[7]);
 #endif
+    //
+    for (auto& v : vs)
+    {
+        aabb_.addPoint(v);
+    }
 }
 
 /*
@@ -112,9 +120,9 @@ BoxShape::BoxShape(const ObjectProp& objectProp)
 */
 INLINE AABB BoxShape::aabb() const
 {
-    AL_ASSERT_DEBUG(false);
-    return AABB();
+    return aabb_;
 }
+
 /*
 -------------------------------------------------
 -------------------------------------------------
@@ -144,7 +152,7 @@ INLINE bool BoxShape::intersect(const Ray& ray, _Inout_ Intersect* isect) const
     //
     const auto intersectFace = [](const Ray& ray, const Face& face, _Inout_ Intersect* isect)
     {
-        const Vec3* vs = face.vs;
+        const auto& vs = face.vs;
         const Vec3& n = face.n;
         // HACK: UVは適当
         const Vec2 uv(0.0f);

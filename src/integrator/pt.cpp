@@ -121,6 +121,11 @@ Spectrum PTSurfaceIntegrator::radiance(
         }
         // 交差でのemissionの反映
         lighting += isect.emission;
+        // 無限遠と交差した場合は終了
+        if(isect.isHitWithInf())
+        {
+            break;
+        }
         //
         BSDFPtr bsdf = isect.bsdf;
         float pdfBSDF;

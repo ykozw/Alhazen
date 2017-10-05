@@ -76,6 +76,9 @@ bool ConstantLight::isDeltaFunc() const
 */
 Spectrum ConstantLight::emittion(Vec3 pos, Vec3 dir) const
 {
+    static_cast<void>(pos);
+    static_cast<void>(dir);
+    // 固定
     return spectrum_;
 }
 
@@ -117,7 +120,7 @@ Spectrum ConstantLight::sampleLe(
 */
 bool ConstantLight::intersect(const Ray& ray, Intersect* isect) const
 {
-    const float lightFar = std::numeric_limits<float>::max();
+    const float lightFar = std::numeric_limits<float>::infinity();
     if (isect->t < lightFar)
     {
         return false;

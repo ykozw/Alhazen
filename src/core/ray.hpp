@@ -100,7 +100,12 @@ Intersect
 struct Intersect
 {
 public:
-    float t = std::numeric_limits<float>::max();
+    /*
+    「org + dir * t」のt
+    「無限遠のライトと交差した」ことを表すためにinfを使うことに注意
+    このメンバーを見て交差をしたか否かを判定することはできない
+    */
+    float t = std::numeric_limits<float>::infinity();
     float rayEpsilon = 0.0f;
     Vec3 normal = Vec3(1.0f, 0.0f, 0.0);
     Vec3 position = Vec3(0.0f);
@@ -116,6 +121,12 @@ public:
     //
     Vec3 uppserSideOrigin() const;
     Vec3 belowSideOrigin() const;
+    //
+    void setHit(bool hit);
+    bool isHit() const;
+    bool isHitWithInf() const;
+private:
+    bool isHit_ = false;
 };
 
 /*

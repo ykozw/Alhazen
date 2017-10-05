@@ -70,7 +70,9 @@ bool SceneGeometory::intersect(
             }
         }
     }
-
+    //
+    isect->setHit(isHit);
+    //
     return isHit;
 }
 

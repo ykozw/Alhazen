@@ -87,3 +87,30 @@ INLINE Vec3 Intersect::belowSideOrigin() const
     // HACK: 本当にこの実装であっているのかかなり怪しい
     return position - normal * rayEpsilon;
 }
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE void Intersect::setHit(bool hit)
+{
+    isHit_ = hit;
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE bool Intersect::isHit() const
+{
+    return isHit_;
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE bool Intersect::isHitWithInf() const
+{
+    return isHit_ && std::isinf(t);
+}

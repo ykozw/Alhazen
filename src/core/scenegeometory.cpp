@@ -66,7 +66,6 @@ bool SceneGeometory::intersect(
             {
                 AL_ASSERT_DEBUG(isect->bsdf);
                 isect->sceneObject = light.get();
-                isect->isLight = true;
                 isHit = true;
             }
         }

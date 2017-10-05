@@ -106,11 +106,10 @@ public:
     Vec3 position = Vec3(0.0f);
     Vec2 uv = Vec2(0.0f, 0.0f);
     BSDFPtr bsdf = nullptr;
+    // 交差点でのEmission
     Spectrum emission = Spectrum::createAsBlack();
-    // 交差したのがライトか
-    bool isLight = false;
-    // HACK: shape.hppをincludeするとビルドできないので一時的に回避するためclass宣言している。
-    const class SceneObject* sceneObject = nullptr;
+    // 交差したオブジェクト
+    const SceneObject* sceneObject = nullptr;
 public:
     Intersect();
     void clear();

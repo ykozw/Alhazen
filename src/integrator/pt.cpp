@@ -95,7 +95,6 @@ Spectrum PTSurfaceIntegrator::radiance(
     //
     for (int32_t pathNo = 0; pathNo < maxpathNo; ++pathNo)
     {
-        // ロシアンルーレット確率は現在のスループットから決定する
         if (pathNo > maxpathNo)
         {
             break;
@@ -120,14 +119,8 @@ Spectrum PTSurfaceIntegrator::radiance(
         {
             break;
         }
-        // PrimaryRayかつその交差先がライトであった場合、
-        // そのライトはNEEに含まれないのでここでサンプル
-        if ((pathNo == 0) && isect.isLight)
-        {
-            lighting += isect.emission;
-            // HACK: とりあえず反射率0のライトのみとする
-            break;
-        }
+        // 交差でのemissionの反映
+        lighting += isect.emission;
         //
         BSDFPtr bsdf = isect.bsdf;
         float pdfBSDF;
@@ -197,13 +190,19 @@ Spectrum PTSurfaceIntegrator::estimateDirectLight(
             const std::vector<LightPtr>& lights = scene.lights();
             if (lights.empty())
             {
-                Spectrum::createAsBlack();
+                return Spectrum::createAsBlack();
             }
             // ライトを一つ選択する
             const uint32_t lightIndex = sampler->getSize(uint32_t(lights.size()));
             const LightPtr choochenLight = lights[lightIndex];
-            // ライトをサンプルする場合にライトに対してintersect()を呼んではいけない
-            AL_ASSERT_DEBUG(isect.sceneObject != choochenLight.get());
+            /*
+            交差点のSceneObjectとサンプルするLightが同一だった場合は終了
+            HACK: 本当はライト自体がそのライトに照らされる場合があるが、省略してしまう
+            */
+            if (isect.sceneObject == choochenLight.get())
+            {
+                return Spectrum::createAsBlack();
+            }
             //
             const Spectrum oneLightEstimated = estimateOneLight(scene, isect, local, localWo, choochenLight, sampler);
             return oneLightEstimated * (float)lights.size();

@@ -1,9 +1,10 @@
 ﻿#pragma once
 
-// core/obuject.hpp
+// core/object.hpp
 class ObjectPropString;
 class ObjectProp;
 class Object;
+class SceneObject;
 
 // core/math.hpp
 struct Size2D;

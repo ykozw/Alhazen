@@ -124,8 +124,8 @@ Spectrum PTSurfaceIntegrator::radiance(
         // そのライトはNEEに含まれないのでここでサンプル
         if ((pathNo == 0) && isect.isLight)
         {
-            const Light* light = static_cast<const Light*>(isect.shape);
-            Spectrum e = light->emittion(ray.o,ray.d);
+            const Light* light = static_cast<const Light*>(isect.sceneObject);
+            const Spectrum e = light->emittion(ray.o,ray.d);
             lighting += e;
             // HACK: とりあえず反射率0のライトのみとする
             break;
@@ -205,7 +205,7 @@ Spectrum PTSurfaceIntegrator::estimateDirectLight(
             const uint32_t lightIndex = sampler->getSize(uint32_t(lights.size()));
             const LightPtr choochenLight = lights[lightIndex];
             // ライトをサンプルする場合にライトに対してintersect()を呼んではいけない
-            AL_ASSERT_DEBUG(isect.shape != choochenLight.get());
+            AL_ASSERT_DEBUG(isect.sceneObject != choochenLight.get());
             //
             const Spectrum oneLightEstimated = estimateOneLight(scene, isect, local, localWo, choochenLight, sampler);
             return oneLightEstimated * (float)lights.size();

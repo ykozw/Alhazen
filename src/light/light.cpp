@@ -4,6 +4,7 @@
 #include "core/floatstreamstats.hpp"
 #include "light/light.hpp"
 #include "sampler/sampler.hpp"
+#include "shape/shape.hpp"
 
 REGISTER_OBJECT(Light, ConstantLight);
 REGISTER_OBJECT(Light, RectangleLight);
@@ -16,7 +17,6 @@ Light
 -------------------------------------------------
 */
 Light::Light(const ObjectProp& objectProp)
-    :Shape(objectProp)
 {
     sampleNum_ = objectProp.findChildBy("name","samplenum").asInt(1);
 }
@@ -125,7 +125,7 @@ bool ConstantLight::intersect(const Ray& ray, Intersect* isect) const
     // ConstantLightは常に衝突対象
     isect->t = lightFar;
     isect->normal = -ray.d;
-    isect->bsdf = BSDF::vantaBlack;
+    isect->bsdf = BSDF::vantaBlack; // NOTE: 常に反射率0
     isect->emission = spectrum_;
     return true;
 }
@@ -352,26 +352,6 @@ Spectrum RectangleLight::sampleLe(
     const float a = std::fabsf(Vec3::dot(dir, zaxisNorm_));
     *pdf = distSqr * invArea_ / a;
     return spectrum_;
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-bool RectangleLight::hasAABB() const
-{
-    AL_ASSERT_DEBUG("not impl");
-    return false;
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-AABB RectangleLight::aabb() const
-{
-    AL_ASSERT_DEBUG("not impl");
-    return AABB();
 }
 
 /*

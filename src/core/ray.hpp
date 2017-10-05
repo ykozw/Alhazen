@@ -111,7 +111,7 @@ public:
     // 交差したのがライトか
     bool isLight = false;
     // HACK: shape.hppをincludeするとビルドできないので一時的に回避するためclass宣言している。
-    const class Shape* shape = nullptr;
+    const class SceneObject* sceneObject = nullptr;
 public:
     Intersect();
     void clear();

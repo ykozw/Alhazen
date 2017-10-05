@@ -12,7 +12,7 @@
 -------------------------------------------------
 */
 class Shape
-    :public Object
+    :public SceneObject
 {
 public:
     Shape(const ObjectProp& prop);

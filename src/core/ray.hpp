@@ -14,19 +14,18 @@ TODO: 一度作ったらconstなのでそれを明言するために全体をcon
 struct Ray
 {
 public:
-    Vec3 o;
-    Vec3 d;
-    Vec3 dinv;
-    float mint;
-    float maxt;
+    Vec3 o = Vec3(0.0f, 0.0f, 0.0f);
+    Vec3 d = Vec3(1.0f, 0.0f, 0.0);
+    Vec3 dinv = Vec3(0.0f, 0.0f, 0.0);
+    float mint = 0.0f;
+    float maxt = std::numeric_limits <float>::max();
     // 波長(m単位)
-    float waveLength;
-    std::array<int32_t, 3> sign;
+    float waveLength = WAVE_LENGTH_D;
+    std::array<int32_t, 3> sign = { 0,0,0 };
 public:
     Ray();
-    Ray(
-        const Vec3& pos,
-        const Vec3& dir,
+    Ray(Vec3 pos,
+        Vec3 dir,
         float waveLength = WAVE_LENGTH_D,
         float mint = 0.0f,
         float maxt = std::numeric_limits < float >::max());

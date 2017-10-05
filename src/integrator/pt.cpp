@@ -124,9 +124,7 @@ Spectrum PTSurfaceIntegrator::radiance(
         // そのライトはNEEに含まれないのでここでサンプル
         if ((pathNo == 0) && isect.isLight)
         {
-            const Light* light = static_cast<const Light*>(isect.sceneObject);
-            const Spectrum e = light->emittion(ray.o,ray.d);
-            lighting += e;
+            lighting += isect.emission;
             // HACK: とりあえず反射率0のライトのみとする
             break;
         }

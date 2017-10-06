@@ -1,5 +1,5 @@
 ﻿#include "pch.hpp"
-#include "core/aabb.hpp"
+#include "core/bounding.hpp"
 #include "core/transform.hpp"
 #include "shape/shape.hpp"
 #include "accelerator/bvh.hpp"

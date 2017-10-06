@@ -58,7 +58,7 @@ Scene::Scene(const ObjectProp& objectProp)
             // BSDFの設定
             newShape->setBSDF(bsdfs);
             // 追加
-            geometory_.add(newShape);
+            geometory_.addShape(newShape);
         }
     }
 
@@ -71,8 +71,13 @@ Scene::Scene(const ObjectProp& objectProp)
         }
         const auto& type = child.attribute("type");
         LightPtr newLight = createObject<Light>(child);
-        geometory_.add(newLight);
+        geometory_.addLight(newLight);
     }
+    //
+    const AABB aabb = geometory_.aabb();
+    const Vec3 mn = aabb.min();
+    const Vec3 mx = aabb.max();
+    logging("Scene Bounding (%2.2f,%2.2f,%2.2f) (%2.2f,%2.2f,%2.2f)", mn.x(), mn.y(), mn.z(), mx.x(), mx.y(), mx.z());
 
     // タスク数を出しておく
     // HACK: とりあえず一周分だけにしておく

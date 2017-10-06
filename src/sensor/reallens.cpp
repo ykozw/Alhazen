@@ -9,7 +9,7 @@ TODO list
 #include "core/util.hpp"
 #include "core/intersect.hpp"
 #include "core/orthonormalbasis.hpp"
-#include "core/aabb.hpp"
+#include "core/bounding.hpp"
 #include "sensor/sensor.hpp"
 #include "sensor/sensorutil.hpp"
 #include "sampler/sampler.hpp"

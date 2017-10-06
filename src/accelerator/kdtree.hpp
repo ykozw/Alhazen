@@ -2,7 +2,7 @@
 
 #include "pch.hpp"
 #include "core/math.hpp"
-#include "core/aabb.hpp"
+#include "core/bounding.hpp"
 
 /*
 -------------------------------------------------

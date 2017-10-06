@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include "pch.hpp"
-#include "core/aabb.hpp"
+#include "core/bounding.hpp"
 
 
 #if 0

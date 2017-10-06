@@ -3,7 +3,7 @@
 #include "pch.hpp"
 #include "core/math.hpp"
 #include "core/ray.hpp"
-#include "core/aabb.hpp"
+#include "core/bounding.hpp"
 #include "core/refarray.hpp"
 #include "shape/mesh.hpp"
 

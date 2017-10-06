@@ -8,21 +8,23 @@
 
 /*
 -------------------------------------------------
+TODO:
+- 二段階BVHを入れるようにする
 -------------------------------------------------
 */
 class SceneGeometory
 {
 public:
-    void add(ShapePtr shape);
-    void add(LightPtr light);
+    void addShape(ShapePtr shape);
+    void addLight(LightPtr light);
     const std::vector<LightPtr>& lights() const;
     bool intersect(const Ray& ray, bool skipLight, _Out_ Intersect* isect) const;
     bool intersectCheck(const Ray& ray, bool skipLight) const;
     bool isVisible(const Vec3& p0, const Vec3& p1, bool skipLight) const;
-    //
+    AABB aabb() const;
 private:
+    // Shape
     std::vector<ShapePtr> shapes_;
-    // ShapeとLight
-    // Lightのみ
+    // Light
     std::vector<LightPtr> lights_;
 };

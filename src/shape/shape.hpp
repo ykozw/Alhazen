@@ -3,7 +3,7 @@
 #include "pch.hpp"
 #include "core/ray.hpp"
 #include "core/intersect.hpp"
-#include "core/aabb.hpp"
+#include "core/bounding.hpp"
 #include "core/object.hpp"
 #include "bsdf/bsdf.hpp"
 

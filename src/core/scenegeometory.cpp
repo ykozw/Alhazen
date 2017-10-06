@@ -5,7 +5,7 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-void SceneGeometory::add(ShapePtr shape)
+void SceneGeometory::addShape(ShapePtr shape)
 {
     shapes_.push_back(shape);
 }
@@ -14,7 +14,7 @@ void SceneGeometory::add(ShapePtr shape)
 -------------------------------------------------
 -------------------------------------------------
 */
-void SceneGeometory::add(LightPtr light)
+void SceneGeometory::addLight(LightPtr light)
 {
     lights_.push_back(light);
 }
@@ -119,4 +119,20 @@ bool SceneGeometory::isVisible(const Vec3& p0, const Vec3& p1, bool skipLight) c
     Ray ray(p0, d);
     ray.maxt = d.length();
     return !intersectCheck(ray, skipLight);
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+AABB SceneGeometory::aabb() const
+{
+    AABB aabb;
+    // 
+    for (auto& shape : shapes_)
+    {
+        aabb.addAABB(shape->aabb());
+    }
+    // NOTE: Lightは含んでいないことに注意
+    return aabb;
 }

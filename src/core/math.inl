@@ -1498,6 +1498,32 @@ INLINE Vec3 Vec3::max(Vec3 lhs, Vec3 rhs)
 -------------------------------------------------
 -------------------------------------------------
 */
+INLINE Vec3 Vec3::hmin(Vec3 v)
+{
+    const __m128 xyz = v.xyz_;
+    const __m128 yzx = _mm_shuffle_ps(xyz, xyz, _MM_SHUFFLE(0, 0, 2, 1));
+    const __m128 zxy = _mm_shuffle_ps(xyz, xyz, _MM_SHUFFLE(0, 1, 0, 2));
+    const __m128 hmn = _mm_min_ps(_mm_min_ps(xyz, yzx), zxy);
+    return hmn;
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE Vec3 Vec3::hmax(Vec3 v)
+{
+    const __m128 xyz = v.xyz_;
+    const __m128 yzx = _mm_shuffle_ps(xyz, xyz, _MM_SHUFFLE(0, 0, 2, 1));
+    const __m128 zxy = _mm_shuffle_ps(xyz, xyz, _MM_SHUFFLE(0, 1, 0, 2));
+    const __m128 hmx = _mm_max_ps(_mm_max_ps(xyz, yzx), zxy);
+    return hmx;
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE FloatInVec Vec3::distance(Vec3 lhs, Vec3 rhs)
 {
 #if defined(AL_MATH_USE_NO_SIMD)

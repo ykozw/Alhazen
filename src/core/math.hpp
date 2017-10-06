@@ -420,6 +420,8 @@ public:
     static Vec3 mul(Vec3 lhs, Vec3 rhs);
     static Vec3 min(Vec3 lhs, Vec3 rhs);
     static Vec3 max(Vec3 lhs, Vec3 rhs);
+    static Vec3 hmin(Vec3 v);
+    static Vec3 hmax(Vec3 v);
 };
 
 INLINE static Vec3 operator + (Vec3 lhs, Vec3 rhs);

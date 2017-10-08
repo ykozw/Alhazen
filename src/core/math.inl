@@ -916,7 +916,7 @@ INLINE static Vec2 operator / (const Vec2& v, float f)
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE Vec3::Vec3(_In_reads_(3) float* es)
+INLINE Vec3::Vec3(_In_reads_(3) const float* es)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     x_ = es[0];
@@ -992,14 +992,14 @@ INLINE Vec3::Vec3(const std::array<float, 3>& arr)
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE Vec3::Vec3(const Vec4& arr)
+INLINE Vec3::Vec3(Vec4 arr)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     x_ = arr[0];
     y_ = arr[1];
     z_ = arr[2];
 #elif defined(AL_MATH_USE_AVX2)
-    xyz_ = _mm_set_ps(0.0f, arr[2], arr[1], arr[0]);
+    xyz_ = arr.xyzw_;
 #endif
 }
 

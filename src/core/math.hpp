@@ -369,12 +369,12 @@ public:
     INLINE Vec3() = default;
     INLINE Vec3(const Vec3& other) = default;
     INLINE Vec3(Vec3&& other) = default;
-    INLINE Vec3(_In_reads_(3) float* es);
+    INLINE Vec3(_In_reads_(3) const float* es);
     INLINE Vec3(float ax, float ay, float az);
     INLINE Vec3(float e);
     INLINE Vec3(__m128 other);
     INLINE Vec3(const std::array<float, 3>& arr);
-    INLINE Vec3(const Vec4& arr);
+    INLINE Vec3(Vec4 arr);
     INLINE void zero();
     INLINE bool isZero() const; // TODO: boolinvecにする
     INLINE bool hasNan() const;

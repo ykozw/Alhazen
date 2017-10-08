@@ -54,5 +54,5 @@ public:
     void unlock();
 private:
     std::mutex mtx_;
-    std::atomic<long long> predictedWaitTime_ = 1;
+    std::atomic<uint64_t> predictedWaitTime_ = {1};
 };

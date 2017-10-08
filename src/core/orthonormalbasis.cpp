@@ -32,7 +32,7 @@ void testLocalCoord(Type localCoord)
     /*ns.push_back(Vec3(-0.00019813581, -0.00008946839, -0.99999988079));*/
     ns.push_back(Vec3(0.0003860202f, 0.0003860202f, -0.9999998808f));
 
-    const auto startTime = std::chrono::system_clock::now();
+    // const auto startTime = std::chrono::system_clock::now();
 
     //
     for (const Vec3 n : ns)

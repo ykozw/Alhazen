@@ -188,7 +188,7 @@ void AutoImportance::sample(
     const float x = samplePoint.x() * cosft - samplePoint.x() * sinft;
     const float y = samplePoint.y() * sinft + samplePoint.y() * cosft;
     // 1を超えることはあり得るため少し甘めに見える
-    const float lenSq = x*x + y*y;
+    // const float lenSq = x*x + y*y;
     //AL_ASSERT_DEBUG(lenSq  <= 1.02f);
     // HACK: この定数は非常にまずい
     const float z = sqrtf(alMax(1.0f - (x * x + y * y), 0.0001f));

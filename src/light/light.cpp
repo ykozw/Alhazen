@@ -584,7 +584,7 @@ float SphereLight::pdf(
     // 外側だった場合はコーンの球冠部分からサンプルする
     else
     {
-        const float dist = std::sqrtf(dist2);
+        // const float dist = std::sqrtf(dist2);
         // コーンの内側の角度を求める
         const float sinTheta2 = radius2 / dist2;
         const float cosTheta = std::sqrtf(std::max(0.0f, 1.0f - sinTheta2));

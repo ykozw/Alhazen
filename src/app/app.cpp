@@ -22,7 +22,6 @@ bool parseArgs(int32_t argc, char* argv[], ArgConfig& config)
     g_fileSystem.init(config.sceneFilePath.c_str(), argv[0]);
 
     // オプションの解釈
-    bool doTest = false;
     for (int argi = 2; argi < argc; ++argi)
     {
         const char* arg = argv[argi];

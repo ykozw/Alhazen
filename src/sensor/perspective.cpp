@@ -73,8 +73,10 @@ Perspective::Perspective(const ObjectProp& objectProp)
     // TODO: fovAxis
     // TODO: shutterOpen
     // TODO: shutterClose
+#if 0
     const float nearClip = objectProp.findChildBy("name", "nearClip").asFloat(1e-2f * 0.0001f);
     const float farClip = objectProp.findChildBy("name", "farClip").asFloat(1e4f * 0.0001f);
+#endif
 }
 
 /*

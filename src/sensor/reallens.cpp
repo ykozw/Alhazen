@@ -154,7 +154,7 @@ bool loadOtx(const std::string& fileName, LensSet& lensSet)
     file.open(fileName );
     AL_ASSERT_DEBUG(file);
     std::string buffer;
-    int32_t surfNo = 0;
+    // int32_t surfNo = 0;
     LensSurface* curLensSurface = NULL;
     //
     while (std::getline(file, buffer))
@@ -394,8 +394,10 @@ RealSensor::RealSensor(const ObjectProp& objectProp)
     //
     lcoal_.set(forwardDir_, upDir_);
     // TODO: kc
-    const auto& focalLengthProp = objectProp.findChildByTag("focalLength");
+    // const auto& focalLengthProp = objectProp.findChildByTag("focalLength");
+#if 0
     const float focalLength = focalLengthProp.findChildBy("name", "fov").asFloat(50.0f * 0.0001f); // [0,1]
+#endif
     perspectiveFovy_ = DEG2RAD(objectProp.findChildBy("name","fov").asFloat(90.0f)); // TODO: デフォルト値の調査
     scale_ = objectProp.findChildBy("name","scale").asFloat(0.001f);
     AL_ASSERT_DEBUG(scale_ != 0.0f );
@@ -642,7 +644,7 @@ void RealSensor::calcPrecomputeTable()
     {
         for (int32_t filmY = 0; filmY < height; ++filmY)
         {
-            const AABB2D& aabb = exitPupils_[filmX + filmY*width];
+            // const AABB2D& aabb = exitPupils_[filmX + filmY*width];
             //
             for (int32_t filmY = 0; filmY < 512; ++filmY)
             {
@@ -1084,7 +1086,7 @@ void RealSensor::autoFocus(float aimWorkingDistance )
     imageSensorOffset_;
     logging("Finish AF");
 #else // バイナリサーチ版
-    const float smallup = 0.00001f;
+    // const float smallup = 0.00001f;
     const LensSurface& lastSurf = surfs_.back();
     float sensorOffsetLow = -lastSurf.distance * 2.0f;
     float sensorOffsetHigh = sensorOffsetRangeUpperBound();
@@ -1125,9 +1127,9 @@ sensorOffsetRange()
 */
 float RealSensor::sensorOffsetRangeUpperBound() const
 {
-    const float smallup = 0.00001f;
+    // const float smallup = 0.00001f;
     const LensSurface& lastSurf = surfs_.back();
-    float base = 0.0f;
+    // float base = 0.0f;
     // HACK: 下限の開始位置が適当。
     float sensorOffsetLow = -lastSurf.distance * 2.0f;
     float sensorOffsetHigh = lastSurf.distance * 0.999f;

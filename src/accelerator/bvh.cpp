@@ -142,7 +142,7 @@ void SimpleBVH::constructNode(int32_t nodeIndex, MeshTriangle* triangles, int32_
     // 三軸それぞれのSAHを求め最も小さいものを採用する
     int32_t bestAxis = -1;
     int32_t bestTriIndex = -1;
-    float bestSAH = std::numeric_limits<float>::max();
+    // float bestSAH = std::numeric_limits<float>::max();
     int32_t axis = -1;
     // 三角形ソート用
     auto sortPred = [&axis](const MeshTriangle& lhs, const MeshTriangle& rhs)
@@ -192,7 +192,7 @@ void SimpleBVH::constructNode(int32_t nodeIndex, MeshTriangle* triangles, int32_
     static int32_t axisNext = 0;
     bestAxis = (axisNext++) % 3;
     bestTriIndex = numTriangle / 2;
-    bestSAH = 0.0f;
+    // bestSAH = 0.0f;
 #endif
     // 再度ソート
     axis = bestAxis;

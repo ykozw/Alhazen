@@ -78,12 +78,12 @@ bool PMIntegrator::preRendering(const SceneGeometory& scene, AllBSDFList& bsdfLi
     {
         sampler->startSample(pn);
         // 光源の選択
-        const uint32_t lightIndex = sampler->getSize(uint32_t(lights.size()));
-        const LightPtr& light = lights[lightIndex];
+        // const uint32_t lightIndex = sampler->getSize(uint32_t(lights.size()));
+        // const LightPtr& light = lights[lightIndex];
         // 光源からのサンプル
         Vec3 samplePos;
         Spectrum emission;
-        float pdf = 0.0f;
+        // float pdf = 0.0f;
         OrthonormalBasis<> lightLocalCoord;
         // TODO: emission方向によらない光源を仮定しているのを直す
         //light->sample(sampler, &samplePos, &emission, &pdf, &lightLocalCoord);
@@ -116,7 +116,7 @@ bool PMIntegrator::preRendering(const SceneGeometory& scene, AllBSDFList& bsdfLi
             }
             // 続けて反射する場合
             OrthonormalBasis<> lc(isect.normal);
-            const Vec3 wi = lc.world2local(ray.d);
+            // const Vec3 wi = lc.world2local(ray.d);
             // HACK: 適当に反射方向を決めてしまっている。Diffuseしか存在しないとしている
             const Vec3 wo = sampler->getHemisphere();
 #if 0
@@ -130,7 +130,7 @@ bool PMIntegrator::preRendering(const SceneGeometory& scene, AllBSDFList& bsdfLi
     //
     photonMap_.construct(photonsSrc_.data(), int32_t(photonsSrc_.size()));
 
-    const size_t nn = photonMap_.numNode();
+    // const size_t nn = photonMap_.numNode();
 
     return true;
 }

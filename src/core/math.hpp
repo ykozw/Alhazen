@@ -304,7 +304,7 @@ public:
     Vec2() = default;
     Vec2(const Vec2& other) = default;
     Vec2(Vec2&& other) = default;
-    Vec2(_In_reads_(2) float* es);
+    Vec2(_In_reads_(4) const float* es);
     Vec2(float ax, float ay);
     Vec2(__m128 other);
     explicit Vec2(float e);
@@ -369,12 +369,12 @@ public:
     INLINE Vec3() = default;
     INLINE Vec3(const Vec3& other) = default;
     INLINE Vec3(Vec3&& other) = default;
-    INLINE Vec3(_In_reads_(3) float* es);
+    INLINE Vec3(_In_reads_(4) const float* es);
     INLINE Vec3(float ax, float ay, float az);
     INLINE Vec3(float e);
     INLINE Vec3(__m128 other);
     INLINE Vec3(const std::array<float, 3>& arr);
-    INLINE Vec3(const Vec4& arr);
+    INLINE Vec3(Vec4 arr);
     INLINE void zero();
     INLINE bool isZero() const; // TODO: boolinvecにする
     INLINE bool hasNan() const;

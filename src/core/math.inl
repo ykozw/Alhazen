@@ -409,14 +409,14 @@ INLINE bool BoolInVec::value() const
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE Vec2::Vec2(_In_reads_(2) float* es)
+INLINE Vec2::Vec2(_In_reads_(4) const float* es)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     x_ = es[0];
     y_ = es[1];
 #else
-    // TODO: 配列をそのまま受けられるのに変更しておく
-    xy_ = (_mm_set_ps(0.0f, 0.0f, es[1], es[0]));
+    // NOTE: アライメントは揃っている前提
+    xy_ = _mm_load_ps(es);
 #endif
 }
 
@@ -916,7 +916,7 @@ INLINE static Vec2 operator / (const Vec2& v, float f)
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE Vec3::Vec3(_In_reads_(3) float* es)
+INLINE Vec3::Vec3(_In_reads_(4) const float* es)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     x_ = es[0];
@@ -954,7 +954,7 @@ INLINE Vec3::Vec3(float e)
     y_ = e;
     z_ = e;
 #elif defined(AL_MATH_USE_AVX2)
-    xyz_ = (_mm_set_ps(0.0f, e, e, e));
+    xyz_ = _mm_set_ps1(e);
 #endif
 }
 
@@ -992,14 +992,14 @@ INLINE Vec3::Vec3(const std::array<float, 3>& arr)
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE Vec3::Vec3(const Vec4& arr)
+INLINE Vec3::Vec3(Vec4 arr)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     x_ = arr[0];
     y_ = arr[1];
     z_ = arr[2];
 #elif defined(AL_MATH_USE_AVX2)
-    xyz_ = _mm_set_ps(0.0f, arr[2], arr[1], arr[0]);
+    xyz_ = arr.xyzw_;
 #endif
 }
 
@@ -1443,7 +1443,7 @@ INLINE float Vec3::operator[](int32_t index) const
 INLINE FloatInVec Vec3::length(Vec3 v)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    assert(false);
+    return std::sqrtf(Vec3::lengthSq(v));
 #elif defined(AL_MATH_USE_AVX2)
     return _mm_sqrt_ps(lengthSq(v));
 #endif
@@ -1457,6 +1457,7 @@ INLINE FloatInVec Vec3::lengthSq(Vec3 v)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     assert(false);
+    return v.x_ * v.x_ + v.y_ * v.y_  + v.z_ *  v.z_;
 #else
     return Vec3::dot(v, v);
 #endif
@@ -1500,11 +1501,15 @@ INLINE Vec3 Vec3::max(Vec3 lhs, Vec3 rhs)
 */
 INLINE Vec3 Vec3::hmin(Vec3 v)
 {
+#if defined(AL_MATH_USE_NO_SIMD)
+    return std::min({v.x_,v.y_,v.z_});
+#else
     const __m128 xyz = v.xyz_;
     const __m128 yzx = _mm_shuffle_ps(xyz, xyz, _MM_SHUFFLE(0, 0, 2, 1));
     const __m128 zxy = _mm_shuffle_ps(xyz, xyz, _MM_SHUFFLE(0, 1, 0, 2));
     const __m128 hmn = _mm_min_ps(_mm_min_ps(xyz, yzx), zxy);
     return hmn;
+#endif
 }
 
 /*
@@ -1513,11 +1518,15 @@ INLINE Vec3 Vec3::hmin(Vec3 v)
 */
 INLINE Vec3 Vec3::hmax(Vec3 v)
 {
+#if defined(AL_MATH_USE_NO_SIMD)
+    return std::max({v.x_,v.y_,v.z_});
+#else
     const __m128 xyz = v.xyz_;
     const __m128 yzx = _mm_shuffle_ps(xyz, xyz, _MM_SHUFFLE(0, 0, 2, 1));
     const __m128 zxy = _mm_shuffle_ps(xyz, xyz, _MM_SHUFFLE(0, 1, 0, 2));
     const __m128 hmx = _mm_max_ps(_mm_max_ps(xyz, yzx), zxy);
     return hmx;
+#endif
 }
 
 /*
@@ -1781,7 +1790,8 @@ INLINE Vec4::Vec4(_In_reads_(4) const float* es)
     z_ = es[2];
     w_ = es[3];
 #else
-    xyzw_ = _mm_set_ps(es[3], es[2], es[1], es[0]);
+    // NOTE: アライメントは揃っている前提
+    xyzw_ = _mm_load_ps(es);
 #endif
 }
 
@@ -1813,7 +1823,7 @@ INLINE Vec4::Vec4(float e)
     z_ = e;
     w_ = e;
 #elif defined(AL_MATH_USE_AVX2)
-    xyzw_ = _mm_set_ps(e, e, e, e);
+    xyzw_ = _mm_set_ps1(e);
 #endif
 }
 
@@ -2062,13 +2072,9 @@ INLINE void Matrix3x3::set(
     Vec3 aRow1,
     Vec3 aRow2)
 {
-#if defined(AL_MATH_USE_NO_SIMD)
-    AL_ASSERT_ALWAYS(false);
-#else
-    row0 = aRow0.xyz_;
-    row1 = aRow1.xyz_;
-    row2 = aRow2.xyz_;
-#endif
+    setRow<0>(aRow0);
+    setRow<1>(aRow1);
+    setRow<2>(aRow2);
 }
 
 /*
@@ -2142,8 +2148,10 @@ INLINE void Matrix3x3::transpose()
 INLINE Vec3 Matrix3x3::transform(Vec3 v) const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    AL_ASSERT_ALWAYS(false);
-    return Vec3();
+    const float x = Vec3::dot(row<0>(),v);
+    const float y = Vec3::dot(row<1>(),v);
+    const float z = Vec3::dot(row<2>(),v);
+    return Vec3(x,y,z);
 #else
     const __m128 v0 = _mm_dp_ps(row0, v.xyz_, 0x7F);
     const __m128 v1 = _mm_dp_ps(row1, v.xyz_, 0x7F);
@@ -2283,8 +2291,26 @@ INLINE Vec3 Matrix3x3::row() const
 template<int32_t index>
 INLINE void Matrix3x3::setRow(Vec3 v)
 {
+    static_assert((0<=index) && (index <= 2), "");
 #if defined(AL_MATH_USE_NO_SIMD)
-    AL_ASSERT_ALWAYS(false);
+    switch (index)
+    {
+        case 0:
+            e11 = v.x();
+            e12 = v.y();
+            e13 = v.z();
+            break;
+        case 1:
+            e21 = v.x();
+            e22 = v.y();
+            e23 = v.z();
+            break;
+        case 2:
+            e31 = v.x();
+            e32 = v.y();
+            e33 = v.z();
+            break;
+    }
 #else
     static_assert((0 <= index) && (index <= 2),"");
     switch (index)

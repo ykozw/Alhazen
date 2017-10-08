@@ -69,7 +69,7 @@ Scene::Scene(const ObjectProp& objectProp)
         {
             continue;
         }
-        const auto& type = child.attribute("type");
+        // const auto& type = child.attribute("type");
         LightPtr newLight = createObject<Light>(child);
         geometory_.addLight(newLight);
     }
@@ -171,10 +171,10 @@ void Scene::renderDebug(int32_t x, int32_t y)
         // SubPixelの生成
         const Vec2 subPixelOffset = sampler->get2d();
         // TODO: フィルターインターフェイスからweightを取ってくる
-        const float weight = 1.0f;
+        // const float weight = 1.0f;
         const float spx = x + subPixelOffset.x();
         const float spy = y + subPixelOffset.y();
-        const float spWeight = weight;
+        // const float spWeight = weight;
         //
         float pdf = 0.0f;
         const Ray screenRay = sensor_->generateRay(spx, spy, pdf);
@@ -308,7 +308,7 @@ void Scene::developLDR(const std::string& filmName, bool isFinal)
 void Scene::dumpHDR(const std::string& fileName)
 {
     // 内部にあるHDRをそのまま出力する
-    const auto& image = sensor_->film()->image();
+    // const auto& image = sensor_->film()->image();
     const std::string fullPath = g_fileSystem.getOutputFolderPath() + fileName;
     //image.writeHdr(fullPath);
     //image.writeBHDR(fullPath);

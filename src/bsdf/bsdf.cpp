@@ -220,7 +220,7 @@ add()
 */
 void AllBSDFList::add(const ObjectProp& objectProp)
 {
-    const auto& type = objectProp.attribute("type");
+    // const auto& type = objectProp.attribute("type");
     const std::string idStr = objectProp.attribute("id").asString("unkown");
     bsdfs_.insert(std::make_pair(idStr, createObject<BSDF>(objectProp)));
 }
@@ -979,7 +979,7 @@ AL_TEST(BSDF,testMISC)
 #endif
 
     Lambertian lambert(Spectrum::createFromRGB({ 1.0f,1.0f,1.0f }, false));
-    const Vec3 view = Vec3(1.0f,1.0f,1.0f).normalized();
+    // const Vec3 view = Vec3(1.0f,1.0f,1.0f).normalized();
     Spectrum total;
     sampler.setHash(1);
     for (int32_t i=0;i<sn;++i)
@@ -989,15 +989,15 @@ AL_TEST(BSDF,testMISC)
         const Vec3 wo = sampler.getHemisphere();
         const Vec3 wi = sampler.getHemisphere();
         const Spectrum reflectance = lambert.bsdf(wo, wi);
-        const float cosweight = wi.z();
+        // const float cosweight = wi.z();
         total = total + reflectance;
     }
     total /= float(sn);
     //printf("B: %f\n", total.r); // cosine weight on/off関係なく 1/PI(0.318)に収束する
 
     // bsdfSample()とbsdf()に違いが派生していないかチェック
-    const Spectrum rho0 = lambert.estimateTotalRefrectance(128 * 128, false);
-    const Spectrum rho1 = lambert.estimateTotalRefrectance(128 * 128, true);
+    // const Spectrum rho0 = lambert.estimateTotalRefrectance(128 * 128, false);
+    // const Spectrum rho1 = lambert.estimateTotalRefrectance(128 * 128, true);
     //printf("C: %f %f\n", rho0.r, rho1.r);
 }
 

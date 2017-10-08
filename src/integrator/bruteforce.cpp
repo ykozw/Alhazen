@@ -64,8 +64,8 @@ Spectrum BruteForceIntegrator::radiance(
     Spectrum lighting = Spectrum(0.0f);
     Ray ray = screenRay;
     const int32_t maxBounce = 100;
-    bool isOutside = true;
-    float ior = 1.0f;
+    // bool isOutside = true;
+    // float ior = 1.0f;
     //
     for (int32_t bounce = 0; bounce < maxBounce; ++bounce)
     {
@@ -97,7 +97,7 @@ Spectrum BruteForceIntegrator::radiance(
         //
         if (!isect.emission.isBlack())
         {
-            const float d = isect.t;
+            // const float d = isect.t;
             lighting += isect.emission * throughput;
         }
         //

@@ -77,18 +77,12 @@ Matrix4x4 Transform::constructToWorldMatrix(const ObjectProp& objectProp) const
         }
         else if (tag == "lookat")
         {
-            // HACK: 旧仕様用。近いうちに削除する。
-            origin_ = child.attribute("origin").asVec3(Vec3(0.0f));
-            target_ = child.attribute("target").asVec3(Vec3(1.0f));
-            up_ = child.attribute("up").asVec3(Vec3(0.0f, 1.0f, 0.0f));
-
-            // 
             const Vec3 origin = child.attribute("origin").asVec3(Vec3(0.0f, 0.0f, 0.0f));
             const Vec3 target = child.attribute("target").asVec3(Vec3(1.0f, 1.0f, 1.0f));
             const Vec3 up = child.attribute("up").asVec3(Vec3(0.0f, 1.0f, 0.0f));
             Matrix4x4 viewMatrix;
             viewMatrix.constructAsViewMatrix(origin, target, up);
-            toWorld = Matrix4x4::mul(toWorld, viewMatrix);
+            toWorld = viewMatrix;
         }
         else
         {
@@ -138,25 +132,45 @@ const Vec3 Transform::toLocalDir(const Vec3& dir) const
 -------------------------------------------------
 -------------------------------------------------
 */
-const Vec3& Transform::cameraOrigin() const
+Vec3 Transform::cameraOrigin() const
 {
-    return origin_;
+    const Vec3 xa = cameraRight();
+    const Vec3 ya = cameraUp();
+    const Vec3 za = cameraDir();
+    const auto& m = toWorld_;
+    const Vec3 org =
+        xa * m.e41 +
+        ya * m.e42 +
+        za * m.e43;
+    return -org;
 }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-const Vec3& Transform::cameraTarget() const
+Vec3 Transform::cameraUp() const
 {
-    return target_;
+    const auto& m = toWorld_;
+    return Vec3(m.e12, m.e22, m.e32);
 }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-const Vec3& Transform::cameraUp() const
+Vec3 Transform::cameraDir() const
 {
-    return up_;
+    const auto& m = toWorld_;
+    return Vec3(m.e13, m.e23, m.e33);
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+Vec3 Transform::cameraRight() const
+{
+    const auto& m = toWorld_;
+    return Vec3(m.e11, m.e21, m.e31);
 }

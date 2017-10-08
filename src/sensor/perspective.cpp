@@ -49,7 +49,7 @@ Perspective::Perspective(const ObjectProp& objectProp)
     const Transform transform(objectProp.findChildByTag("transform"));
     perspectivePos_ = transform.cameraOrigin();
     upDir_ = transform.cameraUp();
-    forwardDir_ = transform.cameraTarget() - perspectivePos_;
+    forwardDir_ = transform.cameraDir();
     rightDir_ = Vec3::cross(forwardDir_, upDir_);
     upDir_ = Vec3::cross(rightDir_, forwardDir_);
     rightDir_.normalize();
@@ -73,8 +73,10 @@ Perspective::Perspective(const ObjectProp& objectProp)
     // TODO: fovAxis
     // TODO: shutterOpen
     // TODO: shutterClose
+#if 0
     const float nearClip = objectProp.findChildBy("name", "nearClip").asFloat(1e-2f * 0.0001f);
     const float farClip = objectProp.findChildBy("name", "farClip").asFloat(1e4f * 0.0001f);
+#endif
 }
 
 /*

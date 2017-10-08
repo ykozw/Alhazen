@@ -57,6 +57,7 @@ AL_TEST(Accel,kdtree0)
         };
         return Vec3(rv(), rv(), rv());
     };
+#if 0
     const auto rp1 = []()
     {
         const auto rv = []()
@@ -65,6 +66,8 @@ AL_TEST(Accel,kdtree0)
         };
         return Vec3(rv(), 0.0f, 0.0f);
     };
+#endif
+#if 0
     const auto rp2 = []()
     {
         const auto rv = []()
@@ -73,6 +76,7 @@ AL_TEST(Accel,kdtree0)
         };
         return Vec3(rv(), rv(), 0.0f);
     };
+#endif
     std::vector<TestPoint> points;
     const int32_t np = 1024;
     for (int32_t i = 0; i < np; ++i)

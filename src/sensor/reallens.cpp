@@ -384,7 +384,7 @@ RealSensor::RealSensor(const ObjectProp& objectProp)
     const Transform transform(objectProp.findChildByTag("transform"));
     perspectivePos_ = transform.cameraOrigin();
     upDir_ = transform.cameraUp();
-    forwardDir_ = transform.cameraTarget() - perspectivePos_;
+    forwardDir_ = transform.cameraDir();
     rightDir_ = Vec3::cross(forwardDir_, upDir_);
     upDir_ = Vec3::cross(rightDir_, forwardDir_);
     rightDir_.normalize();

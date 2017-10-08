@@ -123,9 +123,9 @@ void ObjectProp::loadSub(tinyxml2::XMLNode* node, ObjectProp& parentProp)
         }
     }
     // 子を巡回
-    auto* child = node->FirstChild();
-    auto* elm = node->FirstChildElement();
-    const bool noChild = node->NoChildren();
+    // auto* child = node->FirstChild();
+    // auto* elm = node->FirstChildElement();
+    // const bool noChild = node->NoChildren();
     for (auto childNode = node->FirstChild(); childNode != nullptr;)
     {
         loadSub(childNode, objectProp);
@@ -385,7 +385,7 @@ int32_t ObjectProp::asInt(int32_t defaultValue) const
 float ObjectProp::asFloat(float defaultValue) const
 {
     const ObjectPropString attr = attribute("value");
-    int32_t v = 0;
+    // int32_t v = 0;
     if (!attr)
     {
         // TODO: warning

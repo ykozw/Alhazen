@@ -47,7 +47,7 @@ RGB ⇔ SpectrumSampledの変換でおおよそ元に戻っていることのチ
 */
 AL_TEST(spectrum, SampledSpectrumInterconversion)
 {
-    const float w = 1.0f;
+    // const float w = 1.0f;
     for (int32_t i = 0; i < 2000; ++i)
     {
         const int32_t ri = i % 10;
@@ -61,8 +61,8 @@ AL_TEST(spectrum, SampledSpectrumInterconversion)
         SpectrumRGB rgb;
         spectrum.toRGB(rgb);
         const float dr = fabsf(rgb.r - r);
-        const float dg = fabsf(rgb.g - g);
-        const float db = fabsf(rgb.b - b);
+        // const float dg = fabsf(rgb.g - g);
+        // const float db = fabsf(rgb.b - b);
         const float eps = 0.18f; // HACK: この数値は適当
         if (dr > eps || dr > eps || dr > eps)
         {

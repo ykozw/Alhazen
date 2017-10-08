@@ -66,7 +66,7 @@ void SubFilm::transferAddFilm()
     Image& dst = film_->image_;
     const int32_t w = region_.width();
     const int32_t h = region_.height();
-    const int32_t dw = dst.width();
+    // const int32_t dw = dst.width();
     const float inv = 1.0f / float(addNum_);
     //
     for (int32_t y = 0; y < h; ++y)
@@ -80,8 +80,8 @@ void SubFilm::transferAddFilm()
             Image::SpectrumType& dp = dst.pixel(px, py);
             dp = sp * inv;
             //
-            const int32_t si = x + y * w;
-            const int32_t di = px + py * dw;
+            // const int32_t si = x + y * w;
+            // const int32_t di = px + py * dw;
         }
     }
 }

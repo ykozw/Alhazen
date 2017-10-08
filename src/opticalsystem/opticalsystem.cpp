@@ -62,7 +62,7 @@ bool OpticalSystem::Impl::setupFromOtx(const char* fileName)
 	file.open(fileName);
 	AL_ASSERT_DEBUG(file);
 	std::string buffer;
-	int32_t surfNo = 0;
+	// int32_t surfNo = 0;
 	LensSurface* curLensSurface = NULL;
 	//
 	while (std::getline(file, buffer))

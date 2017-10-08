@@ -90,8 +90,8 @@ Spectrum PTSurfaceIntegrator::radiance(
     Spectrum lighting = Spectrum(0.0f);
     Ray ray = screenRay;
     const int32_t maxpathNo = 8;
-    bool isOutside = true;
-    const float rrProb = sampler->get1d();
+    // bool isOutside = true;
+    // const float rrProb = sampler->get1d();
     //
     for (int32_t pathNo = 0; pathNo < maxpathNo; ++pathNo)
     {

@@ -409,14 +409,14 @@ INLINE bool BoolInVec::value() const
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE Vec2::Vec2(_In_reads_(2) float* es)
+INLINE Vec2::Vec2(_In_reads_(4) const float* es)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     x_ = es[0];
     y_ = es[1];
 #else
-    // TODO: 配列をそのまま受けられるのに変更しておく
-    xy_ = (_mm_set_ps(0.0f, 0.0f, es[1], es[0]));
+    // NOTE: アライメントは揃っている前提
+    xy_ = _mm_load_ps(es);
 #endif
 }
 
@@ -916,7 +916,7 @@ INLINE static Vec2 operator / (const Vec2& v, float f)
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE Vec3::Vec3(_In_reads_(3) const float* es)
+INLINE Vec3::Vec3(_In_reads_(4) const float* es)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     x_ = es[0];
@@ -954,7 +954,7 @@ INLINE Vec3::Vec3(float e)
     y_ = e;
     z_ = e;
 #elif defined(AL_MATH_USE_AVX2)
-    xyz_ = (_mm_set_ps(0.0f, e, e, e));
+    xyz_ = _mm_set_ps1(e);
 #endif
 }
 
@@ -1781,7 +1781,8 @@ INLINE Vec4::Vec4(_In_reads_(4) const float* es)
     z_ = es[2];
     w_ = es[3];
 #else
-    xyzw_ = _mm_set_ps(es[3], es[2], es[1], es[0]);
+    // NOTE: アライメントは揃っている前提
+    xyzw_ = _mm_load_ps(es);
 #endif
 }
 
@@ -1813,7 +1814,7 @@ INLINE Vec4::Vec4(float e)
     z_ = e;
     w_ = e;
 #elif defined(AL_MATH_USE_AVX2)
-    xyzw_ = _mm_set_ps(e, e, e, e);
+    xyzw_ = _mm_set_ps1(e);
 #endif
 }
 

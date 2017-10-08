@@ -1,5 +1,10 @@
 ﻿#pragma once
 
+template<int32_t NUM_SAMPLE>
+SpectrumSampled sample2SpectrumSampled(
+                                       const std::array<float, NUM_SAMPLE>& lambda,
+                                       const std::array<float, NUM_SAMPLE>& intensity);
+
 #pragma region CIEConstants
 static const int SPECTRUM_SAMPLED_NUM_SAMPLES_CIE = 471;
 const std::array<float, SPECTRUM_SAMPLED_NUM_SAMPLES_CIE> CIE_X_SAMPLE

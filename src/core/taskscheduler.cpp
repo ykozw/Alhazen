@@ -141,7 +141,7 @@ int32_t SimpleTaskScheduler::numThread() const
 int32_t SimpleTaskScheduler::Impl::numThread() const
 {
 #if 1
-    return (int32_t)std::thread::hardware_concurrency() - 1;
+    return (int32_t)std::thread::hardware_concurrency();
 #else
     return 1;
 #endif

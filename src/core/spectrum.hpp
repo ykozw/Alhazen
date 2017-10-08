@@ -7,7 +7,7 @@ const float SPECTRUM_LAMBDA_START = 400.0f;
 const float SPECTRUM_LAMBDA_LAST = 700.0f;
 const float SPECTRUM_LAMBDA_RANGE = SPECTRUM_LAMBDA_LAST - SPECTRUM_LAMBDA_START;
 // SpectrumSampledクラスでのサンプル数
-const int32_t SPECTRUM_SAMPLED_NUM_SAMPLES = 30;
+static const int32_t SPECTRUM_SAMPLED_NUM_SAMPLES = 30;
 
 /*
 -------------------------------------------------

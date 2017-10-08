@@ -191,10 +191,9 @@ void OrthonormalBasis<METHOD>::set(const Vec3& an, const Vec3& at, const Vec3& a
     t = at;
     s = as;
     //
-    nts.row0 = s.xyz_;
-    nts.row1 = t.xyz_;
-    nts.row2 = n.xyz_;
-    //
+    nts.setRow<0>(s);
+    nts.setRow<1>(t);
+    nts.setRow<2>(n);
     updateNTS();
 }
 

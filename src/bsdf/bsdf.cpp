@@ -1526,10 +1526,10 @@ DisneyBRDF::DisneyBRDF(const ObjectProp& objectProp)
 {
     //
     std::string baseColorTexture = "none";
-    float baseColorGamma = 2.2f;
+    // float baseColorGamma = 2.2f;
     // TODO: テクスチャ以外も取り扱えるようにする。
     baseColorTexture = objectProp.findChildBy("name", "basecolor").asString("none");
-    baseColorGamma = objectProp.findChildBy("name", "gamma").asFloat(2.2f); // FIXME: このBSDFのObjectPropではなく、BaseColorのObjectPropにする。
+    // baseColorGamma = objectProp.findChildBy("name", "gamma").asFloat(2.2f); // FIXME: このBSDFのObjectPropではなく、BaseColorのObjectPropにする。
     baseColor_ = Spectrum::createFromRGB({0.5f,0.5f, 0.5f},false);
     metallic_ = objectProp.findChildBy("name", "metalic").asFloat(0.5f); // [0,1]
     subsurface_ = objectProp.findChildBy("name", "subsurface").asFloat(0.0f); // [0,1]

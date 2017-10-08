@@ -192,7 +192,7 @@ void SimpleBVH::constructNode(int32_t nodeIndex, MeshTriangle* triangles, int32_
     static int32_t axisNext = 0;
     bestAxis = (axisNext++) % 3;
     bestTriIndex = numTriangle / 2;
-    bestSAH = 0.0f;
+    // bestSAH = 0.0f;
 #endif
     // 再度ソート
     axis = bestAxis;

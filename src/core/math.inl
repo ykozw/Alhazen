@@ -2461,8 +2461,8 @@ INLINE void Matrix4x4::constructAsViewMatrix(Vec3 origin,
 	e11 = xaxis.x(); e12 = yaxis.x(); e13 = zaxis.x(); e14 = 0.0f;
 	e21 = xaxis.y(); e22 = yaxis.y(); e23 = zaxis.y(); e24 = 0.0f;
 	e31 = xaxis.z(); e32 = yaxis.z(); e33 = zaxis.z(); e34 = 0.0f;
-	e41 = -float(Vec3::dot(xaxis, origin));
-	e42 = -float(Vec3::dot(yaxis, origin));
+	e41 = -Vec3::dot(xaxis, origin);
+	e42 = -Vec3::dot(yaxis, origin);
 	e43 = -Vec3::dot(zaxis, origin);
 	e44 = 1.0f;
 }

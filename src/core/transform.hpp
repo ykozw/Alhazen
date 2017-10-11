@@ -16,10 +16,10 @@ class Transform
 public:
     Transform();
     Transform(const ObjectProp& objectProp);
-    const Vec3 toWorld(const Vec3& pos) const;
-    const Vec3 toLocal(const Vec3& pos) const;
-    const Vec3 toWorldDir(const Vec3& dir) const;
-    const Vec3 toLocalDir(const Vec3& dir) const;
+    const Vec3 toWorld(Vec3 pos) const;
+    const Vec3 toLocal(Vec3 pos) const;
+    const Vec3 toWorldDir(Vec3 dir) const;
+    const Vec3 toLocalDir(Vec3 dir) const;
     //
     Vec3 cameraOrigin() const;
     Vec3 cameraUp() const;

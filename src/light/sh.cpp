@@ -9,7 +9,7 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-inline static void sh_eval_basis_1(const Vec3& dir, float b[4])
+inline static void sh_eval_basis_1(Vec3 dir, float b[4])
 {
     //
     const float x = dir.x();
@@ -34,7 +34,7 @@ inline static void sh_eval_basis_1(const Vec3& dir, float b[4])
 -------------------------------------------------
 -------------------------------------------------
 */
-inline static void sh_eval_basis_2(const Vec3& dir, float b[9])
+inline static void sh_eval_basis_2(Vec3 dir, float b[9])
 {
     //
     const float x = dir.x();
@@ -107,7 +107,7 @@ static inline float cosWtInt(const size_t order)
 -------------------------------------------------
 -------------------------------------------------
 */
-void _evalDirection(float* values, int32_t order, const Vec3& dir)
+void _evalDirection(float* values, int32_t order, Vec3 dir)
 {
     // TODO: 
     switch (order)
@@ -128,7 +128,7 @@ void _evalDirection(float* values, int32_t order, const Vec3& dir)
 -------------------------------------------------
 -------------------------------------------------
 */
-void _evalDirectionalLight(float* values, int32_t order, const Vec3& dir)
+void _evalDirectionalLight(float* values, int32_t order, Vec3 dir)
 {
     _evalDirection(values, order, dir);
 

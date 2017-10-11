@@ -542,6 +542,8 @@ Matrix4x4
 Row-Major/Row-Vectorの4x4行列
 -------------------------------------------------
 */
+#define MAT4X4_SIMD
+
 struct Matrix4x4
 {
 public:
@@ -564,14 +566,14 @@ public:
     Matrix4x4(_In_reads_(16) const float* es);
     void constructAsProjectionLH();
     void constructAsRotationAxis();
-    void constructAsTranslation(const Vec3& v);
-    void constructAsScale(const Vec3& scale);
-    void constructAsRotation(const Vec3& xyz_, float angle);
+    void constructAsTranslation(Vec3 v);
+    void constructAsScale(Vec3 scale);
+    void constructAsRotation(Vec3 xyz_, float angle);
     void constructAsViewMatrix(Vec3 origin, Vec3 target, Vec3 up);
     void fillZero();
     void identity();
-    Vec3 transform(const Vec3& v) const;
-    Vec4 transform(const Vec4& v) const;
+    Vec3 transform(Vec3 v) const;
+    Vec4 transform(Vec4 v) const;
     const Vec4& operator [] (int32_t index) const;
     Vec4& operator [] (int32_t index);
     Vec4 rowVector(int32_t index) const;
@@ -623,14 +625,14 @@ public:
         // xyz_が8回
         float* xyzs);
     INLINE void set(
-        const Vec3& v0,
-        const Vec3& v1,
-        const Vec3& v2,
-        const Vec3& v3,
-        const Vec3& v4,
-        const Vec3& v5,
-        const Vec3& v6,
-        const Vec3& v7);
+        Vec3 v0,
+        Vec3 v1,
+        Vec3 v2,
+        Vec3 v3,
+        Vec3 v4,
+        Vec3 v5,
+        Vec3 v6,
+        Vec3 v7);
     INLINE void setZero();
     INLINE Bool8 isZero() const;
     INLINE Bool8 hasNan() const;
@@ -643,7 +645,7 @@ public:
     INLINE Bool8 isAllZero() const;
     INLINE Vec3Pack8 inverted() const;
     INLINE Vec3Pack8 invertedSafe(float defaultValue) const;
-    INLINE Vec3Pack8 reflect(const Vec3& v) const;
+    INLINE Vec3Pack8 reflect(Vec3 v) const;
     INLINE Float8 operator[](int32_t index) const;
 
     INLINE static Float8 length(const Vec3Pack8& v);

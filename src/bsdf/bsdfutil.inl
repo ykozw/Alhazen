@@ -10,7 +10,7 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE bool sameHemisphere(const Vec3& localWi, const Vec3& localWo)
+INLINE bool sameHemisphere(Vec3 localWi, Vec3 localWo)
 {
     //
     AL_ASSERT_DEBUG(localWi.isNormalized(0.03f));
@@ -23,7 +23,7 @@ INLINE bool sameHemisphere(const Vec3& localWi, const Vec3& localWo)
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE float cosTheta(const Vec3& v)
+INLINE float cosTheta(Vec3 v)
 {
     AL_ASSERT_DEBUG(v.isNormalized());
     // 理屈の上では[-1,1]になるはずだが計算誤差がある場合があるのでclamp
@@ -34,7 +34,7 @@ INLINE float cosTheta(const Vec3& v)
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE float absCosTheta(const Vec3& v)
+INLINE float absCosTheta(Vec3 v)
 {
     AL_ASSERT_DEBUG(v.isNormalized());
     // 理屈の上では[0,1]になるはずだが計算誤差がある場合があるのでclamp
@@ -46,7 +46,7 @@ INLINE float absCosTheta(const Vec3& v)
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE float sinThetaSq(const Vec3& v)
+INLINE float sinThetaSq(Vec3 v)
 {
     AL_ASSERT_DEBUG(v.isNormalized());
     const float ct = cosTheta(v);
@@ -59,7 +59,7 @@ INLINE float sinThetaSq(const Vec3& v)
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE float sinTheta(const Vec3& v)
+INLINE float sinTheta(Vec3 v)
 {
     AL_ASSERT_DEBUG(v.isNormalized());
     // 理屈の上では[0,1]になるはずだが計算誤差がある場合があるのでclamp
@@ -71,7 +71,7 @@ INLINE float sinTheta(const Vec3& v)
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE float cosPhi(const Vec3& v)
+INLINE float cosPhi(Vec3 v)
 {
     AL_ASSERT_DEBUG(v.isNormalized());
     const float st = sinTheta(v);
@@ -89,7 +89,7 @@ INLINE float cosPhi(const Vec3& v)
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE float sinPhi(const Vec3& v)
+INLINE float sinPhi(Vec3 v)
 {
     AL_ASSERT_DEBUG(v.isNormalized());
     const float st = sinTheta(v);
@@ -107,7 +107,7 @@ INLINE float sinPhi(const Vec3& v)
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE void sincosPhi(const Vec3& v, _Out_ float* sinPhi, _Out_ float* cosPhi)
+INLINE void sincosPhi(Vec3 v, _Out_ float* sinPhi, _Out_ float* cosPhi)
 {
     AL_ASSERT_DEBUG(v.isNormalized());
     const float st = sinTheta(v);

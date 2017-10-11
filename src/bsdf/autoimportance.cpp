@@ -151,7 +151,7 @@ void AutoImportance::genDistribution(
 -------------------------------------------------
 */
 void AutoImportance::sample(
-    const Vec3& localWo,
+    Vec3 localWo,
     XorShift128& rng,
     _Out_ Vec3* localWi,
     _Out_ float* pdf) const
@@ -204,8 +204,8 @@ void AutoImportance::sample(
 -------------------------------------------------
 */
 float AutoImportance::pdf(
-    const Vec3& localWo,
-    const Vec3& localWi ) const
+    Vec3 localWo,
+    Vec3 localWi ) const
 {
     const float coso = localWo.z();
     auto ite = std::lower_bound(

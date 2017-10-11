@@ -5,7 +5,7 @@
 -------------------------------------------------
 */
 template<int32_t ORDER>
-SphericalHarmonicsCoeff<ORDER> SphericalHarmonicsCoeff<ORDER>::evalDirection(const Vec3& dir)
+SphericalHarmonicsCoeff<ORDER> SphericalHarmonicsCoeff<ORDER>::evalDirection(Vec3 dir)
 {
     SphericalHarmonicsCoeff<ORDER> sh;
     extern void _evalDirection(float* values, int32_t order, const Vec3& dir);
@@ -18,7 +18,7 @@ SphericalHarmonicsCoeff<ORDER> SphericalHarmonicsCoeff<ORDER>::evalDirection(con
 -------------------------------------------------
 */
 template<int32_t ORDER>
-SphericalHarmonicsCoeff<ORDER> SphericalHarmonicsCoeff<ORDER>::evalDirectionalLight(const Vec3& dir)
+SphericalHarmonicsCoeff<ORDER> SphericalHarmonicsCoeff<ORDER>::evalDirectionalLight(Vec3 dir)
 {
     SphericalHarmonicsCoeff<ORDER> sh;
     extern void _evalDirectionalLight(float* values, int32_t order, const Vec3& dir);

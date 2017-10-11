@@ -35,8 +35,8 @@ public:
     
 public:
     //
-    static SphericalHarmonicsCoeff<ORDER> evalDirection(const Vec3& dir);
-    static SphericalHarmonicsCoeff<ORDER> evalDirectionalLight(const Vec3& dir);
+    static SphericalHarmonicsCoeff<ORDER> evalDirection(Vec3 dir);
+    static SphericalHarmonicsCoeff<ORDER> evalDirectionalLight(Vec3 dir);
     //
     static SphericalHarmonicsCoeff<ORDER> scale(
         const SphericalHarmonicsCoeff<ORDER>& v,
@@ -51,4 +51,3 @@ public:
 };
 
 #include "sh.inl"
-

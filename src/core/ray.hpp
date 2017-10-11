@@ -70,8 +70,8 @@ public:
     RaySIMD(const Ray& ray)
         :origRay(ray)
     {
-        const Vec3& ro = ray.o;
-        const Vec3& rdi = ray.dinv;
+        const Vec3 ro = ray.o;
+        const Vec3 rdi = ray.dinv;
         o[0] = _mm_set_ps1(ro.x());
         o[1] = _mm_set_ps1(ro.y());
         o[2] = _mm_set_ps1(ro.z());

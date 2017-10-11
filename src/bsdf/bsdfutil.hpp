@@ -8,14 +8,14 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-bool sameHemisphere(const Vec3& localWi, const Vec3& localWo);
-float cosTheta(const Vec3& v);
-float absCosTheta(const Vec3& v);
-float sinThetaSq(const Vec3& v);
-float sinTheta(const Vec3& v);
-float cosPhi(const Vec3& v);
-float sinPhi(const Vec3& v);
-void sincosPhi(const Vec3& v, _Out_ float* sinPhi, _Out_ float* cosPhi);
+bool sameHemisphere(Vec3 localWi, Vec3 localWo);
+float cosTheta(Vec3 v);
+float absCosTheta(Vec3 v);
+float sinThetaSq(Vec3 v);
+float sinTheta(Vec3 v);
+float cosPhi(Vec3 v);
+float sinPhi(Vec3 v);
+void sincosPhi(Vec3 v, _Out_ float* sinPhi, _Out_ float* cosPhi);
 
 /*
 -------------------------------------------------

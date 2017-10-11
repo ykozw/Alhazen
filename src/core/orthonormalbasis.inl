@@ -16,7 +16,7 @@ OrthonormalBasis<METHOD>::OrthonormalBasis()
 -------------------------------------------------
 */
 template<ONB_METHOD METHOD>
-OrthonormalBasis<METHOD>::OrthonormalBasis(const Vec3& an)
+OrthonormalBasis<METHOD>::OrthonormalBasis(Vec3 an)
 {
     set(an);
 }
@@ -26,7 +26,7 @@ OrthonormalBasis<METHOD>::OrthonormalBasis(const Vec3& an)
 -------------------------------------------------
 */
 template<ONB_METHOD METHOD>
-OrthonormalBasis<METHOD>::OrthonormalBasis(const Vec3& an, const Vec3& at)
+OrthonormalBasis<METHOD>::OrthonormalBasis(Vec3 an, Vec3 at)
 {
     set(an, at);
 }
@@ -36,7 +36,7 @@ OrthonormalBasis<METHOD>::OrthonormalBasis(const Vec3& an, const Vec3& at)
 -------------------------------------------------
 */
 template<ONB_METHOD METHOD>
-void OrthonormalBasis<METHOD>::set(const Vec3& an)
+void OrthonormalBasis<METHOD>::set(Vec3 an)
 {
     AL_ASSERT_DEBUG(an.isNormalized());
     Vec3 n, s, t;
@@ -147,7 +147,7 @@ void OrthonormalBasis<METHOD>::set(const Vec3& an)
 -------------------------------------------------
 */
 template<ONB_METHOD METHOD>
-void OrthonormalBasis<METHOD>::set(const Vec3& an, const Vec3& at)
+void OrthonormalBasis<METHOD>::set(Vec3 an, Vec3 at)
 {
     AL_ASSERT_DEBUG(an.isNormalized());
     AL_ASSERT_DEBUG(at.isNormalized());
@@ -178,7 +178,7 @@ void OrthonormalBasis<METHOD>::set(const Vec3& an, const Vec3& at)
 -------------------------------------------------
 */
 template<ONB_METHOD METHOD>
-void OrthonormalBasis<METHOD>::set(const Vec3& an, const Vec3& at, const Vec3& as)
+void OrthonormalBasis<METHOD>::set(Vec3 an, Vec3 at, Vec3 as)
 {
     AL_ASSERT_DEBUG(an.isNormalized());
     AL_ASSERT_DEBUG(at.isNormalized());

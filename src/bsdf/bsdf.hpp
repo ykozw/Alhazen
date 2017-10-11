@@ -528,8 +528,8 @@ public:
         _Out_ Vec3* localWi,
         _Out_ float* pdf) const override;
 private:
-    float D_GTR1(const Vec3& m, float MdotN2) const;
-    float D_GTR2Aniso(const Vec3 &m, float MdotN2) const;
+    float D_GTR1(Vec3 m, float MdotN2) const;
+    float D_GTR2Aniso(Vec3 m, float MdotN2) const;
 private:
     Spectrum baseColor_;
     float metallic_;

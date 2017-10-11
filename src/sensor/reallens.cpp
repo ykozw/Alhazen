@@ -21,7 +21,7 @@ Snellの法則を使って透過方向を計算する
 全反射が発生してしまう場合はfalseが戻る
 -------------------------------------------------
 */
-inline bool refract(const Vec3& wi, const Vec3& n, float eta, Vec3* wt)
+inline bool refract(Vec3 wi, Vec3 n, float eta, Vec3* wt)
 {
     // Snellの法則
     const float ctIn = Vec3::dot(n, wi);
@@ -327,7 +327,7 @@ private:
     bool lensTrace(
         float xOnFilmInMM,
         float yOnFilmInMM,
-        const Vec3& dir,
+        Vec3 dir,
         float waveLength,
         float imageSensorOffset,
         _Out_ std::vector<Vec3>* points,
@@ -917,8 +917,8 @@ INLINE bool intersectSphereAsLens(
 -------------------------------------------------
 */
 INLINE void intersectPlaneAsStopPlane(
-    const Vec3& rayOrig,
-    const Vec3& rayDir,
+    Vec3 rayOrig,
+    Vec3 rayDir,
     const float dist,
     _Out_ Vec3* hitPos)
 {
@@ -955,7 +955,7 @@ static bool isInsideElapse(float x, float y, float rx, float ry)
 bool RealSensor::lensTrace(
     float xOnFilmInMM,
     float yOnFilmInMM,
-    const Vec3& dir,
+    Vec3 dir,
     float waveLength,
     float imageSensorOffset,
     _Out_ std::vector<Vec3>* points,
@@ -1013,7 +1013,7 @@ bool RealSensor::lensTrace(
                 AL_ASSERT_DEBUG(false);
             }
             // レンズ口径以上の場所に交差した場合も失敗
-            const Vec3& p = isect.position;
+            const Vec3 p = isect.position;
             if (!isInsideElapse(p.x(), p.y(), lens.apeX, lens.apeY))
             {
                 // 最初から外しているのは何かがまずい

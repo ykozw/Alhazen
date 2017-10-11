@@ -70,7 +70,7 @@ Spectrum AOSurfaceIntegrator::radiance(
         float pdf;
         const Vec3 localDir = sampler->getHemisphereCosineWeighted(&pdf);
         const Vec3 worldDir = local.local2world(localDir);
-        const Vec3& pos = isect.uppserSideOrigin();
+        const Vec3 pos = isect.uppserSideOrigin();
         Ray newRay(pos, worldDir, isect.rayEpsilon);
         const bool skipLight = true;
         const bool isHit = scene.intersectCheck(newRay, skipLight);

@@ -80,10 +80,10 @@ BoxShape::BoxShape(const ObjectProp& objectProp)
     vs[7] = transform.toWorld(Vec3(+1.0f, +1.0f, +1.0f));
     //
     const auto createFace = [](
-        const Vec3& v0,
-        const Vec3& v1,
-        const Vec3& v2,
-        const Vec3& v3
+        Vec3 v0,
+        Vec3 v1,
+        Vec3 v2,
+        Vec3 v3
         ) ->Face
     {
         Face f;
@@ -153,7 +153,7 @@ INLINE bool BoxShape::intersect(const Ray& ray, _Inout_ Intersect* isect) const
     const auto intersectFace = [](const Ray& ray, const Face& face, _Inout_ Intersect* isect)
     {
         const auto& vs = face.vs;
-        const Vec3& n = face.n;
+        const Vec3 n = face.n;
         // HACK: UVは適当
         const Vec2 uv(0.0f);
         return
@@ -279,7 +279,7 @@ class Sphere
 {
 public:
     Sphere(const ObjectProp& prop);
-    Sphere(const Vec3& pos, float r);
+    Sphere(Vec3 pos, float r) :Shape(ObjectProp()){}
     AABB aabb() const override;
     bool intersect(const Ray& ray, Intersect* isect) const override;
     bool intersectCheck(const Ray& ray) const override;

@@ -96,7 +96,7 @@ Matrix4x4 Transform::constructToWorldMatrix(const ObjectProp& objectProp) const
 -------------------------------------------------
 -------------------------------------------------
 */
-const Vec3 Transform::toWorld(const Vec3& pos) const
+const Vec3 Transform::toWorld(Vec3 pos) const
 {
     return toWorld_.transform(pos);
 }
@@ -105,7 +105,7 @@ const Vec3 Transform::toWorld(const Vec3& pos) const
 -------------------------------------------------
 -------------------------------------------------
 */
-const Vec3 Transform::toLocal(const Vec3& pos) const
+const Vec3 Transform::toLocal(Vec3 pos) const
 {
     return toLocal_.transform(pos);
 }
@@ -114,7 +114,7 @@ const Vec3 Transform::toLocal(const Vec3& pos) const
 -------------------------------------------------
 -------------------------------------------------
 */
-const Vec3 Transform::toWorldDir(const Vec3& dir) const
+const Vec3 Transform::toWorldDir(Vec3 dir) const
 {
     return toWorldDir_.transform(dir);
 }
@@ -123,7 +123,7 @@ const Vec3 Transform::toWorldDir(const Vec3& dir) const
 -------------------------------------------------
 -------------------------------------------------
 */
-const Vec3 Transform::toLocalDir(const Vec3& dir) const
+const Vec3 Transform::toLocalDir(Vec3 dir) const
 {
     return toLocalDir_.transform(dir);
 }

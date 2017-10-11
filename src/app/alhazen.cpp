@@ -67,7 +67,7 @@ int32_t Alhazen::runApp(const ArgConfig& config)
             break;
         }
         // レンダリング
-        const int32_t TASK_NUM_UNTILL_BY_JOIN = 256;
+        const int32_t TASK_NUM_UNTILL_BY_JOIN = 2048;
         for (int32_t taskNoOffset = 0; taskNoOffset < TASK_NUM_UNTILL_BY_JOIN; ++taskNoOffset)
         {
             taskScheduler.add([
@@ -103,6 +103,7 @@ int32_t Alhazen::runApp(const ArgConfig& config)
                 }
             });
         }
+        logging("Render Task pushed (%08d->%08d)", taskNo, taskNo + TASK_NUM_UNTILL_BY_JOIN);
         //
         taskNo += TASK_NUM_UNTILL_BY_JOIN;
     }

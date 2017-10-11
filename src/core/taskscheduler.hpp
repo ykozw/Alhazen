@@ -15,7 +15,7 @@ public:
     SimpleTaskScheduler();
     ~SimpleTaskScheduler();
     int32_t numThread() const;
-    void start(int32_t graySize);
+    void start(int32_t grainSize);
     void shutdown();
     bool isTaskConsumed();
     // TODO: std::function<>をそのまま使うのではなく、

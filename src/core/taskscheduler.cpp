@@ -98,7 +98,7 @@ public:
     Impl();
     ~Impl() = default;
     int32_t numThread() const;
-    void start(int32_t graySize);
+    void start(int32_t grainSize);
     void shutdown();
     bool isTaskConsumed();
     void add(const TaskFunc& task);
@@ -164,11 +164,11 @@ void SimpleTaskScheduler::Impl::add(const TaskFunc& task)
 -------------------------------------------------
 -------------------------------------------------
 */
-void SimpleTaskScheduler::start(int32_t graySize)
+void SimpleTaskScheduler::start(int32_t grainSize)
 {
-    impl_->start(graySize);
+    impl_->start(grainSize);
 }
-void SimpleTaskScheduler::Impl::start(int32_t graySize)
+void SimpleTaskScheduler::Impl::start(int32_t grainSize)
 {
     // ワーカースレッドスレッドを起動する
     const int32_t workerThreadNum = numThread();

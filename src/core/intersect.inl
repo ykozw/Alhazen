@@ -9,7 +9,7 @@
 */
 INLINE bool intersectSphereShapeCore(
     const Ray& ray,
-    const Vec3& o,
+    Vec3 o,
     float r,
     _Out_ float* t,
     _Out_ bool* intersectBackside)
@@ -57,7 +57,7 @@ INLINE bool intersectSphereShapeCore(
 */
 INLINE bool intersectSphere(
     const Ray& ray,
-    const Vec3& o,
+    Vec3 o,
     float r,
     _Inout_ Intersect* isect)
 {
@@ -88,7 +88,10 @@ INLINE bool intersectSphere(
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE bool intersectSphereCheck(const Ray& ray, const Vec3& pos, float r)
+INLINE bool intersectSphereCheck(
+    const Ray& ray,
+    Vec3 pos,
+    float r)
 {
     float t;
     bool intersectBackside = false;
@@ -101,9 +104,9 @@ INLINE bool intersectSphereCheck(const Ray& ray, const Vec3& pos, float r)
 */
 INLINE bool intersectTriangleCore(
     const Ray& ray,
-    const Vec3& v0,
-    const Vec3& v1,
-    const Vec3& v2,
+    Vec3 v0,
+    Vec3 v1,
+    Vec3 v2,
     _Out_ float* t,
     _Out_ float* u,
     _Out_ float* v,
@@ -157,15 +160,15 @@ INLINE bool intersectTriangleCore(
 */
 INLINE bool intersectTriangle(
     const Ray& ray,
-    const Vec3& v0,
-    const Vec3& v1,
-    const Vec3& v2,
-    const Vec3& n0,
-    const Vec3& n1,
-    const Vec3& n2,
-    const Vec2& t0,
-    const Vec2& t1,
-    const Vec2& t2,
+   Vec3 v0,
+   Vec3 v1,
+   Vec3 v2,
+   Vec3 n0,
+   Vec3 n1,
+   Vec3 n2,
+   Vec2 t0,
+   Vec2 t1,
+   Vec2 t2,
     _Inout_ Intersect* isect)
 {
     //
@@ -210,7 +213,11 @@ INLINE bool intersectTriangle(
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE bool intersectTriangleCheck(const Ray& ray, const Vec3& v0, const Vec3& v1, const Vec3& v2)
+INLINE bool intersectTriangleCheck(
+    const Ray& ray,
+    Vec3 v0,
+    Vec3 v1,
+    Vec3 v2)
 {
     float t, u, v;
     bool isFlip;
@@ -223,7 +230,7 @@ INLINE bool intersectTriangleCheck(const Ray& ray, const Vec3& v0, const Vec3& v
 */
 INLINE bool intersectPlaneShapeCore(
     const Ray& ray,
-    const Vec3& dir,
+    Vec3 dir,
     const float dist,
     _Out_ float* t)
 {
@@ -255,7 +262,7 @@ INLINE bool intersectPlaneShapeCore(
 */
 INLINE bool intersectPlane(
     const Ray& ray,
-    const Vec3& dir,
+    Vec3 dir,
     float dist,
     _Inout_ Intersect* isect)
 {
@@ -283,7 +290,7 @@ INLINE bool intersectPlane(
 */
 INLINE bool intersectPlaneCheck(
     const Ray& ray,
-    const Vec3& dir,
+    Vec3 dir,
     float dist)
 {
     //

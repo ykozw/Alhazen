@@ -13,15 +13,15 @@ INLINE bool BruteForceBVH::intersect(const Ray& ray, _Inout_ Intersect* isect) c
     // 全ての三角形を見ていく
     for (auto& f : fs_)
     {
-        const Vec3& v0 = vs_[f.vi[0]];
-        const Vec3& v1 = vs_[f.vi[1]];
-        const Vec3& v2 = vs_[f.vi[2]];
-        const Vec3& n0 = ns_[f.vi[0]];
-        const Vec3& n1 = ns_[f.vi[1]];
-        const Vec3& n2 = ns_[f.vi[2]];
-        const Vec2& t0 = ts_[f.ti[0]];
-        const Vec2& t1 = ts_[f.ti[1]];
-        const Vec2& t2 = ts_[f.ti[2]];
+        const Vec3 v0 = vs_[f.vi[0]];
+        const Vec3 v1 = vs_[f.vi[1]];
+        const Vec3 v2 = vs_[f.vi[2]];
+        const Vec3 n0 = ns_[f.vi[0]];
+        const Vec3 n1 = ns_[f.vi[1]];
+        const Vec3 n2 = ns_[f.vi[2]];
+        const Vec2 t0 = ts_[f.ti[0]];
+        const Vec2 t1 = ts_[f.ti[1]];
+        const Vec2 t2 = ts_[f.ti[2]];
         //
         if (intersectTriangle(ray, v0, v1, v2, n0, n1, n2, t0, t1, t2, isect))
         {
@@ -41,9 +41,9 @@ INLINE bool BruteForceBVH::intersectCheck(const Ray& ray) const
     // 全ての三角形を見ていく
     for (auto& f : fs_)
     {
-        const Vec3& v0 = vs_[f.vi[0]];
-        const Vec3& v1 = vs_[f.vi[1]];
-        const Vec3& v2 = vs_[f.vi[2]];
+        const Vec3 v0 = vs_[f.vi[0]];
+        const Vec3 v1 = vs_[f.vi[1]];
+        const Vec3 v2 = vs_[f.vi[2]];
         //
         if (intersectTriangleCheck(ray, v0, v1, v2))
         {

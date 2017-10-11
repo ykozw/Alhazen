@@ -57,7 +57,7 @@ INLINE Vec3 AABB::center() const
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE const Vec3& AABB::min() const
+INLINE Vec3 AABB::min() const
 {
     return mn;
 }
@@ -66,7 +66,7 @@ INLINE const Vec3& AABB::min() const
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE const Vec3& AABB::max() const
+INLINE Vec3 AABB::max() const
 {
     return mx;
 }
@@ -220,7 +220,7 @@ INLINE bool AABB::validate() const
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE bool AABB::isInside(const Vec3& p) const
+INLINE bool AABB::isInside(Vec3 p) const
 {
     // TODO: 最適化
     return
@@ -264,7 +264,9 @@ INLINE AABB2D::AABB2D()
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE AABB2D::AABB2D(const Vec2& amn, const Vec2& amx)
+INLINE AABB2D::AABB2D(
+    Vec2 amn,
+    Vec2 amx)
 {
     mn = amn;
     mx = amx;
@@ -274,7 +276,11 @@ INLINE AABB2D::AABB2D(const Vec2& amn, const Vec2& amx)
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE AABB2D::AABB2D(float mnx, float mny, float mxx, float mxy)
+INLINE AABB2D::AABB2D(
+    float mnx,
+    float mny,
+    float mxx,
+    float mxy)
 {
     mn = Vec2(mnx,mny);
     mx = Vec2(mxx,mxy);
@@ -296,7 +302,7 @@ INLINE void AABB2D::clear()
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE void AABB2D::addPoint(const Vec2& point)
+INLINE void AABB2D::addPoint(Vec2 point)
 {
     mn = Vec2::min(mn,point);
     mx = Vec2::max(mx,point);
@@ -361,7 +367,7 @@ INLINE const Vec2& AABB2D::max() const
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE Vec2 AABB2D::onCoord(const Vec2& coord) const
+INLINE Vec2 AABB2D::onCoord(Vec2 coord) const
 {
     const Vec2 d = mx - mn;
     return

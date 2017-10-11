@@ -611,9 +611,9 @@ void Mesh::recalcNormal()
         const int32_t i0 = f.vi[0];
         const int32_t i1 = f.vi[1];
         const int32_t i2 = f.vi[2];
-        const Vec3& v0 = vs[i0];
-        const Vec3& v1 = vs[i1];
-        const Vec3& v2 = vs[i2];
+        const Vec3 v0 = vs[i0];
+        const Vec3 v1 = vs[i1];
+        const Vec3 v2 = vs[i2];
         const Vec3 e1 = v1 - v0;
         const Vec3 e2 = v2 - v0;
         const Vec3 n = Vec3::cross(e1, e2);
@@ -641,8 +641,8 @@ void Mesh::recalcBound()
         aabb.addPoint(v);
     }
     //
-    const Vec3& mn = aabb.min();
-    const Vec3& mx = aabb.max();
+    const Vec3 mn = aabb.min();
+    const Vec3 mx = aabb.max();
     logging("AABB(%.2f,%.2f,%.2f)-(%.2f,%.2f,%.2f)", mn.x(), mn.y(), mn.z(), mx.x(), mx.y(), mx.z());
 }
 

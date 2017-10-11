@@ -52,7 +52,7 @@ public:
     {
         return vs[x + y*size_ + z*size2_];
     }
-    const Vec3& pixel(int32_t x, int32_t y, int32_t z) const
+    Vec3 pixel(int32_t x, int32_t y, int32_t z) const
     {
         return vs[x + y*size_ + z*size2_];
     }

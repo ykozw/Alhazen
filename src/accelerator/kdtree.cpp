@@ -117,8 +117,8 @@ AL_TEST(Accel,kdtree0)
         //
         const auto pred = [](const TestPoint* lhs, const TestPoint* rhs)
         {
-            const Vec3& lp = lhs->pos;
-            const Vec3& rp = rhs->pos;
+            const Vec3 lp = lhs->pos;
+            const Vec3 rp = rhs->pos;
             if (lp.x != rp.x)
             {
                 return lp.x < rp.x;

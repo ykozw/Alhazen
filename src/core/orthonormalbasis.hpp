@@ -30,11 +30,11 @@ class OrthonormalBasis
 {
 public:
     OrthonormalBasis();
-    OrthonormalBasis(const Vec3& n);
-    OrthonormalBasis(const Vec3& n, const Vec3& t);
-    void set(const Vec3& n); // TODO: 参照をやめる
-    void set(const Vec3& n, const Vec3& t);
-    void set(const Vec3& n, const Vec3& t, const Vec3& s);
+    OrthonormalBasis(Vec3 n);
+    OrthonormalBasis(Vec3 n, Vec3 t);
+    void set(Vec3 n);
+    void set(Vec3 n, Vec3 t);
+    void set(Vec3 n, Vec3 t, Vec3 s);
     Vec3 world2local(Vec3 world) const;
     Vec3 local2world(Vec3 local) const;
     Vec3 getN() const;

@@ -28,7 +28,7 @@ public:
     bool asBool(bool defaultValue) const;
     int32_t asInt(int32_t defaultValue) const;
     float asFloat(float defaultValue) const;
-    Vec3 asVec3(const Vec3& defaultValue) const;
+    Vec3 asVec3(Vec3 defaultValue) const;
 private:
     bool valid_;
     std::string value_;
@@ -67,7 +67,7 @@ public:
     int32_t asInt(int32_t defaultValue) const;
     float asFloat(float defaultValue) const;
     std::string asString(const std::string& defaultValue) const;
-    Vec3 asXYZ(const Vec3& defaultValue) const;
+    Vec3 asXYZ(Vec3 defaultValue) const;
     float asAngle(float defaultValue) const;
 private:
     void loadSub(tinyxml2::XMLNode* node, ObjectProp& parentProp);

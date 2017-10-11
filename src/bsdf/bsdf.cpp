@@ -1555,7 +1555,7 @@ DisneyBRDF::DisneyBRDF(const ObjectProp& objectProp)
 -------------------------------------------------
 -------------------------------------------------
 */
-float DisneyBRDF::D_GTR1(const Vec3& m, float MdotN2) const
+float DisneyBRDF::D_GTR1(Vec3 m, float MdotN2) const
 {
     auto alpha = alLerp(clearcoatGloss_, 0.1f, 0.001f);
     auto a2 = sqr(alpha);
@@ -1567,7 +1567,7 @@ float DisneyBRDF::D_GTR1(const Vec3& m, float MdotN2) const
 -------------------------------------------------
 -------------------------------------------------
 */
-float DisneyBRDF::D_GTR2Aniso(const Vec3 &m, float MdotN2) const
+float DisneyBRDF::D_GTR2Aniso(Vec3 m, float MdotN2) const
 {
     float HdotU = Vec3::dot(m, Vec3(1.0f, 0.0f, 0.0f));
     float HdotV = Vec3::dot(m, Vec3(0.0f, 1.0f, 0.0f));

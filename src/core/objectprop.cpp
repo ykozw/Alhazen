@@ -251,7 +251,7 @@ float ObjectPropString::asFloat(float defaultValue) const
 asVec3()
 -------------------------------------------------
 */
-Vec3 ObjectPropString::asVec3(const Vec3& defaultValue) const
+Vec3 ObjectPropString::asVec3(Vec3 defaultValue) const
 {
     if (valid_)
     {
@@ -414,7 +414,7 @@ std::string ObjectProp::asString(const std::string& defaultValue) const
 -------------------------------------------------
 -------------------------------------------------
 */
-Vec3 ObjectProp::asXYZ(const Vec3& defaultValue) const
+Vec3 ObjectProp::asXYZ(Vec3 defaultValue) const
 {
     //
     ObjectPropString ax = attribute("x");

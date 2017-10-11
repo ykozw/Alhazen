@@ -2414,7 +2414,7 @@ INLINE void Matrix4x4::constructAsRotationAxis()
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE void Matrix4x4::constructAsTranslation(const Vec3& v)
+INLINE void Matrix4x4::constructAsTranslation(Vec3 v)
 {
     const float x = v.x();
     const float y = v.y();
@@ -2429,7 +2429,7 @@ INLINE void Matrix4x4::constructAsTranslation(const Vec3& v)
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE void Matrix4x4::constructAsScale(const Vec3& scale)
+INLINE void Matrix4x4::constructAsScale(Vec3 scale)
 {
     const float sx = scale.x();
     const float sy = scale.y();
@@ -2445,7 +2445,7 @@ INLINE void Matrix4x4::constructAsScale(const Vec3& scale)
 http://www.euclideanspace.com/maths/geometry/rotations/conversions/angleToMatrix/
 -------------------------------------------------
 */
-INLINE void Matrix4x4::constructAsRotation(const Vec3& xyz_, float angle)
+INLINE void Matrix4x4::constructAsRotation(Vec3 xyz_, float angle)
 {
     //
     const float s = std::sinf(angle);
@@ -2521,7 +2521,7 @@ INLINE void Matrix4x4::identity()
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE Vec3 Matrix4x4::transform(const Vec3& v) const
+INLINE Vec3 Matrix4x4::transform(Vec3 v) const
 {
     const Vec4 nv(v.x(), v.y(), v.z(), 1.0f);
     return
@@ -2535,7 +2535,7 @@ INLINE Vec3 Matrix4x4::transform(const Vec3& v) const
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE Vec4 Matrix4x4::transform(const Vec4& v) const
+INLINE Vec4 Matrix4x4::transform(Vec4 v) const
 {
     return
         Vec4(
@@ -2967,14 +2967,14 @@ INLINE void Vec3Pack8::set(
 -------------------------------------------------
 */
 INLINE void Vec3Pack8::set(
-                           const Vec3& v0,
-                           const Vec3& v1,
-                           const Vec3& v2,
-                           const Vec3& v3,
-                           const Vec3& v4,
-                           const Vec3& v5,
-                           const Vec3& v6,
-                           const Vec3& v7)
+                           Vec3 v0,
+                           Vec3 v1,
+                           Vec3 v2,
+                           Vec3 v3,
+                           Vec3 v4,
+                           Vec3 v5,
+                           Vec3 v6,
+                           Vec3 v7)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     assert(false);

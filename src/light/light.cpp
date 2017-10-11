@@ -528,6 +528,7 @@ void SphereLight::init(
     //
     center_ = center;
     radius_ = radius;
+    radius2_ = radius * radius;
     emission_ = emission;
     //
     area_ = 4.0f * PI * radius_ * radius_;
@@ -553,7 +554,7 @@ Spectrum SphereLight::emittion(
 {
     // 交差したらEmissionを返す
     Intersect isect;
-    const bool hit = intersectSphere(Ray(targetPos, dir), center_, radius_, &isect);
+    const bool hit = intersectSphere(Ray(targetPos, dir), center_, radius2_, &isect);
     if (hit)
     {
         return emission_;
@@ -668,7 +669,7 @@ Spectrum SphereLight::sampleLe(
 */
 bool SphereLight::intersect(const Ray& ray, _Inout_ Intersect* isect) const
 {
-    const bool hit = intersectSphere(ray, center_, radius_, isect);
+    const bool hit = intersectSphere(ray, center_, radius2_, isect);
     if (hit)
     {
         isect->bsdf = BSDF::vantaBlack;

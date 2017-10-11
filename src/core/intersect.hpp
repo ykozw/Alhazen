@@ -15,12 +15,12 @@ Sphere vs Ray
 bool intersectSphere(
     const Ray& ray,
     Vec3 o,
-    float r,
+    float r2,
     _Inout_ Intersect* isect);
 bool intersectSphereCheck(
     const Ray& ray,
     Vec3 pos,
-    float r);
+    float r2);
 
 /*
 -------------------------------------------------

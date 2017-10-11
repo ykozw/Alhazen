@@ -286,6 +286,7 @@ public:
 private:
     Vec3 pos_;
     float r_;
+    float r2_;
     AABB aabb_;
 };
 REGISTER_OBJECT(Shape, Sphere);
@@ -300,6 +301,7 @@ Sphere::Sphere(const ObjectProp& prop)
     // 幾何情報を取得
     pos_ = prop.findChildBy("name", "center").asXYZ(Vec3(0.0f));
     r_ = prop.findChildBy("name", "radius").asFloat(1.0f);
+    r2_ = r_ * r_;
     const Vec3 xdir = Vec3(r_, 0.0f, 0.0f);
     const Vec3 ydir = Vec3(0.0f, r_, 0.0f);
     const Vec3 zdir = Vec3(0.0f, 0.0f, r_);
@@ -326,7 +328,7 @@ AABB Sphere::aabb() const
 */
 bool Sphere::intersect(const Ray& ray, _Inout_ Intersect* isect) const
 {
-    if (intersectSphere(ray, pos_, r_, isect))
+    if (intersectSphere(ray, pos_, r2_, isect))
     {
         isect->bsdf = bsdf_;
         return true;
@@ -340,5 +342,5 @@ bool Sphere::intersect(const Ray& ray, _Inout_ Intersect* isect) const
 */
 bool Sphere::intersectCheck(const Ray& ray) const
 {
-    return intersectSphereCheck(ray, pos_, r_);
+    return intersectSphereCheck(ray, pos_, r2_);
 }

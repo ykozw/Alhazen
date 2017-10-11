@@ -177,6 +177,7 @@ public:
 private:
     Vec3 center_ = Vec3(0.0f,0.0f,0.0f);
     float radius_ = 0.0f;
+    float radius2_ = 0.0f;
     Spectrum emission_;
     float area_ = 0.0f;
     float invArea_ = 0.0f;

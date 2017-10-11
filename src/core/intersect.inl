@@ -10,25 +10,25 @@
 INLINE bool intersectSphereShapeCore(
     const Ray& ray,
     Vec3 o,
-    float r,
+    float r2,
     _Out_ float* t,
     _Out_ bool* intersectBackside)
 {
     //
-    Vec3 rs = ray.o - o;
+    const Vec3 rs = ray.o - o;
     // 球中心からレイ原点までの距離二乗
     const float rs2 = Vec3::dot(rs, rs);
     // 半径二乗
-    const float radius2 = r*r;
     const float lhs = Vec3::dot(ray.d, rs);
-    const float D = lhs * lhs - rs2 + radius2;
+    const float D = lhs * lhs - rs2 + r2;
     if (D <= 0.0f)
     {
         return false;
     }
     //
-    const float t0 = -lhs - sqrtf(D);
-    const float t1 = -lhs + sqrtf(D);
+    const float sqrtD = std::sqrtf(D);
+    const float t0 = -lhs - sqrtD;
+    const float t1 = -lhs + sqrtD;
     if (t0 < 0.0f && t1 < 0.0f)
     {
         return false;
@@ -58,12 +58,12 @@ INLINE bool intersectSphereShapeCore(
 INLINE bool intersectSphere(
     const Ray& ray,
     Vec3 o,
-    float r,
+    float r2,
     _Inout_ Intersect* isect)
 {
     float t;
     bool intersectBackside = false;
-    if (!intersectSphereShapeCore(ray, o, r, &t, &intersectBackside))
+    if (!intersectSphereShapeCore(ray, o, r2, &t, &intersectBackside))
     {
         return false;
     }
@@ -91,11 +91,11 @@ INLINE bool intersectSphere(
 INLINE bool intersectSphereCheck(
     const Ray& ray,
     Vec3 pos,
-    float r)
+    float r2)
 {
     float t;
     bool intersectBackside = false;
-    return intersectSphereShapeCore(ray, pos, r, &t, &intersectBackside);
+    return intersectSphereShapeCore(ray, pos, r2, &t, &intersectBackside);
 }
 
 /*

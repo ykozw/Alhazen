@@ -55,7 +55,7 @@ void AdaptivePolynomial::denoise(const Image& src, Image& dst)
                         const int32_t sx = alClamp(x + tx, 0, w);
                         const int32_t sy = alClamp(y + ty, 0, h);
                         Spectrum spec = src.pixel(sx, sy);
-                        *tp = spec.e[chNo];
+                        *tp = *(&spec.r + chNo);
                         ++tp;
                     }
                 }

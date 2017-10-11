@@ -24,24 +24,18 @@ void rgb2xyz(const std::array<float, 3>& rgb, std::array<float, 3>& xyz_);
 class SpectrumRGB
 {
 public:
-    union
-    {
-        struct
-        {
-            float r;
-            float g;
-            float b;
-        };
-        float e[3];
-        std::array<float, 3> samples;
-    };
+    float r = 0.0f;
+    float g = 0.0f;
+    float b = 0.0f;
 public:
     static SpectrumRGB createAsBlack();
     static SpectrumRGB createAsWhite();
     static SpectrumRGB createFromRGB(const std::array<float, 3>& rgb, bool asIllumination);
     static SpectrumRGB createFromColorTemp(const float kelvin);
     static float energyDif(const SpectrumRGB& lhs, const SpectrumRGB& rhs);
-    SpectrumRGB();
+    SpectrumRGB() = default;
+    SpectrumRGB(const SpectrumRGB& other) = default;
+    SpectrumRGB(SpectrumRGB&& other) noexcept = default;
     explicit SpectrumRGB(float v);
     explicit SpectrumRGB(float r, float g, float b);
     void clear();
@@ -51,6 +45,8 @@ public:
     void toRGB(SpectrumRGB& rgb) const;
     void clamp(float mn, float mx);
     bool hasNaN() const;
+    //
+    SpectrumRGB& operator =(const SpectrumRGB& other);
 };
 SpectrumRGB operator + (const SpectrumRGB& lhs, const SpectrumRGB& rhs);
 SpectrumRGB operator - (const SpectrumRGB& lhs, const SpectrumRGB& rhs);

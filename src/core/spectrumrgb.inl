@@ -55,14 +55,6 @@ INLINE float SpectrumRGB::energyDif(const SpectrumRGB& lhs, const SpectrumRGB& r
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE SpectrumRGB::SpectrumRGB()
-    :r(0.0f), g(0.0f), b(0.0f)
-{}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
 INLINE SpectrumRGB::SpectrumRGB(float v)
     :r(v), g(v), b(v)
 {}
@@ -162,14 +154,22 @@ INLINE void SpectrumRGB::clamp(float mn, float mx)
 */
 INLINE bool SpectrumRGB::hasNaN() const
 {
-    for (int32_t i = 0; i < 3; ++i)
-    {
-        if (isnan(e[i]))
-        {
-            return true;
-        }
-    }
-    return false;
+    return
+        std::isnan(r) ||
+        std::isnan(g) ||
+        std::isnan(b);
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE SpectrumRGB& SpectrumRGB::operator =(const SpectrumRGB& other)
+{
+    r = other.r;
+    g = other.g;
+    b = other.b;
+    return *this;
 }
 
 /*

@@ -74,7 +74,7 @@ bool ConstantLight::isDeltaFunc() const
 -------------------------------------------------
 -------------------------------------------------
 */
-Spectrum ConstantLight::emittion(Vec3 pos, Vec3 dir) const
+Spectrum ConstantLight::emission(Vec3 pos, Vec3 dir) const
 {
     static_cast<void>(pos);
     static_cast<void>(dir);
@@ -300,7 +300,7 @@ bool RectangleLight::isDeltaFunc() const
 Radianceを返す事に注意
 -------------------------------------------------
 */
-Spectrum RectangleLight::emittion(Vec3 pos, Vec3 dir) const
+Spectrum RectangleLight::emission(Vec3 pos, Vec3 dir) const
 {
 #if 1
     // HACK: 交差した前提になっている
@@ -548,7 +548,7 @@ bool SphereLight::isDeltaFunc() const
 -------------------------------------------------
 -------------------------------------------------
 */
-Spectrum SphereLight::emittion(
+Spectrum SphereLight::emission(
     Vec3 targetPos,
     Vec3 dir) const
 {
@@ -897,7 +897,7 @@ bool EnviromentLight::isDeltaFunc() const
 -------------------------------------------------
 -------------------------------------------------
 */
-Spectrum EnviromentLight::emittion(Vec3 pos, Vec3 dir) const
+Spectrum EnviromentLight::emission(Vec3 pos, Vec3 dir) const
 {
     Vec2 uv;
     dir2tex(dir, &uv);
@@ -1227,7 +1227,7 @@ static bool TestEnviroment()
             uniformInSphere(rng.nextFloat(), rng.nextFloat(), &dir);
             Ray ray(Vec3(0.0f), dir);
             const float c = Vec3::dot(dir, Vec3(0.0f, 0.0f, 1.0f));
-            const Spectrum spectrum = light->emittion(ray);
+            const Spectrum spectrum = light->emission(ray);
             bruteTotal += spectrum;
         }
         bruteTotal /= (float)NUM_SAMPLE_BF;
@@ -1258,7 +1258,7 @@ static bool TestEnviroment()
             const Vec3 dir = remapSquareToHemisphere(Vec2(rng.nextFloat(), rng.nextFloat()));
             Ray ray(Vec3(0.0f), dir);
             const float c = Vec3::dot(dir, Vec3(0.0f, 0.0f, 1.0f));
-            const Spectrum spectrum = light->emittion(ray) * c;
+            const Spectrum spectrum = light->emission(ray) * c;
             bruteTotal += spectrum;
         }
         bruteTotal /= (float)NUM_SAMPLE_BF;
@@ -1344,7 +1344,7 @@ static bool TestEnviroment()
             //
             Vec3 randomDir;
             uniformInSphere(rng.nextFloat(), rng.nextFloat(), &randomDir);
-            randomAve += light->emittion(Ray(Vec3(0.0f), randomDir)) * invNumSample;
+            randomAve += light->emission(Ray(Vec3(0.0f), randomDir)) * invNumSample;
         }
         const float rateR = randomAve.r / importanceAve.r;
         const float rateG = randomAve.g / importanceAve.g;

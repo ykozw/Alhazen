@@ -26,7 +26,7 @@ public:
     //
     int32_t sampleNum() const;
     virtual bool isDeltaFunc() const = 0;
-    virtual Spectrum emittion(
+    virtual Spectrum emission(
         Vec3 targetPos,
         Vec3 dir ) const = 0;
     virtual float pdf(
@@ -56,7 +56,7 @@ public:
     ~ConstantLight() {}
     void init(const Spectrum& spectrum);
     bool isDeltaFunc() const override;
-    Spectrum emittion(
+    Spectrum emission(
         Vec3 targetPos,
         Vec3 dir) const override;
     float pdf(
@@ -101,7 +101,7 @@ public:
         Vec3 yaxis);
     ~RectangleLight() {}
     bool isDeltaFunc() const override;
-    Spectrum emittion(
+    Spectrum emission(
         Vec3 targetPos,
         Vec3 dir) const override;
     float pdf(
@@ -156,7 +156,7 @@ public:
         float radius,
         const Spectrum& emission);
     bool isDeltaFunc() const override;
-    Spectrum emittion(
+    Spectrum emission(
         Vec3 targetPos,
         Vec3 dir) const override;
     float pdf(
@@ -196,7 +196,7 @@ public:
     ~EnviromentLight() {}
     void fill(int32_t w, int32_t h, std::function<Spectrum(float, float)> func);
     bool isDeltaFunc() const override;
-    Spectrum emittion(
+    Spectrum emission(
         Vec3 targetPos,
         Vec3 dir) const override;
     float pdf(

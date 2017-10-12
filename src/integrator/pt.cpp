@@ -312,7 +312,7 @@ Spectrum PTSurfaceIntegrator::estimateOneLight(
         // ライト上のサンプル
         Vec3 lightSamplePos;
         float pdfLight;
-        const Spectrum emittion =
+        const Spectrum emission =
             light->sampleLe(
                 sampler,
                 isectPos,
@@ -348,7 +348,7 @@ Spectrum PTSurfaceIntegrator::estimateOneLight(
         }
         //
         // 最終的なspectrum値の算出
-        const Spectrum spectrum = reflectance * emittion * std::fabsf(localWi.z()) * weight / pdfLight;
+        const Spectrum spectrum = reflectance * emission * std::fabsf(localWi.z()) * weight / pdfLight;
         //const Spectrum spectrum = Spectrum::createFromRGB({ weight ,0.0f, 0.0f }, false);
         AL_ASSERT_DEBUG(!spectrum.hasNaN());
         return spectrum;
@@ -382,7 +382,7 @@ Spectrum PTSurfaceIntegrator::estimateOneLight(
         {
             weight = 1.0f;
         }
-        const Spectrum L = light->emittion(isectPos, worldWi);
+        const Spectrum L = light->emission(isectPos, worldWi);
         //
         if (pdfBSDF == 0.0f || L.isBlack())
         {
@@ -421,9 +421,9 @@ Spectrum PTSurfaceIntegrator::estimateOneLight(
                 const Vec3 worldWi = local.local2world(localWi);
                 // レイ指定でのEmittionの取得
                 // TODO: あれ、これは方向が逆になってない？
-                const Spectrum emittion = light->emittion(isect.uppserSideOrigin(), worldWi);
+                const Spectrum emission = light->emission(isect.uppserSideOrigin(), worldWi);
                 const float cosTerm = fabsf(localWi.z());
-                spectrum += reflectance * emittion * 4.0f * cosTerm / pdf;
+                spectrum += reflectance * emission * 4.0f * cosTerm / pdf;
             }
             return spectrum;
         }

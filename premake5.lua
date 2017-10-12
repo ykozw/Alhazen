@@ -1,6 +1,6 @@
 solution "Alhazen"
    location "generated"
-   configurations { "Debug", "UnitTest", "Release", "Ship" }
+   configurations { "Debug", "Release", "Ship" }
    platforms {"x64"}
 
 project "Alhazen"
@@ -41,24 +41,22 @@ project "Alhazen"
     pchsource "src/pch.cpp"
     pchheader "pch.hpp"
   
-    
   filter "files:thirdparty/tinyxml2/tinyxml2.cpp"
-     flags { "NoPCH" }
+    flags { "NoPCH" }
    
-   filter "configurations:Debug"
-      defines { "DEBUG" }
-      flags { "Symbols" }
+  -- 全体デバッグ用
+  filter "configurations:Debug"
+    defines { "DEBUG" }
+    flags { "Symbols" }
   
-  filter "configurations:UnitTest"
-      defines { "UNIT_TEST", "NDEBUG" }
-      flags { "Symbols" }
-
-   filter "configurations:Release"
-      defines { "NDEBUG" }
-      flags { "Symbols" }
-      optimize "On"
+  -- 通常開発時用。デバッグ時はOPT_OFFを適宜つける
+  filter "configurations:Release"
+    defines { "NDEBUG", "NO_ASSERT" }
+    flags { "Symbols" }
+    optimize "On"
   
-   filter "configurations:Ship"
-      defines { "NDEBUG", "NO_ASSERT" }
-      optimize "Speed"
-      flags { "LinkTimeOptimization", "NoRuntimeChecks", "StaticRuntime" }
+  -- 最終的なバイナリ出力時用
+  filter "configurations:Ship"
+    defines { "NDEBUG", "NO_ASSERT" }
+    optimize "Speed"
+    flags { "LinkTimeOptimization", "NoRuntimeChecks", "StaticRuntime" }

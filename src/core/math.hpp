@@ -549,8 +549,8 @@ struct Matrix4x4
 public:
     union
     {
-        float e[16];
-        struct
+        ALIGN16 float e[16];
+        ALIGN16 struct
         {
             float e11, e12, e13, e14;
             float e21, e22, e23, e24;

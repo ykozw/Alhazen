@@ -2,6 +2,16 @@
 
 /*
 -------------------------------------------------
+-------------------------------------------------
+*/
+static INLINE bool is_aligned(const void * ptr, std::uintptr_t alignment) noexcept
+{
+    auto iptr = reinterpret_cast<std::uintptr_t>(ptr);
+    return !(iptr % alignment);
+}
+
+/*
+-------------------------------------------------
 _mm_rsqrt_ps()は単体では精度が非常に低いので
 ニュートンラフソンを挟み精度を上げる
 http://www.bulletphysics.org/Bullet/phpBB3/viewtopic.php?f=9&t=1551
@@ -1790,10 +1800,12 @@ INLINE Vec4::Vec4(_In_reads_(4) const float* es)
     z_ = es[2];
     w_ = es[3];
 #else
-    // NOTE: アライメントは揃っている前提
+    // NOTE: 16byteアライメントは揃っている前提
+    AL_ASSERT_DEBUG( is_aligned(es, 16) );
     xyzw_ = _mm_load_ps(es);
 #endif
 }
+
 
 /*
 -------------------------------------------------
@@ -2560,7 +2572,7 @@ INLINE const Vec4& Matrix4x4::operator [] (int32_t index) const
 /*
 -------------------------------------------------
 operator[]
-RawVectorへのアクセス
+RowVectorへのアクセス
 -------------------------------------------------
 */
 INLINE Vec4& Matrix4x4::operator [] (int32_t index)

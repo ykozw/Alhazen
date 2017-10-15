@@ -494,7 +494,7 @@ INLINE float Vec2::y() const
 #if defined(AL_MATH_USE_NO_SIMD)
     return y_;
 #else
-    return _mm_cvtss_f32(_mm_shuffle_ps(xy_, xy_, _MM_SHUFFLE(0, 0, 0, 1)));
+    return _mm_cvtss_f32(_mm_shuffle_ps(xy_, xy_, _MM_SHUFFLE(1, 1, 1, 1)));
 #endif
 }
 
@@ -784,15 +784,15 @@ INLINE Vec2 Vec2::max(Vec2 lhs, Vec2 rhs)
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE static Vec2 operator + (const Vec2& lhs, const Vec2& rhs)
+INLINE static Vec2 operator + (Vec2 lhs, Vec2 rhs)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     return
         Vec2(
-            lhs.x_ + rhs.x_,
-            lhs.y_ + rhs.y_);
+            lhs.x() + rhs.x(),
+            lhs.y() + rhs.y());
 #else
-    return _mm_add_ps(lhs.xy_, rhs.xy_);
+    return _mm_add_ps(lhs, rhs);
 #endif
 }
 
@@ -800,13 +800,13 @@ INLINE static Vec2 operator + (const Vec2& lhs, const Vec2& rhs)
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE static Vec2 operator - (const Vec2& lhs, const Vec2& rhs)
+INLINE static Vec2 operator - (Vec2 lhs, Vec2 rhs)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     return
         Vec2(
-            lhs.x_ - rhs.x_,
-            lhs.y_ - rhs.y_);
+            lhs.x() - rhs.x(),
+            lhs.y() - rhs.y());
 #else
     AL_ASSERT_ALWAYS(false);
 #endif
@@ -816,12 +816,12 @@ INLINE static Vec2 operator - (const Vec2& lhs, const Vec2& rhs)
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE static Vec2 operator - (const Vec2& v)
+INLINE static Vec2 operator - (Vec2 v)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return  Vec2(-v.x_, -v.y_);
+    return  Vec2(-v.x(), -v.y());
 #else
-    return _mm_sub_ps(_mm_setzero_ps(), v.xy_);
+    return _mm_sub_ps(_mm_setzero_ps(), v);
 #endif
 }
 
@@ -829,7 +829,7 @@ INLINE static Vec2 operator - (const Vec2& v)
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE static Vec2& operator += (Vec2& lhs, const Vec2& rhs)
+INLINE static Vec2& operator += (Vec2& lhs, Vec2 rhs)
 {
     lhs = lhs + rhs;
     return lhs;
@@ -839,7 +839,7 @@ INLINE static Vec2& operator += (Vec2& lhs, const Vec2& rhs)
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE static Vec2& operator -= (Vec2& lhs, const Vec2& rhs)
+INLINE static Vec2& operator -= (Vec2& lhs, Vec2 rhs)
 {
     lhs = lhs - rhs;
     return lhs;
@@ -862,10 +862,10 @@ INLINE static BoolInVec operator != (Vec2 lhs, Vec2 rhs)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     return
-    (lhs.x_ != rhs.x_) ||
-    (lhs.y_ != rhs.y_);
+    (lhs.x() != rhs.x()) ||
+    (lhs.y() != rhs.y());
 #else
-    const __m128 mask = _mm_cmpeq_ps(lhs.xy_, rhs.xy_);
+    const __m128 mask = _mm_cmpeq_ps(lhs, rhs);
     const int32_t maskPacked = _mm_movemask_ps(mask);
     return (maskPacked & 0x03) != 0x03;
 #endif
@@ -875,16 +875,16 @@ INLINE static BoolInVec operator != (Vec2 lhs, Vec2 rhs)
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE static Vec2 operator * (float f, const Vec2& v)
+INLINE static Vec2 operator * (float f, Vec2 v)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     return
         Vec2(
-            f * v.x_,
-            f * v.y_);
+            f * v.x(),
+            f * v.y());
 #else
     const __m128 s = _mm_set1_ps(f);
-    return _mm_mul_ps(s, v.xy_);
+    return _mm_mul_ps(s, v);
 #endif
 }
 
@@ -892,7 +892,7 @@ INLINE static Vec2 operator * (float f, const Vec2& v)
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE static Vec2 operator * (const Vec2& v, float f)
+INLINE static Vec2 operator * (Vec2 v, float f)
 {
     return f*v;
 }
@@ -911,14 +911,14 @@ INLINE static Vec2& operator *= (Vec2& v, float f)
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE static Vec2 operator / (const Vec2& v, float f)
+INLINE static Vec2 operator / (Vec2 v, float f)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     const float inv = 1.0f / f;
-    return Vec2(v.x_ * inv, v.y_ * inv);
+    return Vec2(v.x() * inv, v.y() * inv);
 #elif defined(AL_MATH_USE_AVX2)
     const __m128 s = _mm_rcp_ps_accurate(_mm_set1_ps(f));
-    return _mm_mul_ps(v.xy_, s);
+    return _mm_mul_ps(v, s);
 #endif
 }
 
@@ -1632,9 +1632,9 @@ INLINE static Vec3 operator + (Vec3 lhs, Vec3 rhs)
 #if defined(AL_MATH_USE_NO_SIMD)
     return
         Vec3(
-            lhs.x_ + rhs.x_,
-            lhs.y_ + rhs.y_,
-            lhs.z_ + rhs.z_);
+            lhs.x() + rhs.x(),
+            lhs.y() + rhs.y(),
+            lhs.z() + rhs.z());
 #elif defined(AL_MATH_USE_AVX2)
     return _mm_add_ps(lhs, rhs);
 #endif
@@ -1649,9 +1649,9 @@ INLINE static Vec3 operator - (Vec3 lhs, Vec3 rhs)
 #if defined(AL_MATH_USE_NO_SIMD)
     return
         Vec3(
-            lhs.x_ - rhs.x_,
-            lhs.y_ - rhs.y_,
-            lhs.z_ - rhs.z_);
+            lhs.x() - rhs.x(),
+            lhs.y() - rhs.y(),
+            lhs.z() - rhs.z());
 #elif defined(AL_MATH_USE_AVX2)
     return _mm_sub_ps(lhs, rhs);
 #endif
@@ -1664,7 +1664,7 @@ INLINE static Vec3 operator - (Vec3 lhs, Vec3 rhs)
 INLINE static Vec3 operator - (Vec3 v)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return  Vec3(-v.x_, -v.y_, -v.z_);
+    return  Vec3(-v.x(), -v.y(), -v.z());
 #elif defined(AL_MATH_USE_AVX2)
     return _mm_sub_ps(_mm_setzero_ps(), v);
 #endif
@@ -1706,9 +1706,9 @@ INLINE static BoolInVec operator == (Vec3 lhs, Vec3 rhs)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     return
-        (lhs.x_ == rhs.x_) &&
-        (lhs.y_ == rhs.y_) &&
-        (lhs.z_ == rhs.z_);
+        (lhs.x() == rhs.x()) &&
+        (lhs.y() == rhs.y()) &&
+        (lhs.z() == rhs.z());
 #elif defined(AL_MATH_USE_AVX2)
     const __m128 mask = _mm_cmpeq_ps(lhs, rhs);
     const int32_t maskPacked = _mm_movemask_ps(mask);
@@ -1734,9 +1734,9 @@ INLINE static Vec3 operator * (float f, Vec3 v)
 #if defined(AL_MATH_USE_NO_SIMD)
     return
         Vec3(
-            f * v.x_,
-            f * v.y_,
-            f * v.z_);
+            f * v.x(),
+            f * v.y(),
+            f * v.z());
 #elif defined(AL_MATH_USE_AVX2)
     const __m128 s = _mm_set1_ps(f);
     return _mm_mul_ps(s, v);
@@ -1781,7 +1781,7 @@ INLINE static Vec3 operator / (Vec3 v, float f)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     const float inv = 1.0f / f;
-    return Vec3(v.x_ * inv, v.y_ * inv, v.z_ * inv);
+    return Vec3(v.x() * inv, v.y() * inv, v.z() * inv);
 #elif defined(AL_MATH_USE_AVX2)
     const __m128 s = _mm_rcp_ps_accurate(_mm_set1_ps(f));
     return _mm_mul_ps(v, s);
@@ -1877,7 +1877,7 @@ INLINE float Vec4::y()const
 #if defined(AL_MATH_USE_NO_SIMD)
     return y_;
 #else
-    return _mm_cvtss_f32(_mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 0, 0, 1)));
+    return _mm_cvtss_f32(_mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 1, 1, 1)));
 #endif
 }
 
@@ -1890,7 +1890,7 @@ INLINE float Vec4::z()const
 #if defined(AL_MATH_USE_NO_SIMD)
     return z_;
 #else
-    return _mm_cvtss_f32(_mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 0, 0, 2)));
+    return _mm_cvtss_f32(_mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 2, 2, 2)));
 #endif
 }
 
@@ -1903,7 +1903,7 @@ INLINE float Vec4::w()const
 #if defined(AL_MATH_USE_NO_SIMD)
     return w_;
 #else
-    return _mm_cvtss_f32(_mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 0, 0, 3)));
+    return _mm_cvtss_f32(_mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 3, 3, 3)));
 #endif
 }
 
@@ -2975,12 +2975,12 @@ INLINE Vec4 Matrix4x4::mul(const Vec4& v, const Matrix4x4& m)
     return v;
 #else
 #if defined(AL_MATH_USE_NO_SIMD)
-    Vec4 r;
-    r.x_ = v.x_ * m.e11 + v.y_ * m.e12 + v.z_ * m.e13 + v.w_ * m.e14;
-    r.y_ = v.x_ * m.e21 + v.y_ * m.e22 + v.z_ * m.e23 + v.w_ * m.e24;
-    r.z_ = v.x_ * m.e31 + v.y_ * m.e32 + v.z_ * m.e33 + v.w_ * m.e34;
-    r.w_ = v.x_ * m.e41 + v.y_ * m.e42 + v.z_ * m.e43 + v.w_ * m.e44;
-    return r;
+    return
+        Vec4(
+            v.x() * m.e11 + v.y() * m.e12 + v.z() * m.e13 + v.w() * m.e14,
+            v.x() * m.e21 + v.y() * m.e22 + v.z() * m.e23 + v.w() * m.e24,
+            v.x() * m.e31 + v.y() * m.e32 + v.z() * m.e33 + v.w() * m.e34,
+            v.x() * m.e41 + v.y() * m.e42 + v.z() * m.e43 + v.w() * m.e44);
 #else
     AL_ASSERT_ALWAYS(false);
     return Vec4();

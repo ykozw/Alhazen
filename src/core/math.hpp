@@ -294,13 +294,6 @@ Vec2
 struct Vec2
 {
 public:
-#if defined(AL_MATH_USE_NO_SIMD)
-    float x_;
-    float y_;
-#else
-    __m128 xy_;
-#endif
-public:
     Vec2() = default;
     Vec2(const Vec2& other) = default;
     Vec2(Vec2&& other) = default;
@@ -328,26 +321,36 @@ public:
     FloatInVec lengthSq() const;
     float operator[](int32_t index) const;
     INLINE Vec2& operator = (const Vec2& other) = default;
+#if !defined(AL_MATH_USE_NO_SIMD)
+    INLINE operator __m128 () const { return xy_; }
+#endif
     // static
     static FloatInVec length(Vec2 v);
     static FloatInVec lengthSq(Vec2 v);
     static FloatInVec dot(Vec2 lhs, Vec2 rhs);
     static Vec2 min(Vec2 lhs, Vec2 rhs);
     static Vec2 max(Vec2 lhs, Vec2 rhs);
-    
+
+private:
+#if defined(AL_MATH_USE_NO_SIMD)
+    float x_;
+    float y_;
+#else
+    __m128 xy_;
+#endif
 };
 
-INLINE static Vec2 operator + (const Vec2& lhs, const Vec2& rhs);
-INLINE static Vec2 operator - (const Vec2& lhs, const Vec2& rhs);
-INLINE static Vec2 operator - (const Vec2& v);
-INLINE static Vec2& operator += (Vec2& lhs, const Vec2& rhs);
-INLINE static Vec2& operator -= (Vec2& lhs, const Vec2& rhs);
+INLINE static Vec2 operator + (Vec2 lhs, Vec2 rhs);
+INLINE static Vec2 operator - (Vec2 lhs, Vec2 rhs);
+INLINE static Vec2 operator - (Vec2 v);
+INLINE static Vec2& operator += (Vec2& lhs, Vec2 rhs);
+INLINE static Vec2& operator -= (Vec2& lhs, Vec2 rhs);
 INLINE static BoolInVec operator == (Vec2 lhs, Vec2 rhs);
 INLINE static BoolInVec operator != (Vec2 lhs, Vec2 rhs);
-INLINE static Vec2 operator * (float f, const Vec2& v);
-INLINE static Vec2 operator * (const Vec2& v, float f);
+INLINE static Vec2 operator * (float f, Vec2 v);
+INLINE static Vec2 operator * (Vec2 v, float f);
 INLINE static Vec2& operator *= (Vec2& v, float factor);
-INLINE static Vec2 operator / (const Vec2& v, float f);
+INLINE static Vec2 operator / (Vec2 v, float f);
 
 
 /*
@@ -357,15 +360,6 @@ Vec3
 */
 struct Vec3
 {
-public:
-#if defined(AL_MATH_USE_NO_SIMD)
-    float x_;
-    float y_;
-    float z_;
-#else
-private:
-    __m128 xyz_;
-#endif
 public:
     INLINE Vec3() = default;
     INLINE Vec3(const Vec3& other) = default;
@@ -395,7 +389,9 @@ public:
     //
     INLINE float operator[](int32_t index) const; // TODO: FloatInVecにする
     INLINE Vec3& operator = (const Vec3& other) = default;
+#if !defined(AL_MATH_USE_NO_SIMD)
     INLINE operator __m128 () const { return xyz_; }
+#endif
     // アクセッサ
     INLINE float x() const;
     INLINE float y() const;
@@ -424,6 +420,15 @@ public:
     static Vec3 max(Vec3 lhs, Vec3 rhs);
     static Vec3 hmin(Vec3 v);
     static Vec3 hmax(Vec3 v);
+
+private:
+#if defined(AL_MATH_USE_NO_SIMD)
+    float x_;
+    float y_;
+    float z_;
+#else
+    __m128 xyz_;
+#endif
 };
 
 INLINE static Vec3 operator + (Vec3 lhs, Vec3 rhs);
@@ -445,16 +450,6 @@ Vec4
 */
 struct Vec4
 {
-public:
-#if defined(AL_MATH_USE_NO_SIMD)
-    float x_;
-    float y_;
-    float z_;
-    float w_;
-#else
-private:
-    __m128 xyzw_;
-#endif
 public:
     INLINE Vec4() = default;
     INLINE Vec4(const Vec4& other) = default;
@@ -478,10 +473,22 @@ public:
     //
     INLINE float operator[](int32_t index) const;
     INLINE Vec4& operator=(const Vec4& other) = default;
+#if !defined(AL_MATH_USE_NO_SIMD)
     INLINE operator __m128 () const { return xyzw_; }
+#endif
     static FloatInVec dot(Vec4 lhs, Vec4 rhs);
     static FloatInVec length(Vec4 v);
     static FloatInVec lengthSq(Vec4 v);
+
+private:
+#if defined(AL_MATH_USE_NO_SIMD)
+    float x_;
+    float y_;
+    float z_;
+    float w_;
+#else
+    __m128 xyzw_;
+#endif
 };
 
 /*

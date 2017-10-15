@@ -134,6 +134,10 @@ const Vec3 Transform::toLocalDir(Vec3 dir) const
 */
 Vec3 Transform::cameraOrigin() const
 {
+#if defined(MAT4X4_SIMD)
+    AL_ASSERT_ALWAYS(false);
+    return Vec3(0.0f);
+#else
     const Vec3 xa = cameraRight();
     const Vec3 ya = cameraUp();
     const Vec3 za = cameraDir();
@@ -143,6 +147,7 @@ Vec3 Transform::cameraOrigin() const
         ya * m.e42 +
         za * m.e43;
     return -org;
+#endif
 }
 
 /*
@@ -151,8 +156,13 @@ Vec3 Transform::cameraOrigin() const
 */
 Vec3 Transform::cameraUp() const
 {
+#if defined(MAT4X4_SIMD)
+    AL_ASSERT_ALWAYS(false);
+    return Vec3(0.0f);
+#else
     const auto& m = toWorld_;
     return Vec3(m.e12, m.e22, m.e32);
+#endif
 }
 
 /*
@@ -161,8 +171,13 @@ Vec3 Transform::cameraUp() const
 */
 Vec3 Transform::cameraDir() const
 {
+#if defined(MAT4X4_SIMD)
+    AL_ASSERT_ALWAYS(false);
+    return Vec3(0.0f);
+#else
     const auto& m = toWorld_;
     return Vec3(m.e13, m.e23, m.e33);
+#endif
 }
 
 /*
@@ -171,6 +186,11 @@ Vec3 Transform::cameraDir() const
 */
 Vec3 Transform::cameraRight() const
 {
+#if defined(MAT4X4_SIMD)
+    AL_ASSERT_ALWAYS(false);
+    return Vec3(0.0f);
+#else
     const auto& m = toWorld_;
     return Vec3(m.e11, m.e21, m.e31);
+#endif
 }

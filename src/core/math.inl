@@ -1009,7 +1009,7 @@ INLINE Vec3::Vec3(Vec4 arr)
     y_ = arr[1];
     z_ = arr[2];
 #elif defined(AL_MATH_USE_AVX2)
-    xyz_ = arr.xyzw_;
+    xyz_ = arr;
 #endif
 }
 
@@ -1636,7 +1636,7 @@ INLINE static Vec3 operator + (Vec3 lhs, Vec3 rhs)
             lhs.y_ + rhs.y_,
             lhs.z_ + rhs.z_);
 #elif defined(AL_MATH_USE_AVX2)
-    return _mm_add_ps(lhs.xyz_, rhs.xyz_);
+    return _mm_add_ps(lhs, rhs);
 #endif
 }
 
@@ -1653,7 +1653,7 @@ INLINE static Vec3 operator - (Vec3 lhs, Vec3 rhs)
             lhs.y_ - rhs.y_,
             lhs.z_ - rhs.z_);
 #elif defined(AL_MATH_USE_AVX2)
-    return _mm_sub_ps(lhs.xyz_, rhs.xyz_);
+    return _mm_sub_ps(lhs, rhs);
 #endif
 }
 
@@ -1666,7 +1666,7 @@ INLINE static Vec3 operator - (Vec3 v)
 #if defined(AL_MATH_USE_NO_SIMD)
     return  Vec3(-v.x_, -v.y_, -v.z_);
 #elif defined(AL_MATH_USE_AVX2)
-    return _mm_sub_ps(_mm_setzero_ps(), v.xyz_);
+    return _mm_sub_ps(_mm_setzero_ps(), v);
 #endif
 }
 /*
@@ -1679,7 +1679,7 @@ INLINE static Vec3& operator += (Vec3& lhs, Vec3 rhs)
     lhs = lhs + rhs;
     return lhs;
 #elif defined(AL_MATH_USE_AVX2)
-    lhs.xyz_ = _mm_add_ps(lhs.xyz_, rhs.xyz_);
+    lhs = _mm_add_ps(lhs, rhs);
     return lhs;
 #endif
 }
@@ -1694,7 +1694,7 @@ INLINE static Vec3& operator -= (Vec3& lhs, Vec3 rhs)
     lhs = lhs - rhs;
     return lhs;
 #elif defined(AL_MATH_USE_AVX2)
-    lhs.xyz_ = _mm_sub_ps(lhs.xyz_, rhs.xyz_);
+    lhs = _mm_sub_ps(lhs, rhs);
     return lhs;
 #endif
 }
@@ -1710,7 +1710,7 @@ INLINE static BoolInVec operator == (Vec3 lhs, Vec3 rhs)
         (lhs.y_ == rhs.y_) &&
         (lhs.z_ == rhs.z_);
 #elif defined(AL_MATH_USE_AVX2)
-    const __m128 mask = _mm_cmpeq_ps(lhs.xyz_, rhs.xyz_);
+    const __m128 mask = _mm_cmpeq_ps(lhs, rhs);
     const int32_t maskPacked = _mm_movemask_ps(mask);
     return (maskPacked & 0x07) == 0x07;
 #endif
@@ -1739,7 +1739,7 @@ INLINE static Vec3 operator * (float f, Vec3 v)
             f * v.z_);
 #elif defined(AL_MATH_USE_AVX2)
     const __m128 s = _mm_set1_ps(f);
-    return _mm_mul_ps(s, v.xyz_);
+    return _mm_mul_ps(s, v);
 #endif
 }
 
@@ -1753,7 +1753,7 @@ INLINE static Vec3 operator * (Vec3 v, float f)
     return f*v;
 #elif defined(AL_MATH_USE_AVX2)
     const __m128 s = _mm_set1_ps(f);
-    return _mm_mul_ps(v.xyz_, s);
+    return _mm_mul_ps(v, s);
 #endif
 }
 
@@ -1768,7 +1768,7 @@ INLINE static Vec3& operator *= (Vec3& v, float f)
     return v;
 #elif defined(AL_MATH_USE_AVX2)
     const __m128 s = _mm_set1_ps(f);
-    v.xyz_ = _mm_mul_ps(s, v.xyz_);
+    v = _mm_mul_ps(s, v);
     return v;
 #endif
 }
@@ -1784,7 +1784,7 @@ INLINE static Vec3 operator / (Vec3 v, float f)
     return Vec3(v.x_ * inv, v.y_ * inv, v.z_ * inv);
 #elif defined(AL_MATH_USE_AVX2)
     const __m128 s = _mm_rcp_ps_accurate(_mm_set1_ps(f));
-    return _mm_mul_ps(v.xyz_, s);
+    return _mm_mul_ps(v, s);
 #endif
 }
 
@@ -2165,9 +2165,10 @@ INLINE Vec3 Matrix3x3::transform(Vec3 v) const
     const float z = Vec3::dot(row<2>(),v);
     return Vec3(x,y,z);
 #else
-    const __m128 v0 = _mm_dp_ps(row0, v.xyz_, 0x7F);
-    const __m128 v1 = _mm_dp_ps(row1, v.xyz_, 0x7F);
-    const __m128 v2 = _mm_dp_ps(row2, v.xyz_, 0x7F);
+    // TODO: Matrix4x4::transform()のようにすれば遅いdpを使わなくてすむのでそうする
+    const __m128 v0 = _mm_dp_ps(row0, v, 0x7F);
+    const __m128 v1 = _mm_dp_ps(row1, v, 0x7F);
+    const __m128 v2 = _mm_dp_ps(row2, v, 0x7F);
     //
     const __m128 tmp = _mm_shuffle_ps(v0, v1, 0x44);
     const __m128 ret = _mm_shuffle_ps(tmp, v2, 0x88);
@@ -2328,13 +2329,13 @@ INLINE void Matrix3x3::setRow(Vec3 v)
     switch (index)
     {
     case 0:
-        row0 = v.xyz_;
+        row0 = v;
         break;
     case 1:
-        row1 = v.xyz_;
+        row1 = v;
         break;
     case 2:
-        row2 = v.xyz_;
+        row2 = v;
         break;
     }
 #endif
@@ -2346,6 +2347,9 @@ INLINE void Matrix3x3::setRow(Vec3 v)
 */
 INLINE Matrix4x4::Matrix4x4(_In_reads_(16) const float* es)
 {
+#if defined(MAT4X4_SIMD)
+    AL_ASSERT_ALWAYS(false);
+#else
     e[0] = es[0];
     e[1] = es[1];
     e[2] = es[2];
@@ -2362,6 +2366,7 @@ INLINE Matrix4x4::Matrix4x4(_In_reads_(16) const float* es)
     e[13] = es[13];
     e[14] = es[14];
     e[15] = es[15];
+#endif
 }
 
 /*
@@ -2370,6 +2375,9 @@ INLINE Matrix4x4::Matrix4x4(_In_reads_(16) const float* es)
 */
 INLINE Matrix4x4::Matrix4x4(const Matrix3x3& m33)
 {
+#if defined(MAT4X4_SIMD)
+    AL_ASSERT_ALWAYS(false);
+#else
 #if defined(AL_MATH_USE_NO_SIMD)
     e11 = m33.e11; e12 = m33.e12; e13 = m33.e13; e14 = 0.0f;
     e21 = m33.e21; e22 = m33.e22; e23 = m33.e23; e24 = 0.0f;
@@ -2398,6 +2406,7 @@ INLINE Matrix4x4::Matrix4x4(const Matrix3x3& m33)
     e[13] = 0.0f;
     e[14] = 0.0f;
     e[15] = 1.0f;
+#endif
 #endif
 }
 
@@ -2428,6 +2437,9 @@ INLINE void Matrix4x4::constructAsRotationAxis()
 */
 INLINE void Matrix4x4::constructAsTranslation(Vec3 v)
 {
+#if defined(MAT4X4_SIMD)
+    AL_ASSERT_ALWAYS(false);
+#else
     const float x = v.x();
     const float y = v.y();
     const float z = v.z();
@@ -2435,6 +2447,7 @@ INLINE void Matrix4x4::constructAsTranslation(Vec3 v)
     e21 = 0.0f; e22 = 1.0f; e23 = 0.0f; e24 = 0.0f;
     e31 = 0.0f; e32 = 0.0f; e33 = 1.0f; e34 = 0.0f;
     e41 = x;    e42 = y;    e43 = z;    e44 = 1.0f;
+#endif
 }
 
 /*
@@ -2443,6 +2456,9 @@ INLINE void Matrix4x4::constructAsTranslation(Vec3 v)
 */
 INLINE void Matrix4x4::constructAsScale(Vec3 scale)
 {
+#if defined(MAT4X4_SIMD)
+    AL_ASSERT_ALWAYS(false);
+#else
     const float sx = scale.x();
     const float sy = scale.y();
     const float sz = scale.z();
@@ -2450,6 +2466,7 @@ INLINE void Matrix4x4::constructAsScale(Vec3 scale)
     e21 = 0.0f; e22 = sy;   e23 = 0.0f; e24 = 0.0f;
     e31 = 0.0f; e32 = 0.0f; e33 = sz;   e34 = 0.0f;
     e41 = 0.0f; e42 = 0.0f; e43 = 0.0f; e44 = 1.0f;
+#endif
 }
 
 /*
@@ -2459,6 +2476,9 @@ http://www.euclideanspace.com/maths/geometry/rotations/conversions/angleToMatrix
 */
 INLINE void Matrix4x4::constructAsRotation(Vec3 xyz_, float angle)
 {
+#if defined(MAT4X4_SIMD)
+    AL_ASSERT_ALWAYS(false);
+#else
     //
     const float s = std::sinf(angle);
     const float c = std::cosf(angle);
@@ -2483,6 +2503,7 @@ INLINE void Matrix4x4::constructAsRotation(Vec3 xyz_, float angle)
     e21 = txy + sz; e22 = c + tyy;   e23 = tyz - sx; e24 = 0.0f;
     e31 = txz - sy; e32 = tyz + sx;  e33 = c + tzz;  e34 = 0.0f;
     e41 = 0.0f;     e42 = 0.0f;      e43 = 0.0f;     e44 = 1.0f;
+#endif
 }
 
 /*
@@ -2493,9 +2514,24 @@ INLINE void Matrix4x4::constructAsViewMatrix(Vec3 origin,
                                              Vec3 target,
                                              Vec3 up)
 {
-	const Vec3 zaxis = (target - origin).normalized();
-	const Vec3 xaxis = Vec3::cross(up, zaxis).normalized();
-	const Vec3 yaxis = Vec3::cross(zaxis, xaxis);
+    const Vec3 zaxis = (target - origin).normalized();
+    const Vec3 xaxis = Vec3::cross(up, zaxis).normalized();
+    const Vec3 yaxis = Vec3::cross(zaxis, xaxis);
+#if defined(MAT4X4_SIMD)
+    row0 = xaxis;
+    row1 = yaxis;
+    row2 = zaxis;
+    // transpose
+    const __m128 tmp0 = _mm_shuffle_ps(row0, row1, 0x44);
+    const __m128 tmp2 = _mm_shuffle_ps(row0, row1, 0xEE);
+    const __m128 tmp1 = _mm_shuffle_ps(row2, row2, 0x44);
+    const __m128 tmp3 = _mm_shuffle_ps(row2, row2, 0xEE);
+    row0 = _mm_shuffle_ps(tmp0, tmp1, 0x88);
+    row1 = _mm_shuffle_ps(tmp0, tmp1, 0xDD);
+    row2 = _mm_shuffle_ps(tmp2, tmp3, 0x88);
+    つづきはここから
+    AL_ASSERT_ALWAYS(false);
+#else
 	e11 = xaxis.x(); e12 = yaxis.x(); e13 = zaxis.x(); e14 = 0.0f;
 	e21 = xaxis.y(); e22 = yaxis.y(); e23 = zaxis.y(); e24 = 0.0f;
 	e31 = xaxis.z(); e32 = yaxis.z(); e33 = zaxis.z(); e34 = 0.0f;
@@ -2503,6 +2539,7 @@ INLINE void Matrix4x4::constructAsViewMatrix(Vec3 origin,
 	e42 = -Vec3::dot(yaxis, origin);
 	e43 = -Vec3::dot(zaxis, origin);
 	e44 = 1.0f;
+#endif
 }
 
 /*
@@ -2511,10 +2548,14 @@ INLINE void Matrix4x4::constructAsViewMatrix(Vec3 origin,
 */
 INLINE void Matrix4x4::fillZero()
 {
+#if defined(MAT4X4_SIMD)
+    AL_ASSERT_ALWAYS(false);
+#else
     e11 = 0.0f; e12 = 0.0f; e13 = 0.0f; e14 = 0.0f;
     e21 = 0.0f; e22 = 0.0f; e23 = 0.0f; e24 = 0.0f;
     e31 = 0.0f; e32 = 0.0f; e33 = 0.0f; e34 = 0.0f;
     e41 = 0.0f; e42 = 0.0f; e43 = 0.0f; e44 = 1.0f;
+#endif
 }
 
 /*
@@ -2523,10 +2564,18 @@ INLINE void Matrix4x4::fillZero()
 */
 INLINE void Matrix4x4::identity()
 {
+#if defined(MAT4X4_SIMD)
+    // NOTE: set_ps()直接は遅いかもしれない
+    row0 = _mm_set_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    row1 = _mm_set_ps(0.0f, 1.0f, 0.0f, 0.0f);
+    row2 = _mm_set_ps(0.0f, 0.0f, 1.0f, 0.0f);
+    row3 = _mm_set_ps(0.0f, 0.0f, 0.0f, 1.0f);
+#else
     e11 = 1.0f; e12 = 0.0f; e13 = 0.0f; e14 = 0.0f;
     e21 = 0.0f; e22 = 1.0f; e23 = 0.0f; e24 = 0.0f;
     e31 = 0.0f; e32 = 0.0f; e33 = 1.0f; e34 = 0.0f;
     e41 = 0.0f; e42 = 0.0f; e43 = 0.0f; e44 = 1.0f;
+#endif
 }
 
 /*
@@ -2535,11 +2584,21 @@ INLINE void Matrix4x4::identity()
 */
 INLINE Vec3 Matrix4x4::transform(Vec3 v) const
 {
+#if defined(MAT4X4_SIMD)
     __m128 tmp;
     tmp = _mm_fmadd_ps(v.xxx(), rowVector(0), rowVector(3));
     tmp = _mm_fmadd_ps(v.yyy(), rowVector(1), tmp);
     tmp = _mm_fmadd_ps(v.zzz(), rowVector(2), tmp);
     return tmp;
+#else
+    const Vec4 nv(v.x(), v.y(), v.z(), 1.0f);
+    return
+        Vec3(
+            Vec4::dot(columnVector(0), nv),
+            Vec4::dot(columnVector(1), nv),
+            Vec4::dot(columnVector(2), nv));
+
+#endif
 }
 
 /*
@@ -2548,12 +2607,16 @@ INLINE Vec3 Matrix4x4::transform(Vec3 v) const
 */
 INLINE Vec4 Matrix4x4::transform(Vec4 v) const
 {
+#if defined(MAT4X4_SIMD)
+    AL_ASSERT_ALWAYS(false);
+#else
     return
         Vec4(
             Vec4::dot(columnVector(0), v),
             Vec4::dot(columnVector(1), v),
             Vec4::dot(columnVector(2), v),
             Vec4::dot(columnVector(3), v));
+#endif
 }
 
 /*
@@ -2564,8 +2627,21 @@ RawVectorへのアクセス
 */
 INLINE const Vec4& Matrix4x4::operator [] (int32_t index) const
 {
+#if defined(MAT4X4_SIMD)
+    AL_ASSERT_ALWAYS(false);
+    switch(index)
+    {
+        case 0: return row0;
+        case 1: return row1;
+        case 2: return row2;
+        case 3: return row3;
+    }
+    AL_ASSERT_ALWAYS(false);
+    return row0;
+#else
     AL_ASSERT_DEBUG(0 <= index && index <= 3);
     return *(Vec4*)(e + index * 4);
+#endif
 }
 
 /*
@@ -2576,8 +2652,13 @@ RowVectorへのアクセス
 */
 INLINE Vec4& Matrix4x4::operator [] (int32_t index)
 {
+#if defined(MAT4X4_SIMD)
+    AL_ASSERT_ALWAYS(false);
+    return Vec4(0.0f); // TODO: ローカル変数だからよくない
+#else
     AL_ASSERT_DEBUG(0 <= index && index <= 3);
     return *(Vec4*)(e + index * 4);
+#endif
 }
 
 /*
@@ -2586,8 +2667,13 @@ INLINE Vec4& Matrix4x4::operator [] (int32_t index)
 */
 INLINE Vec4 Matrix4x4::rowVector(int32_t index) const
 {
+#if defined(MAT4X4_SIMD)
+    AL_ASSERT_ALWAYS(false);
+    return Vec4(0.0f); // TODO: ローカル変数だからよくない
+#else
     AL_ASSERT_DEBUG(0 <= index && index <= 3);
     return Vec4(e + index * 4);
+#endif
 }
 
 /*
@@ -2596,6 +2682,10 @@ INLINE Vec4 Matrix4x4::rowVector(int32_t index) const
 */
 INLINE Vec4 Matrix4x4::columnVector(int32_t index) const
 {
+#if defined(MAT4X4_SIMD)
+    AL_ASSERT_ALWAYS(false);
+    return Vec4(0.0f);
+#else
     AL_ASSERT_DEBUG(0 <= index && index <= 3);
     return Vec4(
         *(&e11 + index),
@@ -2603,6 +2693,7 @@ INLINE Vec4 Matrix4x4::columnVector(int32_t index) const
         *(&e31 + index),
         *(&e41 + index)
     );
+#endif
 }
 
 /*
@@ -2611,6 +2702,10 @@ INLINE Vec4 Matrix4x4::columnVector(int32_t index) const
 */
 INLINE float Matrix4x4::det() const
 {
+#if defined(MAT4X4_SIMD)
+    AL_ASSERT_ALWAYS(false);
+    return 0.0f;
+#else
     // 一列目を余因子展開
     const float d1 =
         Matrix3x3(
@@ -2638,6 +2733,7 @@ INLINE float Matrix4x4::det() const
         + e13 * d3
         - e14 * d4;
     return d;
+#endif
 }
 
 /*
@@ -2646,6 +2742,10 @@ INLINE float Matrix4x4::det() const
 */
 INLINE void Matrix4x4::inverse()
 {
+#if defined(MAT4X4_SIMD)
+    AL_ASSERT_ALWAYS(false);
+    return;
+#else
     const float d = det();
     const float id = 1.0f / d;
     // 小行列(1行目)
@@ -2755,6 +2855,7 @@ INLINE void Matrix4x4::inverse()
     r.e44 = id * m44.det() * (+1.0f);
     // TODO: transposeが無駄なので最初からひっくり返しておく
     *this = r.transposed();
+#endif
 }
 
 /*
@@ -2763,12 +2864,16 @@ INLINE void Matrix4x4::inverse()
 */
 INLINE void Matrix4x4::transpose()
 {
+#if defined(MAT4X4_SIMD)
+    AL_ASSERT_ALWAYS(false);
+#else
     std::swap(e12, e21);
     std::swap(e13, e31);
     std::swap(e14, e41);
     std::swap(e23, e32);
     std::swap(e24, e42);
     std::swap(e34, e43);
+#endif
 }
 
 /*
@@ -2799,6 +2904,10 @@ INLINE Matrix4x4 Matrix4x4::transposed() const
 */
 INLINE Matrix3x3 Matrix4x4::extract3x3() const
 {
+#if defined(MAT4X4_SIMD)
+    AL_ASSERT_ALWAYS(false);
+    return Matrix3x3();
+#else
 #if defined(AL_MATH_USE_NO_SIMD)
     Matrix3x3 m;
     m.e11 = e11;
@@ -2817,6 +2926,7 @@ INLINE Matrix3x3 Matrix4x4::extract3x3() const
         e21, e22, e23,
         e31, e32, e33);
 #endif
+#endif
 }
 
 /*
@@ -2825,6 +2935,10 @@ INLINE Matrix3x3 Matrix4x4::extract3x3() const
 */
 INLINE Matrix4x4 Matrix4x4::mul(const Matrix4x4& lhs, const Matrix4x4& rhs)
 {
+#if defined(MAT4X4_SIMD)
+    AL_ASSERT_ALWAYS(false);
+    return lhs;
+#else
     Matrix4x4 r;
     r.e11 = lhs.e11 * rhs.e11 + lhs.e12 * rhs.e21 + lhs.e13 * rhs.e31 + lhs.e14 * rhs.e41;
     r.e12 = lhs.e11 * rhs.e12 + lhs.e12 * rhs.e22 + lhs.e13 * rhs.e32 + lhs.e14 * rhs.e42;
@@ -2847,6 +2961,7 @@ INLINE Matrix4x4 Matrix4x4::mul(const Matrix4x4& lhs, const Matrix4x4& rhs)
     r.e44 = lhs.e41 * rhs.e14 + lhs.e42 * rhs.e24 + lhs.e43 * rhs.e34 + lhs.e44 * rhs.e44;
     //
     return r;
+#endif
 }
 
 /*
@@ -2855,6 +2970,10 @@ INLINE Matrix4x4 Matrix4x4::mul(const Matrix4x4& lhs, const Matrix4x4& rhs)
 */
 INLINE Vec4 Matrix4x4::mul(const Vec4& v, const Matrix4x4& m)
 {
+#if defined(MAT4X4_SIMD)
+    AL_ASSERT_ALWAYS(false);
+    return v;
+#else
 #if defined(AL_MATH_USE_NO_SIMD)
     Vec4 r;
     r.x_ = v.x_ * m.e11 + v.y_ * m.e12 + v.z_ * m.e13 + v.w_ * m.e14;
@@ -2866,6 +2985,7 @@ INLINE Vec4 Matrix4x4::mul(const Vec4& v, const Matrix4x4& m)
     AL_ASSERT_ALWAYS(false);
     return Vec4();
 #endif
+#endif
 }
 
 /*
@@ -2874,6 +2994,9 @@ INLINE Vec4 Matrix4x4::mul(const Vec4& v, const Matrix4x4& m)
 */
 inline Matrix4x4& Matrix4x4::operator=(const Matrix4x4 & other)
 {
+#if defined(MAT4X4_SIMD)
+    AL_ASSERT_ALWAYS(false);
+#else
     const float* oe = other.e;
     e[0] = oe[0];
     e[1] = oe[1];
@@ -2891,6 +3014,7 @@ inline Matrix4x4& Matrix4x4::operator=(const Matrix4x4 & other)
     e[13] = oe[13];
     e[14] = oe[14];
     e[15] = oe[15];
+#endif
     return *this;
 }
 
@@ -2900,6 +3024,10 @@ inline Matrix4x4& Matrix4x4::operator=(const Matrix4x4 & other)
 */
 INLINE static Matrix4x4 operator + (const Matrix4x4& lhs, const Matrix4x4& rhs)
 {
+#if defined(MAT4X4_SIMD)
+    AL_ASSERT_ALWAYS(false);
+    return lhs;
+#else
     const float* e0 = lhs.e;
     const float* e1 = rhs.e;
     const float e[16] =
@@ -2922,6 +3050,7 @@ INLINE static Matrix4x4 operator + (const Matrix4x4& lhs, const Matrix4x4& rhs)
         e0[15] + e1[15],
     };
     return Matrix4x4(e);
+#endif
 }
 
 
@@ -2990,10 +3119,10 @@ INLINE void Vec3Pack8::set(
 #if defined(AL_MATH_USE_NO_SIMD)
     assert(false);
 #elif defined(AL_MATH_USE_AVX2)
-    const __m256 x0y0z0w0_x4y4z4w4 = combine128(v0.xyz_, v4.xyz_);
-    const __m256 x1y1z1w1_x5y5z5w5 = combine128(v1.xyz_, v5.xyz_);
-    const __m256 x2y2z2w2_x6y6z6w6 = combine128(v2.xyz_, v6.xyz_);
-    const __m256 x3y3z3w3_x7y7z7w7 = combine128(v3.xyz_, v7.xyz_);
+    const __m256 x0y0z0w0_x4y4z4w4 = combine128(v0, v4);
+    const __m256 x1y1z1w1_x5y5z5w5 = combine128(v1, v5);
+    const __m256 x2y2z2w2_x6y6z6w6 = combine128(v2, v6);
+    const __m256 x3y3z3w3_x7y7z7w7 = combine128(v3, v7);
     const __m256 x0x2y0y2_x4x6y4y6 = _mm256_unpacklo_ps(x0y0z0w0_x4y4z4w4, x2y2z2w2_x6y6z6w6);
     const __m256 z0z2w0w2_z4z6w4w6 = _mm256_unpackhi_ps(x0y0z0w0_x4y4z4w4, x2y2z2w2_x6y6z6w6);
     const __m256 x1x3y1y3_x5x7x5y7 = _mm256_unpacklo_ps(x1y1z1w1_x5y5z5w5, x3y3z3w3_x7y7z7w7);

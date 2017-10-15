@@ -363,6 +363,7 @@ public:
     float y_;
     float z_;
 #else
+private:
     __m128 xyz_;
 #endif
 public:
@@ -394,7 +395,7 @@ public:
     //
     INLINE float operator[](int32_t index) const; // TODO: FloatInVecにする
     INLINE Vec3& operator = (const Vec3& other) = default;
-    operator __m128 () const { return xyz_; }
+    INLINE operator __m128 () const { return xyz_; }
     // アクセッサ
     INLINE float x() const;
     INLINE float y() const;
@@ -451,6 +452,7 @@ public:
     float z_;
     float w_;
 #else
+private:
     __m128 xyzw_;
 #endif
 public:
@@ -474,9 +476,9 @@ public:
     INLINE Vec4& normalize();
     INLINE Vec4 normalized() const;
     //
-    float operator[](int32_t index) const;
-    Vec4& operator=(const Vec4& other) = default;
-    operator __m128 () const { return xyzw_; }
+    INLINE float operator[](int32_t index) const;
+    INLINE Vec4& operator=(const Vec4& other) = default;
+    INLINE operator __m128 () const { return xyzw_; }
     static FloatInVec dot(Vec4 lhs, Vec4 rhs);
     static FloatInVec length(Vec4 v);
     static FloatInVec lengthSq(Vec4 v);
@@ -544,11 +546,18 @@ Matrix4x4
 Row-Major/Row-Vectorの4x4行列
 -------------------------------------------------
 */
-#define MAT4X4_SIMD
+// TODO: 移行が終わったらこのdefineは消す
+// #define MAT4X4_SIMD 
 
 struct Matrix4x4
 {
 public:
+#if defined(MAT4X4_SIMD)
+    __m128 row0;
+    __m128 row1;
+    __m128 row2;
+    __m128 row3;
+#else
     union
     {
         ALIGN16 float e[16];
@@ -560,6 +569,8 @@ public:
             float e41, e42, e43, e44;
         };
     };
+#endif
+
 public:
     Matrix4x4() = default;
     Matrix4x4(const Matrix4x4& other) = default;

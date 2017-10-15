@@ -394,6 +394,7 @@ public:
     //
     INLINE float operator[](int32_t index) const; // TODO: FloatInVecにする
     INLINE Vec3& operator = (const Vec3& other) = default;
+    operator __m128 () const { return xyz_; }
     // アクセッサ
     INLINE float x() const;
     INLINE float y() const;
@@ -475,6 +476,7 @@ public:
     //
     float operator[](int32_t index) const;
     Vec4& operator=(const Vec4& other) = default;
+    operator __m128 () const { return xyzw_; }
     static FloatInVec dot(Vec4 lhs, Vec4 rhs);
     static FloatInVec length(Vec4 v);
     static FloatInVec lengthSq(Vec4 v);

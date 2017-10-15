@@ -2535,12 +2535,11 @@ INLINE void Matrix4x4::identity()
 */
 INLINE Vec3 Matrix4x4::transform(Vec3 v) const
 {
-    const Vec4 nv(v.x(), v.y(), v.z(), 1.0f);
-    return
-        Vec3(
-            Vec4::dot(columnVector(0), nv),
-            Vec4::dot(columnVector(1), nv),
-            Vec4::dot(columnVector(2), nv));
+    __m128 tmp;
+    tmp = _mm_fmadd_ps(v.xxx(), rowVector(0), rowVector(3));
+    tmp = _mm_fmadd_ps(v.yyy(), rowVector(1), tmp);
+    tmp = _mm_fmadd_ps(v.zzz(), rowVector(2), tmp);
+    return tmp;
 }
 
 /*

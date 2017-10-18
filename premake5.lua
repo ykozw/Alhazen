@@ -7,6 +7,7 @@ project "Alhazen"
    kind "ConsoleApp"
    language "C++"
    targetdir "bin/%{cfg.buildcfg}"
+   vectorextensions "AVX2"
    
    pchsource "src/pch.cpp"
    pchheader "pch.hpp"

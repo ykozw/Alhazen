@@ -143,7 +143,7 @@ AL_TEST(ConstantLight, 0)
     ライトに照らされている完全各三面の平面を考える
     */
     ConstantLight light;
-    light.init(Spectrum::createAsWhite());
+    light.init(Spectrum::White);
     // TODO: ランダムにサンプル
     SamplerPtr sampler = std::make_shared<SamplerIndepent>();
     sampler->setHash(0x01);
@@ -318,7 +318,7 @@ Spectrum RectangleLight::emission(Vec3 pos, Vec3 dir) const
     }
     else
     {
-        return Spectrum::createAsBlack();
+        return Spectrum::Black;
     }
 #endif
 }
@@ -399,7 +399,7 @@ AL_TEST(RectangleLight,0)
     */
     RectangleLight light;
     light.init(
-        Spectrum::createAsWhite(),
+        Spectrum::White,
         Vec3(0.0f, 0.0f, 1.0f),
         Vec3(1.0f, 0.0f, 0.0f),
         Vec3(0.0f, 1.0f, 0.0f));
@@ -451,7 +451,7 @@ AL_TEST(RectangleLight, 1)
     */
     RectangleLight light;
     light.init(
-        Spectrum::createAsWhite(),
+        Spectrum::White,
         Vec3(0.0f, 0.0f, 0.2f),
         Vec3(1000.0f, 0.0f, 0.0f),
         Vec3(0.0f, 1000.0f, 0.0f));
@@ -561,7 +561,7 @@ Spectrum SphereLight::emission(
     }
     else
     {
-        return Spectrum::createAsBlack();
+        return Spectrum::Black;
     }
 }
 
@@ -688,7 +688,7 @@ AL_TEST(SphereLight, 1)
     1x1のRectangleLightが地平面に対してある場合
     */
     SphereLight light;
-    light.init(Vec3(0.0f, 0.0f, 0.2f), 0.1f, Spectrum::createAsWhite());
+    light.init(Vec3(0.0f, 0.0f, 0.2f), 0.1f, Spectrum::White);
     // TODO: ランダムにサンプル
     SamplerPtr sampler = std::make_shared<SamplerIndepent>();
     sampler->setHash(0x01);

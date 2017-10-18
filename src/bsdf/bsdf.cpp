@@ -11,7 +11,7 @@ REGISTER_OBJECT(BSDF, Glass);
 REGISTER_OBJECT(BSDF, MicrofacetBSDF);
 
 
-BSDFPtr BSDF::vantaBlack = std::make_shared<Lambertian>(Spectrum::createAsBlack());
+BSDFPtr BSDF::vantaBlack = std::make_shared<Lambertian>(Spectrum::Black);
 BSDFPtr BSDF::gray18 = std::make_shared<Lambertian>(Spectrum::createFromRGB({ 0.18f, 0.18f, 0.18f }, false));
 BSDFPtr BSDF::gray50 = std::make_shared<Lambertian>(Spectrum::createFromRGB({ 0.50f, 0.50f, 0.50f }, false));
 BSDFPtr BSDF::white = std::make_shared<Lambertian>(Spectrum::createFromRGB({ 1.00f, 1.00f, 1.00f }, false));
@@ -154,7 +154,7 @@ Spectrum BSDF::estimateTotalRefrectance(const int32_t sampleNum, bool dontUseBsd
         return ret / (float(sampleNum));
     }
 #else
-    return Spectrum::createAsBlack();
+    return Spectrum::Black;
 #endif
 }
 
@@ -774,7 +774,7 @@ Spectrum Mirror::bsdf(
     // δ関数なので常に0を返す。
     // 普通の用途ではまず呼び出されないのでASSERT()を置いておく
     AL_ASSERT_DEBUG(false);
-    return Spectrum::createAsBlack();
+    return Spectrum::Black;
 }
 
 /*
@@ -838,7 +838,7 @@ Spectrum Glass::bsdf(
     // δ関数なので常に0を返す。
     // 普通の用途ではまず呼び出されないのでASSERT()を置いておく
     AL_ASSERT_DEBUG(false);
-    return Spectrum::createAsBlack();
+    return Spectrum::Black;
 }
 
 /*
@@ -1009,7 +1009,7 @@ MicrofacetBSDF::MicrofacetBSDF(const ObjectProp& objectProp)
     :BSDF(objectProp)
 {
     // HACK: しばらくは決め打ちで作成する
-    R = Spectrum::createAsWhite();
+    R = Spectrum::White;
     fresnel_ = std::make_shared<FresnelConductor>(
         Spectrum::createFromRGB({ 1.0f, 1.0f, 1.0f }, false),
         Spectrum::createFromRGB({ 1.0f, 1.0f, 1.0f }, false));
@@ -1359,7 +1359,7 @@ Spectrum Walter::bsdf(
     const float NdotV = cosTheta(localWo);
     if (NdotL < 0 || NdotV < 0)
     {
-        return Spectrum::createAsBlack();
+        return Spectrum::Black;
     }
     const Vec3 H = (localWi + localWo).normalize();
     const float NdotH = cosTheta(H);

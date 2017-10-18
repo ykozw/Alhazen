@@ -4,24 +4,6 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE SpectrumRGB SpectrumRGB::createAsBlack()
-{
-    return SpectrumRGB(0.0f, 0.0f, 0.0f);
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE SpectrumRGB SpectrumRGB::createAsWhite()
-{
-    return SpectrumRGB(1.0f, 1.0f, 1.0f);
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
 INLINE SpectrumRGB SpectrumRGB::createFromRGB(const std::array<float, 3>& rgb, bool asIllumination)
 {
     (void)asIllumination;

@@ -34,5 +34,5 @@ OpticalResolutionChart::OpticalResolutionChart(const ObjectProp& prop)
 Spectrum OpticalResolutionChart::sample(float u, float v)
 {
     // TODO: 実装
-    return Spectrum::createAsBlack();
+    return Spectrum::Black;
 }

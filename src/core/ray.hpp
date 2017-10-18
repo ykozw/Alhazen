@@ -112,7 +112,7 @@ public:
     Vec2 uv = Vec2(0.0f, 0.0f);
     BSDFPtr bsdf = nullptr;
     // 交差点でのEmission
-    Spectrum emission = Spectrum::createAsBlack();
+    Spectrum emission = Spectrum::Black;
     // 交差したオブジェクト
     const SceneObject* sceneObject = nullptr;
 public:

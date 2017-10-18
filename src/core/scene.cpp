@@ -233,7 +233,7 @@ SubFilm& Scene::render(int32_t taskNo)
                 const Ray screenRay = sensor_->generateRay(spx, spy, pdf);
                 if (pdf != 0.0f)
                 {
-                    Spectrum spectrum = Spectrum::createAsBlack();
+                    Spectrum spectrum = Spectrum::Black;
                     spectrum = integrator_->radiance(screenRay, geometory_, sampler);
                     AL_ASSERT_DEBUG(!spectrum.hasNaN());
                     // TODO: pdfをちゃんと扱うようにする
@@ -266,7 +266,7 @@ Spectrum Scene::renderPixel(int32_t x, int32_t y)
     //
     float pdf = 0.0f;
     const Ray screenRay = sensor_->generateRay(float(x), float(y), pdf);
-    Spectrum spectrum = Spectrum::createAsBlack();
+    Spectrum spectrum = Spectrum::Black;
     // HACK: サンプラーを固定にしている
     SamplerPtr sampler = std::make_shared<SamplerIndepent>();
     sampler->setHash(calcPixelHash(x, y, image.width()));

@@ -27,9 +27,12 @@ public:
     float r = 0.0f;
     float g = 0.0f;
     float b = 0.0f;
+
 public:
-    static SpectrumRGB createAsBlack();
-    static SpectrumRGB createAsWhite();
+    static SpectrumRGB Black;
+    static SpectrumRGB White;
+
+public:
     static SpectrumRGB createFromRGB(const std::array<float, 3>& rgb, bool asIllumination);
     static SpectrumRGB createFromColorTemp(const float kelvin);
     static float energyDif(const SpectrumRGB& lhs, const SpectrumRGB& rhs);
@@ -72,8 +75,8 @@ class SpectrumSampled
 public:
     std::array<float, SPECTRUM_SAMPLED_NUM_SAMPLES> samples;
 public:
-    static SpectrumSampled createAsBlack();
-    static SpectrumSampled createAsWhite();
+    static SpectrumSampled Black;
+    static SpectrumSampled White;
     static SpectrumSampled createFromRGB(const std::array<float, 3>& rgb, bool asIllumination);
     static SpectrumSampled createFromColorTemp(const float kelvin);
     static float energyDif(const SpectrumSampled& lhs, const SpectrumSampled& rhs);

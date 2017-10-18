@@ -195,7 +195,7 @@ Spectrum PTSurfaceIntegrator::estimateDirectLight(
             const std::vector<LightPtr>& lights = scene.lights();
             if (lights.empty())
             {
-                return Spectrum::createAsBlack();
+                return Spectrum::Black;
             }
             // ライトを一つ選択する
             const uint32_t lightIndex = sampler->getSize(uint32_t(lights.size()));
@@ -206,7 +206,7 @@ Spectrum PTSurfaceIntegrator::estimateDirectLight(
             */
             if (isect.sceneObject == choochenLight.get())
             {
-                return Spectrum::createAsBlack();
+                return Spectrum::Black;
             }
             //
             const Spectrum oneLightEstimated = estimateOneLight(scene, isect, local, localWo, choochenLight, sampler);
@@ -215,7 +215,7 @@ Spectrum PTSurfaceIntegrator::estimateDirectLight(
         break;
     default:
         AL_ASSERT_ALWAYS(false);
-        return Spectrum::createAsBlack();
+        return Spectrum::Black;
         break;
     }
 }
@@ -328,7 +328,7 @@ Spectrum PTSurfaceIntegrator::estimateOneLight(
         const bool isVisible = scene.isVisible(p0, p1, skipLight);
         if (!isVisible)
         {
-            return Spectrum::createAsBlack();
+            return Spectrum::Black;
         }
 
         // reflectanceの算出
@@ -386,7 +386,7 @@ Spectrum PTSurfaceIntegrator::estimateOneLight(
         //
         if (pdfBSDF == 0.0f || L.isBlack())
         {
-            return Spectrum::createAsBlack();
+            return Spectrum::Black;
         }
         //
         const Vec3 p0 = isectPos;
@@ -396,7 +396,7 @@ Spectrum PTSurfaceIntegrator::estimateOneLight(
         const bool visible = scene.isVisible(p0, p1, skipLight);
         if (!visible)
         {
-            return Spectrum::createAsBlack();
+            return Spectrum::Black;
         }
         const Spectrum spectrum = f * L * absCosTheta(localWo) * weight / pdfBSDF;
         //const Spectrum spectrum = Spectrum::createFromRGB({ 0.0f, weight, 0.0f }, false);
@@ -407,7 +407,7 @@ Spectrum PTSurfaceIntegrator::estimateOneLight(
     switch (sampleStrategy)
     {
     case SampleStrategy::AlwaysZero:
-        return Spectrum::createAsBlack();
+        return Spectrum::Black;
     case SampleStrategy::OnlyLightSample:
         {
             Spectrum spectrum(0.0f);
@@ -480,7 +480,7 @@ Spectrum PTSurfaceIntegrator::estimateOneLight(
         break;
     default:
         AL_ASSERT_ALWAYS(false);
-        return Spectrum::createAsBlack();
+        return Spectrum::Black;
         break;
     }
 }

@@ -1109,7 +1109,8 @@ INLINE Vec3& Vec3::normalize()
     z_ *= invLen;
     return *this;
 #elif defined(AL_MATH_USE_AVX2)
-    const __m128 dp = _mm_dp_ps(xyz_, xyz_, 0x77);
+    // NOTE: 長さ0のケアはしていない
+    const __m128 dp = _mm_dp_ps(xyz_, xyz_, 0x7F); // TODO: これは0x7Fではないのか？
     const __m128 idp = _mm_rsqrt_ps_accurate(dp);
     xyz_ = _mm_mul_ps(xyz_, idp);
     return *this;
@@ -1122,14 +1123,9 @@ INLINE Vec3& Vec3::normalize()
 */
 INLINE Vec3 Vec3::normalized() const
 {
-#if defined(AL_MATH_USE_NO_SIMD)
-    const float invLen = 1.0f / length();
-    return Vec3(x_ * invLen, y_ * invLen, z_ * invLen);
-#elif defined(AL_MATH_USE_AVX2)
-    const __m128 dp = _mm_dp_ps(xyz_, xyz_, 0x7F);
-    const __m128 idp = _mm_rsqrt_ps_accurate(dp);
-    return _mm_mul_ps(xyz_, idp);
-#endif
+    Vec3 v = *this;
+    v.normalize();
+    return v;
 }
 
 /*

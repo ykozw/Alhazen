@@ -56,3 +56,21 @@ private:
     std::mutex mtx_;
     std::atomic<uint64_t> predictedWaitTime_ = {1};
 };
+
+/*
+-------------------------------------------------
+最適化時に行われてしまう変数削除の最適化を
+パフォーマンス計測のために抑制する
+-------------------------------------------------
+*/
+#pragma optimize("", off)
+template <class T, bool doMemFence = false>
+void doNotOptimize(T&& datum)
+{
+    datum = datum;
+    if (doMemFence)
+    {
+        std::_Atomic_thread_fence(std::memory_order_seq_cst);
+    }
+}
+#pragma optimize("", on)

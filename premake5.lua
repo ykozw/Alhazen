@@ -35,7 +35,7 @@ project "Alhazen"
    cppdialect "C++14"
 
    configuration "vs*"
-      buildoptions { "/Z7" }
+      buildoptions { "/bigobj" }
 
   filter "action:not vs*"
      pchheader "../src/pch.hpp"

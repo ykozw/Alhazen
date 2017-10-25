@@ -439,7 +439,7 @@ void QBVH::constructNodeMedian(
             auto& targetTri = trisPerArea[chNo];
             const float inf = std::numeric_limits<float>::max();
             const Vec3 infVert(inf);
-            const std::array<Vec3, 3> dummyVerts = { infVert, infVert, infVert };
+            const std::array<Vec3, 3> dummyVerts = { { infVert, infVert, infVert } };
             const auto& t0 = targetTri.size() >= 1 ? targetTri[0].v : dummyVerts;
             const auto& t1 = targetTri.size() >= 2 ? targetTri[1].v : dummyVerts;
             const auto& t2 = targetTri.size() >= 3 ? targetTri[2].v : dummyVerts;
@@ -659,7 +659,7 @@ void QBVH::constructNodeSAH(
             // 浮動小数の例外が発生しない程度には大きすぎない値にしておく
             const float inf = 1.0e+15f;
             const Vec3 infVert(inf);
-            const std::array<Vec3, 3> dummyVerts = { infVert, infVert, infVert };
+            const std::array<Vec3, 3> dummyVerts = { { infVert, infVert, infVert } };
             const auto& t0 = targetTri.size() >= 1 ? targetTri[0].v : dummyVerts;
             const auto& t1 = targetTri.size() >= 2 ? targetTri[1].v : dummyVerts;
             const auto& t2 = targetTri.size() >= 3 ? targetTri[2].v : dummyVerts;

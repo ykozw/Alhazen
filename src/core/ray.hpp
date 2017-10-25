@@ -21,7 +21,7 @@ public:
     float maxt = std::numeric_limits <float>::max();
     // 波長(m単位)
     float waveLength = WAVE_LENGTH_D;
-    std::array<int32_t, 3> sign = { 0,0,0 };
+    std::array<int32_t, 3> sign = { { 0,0,0 } };
 public:
     Ray();
     Ray(Vec3 pos,

@@ -1193,6 +1193,7 @@ std::vector<MedianCutBoxInfo> EnviromentLight::medianCut(int32_t cutNo) const
 }
 #endif
 
+#if 0
 /*
 -------------------------------------------------
 -------------------------------------------------
@@ -1354,4 +1355,5 @@ static bool TestEnviroment()
 #endif
     return true;
 }
+#endif
 //TEST(Enviroment, Basic, TestEnviroment);

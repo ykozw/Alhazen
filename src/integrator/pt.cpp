@@ -229,6 +229,7 @@ static float misBalanceHeuristic(float fPdf, float gPdf)
     return fPdf / (fPdf + gPdf);
 }
 
+#if 0
 /*
 -------------------------------------------------
 -------------------------------------------------
@@ -239,6 +240,7 @@ static float misPowerHeuristic(float fPdf, float gPdf)
     const float gPdf2 = gPdf * gPdf;
     return fPdf2 / (fPdf2 + gPdf2);
 }
+#endif
 
 /*
 -------------------------------------------------

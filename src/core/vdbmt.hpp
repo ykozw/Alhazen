@@ -2,6 +2,8 @@
 
 #include "pch.hpp"
 
+void vdbmt_begin();
+void vdbmt_end();
 void vdbmt_point(Vec3 p);
 void vdbmt_line(Vec3 p0, Vec3 p1);
 void vdbmt_normal(Vec3 p, Vec3 n);

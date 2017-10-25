@@ -39,7 +39,7 @@ void Image::readBmp(const std::string& fileName, bool sRGB)
             const float fr = float(r) / float(255.0f);
             const float fg = float(g) / float(255.0f);
             const float fb = float(b) / float(255.0f);
-            spectrums_[idx] = Spectrum::createFromRGB({ fr,fg,fb }, false);
+            spectrums_[idx] = Spectrum::createFromRGB({ { fr,fg,fb } }, false);
         }
     }
     //

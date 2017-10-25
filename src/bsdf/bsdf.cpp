@@ -12,9 +12,9 @@ REGISTER_OBJECT(BSDF, MicrofacetBSDF);
 
 
 BSDFPtr BSDF::vantaBlack = std::make_shared<Lambertian>(Spectrum::Black);
-BSDFPtr BSDF::gray18 = std::make_shared<Lambertian>(Spectrum::createFromRGB({ 0.18f, 0.18f, 0.18f }, false));
-BSDFPtr BSDF::gray50 = std::make_shared<Lambertian>(Spectrum::createFromRGB({ 0.50f, 0.50f, 0.50f }, false));
-BSDFPtr BSDF::white = std::make_shared<Lambertian>(Spectrum::createFromRGB({ 1.00f, 1.00f, 1.00f }, false));
+BSDFPtr BSDF::gray18 = std::make_shared<Lambertian>(Spectrum::createFromRGB({ { 0.18f, 0.18f, 0.18f } }, false));
+BSDFPtr BSDF::gray50 = std::make_shared<Lambertian>(Spectrum::createFromRGB({ { 0.50f, 0.50f, 0.50f } }, false));
+BSDFPtr BSDF::white = std::make_shared<Lambertian>(Spectrum::createFromRGB({ { 1.00f, 1.00f, 1.00f} }, false));
 
 /*
 -------------------------------------------------
@@ -628,8 +628,8 @@ AL_TEST(Lambertian, 0)
 -------------------------------------------------
 */
 OrenNayar::OrenNayar(const Spectrum& baseColor, float sigma)
-    :baseColor_(baseColor),
-    BSDF(ObjectProp())
+    :BSDF(ObjectProp()),
+    baseColor_(baseColor)
 {
     const float sigma2 = sigma*sigma;
     a_ = 1.0f - sigma2 / (2.0f*(sigma2 + 0.33f));
@@ -721,7 +721,7 @@ AL_TEST(OrenNayar, 0)
     return;
 
     testBSDFcore(std::make_shared<OrenNayar>(
-        Spectrum::createFromRGB({ 1.0f,1.0f,1.0f }, false), 0.5f));
+        Spectrum::createFromRGB({ { 1.0f,1.0f,1.0f } }, false), 0.5f));
 }
 
 /*
@@ -978,7 +978,7 @@ AL_TEST(BSDF,testMISC)
     printf("A: %f\n", ttt ); // not cos 0.5。cosのときは0.66
 #endif
 
-    Lambertian lambert(Spectrum::createFromRGB({ 1.0f,1.0f,1.0f }, false));
+    Lambertian lambert(Spectrum::createFromRGB({ { 1.0f,1.0f,1.0f } }, false));
     // const Vec3 view = Vec3(1.0f,1.0f,1.0f).normalized();
     Spectrum total;
     sampler.setHash(1);
@@ -1011,8 +1011,8 @@ MicrofacetBSDF::MicrofacetBSDF(const ObjectProp& objectProp)
     // HACK: しばらくは決め打ちで作成する
     R = Spectrum::White;
     fresnel_ = std::make_shared<FresnelConductor>(
-        Spectrum::createFromRGB({ 1.0f, 1.0f, 1.0f }, false),
-        Spectrum::createFromRGB({ 1.0f, 1.0f, 1.0f }, false));
+        Spectrum::createFromRGB({ { 1.0f, 1.0f, 1.0f } }, false),
+        Spectrum::createFromRGB({ { 1.0f, 1.0f, 1.0f } }, false));
 
     // HACK: とりあえずのコード
     const float roughness = objectProp.findChildBy("name", "roughness").asFloat(1000.0f);
@@ -1121,11 +1121,11 @@ TorranceSparrow::TorranceSparrow(
     const MicrofacetDistributionPtr& dTerm,
     const GeometricTermPtr& gTerm,
     const FresnelTermPtr fTerm)
-    :baseColor_(baseColor),
+    :BSDF(ObjectProp()),
+    baseColor_(baseColor),
     dTerm_(dTerm),
     gTerm_(gTerm),
-    fTerm_(fTerm),
-    BSDF(ObjectProp())
+    fTerm_(fTerm)
 {}
 
 /*
@@ -1530,7 +1530,7 @@ DisneyBRDF::DisneyBRDF(const ObjectProp& objectProp)
     // TODO: テクスチャ以外も取り扱えるようにする。
     baseColorTexture = objectProp.findChildBy("name", "basecolor").asString("none");
     // baseColorGamma = objectProp.findChildBy("name", "gamma").asFloat(2.2f); // FIXME: このBSDFのObjectPropではなく、BaseColorのObjectPropにする。
-    baseColor_ = Spectrum::createFromRGB({0.5f,0.5f, 0.5f},false);
+    baseColor_ = Spectrum::createFromRGB({ {0.5f,0.5f, 0.5f} }, false);
     metallic_ = objectProp.findChildBy("name", "metalic").asFloat(0.5f); // [0,1]
     subsurface_ = objectProp.findChildBy("name", "subsurface").asFloat(0.0f); // [0,1]
     specular_ = objectProp.findChildBy("name", "specular").asFloat(0.0f); // [0,1]
@@ -1626,6 +1626,7 @@ static float GTR1(float NdotH, float a)
     return (a2 - 1.0f) / (logf(a2) * t) * INV_PI;
 }
 
+#if 0
 /*
 -------------------------------------------------
 -------------------------------------------------
@@ -1645,6 +1646,7 @@ static float GTR2(float NdotH, float a)
     */
     return alClamp(tmp, 0.0f, SPECULAR_CLAMP);
 }
+#endif
 
 /*
 -------------------------------------------------

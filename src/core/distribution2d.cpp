@@ -71,6 +71,7 @@ void Distribution2D::construct(const std::vector<std::vector<float>>& values)
     const int32_t rowLength = static_cast<int32_t>(values[0].size());
     for (const auto& row : values)
     {
+        static_cast<void>(row);
         AL_ASSERT_DEBUG(row.size() == rowLength);
     }
     //

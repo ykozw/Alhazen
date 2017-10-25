@@ -57,6 +57,7 @@ private:
     std::atomic<uint64_t> predictedWaitTime_ = {1};
 };
 
+#if 0
 /*
 -------------------------------------------------
 最適化時に行われてしまう変数削除の最適化を
@@ -74,3 +75,4 @@ void doNotOptimize(T&& datum)
     }
 }
 #pragma optimize("", on)
+#endif

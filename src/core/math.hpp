@@ -291,7 +291,7 @@ public:
 Vec2
 -------------------------------------------------
 */
-struct Vec2
+ALIGN16 struct Vec2
 {
 public:
     Vec2() = default;
@@ -358,7 +358,7 @@ INLINE static Vec2 operator / (Vec2 v, float f);
 Vec3
 -------------------------------------------------
 */
-struct Vec3
+ALIGN16 struct Vec3
 {
 public:
     INLINE Vec3() = default;
@@ -448,7 +448,7 @@ INLINE static Vec3 operator / (Vec3 v, float f);
 Vec4
 -------------------------------------------------
 */
-struct Vec4
+ALIGN16 struct Vec4
 {
 public:
     INLINE Vec4() = default;
@@ -497,7 +497,7 @@ Matrix3x3
 Row-Major/Row-Vectorの4x4行列
 -------------------------------------------------
 */
-struct Matrix3x3
+ALIGN16 struct Matrix3x3
 {
 public:
     Matrix3x3() = default;
@@ -556,7 +556,7 @@ Row-Major/Row-Vectorの4x4行列
 // TODO: 移行が終わったらこのdefineは消す
 // #define MAT4X4_SIMD 
 
-struct Matrix4x4
+ALIGN16 struct Matrix4x4
 {
 public:
 #if defined(MAT4X4_SIMD)
@@ -615,7 +615,7 @@ INLINE static Matrix4x4 operator + (const Matrix4x4& lhs, const Matrix4x4& rhs);
  Vec3x8のデータ構造
  -------------------------------------------------
  */
-struct Vec3Pack8
+ALIGN32 struct Vec3Pack8
 {
 public:
     union

@@ -95,7 +95,11 @@
 
 // Debug関連
 #if defined(WINDOWS)
+#if defined(__clang__)
+#define DBG_BREAK() __debugbreak()
+#else
 #define DBG_BREAK() __ud2(); __debugbreak()
+#endif
 #else
 #define DBG_BREAK() __builtin_trap()
 #endif

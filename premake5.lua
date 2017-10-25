@@ -34,9 +34,6 @@ project "Alhazen"
    characterset "MBCS"
    cppdialect "C++14"
 
-   configuration "vs*"
-      buildoptions { "/bigobj" }
-
   filter "action:not vs*"
      pchheader "../src/pch.hpp"
 
@@ -58,8 +55,12 @@ project "Alhazen"
     symbols "On"
     optimize "On"
   
-  -- 最終的なバイナリ出力時用
+  -- 最終的なバイナリ出力時用。2割以上高速なのでClangを利用する。
   filter "configurations:Ship"
     defines { "NDEBUG", "NO_ASSERT" }
     optimize "Speed"
     flags { "LinkTimeOptimization", "NoRuntimeChecks", "StaticRuntime" }
+    toolset "msc-llvm-vs2014"
+    -- LLVMを使ってもZ7でデバッグ情報を生成するとデバッグが可能になる
+    -- buildoptions { "/Z7" }
+

@@ -145,12 +145,18 @@ INLINE bool AABB::intersect(const Ray& ray, Intersect* isect) const
         isect->position = ray.o + ray.d * tmin;
         static const Vec3 ns[3][2] =
         {
-            Vec3(-1.0f, 0.0f, 0.0f),
-            Vec3(+1.0f, 0.0f, 0.0f),
-            Vec3(0.0f, -1.0f, 0.0f),
-            Vec3(0.0f, +1.0f, 0.0f),
-            Vec3(0.0f, 0.0f, -1.0f),
-            Vec3(0.0f, 0.0f, +1.0f),
+            {
+                Vec3(-1.0f, 0.0f, 0.0f),
+                Vec3(+1.0f, 0.0f, 0.0f),
+            },
+            {
+                Vec3(0.0f, -1.0f, 0.0f),
+                Vec3(0.0f, +1.0f, 0.0f),
+            },
+            {
+                Vec3(0.0f, 0.0f, -1.0f),
+                Vec3(0.0f, 0.0f, +1.0f),
+            }
         };
         isect->normal = ns[hitAxis][ray.sign[hitAxis]];
     }

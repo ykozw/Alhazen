@@ -103,7 +103,7 @@ INLINE float radicalInverseCore(int32_t base, int32_t index)
 INLINE float radicalInverseSlow(int32_t primNumberIndex, int32_t index)
 {
     static const std::array<uint32_t,1229> primList =
-    {
+    { {
         2, 3, 5, 7, 11, 13, 17, 19, 23, 29,
         31, 37, 41, 43, 47, 53, 59, 61, 67,
         71, 73, 79, 83, 89, 97, 101, 103, 107, 109,
@@ -227,7 +227,7 @@ INLINE float radicalInverseSlow(int32_t primNumberIndex, int32_t index)
         9733,9739,9743,9749,9767,9769,9781,9787,9791,9803,
         9811,9817,9829,9833,9839,9851,9857,9859,9871,9883,
         9887,9901,9907,9923,9929,9931,9941,9949,9967,9973
-    };
+    } };
     const uint32_t primNumber = primList[primNumberIndex];
     return radicalInverseCore(primNumber, index);
 }

@@ -8,8 +8,8 @@ REGISTER_OBJECT(BSDF,BSDFs);
 -------------------------------------------------
 */
 BSDFs::BSDFs(const ObjectProp& objectProp)
-    :name_("default"),
-     BSDF(objectProp)
+    :BSDF(objectProp),
+    name_("default")
 {
 }
 

@@ -311,7 +311,7 @@ public:
         _Out_ Vec3* localWi,
         _Out_ float* pdf) const override;
 private:
-    float ior_;
+    //float ior_;
 };
 
 /*

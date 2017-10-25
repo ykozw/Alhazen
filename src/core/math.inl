@@ -809,6 +809,7 @@ INLINE static Vec2 operator - (Vec2 lhs, Vec2 rhs)
             lhs.y() - rhs.y());
 #else
     AL_ASSERT_ALWAYS(false);
+    return Vec2();
 #endif
 }
 

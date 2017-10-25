@@ -214,7 +214,7 @@ SubFilm& Scene::render(int32_t taskNo)
             //
             Spectrum spectrumTotal(0.0f);
             // TODO: ちゃんとシーンファイルから取ってくるようにする
-            const int32_t sppPerLoop = 4;
+            const int32_t sppPerLoop = 64;
             const int32_t sampleBegin = (loopNo + 0)* sppPerLoop;
             const int32_t sampleEnd = (loopNo + 1)* sppPerLoop;
             // SubPixel巡回

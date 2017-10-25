@@ -476,6 +476,7 @@ AL_TEST(Math, V4)
         const float w = 4.0f;
         const Vec4 v(x, y, z, w);
         //
+#if 0
         AL_ASSERT_ALWAYS(v.xxxx() == Vec4(x, x, x, x));
         AL_ASSERT_ALWAYS(v.yxxx() == Vec4(y, x, x, x));
         AL_ASSERT_ALWAYS(v.zxxx() == Vec4(z, x, x, x));
@@ -526,5 +527,6 @@ AL_TEST(Math, V4)
         AL_ASSERT_ALWAYS(v.ywxy() == Vec4(y, w, x, y));
         AL_ASSERT_ALWAYS(v.zwxy() == Vec4(z, w, x, y));
         AL_ASSERT_ALWAYS(v.wwxy() == Vec4(w, w, x, y));
+#endif
     }
 }

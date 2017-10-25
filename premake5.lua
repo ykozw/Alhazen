@@ -1,3 +1,5 @@
+require("premake", ">=5.0.0-alpha12")
+
 solution "Alhazen"
    location "generated"
    configurations { "Debug", "Release", "Ship" }
@@ -30,7 +32,7 @@ project "Alhazen"
    }
 
    characterset "MBCS"
-   flags { "C++14" }
+   cppdialect "C++14"
 
    configuration "vs*"
       buildoptions { "/bigobj" }
@@ -48,12 +50,12 @@ project "Alhazen"
   -- 全体デバッグ用
   filter "configurations:Debug"
     defines { "DEBUG" }
-    flags { "Symbols" }
+    symbols "On"
   
   -- 通常開発時用。デバッグ時はOPT_OFFを適宜つける
   filter "configurations:Release"
     defines { "NDEBUG", "NO_ASSERT" }
-    flags { "Symbols" }
+    symbols "On"
     optimize "On"
   
   -- 最終的なバイナリ出力時用

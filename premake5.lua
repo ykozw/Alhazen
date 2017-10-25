@@ -37,8 +37,6 @@ project "Alhazen"
    configuration "vs*"
       buildoptions { "/Z7" }
 
-  toolset "msc-llvm-vs2014"
-
   filter "action:not vs*"
      pchheader "../src/pch.hpp"
 

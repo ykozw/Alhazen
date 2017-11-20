@@ -7,7 +7,7 @@ Reinhard
 Y成分保存(白保存？)版Reinhard
 -------------------------------------------------
 */
-class Reinhard
+class Reinhard AL_FINAL
     : public Tonemapper
 {
 public:

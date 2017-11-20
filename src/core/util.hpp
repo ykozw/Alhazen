@@ -6,7 +6,7 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-class FileSystem
+class FileSystem AL_FINAL
 {
 public:
     void init(const char* sceneFilePath, const char* exeFilePath);
@@ -25,7 +25,7 @@ extern FileSystem g_fileSystem;
 -------------------------------------------------
 -------------------------------------------------
 */
-class TimeUtil
+class TimeUtil AL_FINAL
 {
 public:
     TimeUtil();
@@ -47,7 +47,7 @@ cf. https://hackernoon.com/building-a-c-hybrid-spin-mutex-f98de535b4ac
 平均的なロック時間は常にSpinLockになっていることに注意
 -------------------------------------------------
 */
-class SpinLock
+class SpinLock AL_FINAL
 {
 public:
     void lock();

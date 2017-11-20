@@ -5,7 +5,7 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-class AdaptivePolynomial
+class AdaptivePolynomial AL_FINAL
     :public Denoiser
 {
 public:

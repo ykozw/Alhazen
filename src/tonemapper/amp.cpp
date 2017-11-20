@@ -40,7 +40,7 @@ Amp
 .ampファイルからトーンマッピングを行う
 -------------------------------------------------
 */
-class Amp
+class Amp AL_FINAL
     : public Tonemapper
 {
 public:

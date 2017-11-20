@@ -10,7 +10,7 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-class PMIntegrator
+class PMIntegrator AL_FINAL
     :public LTEIntegrator
 {
 public:

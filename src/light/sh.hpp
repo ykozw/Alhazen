@@ -16,7 +16,7 @@ spherical harmonics
 -------------------------------------------------
 */
 template<int32_t ORDER>
-struct SphericalHarmonicsCoeff
+struct SphericalHarmonicsCoeff AL_FINAL
 {
 public:
     static_assert(2 <= ORDER && ORDER <= 3, "");

@@ -10,7 +10,7 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-class PTSurfaceIntegrator
+class PTSurfaceIntegrator AL_FINAL
     :public LTEIntegrator
 {
 public:

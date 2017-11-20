@@ -6,7 +6,7 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-class OpticalSystem
+class OpticalSystem AL_FINAL
 {
 private:
 	class Impl;

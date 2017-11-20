@@ -18,7 +18,7 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-class BoxShape
+class BoxShape AL_FINAL
     :public Shape
 {
 public:
@@ -186,7 +186,7 @@ INLINE bool BoxShape::intersectCheck(const Ray& ray) const
 -------------------------------------------------
 -------------------------------------------------
 */
-class RectangleShape
+class RectangleShape AL_FINAL
     :public Shape
 {
 public:
@@ -274,7 +274,7 @@ INLINE bool RectangleShape::intersectCheck(const Ray& ray) const
 Sphere
 -------------------------------------------------
 */
-class Sphere
+class Sphere AL_FINAL
     :public Shape
 {
 public:

@@ -3,7 +3,7 @@
 #include "pch.hpp"
 #include "core/math.hpp"
 
-class MathmaticaUtil
+class MathmaticaUtil AL_FINAL
 {
 public:
     static void writePlotPoint2D(

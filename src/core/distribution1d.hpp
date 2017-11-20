@@ -6,7 +6,7 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-class Distribution1D_Naive
+class Distribution1D_Naive AL_FINAL
 {
 public:
     Distribution1D_Naive();
@@ -32,7 +32,7 @@ Distribution1D_Optimized
 cf. http://bannalia.blogspot.jp/2015/06/cache-friendly-binary-search.html
 -------------------------------------------------
 */
-class Distribution1D_Optimized
+class Distribution1D_Optimized AL_FINAL
 {
 public:
     Distribution1D_Optimized();

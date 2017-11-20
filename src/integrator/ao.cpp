@@ -9,7 +9,7 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-class AOSurfaceIntegrator
+class AOSurfaceIntegrator AL_FINAL
     :public LTEIntegrator
 {
 public:

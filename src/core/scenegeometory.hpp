@@ -12,7 +12,7 @@ TODO:
 - 二段階BVHを入れるようにする
 -------------------------------------------------
 */
-class SceneGeometory
+class SceneGeometory AL_FINAL
 {
 public:
     void addShape(ShapePtr shape);

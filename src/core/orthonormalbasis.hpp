@@ -26,7 +26,7 @@ enum ONB_METHOD
 -------------------------------------------------
 */
 template<ONB_METHOD method = ONB_METHOD::Frisvad12>
-class OrthonormalBasis
+class OrthonormalBasis AL_FINAL
 {
 public:
     OrthonormalBasis();

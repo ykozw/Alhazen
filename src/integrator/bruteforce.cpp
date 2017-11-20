@@ -10,7 +10,7 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-class BruteForceIntegrator
+class BruteForceIntegrator AL_FINAL
     :public LTEIntegrator
 {
 public:

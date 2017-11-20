@@ -47,7 +47,7 @@ typedef std::shared_ptr<Light> LightPtr;
 ConstantLight
 -------------------------------------------------
 */
-class ConstantLight
+class ConstantLight AL_FINAL
     :public Light
 {
 public:
@@ -87,7 +87,7 @@ private:
 RectangleLight
 -------------------------------------------------
 */
-class RectangleLight
+class RectangleLight AL_FINAL
     :public Light
 {
 public:
@@ -144,7 +144,7 @@ private:
 SphereLight
 -------------------------------------------------
 */
-class SphereLight
+class SphereLight AL_FINAL
     :public Light
 {
 public:
@@ -188,7 +188,7 @@ private:
 EnviromentLight
 -------------------------------------------------
 */
-class EnviromentLight
+class EnviromentLight AL_FINAL
     :public Light
 {
 public:

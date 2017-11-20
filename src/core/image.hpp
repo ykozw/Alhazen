@@ -11,7 +11,7 @@ Kahanの補正加算を行う
 -------------------------------------------------
 */
 template<typename Type>
-struct KahanAdd
+struct KahanAdd AL_FINAL
 {
 public:
     Type sum = Type(0.0f);
@@ -76,7 +76,7 @@ public:
 Image
 -------------------------------------------------
 */
-class Image
+class Image AL_FINAL
 {
 public:
 #if 0
@@ -120,7 +120,7 @@ private:
 PixelLDR
 -------------------------------------------------
 */
-struct PixelLDR
+struct PixelLDR AL_FINAL
 {
 public:
     uint8_t r;
@@ -133,7 +133,7 @@ public:
 ImageLDR
 -------------------------------------------------
 */
-class ImageLDR
+class ImageLDR AL_FINAL
 {
 public:
     ImageLDR();

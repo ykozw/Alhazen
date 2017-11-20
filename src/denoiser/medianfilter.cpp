@@ -5,7 +5,7 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-class MedianFilter
+class MedianFilter AL_FINAL
     :public Denoiser
 {
 public:

@@ -111,7 +111,7 @@ protected:
 一様乱数サンプラー
 -------------------------------------------------
 */
-class SamplerIndepent
+class SamplerIndepent AL_FINAL
     :public Sampler
 {
 public:
@@ -127,7 +127,7 @@ private:
 Halton列
 -------------------------------------------------
 */
-class SamplerHalton
+class SamplerHalton AL_FINAL
     :public Sampler
 {
 public:
@@ -148,7 +148,7 @@ https://en.wikipedia.org/wiki/Stochastic_universal_sampling
 を各次元に対して指定するような仕組みにする
 -------------------------------------------------
 */
-class SamplerStratified
+class SamplerStratified AL_FINAL
     :public Sampler
 {
 public:
@@ -167,7 +167,7 @@ private:
 半球上のみを取り扱うときに使える
 -------------------------------------------------
 */
-class SphericalFibonacci
+class SphericalFibonacci AL_FINAL
 {
 public:
     SphericalFibonacci(uint32_t seed = 123456789);

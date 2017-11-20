@@ -45,7 +45,7 @@ RealIOR
 異常分散の硝材は取り扱わない
 -------------------------------------------------
 */
-class RealIOR
+class RealIOR AL_FINAL
 {
 public:
     RealIOR();
@@ -113,7 +113,7 @@ void RealIOR::init(float nd, float vd)
 -------------------------------------------------
 -------------------------------------------------
 */
-struct LensSurface
+struct LensSurface AL_FINAL
 {
 public:
     // ストップ面(絞り面)か
@@ -312,7 +312,7 @@ RealSensor
 Optalixファイルを使用する
 -------------------------------------------------
 */
-class RealSensor
+class RealSensor AL_FINAL
     :public Sensor
 {
 public:
@@ -846,7 +846,7 @@ IntersectLens
 Intersectのレンズ用簡易版
 -------------------------------------------------
 */
-struct IntersectLens
+struct IntersectLens AL_FINAL
 {
 public:
     float t;

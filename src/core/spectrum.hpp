@@ -21,7 +21,7 @@ void rgb2xyz(const std::array<float, 3>& rgb, std::array<float, 3>& xyz_);
 -------------------------------------------------
 -------------------------------------------------
 */
-class SpectrumRGB
+class SpectrumRGB AL_FINAL
 {
 public:
     float r = 0.0f;
@@ -70,7 +70,7 @@ SpectrumRGB lerp(const SpectrumRGB& lhs, const SpectrumRGB& rhs, float factor);
 -------------------------------------------------
 -------------------------------------------------
 */
-class SpectrumSampled
+class SpectrumSampled AL_FINAL
 {
 public:
     std::array<float, SPECTRUM_SAMPLED_NUM_SAMPLES> samples;
@@ -111,7 +111,7 @@ SpectrumSampled lerp(const SpectrumSampled& lhs, const SpectrumSampled& rhs, flo
 -------------------------------------------------
 -------------------------------------------------
 */
-class SpectrumSingleWavelength
+class SpectrumSingleWavelength AL_FINAL
 {
 public:
     float lambda;
@@ -132,7 +132,7 @@ SpectrumSingleWavelength operator * (const SpectrumSampled& ss, const SpectrumSi
 -------------------------------------------------
 -------------------------------------------------
 */
-class SpectrumHerowavelength
+class SpectrumHerowavelength AL_FINAL
 {
 public:
     // TODO: 通しで完成次第、SIMD化をする

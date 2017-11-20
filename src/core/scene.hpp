@@ -20,7 +20,7 @@ Scene
 Samplerなど、スレッド毎に持っていた方が良いものは、新しく生成されます。
 -------------------------------------------------
 */
-class Scene
+class Scene AL_FINAL
 {
 public:
     Scene();

@@ -5,7 +5,7 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-class NullDenoiser
+class NullDenoiser AL_FINAL
     :public Denoiser
 {
 public:

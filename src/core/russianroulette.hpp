@@ -9,7 +9,7 @@ Efficiency-optimized Russian rouletteの実装
 将来的にBPTを実装したときに使う。
 -------------------------------------------------
 */
-class RussianRoulette
+class RussianRoulette AL_FINAL
 {
 public:
     RussianRoulette();

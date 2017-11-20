@@ -7,7 +7,7 @@
 シンプルなタスク実行
 -------------------------------------------------
 */
-class SimpleTaskScheduler
+class SimpleTaskScheduler AL_FINAL
 {
 public:
     typedef std::function<void(int32_t threadNo)> TaskFunc;

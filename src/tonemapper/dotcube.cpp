@@ -10,7 +10,7 @@ File
 TODO: できたらどこか別の場所に移動させる
 -------------------------------------------------
 */
-class File
+class File AL_FINAL
 {
 public:
     File()
@@ -39,7 +39,7 @@ private:
 -------------------------------------------------
 -------------------------------------------------
 */
-struct Cube
+struct Cube AL_FINAL
 {
 public:
     void resize(int32_t size)
@@ -101,7 +101,7 @@ Dotcube
 .Dotcubeファイルからトーンマッピングを行う
 -------------------------------------------------
 */
-class Dotcube
+class Dotcube AL_FINAL
     : public Tonemapper
 {
 public:

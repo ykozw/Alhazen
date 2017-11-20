@@ -7,7 +7,7 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-class Perspective
+class Perspective AL_FINAL
     :public Sensor
 {
 public:

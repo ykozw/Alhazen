@@ -5,7 +5,7 @@
 -------------------------------------------------
 */
 template<typename T>
-class RefArray
+class RefArray AL_FINAL
 {
 public:
     RefArray()

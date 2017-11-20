@@ -8,7 +8,7 @@ OpticalResolutionChart
 解像力チャート。レンズの評価に使用。
 -------------------------------------------------
 */
-class OpticalResolutionChart
+class OpticalResolutionChart AL_FINAL
     :public Sampleable2d
 {
 public:

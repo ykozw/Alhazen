@@ -7,7 +7,7 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-class SampleableImage
+class SampleableImage AL_FINAL
     :public Sampleable2d
 {
 public:

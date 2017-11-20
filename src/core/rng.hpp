@@ -7,7 +7,7 @@
  XorShift128
  -------------------------------------------------
  */
-class XorShift128
+class XorShift128 AL_FINAL
 {
 public:
     XorShift128();
@@ -34,7 +34,7 @@ typedef XorShift128 RNG;
  std::hash<int32_t>は入力の値をそのまま返してくるので使わないものを別途用意している
  -------------------------------------------------
  */
-class Hash
+class Hash AL_FINAL
 {
 public:
     //

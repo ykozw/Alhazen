@@ -144,7 +144,7 @@ FORCE_INLINE static float alFmod(float x, float y)
 Size2D
 -------------------------------------------------
 */
-struct Size2D
+struct Size2D AL_FINAL
 {
 public:
     int32_t width = 0;
@@ -173,7 +173,7 @@ INLINE static Size2D& operator *= (Size2D& v, int32_t f);
 Region2D
 -------------------------------------------------
 */
-struct Region2D
+struct Region2D AL_FINAL
 {
 public:
     int32_t left = 0;
@@ -197,7 +197,7 @@ public:
  0xFFFFFFFFか0x00000000が各レーンに入っている
  -------------------------------------------------
  */
-struct Bool8
+struct ALIGN16 Bool8 AL_FINAL
 {
 public:
     union
@@ -218,7 +218,7 @@ public:
  0レーンにデータが入っていることのみを保証したデータ
  -------------------------------------------------
  */
-struct BoolInVec
+struct ALIGN16 BoolInVec AL_FINAL
 {
 public:
 #if defined(AL_MATH_USE_NO_SIMD)
@@ -243,7 +243,7 @@ public:
  0レーンにデータが入っていることのみを保証したデータ
  -------------------------------------------------
  */
-struct FloatInVec
+struct ALIGN16 FloatInVec AL_FINAL
 {
 public:
 #if defined(AL_MATH_USE_NO_SIMD)
@@ -271,7 +271,7 @@ INLINE bool operator < (FloatInVec lhs, FloatInVec rhs);
  Float8
  -------------------------------------------------
  */
-struct Float8
+struct ALIGN16 Float8 AL_FINAL
 {
 public:
     union
@@ -291,7 +291,7 @@ public:
 Vec2
 -------------------------------------------------
 */
-ALIGN16 struct Vec2
+struct ALIGN16 Vec2 AL_FINAL
 {
 public:
     Vec2() = default;
@@ -358,7 +358,7 @@ INLINE static Vec2 operator / (Vec2 v, float f);
 Vec3
 -------------------------------------------------
 */
-ALIGN16 struct Vec3
+struct ALIGN16 Vec3/* AL_FINAL */
 {
 public:
     INLINE Vec3() = default;
@@ -448,7 +448,7 @@ INLINE static Vec3 operator / (Vec3 v, float f);
 Vec4
 -------------------------------------------------
 */
-ALIGN16 struct Vec4
+struct ALIGN16 Vec4 AL_FINAL
 {
 public:
     INLINE Vec4() = default;
@@ -497,7 +497,7 @@ Matrix3x3
 Row-Major/Row-Vectorの4x4行列
 -------------------------------------------------
 */
-ALIGN16 struct Matrix3x3
+struct ALIGN16 Matrix3x3 AL_FINAL
 {
 public:
     Matrix3x3() = default;
@@ -556,7 +556,7 @@ Row-Major/Row-Vectorの4x4行列
 // TODO: 移行が終わったらこのdefineは消す
 // #define MAT4X4_SIMD 
 
-ALIGN16 struct Matrix4x4
+struct ALIGN16 Matrix4x4 AL_FINAL
 {
 public:
 #if defined(MAT4X4_SIMD)
@@ -615,7 +615,7 @@ INLINE static Matrix4x4 operator + (const Matrix4x4& lhs, const Matrix4x4& rhs);
  Vec3x8のデータ構造
  -------------------------------------------------
  */
-ALIGN32 struct Vec3Pack8
+struct ALIGN32 Vec3Pack8 AL_FINAL
 {
 public:
     union

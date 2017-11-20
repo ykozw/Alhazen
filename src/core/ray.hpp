@@ -11,7 +11,7 @@ Ray
 TODO: 一度作ったらconstなのでそれを明言するために全体をconstにしたい
 -------------------------------------------------
 */
-struct Ray
+struct Ray AL_FINAL
 {
 public:
     Vec3 o = Vec3(0.0f, 0.0f, 0.0f);
@@ -36,7 +36,7 @@ public:
 -------------------------------------------------
 -------------------------------------------------
 */
-struct Ray4
+struct Ray4 AL_FINAL
 {
 public:
     Vec3 o[4];
@@ -97,7 +97,7 @@ public:
 Intersect
 -------------------------------------------------
 */
-struct Intersect
+struct Intersect AL_FINAL
 {
 public:
     /*
@@ -134,7 +134,7 @@ private:
 IntersectSIMD
 -------------------------------------------------
 */
-class IntersectSIMD
+class IntersectSIMD AL_FINAL
 {
 public:
     __m128 t;

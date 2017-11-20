@@ -6,7 +6,7 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-class FloatStreamStats
+class FloatStreamStats /*AL_FINAL*/
 {
 public:
     FloatStreamStats() = default;
@@ -31,7 +31,7 @@ protected:
 -------------------------------------------------
 -------------------------------------------------
 */
-class FloatStreamStats2
+class FloatStreamStats2 AL_FINAL
 {
 public:
     struct float2

@@ -12,7 +12,7 @@ class Film;
 -------------------------------------------------
 -------------------------------------------------
 */
-class SubFilm
+class SubFilm AL_FINAL
 {
 public:	
 	SubFilm();
@@ -43,7 +43,7 @@ Film
 - tonemapping
 -------------------------------------------------
 */
-class Film
+class Film AL_FINAL
 {
 public:
 	friend SubFilm;

@@ -6,7 +6,7 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-class Degamma
+class Degamma AL_FINAL
     : public Tonemapper
 {
 public:

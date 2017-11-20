@@ -8,7 +8,7 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-class Distribution2D
+class Distribution2D AL_FINAL
 {
 public:
     Distribution2D();

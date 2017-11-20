@@ -10,7 +10,7 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-struct MeshFace
+struct MeshFace AL_FINAL
 {
     // 位置
     std::array<uint32_t, 3> vi;
@@ -37,7 +37,7 @@ typedef std::unordered_map<std::string, int32_t> MaterialIds;
 -------------------------------------------------
 -------------------------------------------------
 */
-class Mesh
+class Mesh AL_FINAL
 {
 public:
     bool loadFromoObj(const std::string& fileName);

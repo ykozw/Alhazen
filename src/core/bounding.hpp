@@ -8,7 +8,7 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-class AABB
+class AABB AL_FINAL
 {
 public:
     AABB();
@@ -36,7 +36,7 @@ private:
 -------------------------------------------------
 -------------------------------------------------
 */
-class AABB2D
+class AABB2D AL_FINAL
 {
 public:
     AABB2D();
@@ -61,7 +61,7 @@ private:
 -------------------------------------------------
 -------------------------------------------------
 */
-class BoundingSphere
+class BoundingSphere AL_FINAL
 {
 public:
     BoundingSphere(const AABB& aabb);
@@ -76,7 +76,7 @@ private:
 -------------------------------------------------
 -------------------------------------------------
 */
-class Convexhull2d
+class Convexhull2d AL_FINAL
 {
 public:
     Convexhull2d(const std::vector<Vec2>& points);

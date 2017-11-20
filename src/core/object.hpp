@@ -8,7 +8,7 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-class ObjectPropString
+class ObjectPropString AL_FINAL
 {
 public:
     ObjectPropString();
@@ -38,7 +38,7 @@ private:
 -------------------------------------------------
 -------------------------------------------------
 */
-class ObjectProp
+class ObjectProp AL_FINAL
 {
 public:
     typedef std::unordered_map<std::string, std::string> Attributes;

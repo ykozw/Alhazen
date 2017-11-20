@@ -19,7 +19,7 @@ void getGlassSpec(const std::string& glassName, float& nd, float& vd);
 Cauchyの式から算出されたIORを返す
 -------------------------------------------------
 */
-class BasicIOR
+class BasicIOR AL_FINAL
 {
 public:
 	BasicIOR() = default;

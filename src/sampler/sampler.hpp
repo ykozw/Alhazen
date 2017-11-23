@@ -14,7 +14,6 @@ tp: (theta,phi)。球面座標。それぞれPIと2PIで割られているので
 -------------------------------------------------
 */
 
-
 // SphericalCoordinate(tp) -> Dir(xyz_)
 Vec3 remapSphericalCoordToDir(Vec2 tp);
 
@@ -45,6 +44,7 @@ float minimumDisptance(const std::vector<Vec2>& srcSamples);
 class Sampler;
 typedef std::shared_ptr<Sampler> SamplerPtr;
 class Sampler
+    :public Object
 {
 public:
     Sampler() = default;
@@ -115,6 +115,8 @@ class SamplerIndepent AL_FINAL
     :public Sampler
 {
 public:
+    SamplerIndepent() = default;
+    SamplerIndepent(const ObjectProp& prop);
     float get1d() override;
 protected:
     void onStartSample(uint32_t sampleNo) override;
@@ -131,6 +133,8 @@ class SamplerHalton AL_FINAL
     :public Sampler
 {
 public:
+    SamplerHalton() = default;
+    SamplerHalton(const ObjectProp& prop);
     float get1d() override;
 protected:
     void onStartSample(uint32_t sampleNo) override;

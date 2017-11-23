@@ -9,7 +9,7 @@ class AdaptivePolynomial AL_FINAL
     :public Denoiser
 {
 public:
-    AdaptivePolynomial(const ObjectProp& prop);;
+    AdaptivePolynomial(const ObjectProp& prop);
     void denoise(const Image& src, Image& dst) override;
 private:
 };

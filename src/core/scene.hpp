@@ -31,17 +31,17 @@ public:
     uint32_t developIntervalInMs() const;
     uint32_t timeOutInMs() const;
     SubFilm& render(int32_t taskNo);
-    void renderDebug(int32_t px, int32_t py);
     Spectrum renderPixel(int32_t px, int32_t py);
     void developLDR(const std::string& filmName, bool isFinal);
     void dumpHDR(const std::string& fileName);
 private:
     SceneGeometory geometory_;
-    SensorPtr sensor_;
-    TonemapperPtr tonemapper_;
-    DenoiserPtr denoiser_;
-    LTEIntegratorPtr integrator_;
-    int32_t totalTaskNum_;
+    SensorPtr sensor_ = nullptr;
+    TonemapperPtr tonemapper_ = nullptr;
+    DenoiserPtr denoiser_ = nullptr;
+    LTEIntegratorPtr integrator_ = nullptr;
+    SamplerPtr sampler_ = nullptr;
+    int32_t totalTaskNum_ = 0;
     // トーンマッピングされた画像
     ImageLDR tonemmappedImage_;
     // レンダーのタイムアウト(秒)
@@ -52,6 +52,8 @@ private:
     int32_t snapshotInterval_;
     // スナップショット時にデノイズを掛けるか
     bool snapshotDenoise_;
+    // インターバル毎のspp
+    int32_t sppPerInterval_ = 0;
     // denoise用の一時バッファ
     Image denoiseBuffer_;
 };

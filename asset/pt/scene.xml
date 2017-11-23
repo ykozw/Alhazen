@@ -13,11 +13,12 @@
   <!--スナップショット毎にデノイズ-->
   <boolean name="snapshotdenoise" value="false"/>
   
+  <!--一回のインターバルでのspp-->
+  <integer name="sppinterval" value="16" />
+  
   <!--サブサンプル指定をここに-->
-  <SubpixelSampler type="SubpixelSampleIndependent">
-    <integer name="spp" value="512"/>
-    <integer name="seed" value="123456789"/>
-  </SubpixelSampler>
+  <Sampler type="SamplerIndepent">
+  </Sampler>
   
   <!--デノイザー指定-->
   <!--<denoiser type="medianfilter"/>-->

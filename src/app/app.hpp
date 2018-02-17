@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "pch.hpp"
 
@@ -18,6 +18,7 @@ public:
     std::string baseFileDir;
     std::string sceneFileName;
 };
+
 
 /*
 -------------------------------------------------

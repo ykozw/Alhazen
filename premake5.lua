@@ -19,10 +19,6 @@ project "Alhazen"
      "thirdparty/tinyxml2",
      "thirdparty/stb",
      "thirdparty/vdb",
-     -- XCode対策(途中)
-     "../src",
-     "../../src",
-     
    }
 
    files {
@@ -33,8 +29,10 @@ project "Alhazen"
      "thirdparty/tinyxml2/tinyxml2.cpp"
    }
 
-   characterset "MBCS"
-   cppdialect "C++14"
+  characterset "MBCS"
+  -- "cppdialect"は現在壊れているので直接buildoptionsを指定する
+  -- cppdialect "C++14"
+  buildoptions {"-std=c++14"}
 
   filter "action:not vs*"
      pchheader "../src/pch.hpp"
@@ -47,18 +45,18 @@ project "Alhazen"
     flags { "NoPCH" }
    
   -- 全体デバッグ用
-  filter "configurations:Debug"
+  configuration "Debug"
     defines { "DEBUG" }
     symbols "On"
   
   -- 通常開発時用。デバッグ時はOPT_OFFを適宜つける
-  filter "configurations:Release"
+  configuration "Release"
     defines { "NDEBUG", "NO_ASSERT" }
     symbols "On"
     optimize "On"
   
   -- 最終的なバイナリ出力時用。2割以上高速なのでClangを利用する。
-  filter "configurations:Ship"
+  configuration "Ship"
     defines { "NDEBUG", "NO_ASSERT" }
     optimize "Speed"
     flags { "LinkTimeOptimization", "NoRuntimeChecks", "StaticRuntime" }

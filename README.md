@@ -15,7 +15,7 @@ brew install tbb
 git clone https://github.com/qatnonoil/Alhazen.git
 cd Alhazen
 git submodule update --init
-premake5 xcode4
+./tools/premake5 xcode4
 cd generated
 xcodebuild -configuration Release
 ```

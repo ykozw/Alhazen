@@ -32,12 +32,14 @@ Scene::Scene(const ObjectProp& objectProp)
     // デノイザーの作成
     denoiser_ = createObject<Denoiser>(objectProp);
     denoiseBuffer_.resize(img.width(), img.height());
-
+    // サンプラーの作成
+    sampler_ = createObject<Sampler>(objectProp);
     // その他プロパティ
     timeout_ = objectProp.findChildBy("name", "timeout").asInt(60);
     isProgressive_ = objectProp.findChildBy("name", "progressive").asBool(false);
     snapshotInterval_ = objectProp.findChildBy("name", "snapshotinterval").asInt(10);
     snapshotDenoise_ = objectProp.findChildBy("name", "snapshotdenoise").asBool(false);
+    sppPerInterval_ = objectProp.findChildBy("name", "sppinterval").asInt(4);
 
     // BSDFの構築
     AllBSDFList bsdfs;
@@ -151,44 +153,6 @@ static uint64_t calcPixelHash(int32_t x, int32_t y, int32_t width)
 -------------------------------------------------
 -------------------------------------------------
 */
-void Scene::renderDebug(int32_t x, int32_t y)
-{
-    //
-    auto film = sensor_->film();
-    const Image& image = film->image();
-    //
-    SamplerPtr sampler = std::make_shared<SamplerHalton>();
-    sampler->setHash(calcPixelHash(x, y, image.width()));
-    // TODO: ちゃんとシーンファイルから取ってくるようにする
-    const int32_t sppPerLoop = 128;
-    const int32_t loopNo = 0;
-    const int32_t sampleBegin = (loopNo + 0)* sppPerLoop;
-    const int32_t sampleEnd = (loopNo + 1)* sppPerLoop;
-    // SubPixel巡回
-    for (int32_t sampleNo = sampleBegin; sampleNo < sampleEnd; ++sampleNo)
-    {
-        sampler->startSample(sampleNo);
-        // SubPixelの生成
-        const Vec2 subPixelOffset = sampler->get2d();
-        // TODO: フィルターインターフェイスからweightを取ってくる
-        // const float weight = 1.0f;
-        const float spx = x + subPixelOffset.x();
-        const float spy = y + subPixelOffset.y();
-        // const float spWeight = weight;
-        //
-        float pdf = 0.0f;
-        const Ray screenRay = sensor_->generateRay(spx, spy, pdf);
-        if (pdf != 0.0f)
-        {
-            integrator_->radiance(screenRay, geometory_, sampler);
-        }
-    }
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
 SubFilm& Scene::render(int32_t taskNo)
 {
     // task番号から描画するべきものを決定する
@@ -199,10 +163,6 @@ SubFilm& Scene::render(int32_t taskNo)
     SubFilm& subFilm = film->subFilm(subFilmIndex);
     const Image& image = film->image();
     Image& subFilmImage = subFilm.image();
-    // サンプラーの作成
-    // HACK: サンプラーを固定にしている
-    //SamplerPtr sampler = std::make_shared<SamplerIndepent>();
-    SamplerPtr sampler = std::make_shared<SamplerHalton>();
     // タイルの描画
     const auto& region = subFilm.region();
     for (int32_t y = region.top; y < region.bottom; ++y)
@@ -210,19 +170,19 @@ SubFilm& Scene::render(int32_t taskNo)
         for (int32_t x = region.left; x < region.right; ++x)
         {
             //
-            sampler->setHash(calcPixelHash(x, y, image.width()));
+            sampler_->setHash(calcPixelHash(x, y, image.width()));
             //
             Spectrum spectrumTotal(0.0f);
             // TODO: ちゃんとシーンファイルから取ってくるようにする
-            const int32_t sppPerLoop = 64;
+            const int32_t sppPerLoop = 4;
             const int32_t sampleBegin = (loopNo + 0)* sppPerLoop;
             const int32_t sampleEnd = (loopNo + 1)* sppPerLoop;
             // SubPixel巡回
             for (int32_t sampleNo = sampleBegin; sampleNo < sampleEnd; ++sampleNo)
             {
-                sampler->startSample(sampleNo);
+                sampler_->startSample(sampleNo);
                 // SubPixelの生成
-                const Vec2 subPixelOffset = sampler->get2d();
+                const Vec2 subPixelOffset = sampler_->get2d();
                 // TODO: フィルターインターフェイスからweightを取ってくる
                 const float weight = 1.0f;
                 const float spx = x + subPixelOffset.x();
@@ -234,7 +194,7 @@ SubFilm& Scene::render(int32_t taskNo)
                 if (pdf != 0.0f)
                 {
                     Spectrum spectrum = Spectrum::Black;
-                    spectrum = integrator_->radiance(screenRay, geometory_, sampler);
+                    spectrum = integrator_->radiance(screenRay, geometory_, sampler_);
                     AL_ASSERT_DEBUG(!spectrum.hasNaN());
                     // TODO: pdfをちゃんと扱うようにする
                     spectrumTotal += spectrum * spWeight;
@@ -267,10 +227,8 @@ Spectrum Scene::renderPixel(int32_t x, int32_t y)
     float pdf = 0.0f;
     const Ray screenRay = sensor_->generateRay(float(x), float(y), pdf);
     Spectrum spectrum = Spectrum::Black;
-    // HACK: サンプラーを固定にしている
-    SamplerPtr sampler = std::make_shared<SamplerIndepent>();
-    sampler->setHash(calcPixelHash(x, y, image.width()));
-    spectrum = integrator_->radiance(screenRay, geometory_, sampler);
+    sampler_->setHash(calcPixelHash(x, y, image.width()));
+    spectrum = integrator_->radiance(screenRay, geometory_, sampler_);
     AL_ASSERT_DEBUG(!spectrum.hasNaN());
     return spectrum;
 }

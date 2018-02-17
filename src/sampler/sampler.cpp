@@ -243,6 +243,20 @@ uint32_t Sampler::getSize(uint32_t size)
 -------------------------------------------------
 -------------------------------------------------
 */
+REGISTER_OBJECT(Sampler,SamplerIndepent);
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+SamplerIndepent::SamplerIndepent(const ObjectProp& prop)
+{
+    // 
+}
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 float SamplerIndepent::get1d()
 {
     ++dimention_;
@@ -264,6 +278,21 @@ void SamplerIndepent::onStartSample(uint32_t sampleNo)
     */
     const uint64_t seed = std::hash<uint32_t>{}(sampleNo) ^ hash_;
     rng_ = XorShift128(uint32_t(seed));
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+REGISTER_OBJECT(Sampler,SamplerHalton);
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+SamplerHalton::SamplerHalton(const ObjectProp& prop)
+{
+    //
 }
 
 /*

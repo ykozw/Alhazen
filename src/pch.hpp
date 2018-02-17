@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #define _CRT_SECURE_NO_WARNINGS 1
 
@@ -66,6 +66,7 @@
 
 // Third party
 #include "tinyxml2.h"
+#include <tbb/tbb.h>
 
 // macro
 #define PI float(M_PI)

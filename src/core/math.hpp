@@ -612,6 +612,47 @@ INLINE static Matrix4x4 operator + (const Matrix4x4& lhs, const Matrix4x4& rhs);
 
 /*
  -------------------------------------------------
+ Matrix4x3
+ Row-Major/Row-Vectorの4x3行列
+ -------------------------------------------------
+ */
+struct Matrix4x3
+{
+public:
+    ALIGN16 struct
+    {
+        float e11, e12, e13, e14;
+        float e21, e22, e23, e24;
+        float e31, e32, e33, e34;
+    };
+    //
+    Matrix4x3() = default;
+    Matrix4x3(const Matrix4x3& other) = default;
+    Matrix4x3(Matrix4x3&& other) = default;
+    Matrix4x3(_In_reads_(12) const float* es);
+    void fillZero();
+    void identity();
+    
+#if 0
+    Vec3 transform(Vec3 v) const;
+    Vec4 transform(Vec4 v) const;
+    const Vec4& operator [] (int32_t index) const;
+    Vec4& operator [] (int32_t index);
+    Vec4 rowVector(int32_t index) const;
+    Vec4 columnVector(int32_t index) const;
+    float det() const;
+    void inverse();
+    Matrix4x4 inversed() const;
+    Matrix4x4 transposed() const;
+    Matrix3x3 extract3x3() const;
+    static Matrix4x4 mul(const Matrix4x4& lhs, const Matrix4x4& rhs);
+    static Vec4 mul(const Vec4& v, const Matrix4x4& m);
+    Matrix4x4& operator = (const Matrix4x4& other);
+#endif
+};
+
+/*
+ -------------------------------------------------
  Vec3x8のデータ構造
  -------------------------------------------------
  */

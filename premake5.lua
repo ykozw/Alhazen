@@ -6,6 +6,7 @@ solution "Alhazen"
    platforms {"x64"}
 
 project "Alhazen"
+   location "generated"
    kind "ConsoleApp"
    language "C++"
    targetdir "bin/%{cfg.buildcfg}"
@@ -20,7 +21,8 @@ project "Alhazen"
      "thirdparty/vdb",
      -- XCode対策(途中)
      "../src",
-     "../../src"
+     "../../src",
+     
    }
 
    files {
@@ -63,4 +65,17 @@ project "Alhazen"
     toolset "msc-llvm-vs2014"
     -- LLVMを使ってもZ7でデバッグ情報を生成するとデバッグが可能になる
     -- buildoptions { "/Z7" }
+
+  configuration "macosx"
+    sysincludedirs {
+      "/usr/local/include"
+    }
+    libdirs {
+      "/usr/local/lib"
+    }
+    links {
+      "tbb",
+      "tbbmalloc_proxy",
+      "tbbmalloc"
+    }
 

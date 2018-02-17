@@ -1,4 +1,4 @@
-﻿#include "pch.hpp"
+#include "pch.hpp"
 #include "util.hpp"
 
 FileSystem g_fileSystem;
@@ -18,7 +18,12 @@ void FileSystem::init(const char* sceneFilePath, const char* exeFilePath)
 #if defined(WINDOWS)
     _mkdir(outputDir_.c_str());
 #else
-    mkdir(outputDir_.c_str(), 755);
+    /*
+     777を指定してもumaskが設定してある環境だとmkdir()で指定したパーミッション通り作られない。
+     そのためchmod()を明示的に呼び出す必要がある。
+     */
+    mkdir(outputDir_.c_str(), 0777);
+    chmod(outputDir_.c_str(), 0777);
 #endif
     //
     std::string exeFile;

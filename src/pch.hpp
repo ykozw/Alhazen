@@ -117,14 +117,14 @@
 
 // aligin
 #if defined(WINDOWS)
-#define ALIGN(bit) __declspec(align(bit)) 
+#define AL_ALIGN(bit) __declspec(align(bit))
 #else
-#define ALIGN(bit) alignas(bit)
+#define AL_ALIGN(bit) alignas(bit)
 #endif
-#define ALIGN16 ALIGN(16)
-#define ALIGN32 ALIGN(32)
-#define ALIGN64 ALIGN(64)
-#define ALIGN128 ALIGN(128)
+#define ALIGN16 AL_ALIGN(16)
+#define ALIGN32 AL_ALIGN(32)
+#define ALIGN64 AL_ALIGN(64)
+#define ALIGN128 AL_ALIGN(128)
 
 // inline
 #if defined(WINDOWS)

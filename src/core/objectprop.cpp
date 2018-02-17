@@ -1,4 +1,4 @@
-﻿#include "pch.hpp"
+#include "pch.hpp"
 #include "core/object.hpp"
 #include "core/util.hpp"
 
@@ -88,8 +88,12 @@ bool ObjectProp::load(const std::string& fileName)
     // xmlのロード
     using namespace tinyxml2;
     tinyxml2::XMLDocument xml;
-    xml.LoadFile(fileName.c_str());
-
+    XMLError error = xml.LoadFile(fileName.c_str());
+    if(error != XML_SUCCESS)
+    {
+        loggingError("%s not found.", fileName.c_str());
+        return false;
+    }
     // sceneノードがルート
     auto sceneNode = xml.FirstChildElement("scene");
     ObjectProp root;

@@ -1,4 +1,4 @@
-﻿#include "pch.hpp"
+#include "pch.hpp"
 #include "core/object.hpp"
 #include "core/unittest.hpp"
 #include "core/floatstreamstats.hpp"
@@ -1804,9 +1804,9 @@ Spectrum DisneyBRDF::bsdfSample(
 -------------------------------------------------
 -------------------------------------------------
 */
-const int32_t BRDF_SAMPLING_RES_THETA_H = 90;
-const int32_t BRDF_SAMPLING_RES_THETA_D = 90;
-const int32_t BRDF_SAMPLING_RES_PHI_D = 360;
+// const int32_t BRDF_SAMPLING_RES_THETA_H = 90;
+// const int32_t BRDF_SAMPLING_RES_THETA_D = 90;
+// const int32_t BRDF_SAMPLING_RES_PHI_D = 360;
 
 /*
 -------------------------------------------------

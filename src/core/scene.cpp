@@ -1,4 +1,4 @@
-﻿#include "pch.hpp"
+#include "pch.hpp"
 #include "core/scene.hpp"
 #include "core/object.hpp"
 #include "core/image.hpp"
@@ -205,6 +205,7 @@ SubFilm& Scene::render(int32_t taskNo)
             const int32_t subX = x - region.left;
             const int32_t subY = y - region.top;
             subFilmImage.addPixel(subX, subY, spectrumTotal);
+            //subFilmImage.addPixel(subX, subY, SpectrumRGB::createFromRGB({1.0f,0.0f,0.0f}, false));
         }
     }
     subFilm.incAddNum();

@@ -1,6 +1,5 @@
 #include "pch.hpp"
 #include "shape/plyfile.hpp"
-#include "core/vdbmt.hpp"
 #include "core/math.hpp"
 
 /*
@@ -10,51 +9,35 @@
 void PlyFile::loadPly(const char* filePath)
 {
     //
-    FILE* file = fopen(filePath,"rt");
+    FILE* file = fopen(filePath,"rb");
     if(file == nullptr)
     {
         return ;
     }
     
     readHeader(file,header_);
-    // ASCIIフォーマットでなければロードしない
-    if(!header_.hasPLY || (header_.format != PlyHeader::Format::ASCII) )
+    //
+    if(!header_.hasPLY)
     {
         fclose(file);
         return ;
     }
     // 本体のロード
-    readBody(file, header_, body_);
+    switch(header_.format)
+    {
+        case PlyHeader::Format::ASCII:
+            readBodyAsAscii(file, header_, body_);
+            break;
+        case PlyHeader::Format::BINARY:
+            readBodyAsBinary(file, header_, body_);
+            break;
+        default:
+            AL_ASSERT_ALWAYS(false);
+            break;
+    }
     
     //
     fclose(file);
-}
-
-/*
- -------------------------------------------------
- -------------------------------------------------
- */
-void PlyFile::debugPrint()
-{
-    vdbmt_frame();
-#if 0
-    // 頂点の表示
-    for(auto& v : body_.vertex_)
-    {
-        vdbmt_point(v);
-    }
-#endif
-    // 面の表示
-    vdbmt_color(Vec3(0.0f,1.0f,0.0f));
-    for(auto& face : body_.faces_)
-    {
-        const Vec3 v0 = body_.vertex_[face.idxs[0]];
-        const Vec3 v1 = body_.vertex_[face.idxs[1]];
-        const Vec3 v2 = body_.vertex_[face.idxs[2]];
-        vdbmt_line(v0, v1);
-        vdbmt_line(v1, v2);
-        vdbmt_line(v2, v0);
-    }
 }
 
 /*
@@ -124,11 +107,12 @@ bool PlyFile::readHeader(FILE* file, PlyHeader& header) const
  Bodyのロード
  -------------------------------------------------
  */
-bool PlyFile::readBody(FILE* file, const PlyFile::PlyHeader& header, PlyBody& body) const
+bool PlyFile::readBodyAsAscii(FILE* file, const PlyFile::PlyHeader& header, PlyBody& body) const
 {
     std::array<char,0xff> buffer, tmp0, tmp1, tmp2, tmp3;
     // 頂点データをロード
     auto& vtxs = body.vertex_;
+    vtxs.reserve(header.numVertex);
     for(int32_t vi=0;vi<header.numVertex;++vi)
     {
         if( fgets(buffer.data(), buffer.size(),file) == nullptr)
@@ -141,11 +125,13 @@ bool PlyFile::readBody(FILE* file, const PlyFile::PlyHeader& header, PlyBody& bo
             const float x = atof(tmp0.data());
             const float y = atof(tmp1.data());
             const float z = atof(tmp2.data());
-            vtxs.push_back(Vec3(x,y,z));
+            const Vec3 pos(x,y,z);
+            vtxs.push_back(pos);
         }
     }
     // 面データをロード
     auto& faces = body.faces_;
+    faces.reserve(header.numFace);
     for(int32_t fi=0;fi<header.numFace;++fi)
     {
         if( fgets(buffer.data(), buffer.size(),file) == nullptr)
@@ -168,3 +154,27 @@ bool PlyFile::readBody(FILE* file, const PlyFile::PlyHeader& header, PlyBody& bo
     //
     return true;
 }
+
+
+/*
+ -------------------------------------------------
+ Bodyのロード
+ -------------------------------------------------
+ */
+bool PlyFile::readBodyAsBinary(FILE* file, const PlyFile::PlyHeader& header, PlyBody& body) const
+{
+    // 頂点データをロード
+    auto& vtxs = body.vertex_;
+    for(int32_t vi=0;vi<header.numVertex;++vi)
+    {
+        float x,y,z;
+        fread(&x, sizeof(float), 1, file );
+        fread(&y, sizeof(float), 1, file );
+        fread(&z, sizeof(float), 1, file );
+        const Vec3 pos(x,y,z);
+        vtxs.push_back(pos);
+    }
+    
+    return false;
+}
+

@@ -35,11 +35,11 @@ public:
 public:
     //
     void loadPly(const char* filePath);
-    void debugPrint();
     
 private:
     bool readHeader(FILE* file, PlyHeader& header) const;
-    bool readBody(FILE* file, const PlyHeader& header, PlyBody& body) const;
+    bool readBodyAsAscii(FILE* file, const PlyHeader& header, PlyBody& body) const;
+    bool readBodyAsBinary(FILE* file, const PlyHeader& header, PlyBody& body) const;
     
 private:
     PlyHeader header_;

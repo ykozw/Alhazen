@@ -1824,7 +1824,7 @@ MeasuredBSDF::MeasuredBSDF(const std::string& fileName)
     file >> dims[1];
     file >> dims[2];
     const int32_t n = dims[0] * dims[1] * dims[2];
-    AL_ASSERT_DEBUG(n == BRDF_SAMPLING_RES_THETA_H * BRDF_SAMPLING_RES_THETA_D * BRDF_SAMPLING_RES_PHI_D / 2);
+    // AL_ASSERT_DEBUG(n == BRDF_SAMPLING_RES_THETA_H * BRDF_SAMPLING_RES_THETA_D * BRDF_SAMPLING_RES_PHI_D / 2);
     //
     std::vector<double> tmpBuffer;
     tmpBuffer.resize(sizeof(double) * 3 * n);

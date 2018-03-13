@@ -1,4 +1,4 @@
-﻿#include "pch.hpp"
+#include "pch.hpp"
 #include "shape.hpp"
 #include "core/orthonormalbasis.hpp"
 #include "bsdf/bsdf.hpp"
@@ -211,9 +211,9 @@ RectangleShape::RectangleShape(const ObjectProp& objectProp)
 {
     //
     verts_[0] = Vec3(-1.0f, -1.0f, 0.0f);
-    verts_[1] = Vec3(1.0f, -1.0f, 0.0f);
-    verts_[2] = Vec3(-1.0f, 1.0f, 0.0f);
-    verts_[3] = Vec3(1.0f, 1.0f, 0.0f);
+    verts_[1] = Vec3(+1.0f, -1.0f, 0.0f);
+    verts_[2] = Vec3(-1.0f, +1.0f, 0.0f);
+    verts_[3] = Vec3(+1.0f, +1.0f, 0.0f);
     uvs_[0] = Vec2(0.0f, 0.0f);
     uvs_[1] = Vec2(1.0f, 0.0f);
     uvs_[2] = Vec2(0.0f, 1.0f);

@@ -1,4 +1,4 @@
-﻿#include "math.hpp"
+#include "math.hpp"
 
 /*
 -------------------------------------------------
@@ -2469,10 +2469,12 @@ INLINE void Matrix4x4::constructAsScale(Vec3 scale)
 /*
 -------------------------------------------------
 http://www.euclideanspace.com/maths/geometry/rotations/conversions/angleToMatrix/
+回転軸は正規化されている前提
 -------------------------------------------------
 */
-INLINE void Matrix4x4::constructAsRotation(Vec3 xyz_, float angle)
+INLINE void Matrix4x4::constructAsRotation(Vec3 axis, float angle)
 {
+    AL_ASSERT_DEBUG(axis.isNormalized());
 #if defined(MAT4X4_SIMD)
     AL_ASSERT_ALWAYS(false);
 #else
@@ -2480,9 +2482,9 @@ INLINE void Matrix4x4::constructAsRotation(Vec3 xyz_, float angle)
     const float s = std::sinf(angle);
     const float c = std::cosf(angle);
     const float t = 1.0f - c;
-    const float x = xyz_.x();
-    const float y = xyz_.y();
-    const float z = xyz_.z();
+    const float x = axis.x();
+    const float y = axis.y();
+    const float z = axis.z();
     const float tx = t * x;
     const float ty = t * y;
     const float tz = t * z;

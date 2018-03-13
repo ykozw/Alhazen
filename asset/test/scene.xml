@@ -8,13 +8,13 @@
   <boolean name="progressive" value="true" />
   
   <!--スナップショット出力秒数設定-->
-  <integer name="snapshotinterval" value="5" />
+  <integer name="snapshotinterval" value="6" />
   
   <!--スナップショット毎にデノイズ-->
   <boolean name="snapshotdenoise" value="false"/>
   
   <!--一回のインターバルでのspp-->
-  <integer name="sppinterval" value="16" />
+  <integer name="sppinterval" value="32" />
   
   <!--サブサンプル指定をここに-->
   <Sampler type="SamplerIndepent">
@@ -44,11 +44,11 @@
         <string name="fovAxis" value="x"/>
 		<float name="nearClip" value="0.1"/>
 		<transform name="toWorld">
-			<lookat target="0, 0.8, 0" origin="0.0, 0.8, 5.0" up="0.0, 1.0, 0.0"/>
+			<lookat target="0.0, 0.5, 0" origin="0.0, 0.5, 7.0" up="0.0, 1.0, 0.0"/>
 		</transform>
     <film type="hdrfilm">
-      <integer name="pixelWidth" value="1024"/>
-      <integer name="pixelHeight" value="512"/>
+      <integer name="pixelWidth" value="300"/>
+      <integer name="pixelHeight" value="200"/>
       <float name="filmWidthMM" value="90"/>
       <float name="filmHeightMM" value="60"/>
     </film>
@@ -66,38 +66,22 @@
   </Light>-->
   
   <Light type="SphereLight">
-    <float3 name="center" x="-1.8" y="1.6" z="0.0"/>
-    <float name="radius" value="0.03"/>
-    <rgb name="radiance" value="30.0 4.0 4.0"/>
-  </Light>
-  
-  <Light type="SphereLight">
-    <float3 name="center" x="-0.9" y="1.6" z="0.0"/>
-    <float name="radius" value="0.07"/>
-    <rgb name="radiance" value="15.0 4.0 30.0"/>
-  </Light>
-  
-  <Light type="SphereLight">
-    <float3 name="center" x="0.0" y="1.6" z="0.0"/>
+    <float3 name="center" x="0.0" y="0.8" z="0.0"/>
     <float name="radius" value="0.12"/>
-    <rgb name="radiance" value="4.0 27.0 30.0"/>
-  </Light>
-  
-  <Light type="SphereLight">
-    <float3 name="center" x="+0.9" y="1.6" z="0.0"/>
-    <float name="radius" value="0.16"/>
-    <rgb name="radiance" value="4.0 30.0 8.0"/>
-  </Light>
-  
-  <Light type="SphereLight">
-    <float3 name="center" x="+1.8" y="1.6" z="0.0"/>
-    <float name="radius" value="0.24"/>
-    <rgb name="radiance" value="30.0 25.0 3.0"/>
+    <rgb name="radiance" value="15.0 15.0 15.0"/>
   </Light>
   
   <!--マテリアル設定-->
   <BSDF type="Lambertian" id="matWhite">
     <rgb name="reflectance" value="1.0 1.0 1.0"/>
+  </BSDF>
+  
+  <BSDF type="Lambertian" id="matRed">
+      <rgb name="reflectance" value="1.0 0.0 0.0"/>
+  </BSDF>
+  
+  <BSDF type="Lambertian" id="matGreen">
+      <rgb name="reflectance" value="0.0 1.0 0.0"/>
   </BSDF>
   
   <BSDF type="MicrofacetBSDF" id="metal0">
@@ -122,36 +106,60 @@
 
   <!--球1-->
   <Shape type="Sphere">
-    <Point name="center" x="0.0" y="0.8" z="0"/>
+    <Point name="center" x="0.0" y="0.0" z="0"/>
     <Point name="radius" value="0.5"/>
     <ref name="bsdf" value="matWhite"/>
   </Shape>
-  
-  <!--地面と床-->
-  
-  <!--MIS板0-->
+  <!--床-->
   <Shape type="RectangleShape">
-    <transform name="toWorld">
-      <scale x = "2.0" y = "0.5" z = "2.0"/>
-<!--      <rotate x = "1.0" y = "0.0" z = "0.0" angle = "90" />-->
-<!--      <translate x = "-0.0" y = "-2.0" z = "-0.0"/>-->
-<!--      <rotate x = "1.0" y = "0.0" z = "0.0" angle = "-60" />-->
-<!--      <translate x = "-0.0" y = "+2.0" z = "-0.0"/>-->
-    </transform>
-    <ref name="bsdf" value="matWhite"/>
+      <transform name="toWorld">
+          <scale x = "2.0" y = "2.0" z = "0.0"/>
+          <rotate x = "1.0" y = "0.0" z = "0.0" angle = "90" />
+          <translate x = "-0.0" y = "-0.5" z = "0.0"/>
+      </transform>
+      <ref name="bsdf" value="matWhite"/>
   </Shape>
   
-  <!--MIS板1-->
-  <!-- <Shape type="RectangleShape">
-    <transform name="toWorld">
-      <scale x = "2.0" y = "0.23" z = "2.0"/>
-      <rotate x = "1.0" y = "0.0" z = "0.0" angle = "90" />
-      <translate x = "-0.0" y = "-2.0" z = "-0.0"/>
-      <rotate x = "1.0" y = "0.0" z = "0.0" angle = "-45" />
-      <translate x = "-0.0" y = "+2.0" z = "-0.0"/>
-    </transform>
-    <ref name="bsdf" value="metal1"/>
-  </Shape> -->
+  <!--天井-->
+  <Shape type="RectangleShape">
+      <transform name="toWorld">
+          <scale x = "2.0" y = "2.0" z = "0.0"/>
+          <rotate x = "1.0" y = "0.0" z = "0.0" angle = "-90" />
+          <translate x = "0.0" y = "+1.5" z = "0.0"/>
+      </transform>
+      <ref name="bsdf" value="matWhite"/>
+  </Shape>
+  
+  <!--奥の壁-->
+  <Shape type="RectangleShape">
+      <transform name="toWorld">
+          <scale x = "2.0" y = "2.0" z = "0.0"/>
+          <rotate x = "0.0" y = "0.0" z = "1.0" angle = "90" />
+          <translate x = "0.0" y = "-0.0" z = "-1.0"/>
+      </transform>
+      <ref name="bsdf" value="matWhite"/>
+  </Shape>
+  
+  <!--右の壁-->
+  <Shape type="RectangleShape">
+      <transform name="toWorld">
+          <scale x = "2.0" y = "2.0" z = "0.0"/>
+          <rotate x = "0.0" y = "1.0" z = "0.0" angle = "90" />
+          <translate x = "1.0" y = "-0.0" z = "0.0"/>
+      </transform>
+      <ref name="bsdf" value="matRed"/>
+  </Shape>
+  
+  <!--左の壁-->
+  <Shape type="RectangleShape">
+      <transform name="toWorld">
+          <scale x = "2.0" y = "2.0" z = "0.0"/>
+          <rotate x = "0.0" y = "1.0" z = "0.0" angle = "-90" />
+          <translate x = "-1.0" y = "0.0" z = "0.0"/>
+      </transform>
+      <ref name="bsdf" value="matGreen"/>
+  </Shape>
+  
 
   
 </scene>

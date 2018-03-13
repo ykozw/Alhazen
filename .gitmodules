@@ -4,3 +4,6 @@
 [submodule "thirdparty/tinyxml2"]
 	path = thirdparty/tinyxml2
 	url = https://github.com/leethomason/tinyxml2.git
+[submodule "thirdparty/tinyobjloader"]
+	path = thirdparty/tinyobjloader
+	url = https://github.com/syoyo/tinyobjloader.git

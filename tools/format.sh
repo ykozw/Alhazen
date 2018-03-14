@@ -1,0 +1,1 @@
+find ~/dev/Alhazen/src -name \*.hpp -o -name \*.cpp | xargs clang-format -i -style=file

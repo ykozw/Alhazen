@@ -50,7 +50,7 @@
 #include <atomic>
 
 // SIMD
-#if defined(CLANG)  
+#if defined(CLANG)
 #include <x86intrin.h>
 #else
 #include <mmintrin.h>
@@ -61,7 +61,7 @@
 // portableだけれども各種SDKに依存するヘッダ
 #include <direct.h>
 #else
-#include <sys/stat.h> // for mkdir()
+#include <sys/stat.h>  // for mkdir()
 #endif
 
 // Third party
@@ -72,17 +72,16 @@
 #define PI float(M_PI)
 #define INV_PI float(M_1_PI)
 
-// 
+//
 #if defined(WINDOWS)
-#define OPT_ON  __pragma(optimize("", on))
+#define OPT_ON __pragma(optimize("", on))
 #define OPT_OFF __pragma(optimize("", off))
 #else
 #define OPT_OFF _Pragma("clang optimize off")
 #define OPT_ON _Pragma("clang optimize on")
 #endif
 
-
-// 
+//
 #define DEG2RAD(deg) ((deg) / 180.0f * PI)
 
 // 波長
@@ -99,7 +98,9 @@
 #if defined(__clang__)
 #define DBG_BREAK() __debugbreak()
 #else
-#define DBG_BREAK() __ud2(); __debugbreak()
+#define DBG_BREAK() \
+  __ud2();          \
+  __debugbreak()
 #endif
 #else
 #define DBG_BREAK() __builtin_trap()
@@ -109,11 +110,18 @@
 #define AL_ASSERT_DEBUG(expr)
 #define AL_VALID(expr) expr
 #else
-#define AL_ASSERT_DEBUG(expr) if(!(expr)){ printf("\n%s %s %d\n",#expr, __FILE__, __LINE__); DBG_BREAK(); }
+#define AL_ASSERT_DEBUG(expr)                          \
+  if (!(expr)) {                                       \
+    printf("\n%s %s %d\n", #expr, __FILE__, __LINE__); \
+    DBG_BREAK();                                       \
+  }
 #define AL_VALID(expr) AL_ASSERT_DEBUG(expr)
 #endif
-#define AL_ASSERT_ALWAYS(expr) if(!(expr)){ printf("\n%s %s %d\n",#expr, __FILE__, __LINE__); DBG_BREAK(); }
-
+#define AL_ASSERT_ALWAYS(expr)                         \
+  if (!(expr)) {                                       \
+    printf("\n%s %s %d\n", #expr, __FILE__, __LINE__); \
+    DBG_BREAK();                                       \
+  }
 
 // aligin
 #if defined(WINDOWS)
@@ -135,12 +143,11 @@
 #define INLINE inline
 #endif
 
-// 
-#pragma warning(disable:4201) // 無名の構造体または共用体
-#pragma warning(disable:4324) // 構造体がパッドされた
-#pragma warning(disable:4127) // 条件式が定数
-#pragma warning(disable:4503) // chaiscript対策
-
+//
+#pragma warning(disable : 4201)  // 無名の構造体または共用体
+#pragma warning(disable : 4324)  // 構造体がパッドされた
+#pragma warning(disable : 4127)  // 条件式が定数
+#pragma warning(disable : 4503)  // chaiscript対策
 
 // SALの代替をここにかいておく
 #if !defined(WINDOWS)
@@ -161,4 +168,3 @@
 
 // 全てのclassのリスト
 #include "core/fwd.hpp"
-

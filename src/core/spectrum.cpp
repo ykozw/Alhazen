@@ -18,32 +18,25 @@ SpectrumRGB SpectrumRGB::White = SpectrumRGB(1.0f, 1.0f, 1.0f);
 cf. pbrt-v2 p275
 -------------------------------------------------
 */
-AL_TEST(spectrum, SpectrumSampled_SameAllCoeffWhenRGBisEqual)
-{
-    for (float v = 0.0f; v <= 2.0f; v += 0.1f)
-    {
-        const SpectrumSampled refColor = SpectrumSampled::createFromRGB({ { v, v, v } }, false);
-        const float fv = refColor.samples[0];
-        for (const float& s : refColor.samples)
-        {
-            //
-            if (fv == 0.0f)
-            {
-                if (s != 0.0f)
-                {
-                    return;
-                }
-            }
-            else
-            {
-                const float d = alFabsf(1.0f - s / fv);
-                if (d > 0.002f)
-                {
-                    return;
-                }
-            }
+AL_TEST(spectrum, SpectrumSampled_SameAllCoeffWhenRGBisEqual) {
+  for (float v = 0.0f; v <= 2.0f; v += 0.1f) {
+    const SpectrumSampled refColor =
+        SpectrumSampled::createFromRGB({{v, v, v}}, false);
+    const float fv = refColor.samples[0];
+    for (const float& s : refColor.samples) {
+      //
+      if (fv == 0.0f) {
+        if (s != 0.0f) {
+          return;
         }
+      } else {
+        const float d = alFabsf(1.0f - s / fv);
+        if (d > 0.002f) {
+          return;
+        }
+      }
     }
+  }
 }
 
 /*
@@ -51,30 +44,28 @@ AL_TEST(spectrum, SpectrumSampled_SameAllCoeffWhenRGBisEqual)
 RGB ⇔ SpectrumSampledの変換でおおよそ元に戻っていることのチェック
 -------------------------------------------------
 */
-AL_TEST(spectrum, SampledSpectrumInterconversion)
-{
-    // const float w = 1.0f;
-    for (int32_t i = 0; i < 2000; ++i)
-    {
-        const int32_t ri = i % 10;
-        const int32_t gi = (i / 10) % 10;
-        const int32_t bi = (i / 100) % 10;
-        const bool asIllum = (i >= 1000);
-        const float r = float(ri) / 10.0f;
-        const float g = float(gi) / 10.0f;
-        const float b = float(bi) / 10.0f;
-        const SpectrumSampled spectrum = SpectrumSampled::createFromRGB({ { r, g, b } }, asIllum);
-        SpectrumRGB rgb;
-        spectrum.toRGB(rgb);
-        const float dr = fabsf(rgb.r - r);
-        // const float dg = fabsf(rgb.g - g);
-        // const float db = fabsf(rgb.b - b);
-        const float eps = 0.18f; // HACK: この数値は適当
-        if (dr > eps || dr > eps || dr > eps)
-        {
-            return;
-        }
+AL_TEST(spectrum, SampledSpectrumInterconversion) {
+  // const float w = 1.0f;
+  for (int32_t i = 0; i < 2000; ++i) {
+    const int32_t ri = i % 10;
+    const int32_t gi = (i / 10) % 10;
+    const int32_t bi = (i / 100) % 10;
+    const bool asIllum = (i >= 1000);
+    const float r = float(ri) / 10.0f;
+    const float g = float(gi) / 10.0f;
+    const float b = float(bi) / 10.0f;
+    const SpectrumSampled spectrum =
+        SpectrumSampled::createFromRGB({{r, g, b}}, asIllum);
+    SpectrumRGB rgb;
+    spectrum.toRGB(rgb);
+    const float dr = fabsf(rgb.r - r);
+    // const float dg = fabsf(rgb.g - g);
+    // const float db = fabsf(rgb.b - b);
+    const float eps = 0.18f;  // HACK: この数値は適当
+    if (dr > eps || dr > eps || dr > eps) {
+      return;
     }
+  }
 }
 
 /*
@@ -83,8 +74,7 @@ SpectrumSampledの白色指定(1,1,1)が、D65(色温度6500度)と同じにな�
 HACK: 色温度6500とD65は同じではない。何らかの方法でテストをする。
 -------------------------------------------------
 */
-AL_TEST(spectrum, SpectrumSampled_WhiteIlluminationIsD65)
-{
+AL_TEST(spectrum, SpectrumSampled_WhiteIlluminationIsD65) {
 #if 0
     const float w = 1.0f;
     const SpectrumSampled whiteColor = SpectrumSampled::createFromRGB({ { w, w, w } }, true);
@@ -106,102 +96,103 @@ AL_TEST(spectrum, SpectrumSampled_WhiteIlluminationIsD65)
         }
     }
 #endif
-    //
-    return;
+  //
+  return;
 }
 
 /*
 -------------------------------------------------
 test_SpectrumSampled_SamplingLambda()
-RGB -> Spectrum -> Spectrumの波長サンプル -> RGBでちゃんと元におおよそ戻るかのチェック
+RGB -> Spectrum -> Spectrumの波長サンプル ->
+RGBでちゃんと元におおよそ戻るかのチェック
 -------------------------------------------------
 */
-AL_TEST(spectrum, SpectrumSampled_SamplingLambda)
-{
-    for (int32_t ci = 0; ci < 1000; ++ci)
-    {
-        //
-        const int32_t ri = ci % 10;
-        const int32_t gi = (ci / 10) % 10;
-        const int32_t bi = (ci / 100) % 10;
-        const float r = (float)ri / 10.0f;
-        const float g = (float)gi / 10.0f;
-        const float b = (float)bi / 10.0f;
-        const bool asIllum = false;
-        //
-        SpectrumSampled refColor = SpectrumSampled::createFromRGB({ { r, g, b } }, asIllum);
-        SpectrumRGB rgb;
-        rgb.clear();
-        const int32_t NUM_SAMPLE = 100;
-        const float invNumSample = 1.0f / (float)(NUM_SAMPLE);
-        for (int32_t i = 0; i < NUM_SAMPLE; ++i)
-        {
-            const float lambda = float(i) / float(NUM_SAMPLE) * SPECTRUM_LAMBDA_RANGE + SPECTRUM_LAMBDA_START;
-            SpectrumSingleWavelength spectrum(lambda, 1.0f);
-            const SpectrumSingleWavelength sampledColor = refColor * spectrum;
-            rgb += sampledColor.toRGB() * invNumSample;
-        }
-        const float dr = fabsf(rgb.r - r);
-        const float dg = fabsf(rgb.g - g);
-        const float db = fabsf(rgb.b - b);
-        const float eps = 0.04f; // 数字は適当
-        if (dr > eps || dg > eps || db > eps)
-        {
-            return;
-        }
+AL_TEST(spectrum, SpectrumSampled_SamplingLambda) {
+  for (int32_t ci = 0; ci < 1000; ++ci) {
+    //
+    const int32_t ri = ci % 10;
+    const int32_t gi = (ci / 10) % 10;
+    const int32_t bi = (ci / 100) % 10;
+    const float r = (float)ri / 10.0f;
+    const float g = (float)gi / 10.0f;
+    const float b = (float)bi / 10.0f;
+    const bool asIllum = false;
+    //
+    SpectrumSampled refColor =
+        SpectrumSampled::createFromRGB({{r, g, b}}, asIllum);
+    SpectrumRGB rgb;
+    rgb.clear();
+    const int32_t NUM_SAMPLE = 100;
+    const float invNumSample = 1.0f / (float)(NUM_SAMPLE);
+    for (int32_t i = 0; i < NUM_SAMPLE; ++i) {
+      const float lambda =
+          float(i) / float(NUM_SAMPLE) * SPECTRUM_LAMBDA_RANGE +
+          SPECTRUM_LAMBDA_START;
+      SpectrumSingleWavelength spectrum(lambda, 1.0f);
+      const SpectrumSingleWavelength sampledColor = refColor * spectrum;
+      rgb += sampledColor.toRGB() * invNumSample;
     }
-    return;
+    const float dr = fabsf(rgb.r - r);
+    const float dg = fabsf(rgb.g - g);
+    const float db = fabsf(rgb.b - b);
+    const float eps = 0.04f;  // 数字は適当
+    if (dr > eps || dg > eps || db > eps) {
+      return;
+    }
+  }
+  return;
 }
 
 /*
 -------------------------------------------------
 test_SpectrumSampled_SamplingLambdaHeroWavelength()
-RGB -> Spectrum -> Spectrumの波長サンプル(HeroWaveLength使用) -> RGBでちゃんと元におおよそ戻るかのチェック
+RGB -> Spectrum -> Spectrumの波長サンプル(HeroWaveLength使用) ->
+RGBでちゃんと元におおよそ戻るかのチェック
 -------------------------------------------------
 */
-AL_TEST(spectrum, SpectrumSampled_SamplingLambdaHeroWavelength)
-{
-    for (int32_t ci = 0; ci < 1000; ++ci)
-    {
-        //
-        const int32_t ri = ci % 10;
-        const int32_t gi = (ci / 10) % 10;
-        const int32_t bi = (ci / 100) % 10;
-        const float r = (float)ri / 10.0f;
-        const float g = (float)gi / 10.0f;
-        const float b = (float)bi / 10.0f;
-        /*const float r = 1.0f;
-        const float g = 1.0f;
-        const float b = 1.0f;*/
-        const bool asIllum = false;
-        //
-        SpectrumSampled refColor = SpectrumSampled::createFromRGB({ { r, g, b } }, asIllum);
-        SpectrumRGB rgb;
-        rgb.clear();
-        const int32_t NUM_SAMPLE = 100;
-        const float invNumSample = 1.0f / (float)(NUM_SAMPLE);
-        AL_ASSERT_DEBUG(NUM_SAMPLE % 4 == 0);
-        for (int32_t i = 0; i < NUM_SAMPLE / 4; ++i)
-        {
-            const float lambda = float(i) / float(NUM_SAMPLE) * SPECTRUM_LAMBDA_RANGE + SPECTRUM_LAMBDA_START;
-            SpectrumHerowavelength spectrum = SpectrumHerowavelength::createFromHerowavelength(lambda, false);
-            const SpectrumHerowavelength sampledColor = refColor * spectrum;
-            rgb += sampledColor.toRGB() * invNumSample;
-        }
-        rgb.r *= 4.0f;
-        rgb.g *= 4.0f;
-        rgb.b *= 4.0f;
-        //
-        const float dr = fabsf(rgb.r - r);
-        const float dg = fabsf(rgb.g - g);
-        const float db = fabsf(rgb.b - b);
-        const float eps = 0.04f; // 数字は適当
-        if (dr > eps || dg > eps || db > eps)
-        {
-            return;
-        }
+AL_TEST(spectrum, SpectrumSampled_SamplingLambdaHeroWavelength) {
+  for (int32_t ci = 0; ci < 1000; ++ci) {
+    //
+    const int32_t ri = ci % 10;
+    const int32_t gi = (ci / 10) % 10;
+    const int32_t bi = (ci / 100) % 10;
+    const float r = (float)ri / 10.0f;
+    const float g = (float)gi / 10.0f;
+    const float b = (float)bi / 10.0f;
+    /*const float r = 1.0f;
+    const float g = 1.0f;
+    const float b = 1.0f;*/
+    const bool asIllum = false;
+    //
+    SpectrumSampled refColor =
+        SpectrumSampled::createFromRGB({{r, g, b}}, asIllum);
+    SpectrumRGB rgb;
+    rgb.clear();
+    const int32_t NUM_SAMPLE = 100;
+    const float invNumSample = 1.0f / (float)(NUM_SAMPLE);
+    AL_ASSERT_DEBUG(NUM_SAMPLE % 4 == 0);
+    for (int32_t i = 0; i < NUM_SAMPLE / 4; ++i) {
+      const float lambda =
+          float(i) / float(NUM_SAMPLE) * SPECTRUM_LAMBDA_RANGE +
+          SPECTRUM_LAMBDA_START;
+      SpectrumHerowavelength spectrum =
+          SpectrumHerowavelength::createFromHerowavelength(lambda, false);
+      const SpectrumHerowavelength sampledColor = refColor * spectrum;
+      rgb += sampledColor.toRGB() * invNumSample;
     }
-    return;
+    rgb.r *= 4.0f;
+    rgb.g *= 4.0f;
+    rgb.b *= 4.0f;
+    //
+    const float dr = fabsf(rgb.r - r);
+    const float dg = fabsf(rgb.g - g);
+    const float db = fabsf(rgb.b - b);
+    const float eps = 0.04f;  // 数字は適当
+    if (dr > eps || dg > eps || db > eps) {
+      return;
+    }
+  }
+  return;
 }
 
 /*
@@ -209,8 +200,7 @@ AL_TEST(spectrum, SpectrumSampled_SamplingLambdaHeroWavelength)
 sampleHerowavelength1()
 -------------------------------------------------
 */
-AL_TEST(spectrum, sampleHerowavelength1)
-{
+AL_TEST(spectrum, sampleHerowavelength1) {
 #if 0
     //
     const auto toneMapper = createObject<Tonemapper>("degamma");

@@ -10,7 +10,7 @@ void vdbmt_normal(Vec3 p, Vec3 n);
 void vdbmt_triangle(Vec3 v0, Vec3 v1, Vec3 v2);
 void vdbmt_aabb(Vec3 mn, Vec3 mx);
 void vdbmt_color(Vec3 color);
-void vdbmt_label(const char * lbl);
+void vdbmt_label(const char* lbl);
 void vdbmt_label_i(int32_t i);
 void vdbmt_frame();
 void vdbmt_begin();

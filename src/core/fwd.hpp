@@ -83,23 +83,3 @@ class QBVH;
 
 // denoiser/denoiser.hpp
 class Denoiser;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

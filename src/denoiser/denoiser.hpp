@@ -8,13 +8,12 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-class Denoiser
-    :public Object
-{
-public:
-    Denoiser(){}
-    virtual ~Denoiser(){}
-    virtual void denoise(const Image& src, Image& dst) = 0;
-protected:
+class Denoiser : public Object {
+ public:
+  Denoiser() {}
+  virtual ~Denoiser() {}
+  virtual void denoise(const Image& src, Image& dst) = 0;
+
+ protected:
 };
 typedef std::shared_ptr<Denoiser> DenoiserPtr;

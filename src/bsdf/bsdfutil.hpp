@@ -23,5 +23,4 @@ void sincosPhi(Vec3 v, _Out_ float* sinPhi, _Out_ float* cosPhi);
 */
 Spectrum str2spectrum(const std::string& str);
 
-
 #include "bsdfutil.inl"

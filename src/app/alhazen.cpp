@@ -13,16 +13,15 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-int32_t Alhazen::runApp(const ArgConfig& config)
-{
-    // シーンの構築
-    ObjectProp sceneProp;
-    sceneProp.load(config.sceneFilePath);
-    Scene scene(sceneProp);
-    //
-    const int32_t totalTaskNum = scene.totalTaskNum();
-    const uint32_t developIntervalInMs = scene.developIntervalInMs();
-    const uint32_t timeOutInMs = scene.timeOutInMs();
+int32_t Alhazen::runApp(const ArgConfig& config) {
+  // シーンの構築
+  ObjectProp sceneProp;
+  sceneProp.load(config.sceneFilePath);
+  Scene scene(sceneProp);
+  //
+  const int32_t totalTaskNum = scene.totalTaskNum();
+  const uint32_t developIntervalInMs = scene.developIntervalInMs();
+  const uint32_t timeOutInMs = scene.timeOutInMs();
 
 #if 0
     // デバッグ用の直呼び出し
@@ -31,63 +30,60 @@ int32_t Alhazen::runApp(const ArgConfig& config)
     AL_ASSERT_ALWAYS(false);
 #endif
 
-    // 全てのタスクが消化されるか、時間切れになるまで行う
-    int32_t taskNo = 0;
-    int32_t filmNo = 0;
-    uint32_t nextDevelopTime = g_timeUtil.elapseTimeInMs() + developIntervalInMs;
-    for (;;)
-    {
-        //
-        if (taskNo >= totalTaskNum)
-        {
-            logging("All tasks were consumed.");
-            break;
+  // 全てのタスクが消化されるか、時間切れになるまで行う
+  int32_t taskNo = 0;
+  int32_t filmNo = 0;
+  uint32_t nextDevelopTime = g_timeUtil.elapseTimeInMs() + developIntervalInMs;
+  for (;;) {
+    //
+    if (taskNo >= totalTaskNum) {
+      logging("All tasks were consumed.");
+      break;
+    }
+    // レンダリング
+    const int32_t TASK_NUM_UNTILL_BY_JOIN = 2048;
+    parallelFor(TASK_NUM_UNTILL_BY_JOIN, [&](int32_t taskNoOffsetBegin,
+                                             int32_t taskNoOffsetEnd) {
+      //
+      if (g_timeUtil.elapseTimeInMs() >= timeOutInMs) {
+        return;
+      }
+      //
+      for (int32_t taskNoOffset = taskNoOffsetBegin;
+           taskNoOffset < taskNoOffsetEnd; ++taskNoOffset) {
+        const int32_t taskNoLocal = taskNo + taskNoOffset;
+        if (taskNoLocal >= totalTaskNum) {
+          return;
         }
-        // レンダリング
-        const int32_t TASK_NUM_UNTILL_BY_JOIN = 2048;
-        parallelFor(TASK_NUM_UNTILL_BY_JOIN, [&](int32_t taskNoOffsetBegin, int32_t taskNoOffsetEnd)
-                    {
-                        //
-                        if (g_timeUtil.elapseTimeInMs() >= timeOutInMs)
-                        {
-                            return;
-                        }
-                        //
-                        for (int32_t taskNoOffset = taskNoOffsetBegin; taskNoOffset < taskNoOffsetEnd; ++taskNoOffset)
-                        {
-                            const int32_t taskNoLocal = taskNo + taskNoOffset;
-                            if (taskNoLocal >= totalTaskNum)
-                            {
-                                return;
-                            }
-                            scene.render(taskNoLocal);
-                            // 現像
-                            if (nextDevelopTime < g_timeUtil.elapseTimeInMs())
-                            {
-                                nextDevelopTime += developIntervalInMs; // TODO: 複数回来ることがあり得る
-#if 0 // 連番で出す場合
+        scene.render(taskNoLocal);
+        // 現像
+        if (nextDevelopTime < g_timeUtil.elapseTimeInMs()) {
+          nextDevelopTime +=
+              developIntervalInMs;  // TODO: 複数回来ることがあり得る
+#if 0                               // 連番で出す場合
                                 filmNo++;
                                 // 最終ショット以外はdenoiseは走らせない
                                 std::ostringstream ss;
                                 ss << std::setfill('0') << std::setw(3) << filmNo;
                                 scene.developLDR(ss.str() + ".png", false);
                                 scene.dumpHDR(ss.str() + ".bhdr");
-#else // 同じイメージで出し続ける場合
+#else  // 同じイメージで出し続ける場合
                                 scene.developLDR("out.png", false);
 #endif
-                            }
-                        }
-                    });
-        logging("Render Task pushed (%08d->%08d)", taskNo, taskNo + TASK_NUM_UNTILL_BY_JOIN);
-        //
-        taskNo += TASK_NUM_UNTILL_BY_JOIN;
-    }
+        }
+      }
+    });
+    logging("Render Task pushed (%08d->%08d)", taskNo,
+            taskNo + TASK_NUM_UNTILL_BY_JOIN);
+    //
+    taskNo += TASK_NUM_UNTILL_BY_JOIN;
+  }
 EXIT:
-    // 最後まで来たら、デノイズを行い最終イメージを出力
-    filmNo++;
-    std::ostringstream ss;
-    ss << std::setfill('0') << std::setw(3) << filmNo;
-    scene.developLDR(ss.str() + ".png", true);
-    // masterScene.dumpHDR("result.hdr");
-    return 0;
+  // 最後まで来たら、デノイズを行い最終イメージを出力
+  filmNo++;
+  std::ostringstream ss;
+  ss << std::setfill('0') << std::setw(3) << filmNo;
+  scene.developLDR(ss.str() + ".png", true);
+  // masterScene.dumpHDR("result.hdr");
+  return 0;
 }

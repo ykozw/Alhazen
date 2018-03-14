@@ -7,22 +7,19 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-class Material
-{
-public:
-    Material() = default;
-    ~Material() = default;
+class Material {
+ public:
+  Material() = default;
+  ~Material() = default;
 };
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-class MatteMaterial
-    :public Material
-{
-public:
-    // TODO: テクスチャなどを受け付けるようにする
-    MatteMaterial() = default;
-    BSDFPtr genBSDF() const;
+class MatteMaterial : public Material {
+ public:
+  // TODO: テクスチャなどを受け付けるようにする
+  MatteMaterial() = default;
+  BSDFPtr genBSDF() const;
 };

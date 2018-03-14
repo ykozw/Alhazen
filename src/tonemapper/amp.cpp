@@ -10,28 +10,16 @@ File
 TODO: できたらどこか別の場所に移動させる
 -------------------------------------------------
 */
-class File
-{
-public:
-    File()
-        :file_(NULL)
-    {
-    }
-    ~File()
-    {
-        fclose(file_);
-    }
-    void openRead(const char* filename)
-    {
-        file_ = fopen(filename, "rt");
-    }
-    //
-    FILE* file()
-    {
-        return file_;
-    }
-private:
-    FILE* file_;
+class File {
+ public:
+  File() : file_(NULL) {}
+  ~File() { fclose(file_); }
+  void openRead(const char* filename) { file_ = fopen(filename, "rt"); }
+  //
+  FILE* file() { return file_; }
+
+ private:
+  FILE* file_;
 };
 
 /*
@@ -40,93 +28,77 @@ Amp
 .ampファイルからトーンマッピングを行う
 -------------------------------------------------
 */
-class Amp AL_FINAL
-    : public Tonemapper
-{
-public:
-    Amp(const ObjectProp& objectProp);
-    bool process(const Image& src, ImageLDR& dst) const override;
-private:
-    float invGamma_;
-    std::array<uint8_t, 256> irgb_;
-    std::array<uint8_t, 256> ir_;
-    std::array<uint8_t, 256> ig_;
-    std::array<uint8_t, 256> ib_;
+class Amp AL_FINAL : public Tonemapper {
+ public:
+  Amp(const ObjectProp& objectProp);
+  bool process(const Image& src, ImageLDR& dst) const override;
+
+ private:
+  float invGamma_;
+  std::array<uint8_t, 256> irgb_;
+  std::array<uint8_t, 256> ir_;
+  std::array<uint8_t, 256> ig_;
+  std::array<uint8_t, 256> ib_;
 };
 
-REGISTER_OBJECT(Tonemapper,Amp);
-
+REGISTER_OBJECT(Tonemapper, Amp);
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-Amp::Amp(const ObjectProp& objectProp)
-    :Tonemapper(objectProp)
-{
-    const float gamma = objectProp.findChildBy("name","gamma").asFloat( 2.2f );
-    invGamma_ = 1.0f / gamma;
+Amp::Amp(const ObjectProp& objectProp) : Tonemapper(objectProp) {
+  const float gamma = objectProp.findChildBy("name", "gamma").asFloat(2.2f);
+  invGamma_ = 1.0f / gamma;
 
-    // AMPファイルのロード
-    const std::string fileName = objectProp.findChildBy("name","file").asString("none");
-    File file;
-    file.openRead(fileName.c_str());
-    FILE* filePtr = file.file();
-    fseek(filePtr, 0, SEEK_END );
-    const int32_t fileSize = ftell(filePtr);
-    fseek(filePtr, 0, SEEK_SET);
-    if (fileSize == 256 * 3)
-    {
-        for (int32_t i = 0; i < 256; ++i)
-        {
-            irgb_[i] = i;
-        }
-        fread(&ir_, 256, 1, filePtr);
-        fread(&ig_, 256, 1, filePtr);
-        fread(&ib_, 256, 1, filePtr);
+  // AMPファイルのロード
+  const std::string fileName =
+      objectProp.findChildBy("name", "file").asString("none");
+  File file;
+  file.openRead(fileName.c_str());
+  FILE* filePtr = file.file();
+  fseek(filePtr, 0, SEEK_END);
+  const int32_t fileSize = ftell(filePtr);
+  fseek(filePtr, 0, SEEK_SET);
+  if (fileSize == 256 * 3) {
+    for (int32_t i = 0; i < 256; ++i) {
+      irgb_[i] = i;
     }
-    else if (
-        fileSize == 256 * 4 ||
-        fileSize == 256 * 5)
-    {
-        fread(&irgb_, 256, 1, filePtr);
-        fread(&ir_, 256, 1, filePtr);
-        fread(&ig_, 256, 1, filePtr);
-        fread(&ib_, 256, 1, filePtr);
-    }
-    else
-    {
-        AL_ASSERT_DEBUG(false);
-    }
+    fread(&ir_, 256, 1, filePtr);
+    fread(&ig_, 256, 1, filePtr);
+    fread(&ib_, 256, 1, filePtr);
+  } else if (fileSize == 256 * 4 || fileSize == 256 * 5) {
+    fread(&irgb_, 256, 1, filePtr);
+    fread(&ir_, 256, 1, filePtr);
+    fread(&ig_, 256, 1, filePtr);
+    fread(&ib_, 256, 1, filePtr);
+  } else {
+    AL_ASSERT_DEBUG(false);
+  }
 }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-bool Amp::process(const Image& src, ImageLDR& dst) const
-{
-    //
-    loggingErrorIf(
-        (src.width() != dst.width()) ||
-        (src.height() != dst.height()),
-        "Invalid size tonemapping target");
-    //
-    for (int32_t y = 0, h = src.height(); y < h; ++y)
-    {
-        for (int32_t x = 0, w = src.width(); x < w; ++x)
-        {
-            const int32_t index = src.index(x, y);
-            const Spectrum& sp = src.pixel(index);
+bool Amp::process(const Image& src, ImageLDR& dst) const {
+  //
+  loggingErrorIf((src.width() != dst.width()) || (src.height() != dst.height()),
+                 "Invalid size tonemapping target");
+  //
+  for (int32_t y = 0, h = src.height(); y < h; ++y) {
+    for (int32_t x = 0, w = src.width(); x < w; ++x) {
+      const int32_t index = src.index(x, y);
+      const Spectrum& sp = src.pixel(index);
 #if 0
             float weight = src.weight(index);
             weight = alMax(weight, 1.0f);
             Spectrum nsp = sp / weight;
 #else
-            Spectrum nsp = sp;
+      Spectrum nsp = sp;
 #endif
-            SpectrumRGB rgb;
-            nsp.toRGB(rgb);
+      SpectrumRGB rgb;
+      nsp.toRGB(rgb);
 #if 0
             // tonemapping
             const float ifr = rgb.r * 255.0f + 0.5f;
@@ -154,34 +126,36 @@ bool Amp::process(const Image& src, ImageLDR& dst) const
             dp.g = clamp((int32_t)(tg2 * 255.0f + 0.5f), 0, 255);
             dp.b = clamp((int32_t)(tb2 * 255.0f + 0.5f), 0, 255);
 #else
-            // degamma
-            const float tr2 = powf(rgb.r, invGamma_);
-            const float tg2 = powf(rgb.g, invGamma_);
-            const float tb2 = powf(rgb.b, invGamma_);
-            const float ifr = tr2 * 255.0f + 0.5f;
-            const float ifg = tg2 * 255.0f + 0.5f;
-            const float ifb = tb2 * 255.0f + 0.5f;
-            const uint8_t idxr0 = (uint8_t)alClamp((int32_t)(ifr), (int32_t)0, (int32_t)255);
-            const uint8_t idxg0 = (uint8_t)alClamp((int32_t)(ifg), (int32_t)0, (int32_t)255);
-            const uint8_t idxb0 = (uint8_t)alClamp((int32_t)(ifb), (int32_t)0, (int32_t)255);
-            // tonemapping
-            PixelLDR& dp = dst.pixel(index);
-            dp.r = irgb_[ir_[idxr0]];
-            dp.g = irgb_[ig_[idxg0]];
-            dp.b = irgb_[ib_[idxb0]];
+      // degamma
+      const float tr2 = powf(rgb.r, invGamma_);
+      const float tg2 = powf(rgb.g, invGamma_);
+      const float tb2 = powf(rgb.b, invGamma_);
+      const float ifr = tr2 * 255.0f + 0.5f;
+      const float ifg = tg2 * 255.0f + 0.5f;
+      const float ifb = tb2 * 255.0f + 0.5f;
+      const uint8_t idxr0 =
+          (uint8_t)alClamp((int32_t)(ifr), (int32_t)0, (int32_t)255);
+      const uint8_t idxg0 =
+          (uint8_t)alClamp((int32_t)(ifg), (int32_t)0, (int32_t)255);
+      const uint8_t idxb0 =
+          (uint8_t)alClamp((int32_t)(ifb), (int32_t)0, (int32_t)255);
+      // tonemapping
+      PixelLDR& dp = dst.pixel(index);
+      dp.r = irgb_[ir_[idxr0]];
+      dp.g = irgb_[ig_[idxg0]];
+      dp.b = irgb_[ib_[idxb0]];
 #endif
-        }
     }
-    //
-    return true;
+  }
+  //
+  return true;
 }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-AL_TEST(AMP, basic)
-{
+AL_TEST(AMP, basic) {
 #if 0
     ObjectProp prop;
     prop.createFromString(

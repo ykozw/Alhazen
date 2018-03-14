@@ -12,38 +12,19 @@
 Sphere vs Ray
 -------------------------------------------------
 */
-bool intersectSphere(
-    const Ray& ray,
-    Vec3 o,
-    float r2,
-    _Inout_ Intersect* isect);
-bool intersectSphereCheck(
-    const Ray& ray,
-    Vec3 pos,
-    float r2);
+bool intersectSphere(const Ray& ray, Vec3 o, float r2,
+                     _Inout_ Intersect* isect);
+bool intersectSphereCheck(const Ray& ray, Vec3 pos, float r2);
 
 /*
 -------------------------------------------------
 Triangle vs Ray
 -------------------------------------------------
 */
-bool intersectTriangle(
-    const Ray& ray,
-    Vec3 v0,
-    Vec3 v1,
-    Vec3 v2,
-    Vec3 n0,
-    Vec3 n1,
-    Vec3 n2,
-    Vec2 t0,
-    Vec2 t1,
-    Vec2 t2,
-    _Inout_ Intersect* isect);
-bool intersectTriangleCheck(
-    const Ray& ray,
-    Vec3 v0,
-    Vec3 v1,
-    Vec3 v2);
+bool intersectTriangle(const Ray& ray, Vec3 v0, Vec3 v1, Vec3 v2, Vec3 n0,
+                       Vec3 n1, Vec3 n2, Vec2 t0, Vec2 t1, Vec2 t2,
+                       _Inout_ Intersect* isect);
+bool intersectTriangleCheck(const Ray& ray, Vec3 v0, Vec3 v1, Vec3 v2);
 
 /*
 -------------------------------------------------
@@ -58,14 +39,8 @@ Plane vs Ray
 TODO: 追加する
 -------------------------------------------------
 */
-bool intersectPlane(
-    const Ray& ray,
-    Vec3 dir,
-    float dist,
-    _Inout_ Intersect* isect);
-bool intersectPlaneCheck(
-    const Ray& ray,
-    Vec3 dir,
-    float dist);
+bool intersectPlane(const Ray& ray, Vec3 dir, float dist,
+                    _Inout_ Intersect* isect);
+bool intersectPlaneCheck(const Ray& ray, Vec3 dir, float dist);
 
 #include "intersect.inl"

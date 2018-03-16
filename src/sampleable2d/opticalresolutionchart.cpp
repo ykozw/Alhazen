@@ -8,12 +8,13 @@ OpticalResolutionChart
 解像力チャート。レンズの評価に使用。
 -------------------------------------------------
 */
-class OpticalResolutionChart AL_FINAL : public Sampleable2d {
- public:
-  OpticalResolutionChart(const ObjectProp& prop);
-  virtual Spectrum sample(float u, float v) override;
+class OpticalResolutionChart AL_FINAL : public Sampleable2d
+{
+public:
+    OpticalResolutionChart(const ObjectProp& prop);
+    virtual Spectrum sample(float u, float v) override;
 
- private:
+private:
 };
 REGISTER_OBJECT(Sampleable2d, OpticalResolutionChart);
 
@@ -21,15 +22,18 @@ REGISTER_OBJECT(Sampleable2d, OpticalResolutionChart);
 -------------------------------------------------
 -------------------------------------------------
 */
-OpticalResolutionChart::OpticalResolutionChart(const ObjectProp& prop) {
-  // TODO: 実装
+OpticalResolutionChart::OpticalResolutionChart(const ObjectProp& prop)
+{
+    // TODO: 実装
 }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-Spectrum OpticalResolutionChart::sample(float u, float v) {
-  // TODO: 実装
-  return Spectrum::Black;
+Spectrum
+OpticalResolutionChart::sample(float u, float v)
+{
+    // TODO: 実装
+    return Spectrum::Black;
 }

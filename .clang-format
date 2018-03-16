@@ -1,2 +1,9 @@
-BasedOnStyle: Google
+# 
+BasedOnStyle: Mozilla
+
+# dont sort include
 SortIncludes: false
+
+# indent
+IndentWidth: 4
+AccessModifierOffset: -4

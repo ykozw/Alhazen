@@ -3089,6 +3089,206 @@ INLINE void Matrix4x3::identity()
 -------------------------------------------------
 -------------------------------------------------
 */
+INLINE Quat::Quat(Vec3 xyz, float s)
+{
+    qv_ = xyz;
+    qs_ = s;
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE Quat::Quat(float x, float y, float z, float w)
+{
+    qv_ = Vec3(x, y, z);
+    qs_ = w;
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE Vec3 Quat::qv() const
+{
+    return qv_;
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE float Quat::qs() const
+{
+    return qs_;
+}
+
+/*
+-------------------------------------------------
+共役を返す
+-------------------------------------------------
+*/
+INLINE Quat Quat::conjugated() const
+{
+    return Quat(-qv_, qs_);
+}
+
+/*
+-------------------------------------------------
+ベクトルの回転
+回転にのみ利用するので常に正規化されている前提で使われる。
+そのため、逆数は共役と等しくなる
+-------------------------------------------------
+*/
+//
+INLINE Vec3 Quat::rotate(Vec3 av) const
+{
+    const Quat v(av, 0.0f);
+    const Quat q = *this;
+    const Quat qc = conjugated();
+    const Quat r = q * v * qc;
+    return r.qv_;
+}
+
+/*
+-------------------------------------------------
+回転行列にする
+-------------------------------------------------
+*/
+INLINE Matrix3x3 Quat::toMatrix() const
+{
+    const float x = qv_.x();
+    const float y = qv_.y();
+    const float z = qv_.z();
+    const float w = qs_;
+    return
+        Matrix3x3(
+            // e11
+            1.0f - 2.0f * y * y - 2.0f * z * z,
+            // e12
+            2.0f * x * y + 2.0f * z * w,
+            // e13
+            2.0f * x * z - 2.0f * y * w,
+            // e21
+            2.0f * x * y - 2.0f * z * w,
+            // e22
+            1.0f - 2.0f * x * x - 2.0f * z * z,
+            // e23
+            2.0f * y * z + 2.0f * x * w,
+            // e31
+            2.0f * x * z + 2.0f * y * w,
+            // e32
+            2.0f * y * z + 2.0f * x * w,
+            // e33
+            1.0f - 2.0f * x * x - 2.0f * y * y
+        );
+}
+
+/*
+-------------------------------------------------
+正規化
+-------------------------------------------------
+*/
+INLINE Quat Quat::normalized() const
+{
+    const float invlen = 1.0f / std::sqrtf(qv_.lengthSq() + qs_ * qs_);
+    return Quat(invlen * qv_, invlen * qs_);
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE Quat Quat::fromAxisRot(Vec3 axis, float theta)
+{
+    const float ht = theta * 0.5f;
+    return Quat(axis * std::sinf(ht), std::cosf(ht));
+}
+
+/*
+-------------------------------------------------
+lerp
+-------------------------------------------------
+*/
+INLINE Quat Quat::lerp(Quat a, Quat b, float t)
+{
+    const Quat r = a * (1.0f - t) + b * t;
+    return r.normalized();
+}
+
+/*
+-------------------------------------------------
+slerp
+-------------------------------------------------
+*/
+INLINE Quat Quat::slerp(Quat p, Quat q, float t)
+{
+    const float theta = std::acosf(Quat::dot(p, q));
+    const float invSinTheta = 1.0f / std::sinf(theta);
+    const float wp = std::sinf((1.0f - t) * theta) * invSinTheta;
+    const float wq = std::sinf(t * theta) * invSinTheta;
+    return p * wp + q * wq;
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE float Quat::dot(Quat p, Quat q)
+{
+    return Vec3::dot(p.qv_, q.qv_) + p.qs_ * q.qs_;
+}
+
+/*
+-------------------------------------------------
+スケール
+-------------------------------------------------
+*/
+INLINE Quat Quat::operator * (float s) const
+{
+    Quat r = *this;
+    r.qv_ *= s;
+    r.qs_ *= s;
+    return r;
+}
+
+/*
+-------------------------------------------------
+加算
+-------------------------------------------------
+*/
+INLINE Quat Quat::operator + (Quat other) const
+{
+    Quat r;
+    r.qv_ = qv_ + other.qv_;
+    r.qs_ = qs_ + other.qs_;
+    return r;
+}
+
+/*
+-------------------------------------------------
+グラスマン積
+-------------------------------------------------
+*/
+INLINE Quat Quat::operator * (Quat q) const
+{
+    Quat p = *this;
+    //
+    const Vec3 pv = p.qv_;
+    const float ps = p.qs_;
+    const Vec3 qv = q.qv_;
+    const float qs = q.qs_;
+    // TODO: もう少し簡略にできるはず
+    const Vec3 v = ps * qv + qs * pv + Vec3::cross(pv, qv);
+    const float w = ps * qs - Vec3::dot(pv, qv);
+    //
+    return Quat(v, w);
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE Vec3Pack8::Vec3Pack8(
                             __m256 axs,
                             __m256 ays,

@@ -509,3 +509,42 @@ AL_TEST(Math, V4) {
 #endif
   }
 }
+
+
+/*
+-------------------------------------------------
+Quatに関するテスト
+-------------------------------------------------
+*/
+AL_TEST(Math, Quat) {
+
+    const auto test = [](Vec3 rotAxis, float theta, Vec3 v, Vec3 except)
+    {
+        const Quat q = Quat::fromAxisRot(rotAxis, theta);
+        const Vec3 r = q.rotate(v);
+        AL_ASSERT_ALWAYS(std::fabsf(Vec3::dot(r, except) - 1.0f) < 0.01f);
+    };
+    // TODO: 一通りの軸周りのテストを入れる
+    // Y軸をX軸1/4回転でZ軸に
+    test(Vec3(1.0f, 0.0f, 0.0), PI * 0.5f, Vec3(0.0f, 1.0f, 0.0f), Vec3(0.0f, 0.0f, 1.0f));
+    // X軸をY軸1/4回転でZ軸に
+    test(Vec3(1.0f, 0.0f, 0.0), PI * 0.5f, Vec3(0.0f, 1.0f, 0.0f), Vec3(0.0f, 0.0f, 1.0f));
+
+#if 0
+    // 補間のテスト
+    vdbmt_frame();
+    for (float t = 0; t<1.0f; t += 0.02f)
+    {
+        const Quat q = Quat::fromAxisRot(Vec3(1.0f, 0.0f, 1.0f).normalized(), PI / 4.0f);
+        const Quat p = Quat::fromAxisRot(Vec3(0.0f, 1.0f, 0.0f).normalized(), PI / 4.0f);
+        const Vec3 v = Vec3(1.0f, 1.0f, 1.0f);
+        const Vec3 v0 = Quat::slerp(p, q, t).rotate(v);
+        const Vec3 v1 = Quat::lerp(p, q, t).rotate(v);
+        printf("(%f,%f,%f)%f (%f,%f,%f)%f\n", v0.x(), v0.y(), v0.z(), float(v0.length()), v1.x(), v1.y(), v1.z(), float(v1.length()));
+        vdbmt_color(Vec3(1.0f, 0.0f, 0.0f));
+        vdbmt_point(v0);
+        vdbmt_color(Vec3(0.0f, 1.0f, 0.0f));
+        vdbmt_point(v1);
+    }
+#endif
+}

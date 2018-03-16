@@ -69,7 +69,7 @@ bool PMIntegrator::preRendering(const SceneGeometory& scene,
     // const uint32_t lightIndex = sampler->getSize(uint32_t(lights.size()));
     // const LightPtr& light = lights[lightIndex];
     // 光源からのサンプル
-    Vec3 samplePos;
+    Vec3 samplePos = Vec3(0.0f, 0.0f, 0.0f);
     Spectrum emission;
     // float pdf = 0.0f;
     OrthonormalBasis<> lightLocalCoord;

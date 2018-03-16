@@ -5,10 +5,11 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-class RBDH AL_FINAL : public Tonemapper {
- public:
-  RBDH(const ObjectProp& objectProp);
-  bool process(const Image& src, ImageLDR& dst) const override;
+class RBDH AL_FINAL : public Tonemapper
+{
+public:
+    RBDH(const ObjectProp& objectProp);
+    bool process(const Image& src, ImageLDR& dst) const override;
 };
 
 REGISTER_OBJECT(Tonemapper, RBDH);
@@ -17,13 +18,17 @@ REGISTER_OBJECT(Tonemapper, RBDH);
 -------------------------------------------------
 -------------------------------------------------
 */
-RBDH::RBDH(const ObjectProp& objectProp) : Tonemapper(objectProp) {}
+RBDH::RBDH(const ObjectProp& objectProp)
+  : Tonemapper(objectProp)
+{}
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-bool RBDH::process(const Image& src, ImageLDR& dst) const {
-  // TODO: https://www.shadertoy.com/view/lslGzl を参考に実装
-  return false;
+bool
+RBDH::process(const Image& src, ImageLDR& dst) const
+{
+    // TODO: https://www.shadertoy.com/view/lslGzl を参考に実装
+    return false;
 }

@@ -6,7 +6,8 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-class Alhazen : public App {
- public:
-  int32_t runApp(const ArgConfig& config) override;
+class Alhazen : public App
+{
+public:
+    int32_t runApp(const ArgConfig& config) override;
 };

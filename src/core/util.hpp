@@ -6,19 +6,21 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-class FileSystem AL_FINAL {
- public:
-  void init(const char* sceneFilePath, const char* exeFilePath);
-  std::string getOutputFolderPath() const;
-  //
-  static const char* getExt(const char* fileName);
-  static void getDirPath(const std::string& fullPath, std::string& aDirPath,
-                         std::string& aFileName);
-  static std::string readTextFileAll(const std::string& filePath);
+class FileSystem AL_FINAL
+{
+public:
+    void init(const char* sceneFilePath, const char* exeFilePath);
+    std::string getOutputFolderPath() const;
+    //
+    static const char* getExt(const char* fileName);
+    static void getDirPath(const std::string& fullPath,
+                           std::string& aDirPath,
+                           std::string& aFileName);
+    static std::string readTextFileAll(const std::string& filePath);
 
- private:
-  std::string outputDir_;
-  std::string exeDir_;
+private:
+    std::string outputDir_;
+    std::string exeDir_;
 };
 extern FileSystem g_fileSystem;
 
@@ -26,13 +28,14 @@ extern FileSystem g_fileSystem;
 -------------------------------------------------
 -------------------------------------------------
 */
-class TimeUtil AL_FINAL {
- public:
-  TimeUtil();
-  uint32_t elapseTimeInMs();
+class TimeUtil AL_FINAL
+{
+public:
+    TimeUtil();
+    uint32_t elapseTimeInMs();
 
- private:
-  std::chrono::system_clock::time_point startTime_;
+private:
+    std::chrono::system_clock::time_point startTime_;
 };
 extern TimeUtil g_timeUtil;
 
@@ -47,14 +50,15 @@ cf. https://hackernoon.com/building-a-c-hybrid-spin-mutex-f98de535b4ac
 平均的なロック時間は常にSpinLockになっていることに注意
 -------------------------------------------------
 */
-class SpinLock AL_FINAL {
- public:
-  void lock();
-  void unlock();
+class SpinLock AL_FINAL
+{
+public:
+    void lock();
+    void unlock();
 
- private:
-  std::mutex mtx_;
-  std::atomic<uint64_t> predictedWaitTime_ = {1};
+private:
+    std::mutex mtx_;
+    std::atomic<uint64_t> predictedWaitTime_ = { 1 };
 };
 
 #if 0

@@ -615,6 +615,38 @@ struct Matrix4x3 {
 };
 
 /*
+-------------------------------------------------
+クオータニオン
+-------------------------------------------------
+*/
+class Quat
+{
+public:
+    Quat() = default;
+    Quat(Vec3 xyz, float s);
+    Quat(float x, float y, float z, float w);
+    Vec3 qv() const;
+    float qs() const;
+    Quat conjugated() const;
+    Vec3 rotate(Vec3 v) const;
+    Matrix3x3 toMatrix() const;
+    Quat normalized() const;
+    //
+    static Quat fromAxisRot(Vec3 axis, float theta);
+    static Quat lerp(Quat a, Quat b, float t);
+    static Quat slerp(Quat p, Quat q, float t);
+    static float dot(Quat p, Quat q);
+    //
+    Quat operator * (float s) const;
+    Quat operator + (Quat other) const;
+    Quat operator * (Quat q) const;
+
+public:
+    Vec3 qv_;
+    float qs_;
+};
+
+/*
  -------------------------------------------------
  Vec3x8のデータ構造
  -------------------------------------------------

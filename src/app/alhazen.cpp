@@ -78,7 +78,6 @@ int32_t Alhazen::runApp(const ArgConfig& config) {
     //
     taskNo += TASK_NUM_UNTILL_BY_JOIN;
   }
-EXIT:
   // 最後まで来たら、デノイズを行い最終イメージを出力
   filmNo++;
   std::ostringstream ss;

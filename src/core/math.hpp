@@ -184,7 +184,7 @@ struct Region2D AL_FINAL {
  0xFFFFFFFFか0x00000000が各レーンに入っている
  -------------------------------------------------
  */
-struct ALIGN16 Bool8 AL_FINAL {
+struct ALIGN32 Bool8 AL_FINAL {
  public:
   union {
     __m256 v;
@@ -203,7 +203,7 @@ struct ALIGN16 Bool8 AL_FINAL {
  0レーンにデータが入っていることのみを保証したデータ
  -------------------------------------------------
  */
-struct ALIGN16 BoolInVec AL_FINAL {
+struct ALIGN32 BoolInVec AL_FINAL {
  public:
 #if defined(AL_MATH_USE_NO_SIMD)
   bool v;
@@ -227,7 +227,7 @@ struct ALIGN16 BoolInVec AL_FINAL {
  0レーンにデータが入っていることのみを保証したデータ
  -------------------------------------------------
  */
-struct ALIGN16 FloatInVec AL_FINAL {
+struct ALIGN32 FloatInVec AL_FINAL {
  public:
 #if defined(AL_MATH_USE_NO_SIMD)
   float v;
@@ -254,7 +254,7 @@ INLINE bool operator<(FloatInVec lhs, FloatInVec rhs);
  Float8
  -------------------------------------------------
  */
-struct ALIGN16 Float8 AL_FINAL {
+struct ALIGN32 Float8 AL_FINAL {
  public:
   union {
     __m256 v;

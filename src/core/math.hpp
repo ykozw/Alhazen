@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "pch.hpp"
 
 // VectorMathでSIMDを使うか否か。AVX2まで仮定する。
@@ -648,6 +648,11 @@ public:
     static Matrix4x4 mul(const Matrix4x4& lhs, const Matrix4x4& rhs);
     static Vec4 mul(const Vec4& v, const Matrix4x4& m);
     Matrix4x4& operator=(const Matrix4x4& other);
+    
+    // ViewMatrixからの取り出し
+    Vec3 extractViewmatRight() const;
+    Vec3 extractViewmatUp() const;
+    Vec3 extractViewmatDir() const;
 };
 INLINE static Matrix4x4
 operator+(const Matrix4x4& lhs, const Matrix4x4& rhs);
@@ -706,6 +711,7 @@ public:
     Quat(float x, float y, float z, float w);
     Vec3 qv() const;
     float qs() const;
+    void identity();
     Quat conjugated() const;
     Vec3 rotate(Vec3 v) const;
     Matrix3x3 toMatrix() const;

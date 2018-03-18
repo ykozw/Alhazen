@@ -47,7 +47,7 @@
 			<lookat target="0.0, 0.5, 0" origin="0.0, 0.5, 7.0" up="0.0, 1.0, 0.0"/>
 		</transform>
     <film type="hdrfilm">
-      <integer name="pixelWidth" value="300"/>
+      <integer name="pixelWidth" value="320"/>
       <integer name="pixelHeight" value="200"/>
       <float name="filmWidthMM" value="90"/>
       <float name="filmHeightMM" value="60"/>

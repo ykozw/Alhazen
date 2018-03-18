@@ -1,4 +1,4 @@
-﻿#include "math.hpp"
+#include "math.hpp"
 
 /*
 -------------------------------------------------
@@ -3021,6 +3021,42 @@ inline Matrix4x4& Matrix4x4::operator=(const Matrix4x4 & other)
 -------------------------------------------------
 -------------------------------------------------
 */
+INLINE Vec3 Matrix4x4::extractViewmatRight() const
+{
+#if defined(MAT4X4_SIMD)
+#else
+    return Vec3(e11, e21, e31);
+#endif
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE Vec3 Matrix4x4::extractViewmatUp() const
+{
+#if defined(MAT4X4_SIMD)
+#else
+    return Vec3(e12, e22, e32);
+#endif
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE Vec3 Matrix4x4::extractViewmatDir() const
+{
+#if defined(MAT4X4_SIMD)
+#else
+    return Vec3(e13, e23, e33);
+#endif
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE static Matrix4x4 operator + (const Matrix4x4& lhs, const Matrix4x4& rhs)
 {
 #if defined(MAT4X4_SIMD)
@@ -3121,6 +3157,17 @@ INLINE Vec3 Quat::qv() const
 INLINE float Quat::qs() const
 {
     return qs_;
+}
+
+/*
+-------------------------------------------------
+無回転にする
+-------------------------------------------------
+*/
+INLINE void Quat::identity()
+{
+    qv_.zero();
+    qs_ = 1.0f;
 }
 
 /*

@@ -133,8 +133,15 @@ Vec3
 Transform::cameraOrigin() const
 {
 #if defined(MAT4X4_SIMD)
-    AL_ASSERT_ALWAYS(false);
-    return Vec3(0.0f);
+    const Vec3 xa = cameraRight();
+    const Vec3 ya = cameraUp();
+    const Vec3 za = cameraDir();
+    const auto& m = toWorld_;
+    const Vec3 org = 
+        xa * _mm_extract_ps_fast<0>(m.row3) + 
+        ya * _mm_extract_ps_fast<1>(m.row3) +
+        za * _mm_extract_ps_fast<2>(m.row3);
+    return -org;
 #else
     const Vec3 xa = cameraRight();
     const Vec3 ya = cameraUp();
@@ -153,8 +160,8 @@ Vec3
 Transform::cameraUp() const
 {
 #if defined(MAT4X4_SIMD)
-    AL_ASSERT_ALWAYS(false);
-    return Vec3(0.0f);
+    const auto& m = toWorld_;
+    return Vec3(_mm_extract_ps_fast<1>(m.row0), _mm_extract_ps_fast<1>(m.row1), _mm_extract_ps_fast<1>(m.row2));
 #else
     const auto& m = toWorld_;
     return Vec3(m.e12, m.e22, m.e32);
@@ -169,8 +176,8 @@ Vec3
 Transform::cameraDir() const
 {
 #if defined(MAT4X4_SIMD)
-    AL_ASSERT_ALWAYS(false);
-    return Vec3(0.0f);
+    const auto& m = toWorld_;
+    return Vec3(_mm_extract_ps_fast<2>(m.row0), _mm_extract_ps_fast<2>(m.row1), _mm_extract_ps_fast<2>(m.row2));
 #else
     const auto& m = toWorld_;
     return Vec3(m.e13, m.e23, m.e33);
@@ -185,8 +192,8 @@ Vec3
 Transform::cameraRight() const
 {
 #if defined(MAT4X4_SIMD)
-    AL_ASSERT_ALWAYS(false);
-    return Vec3(0.0f);
+    const auto& m = toWorld_;
+    return Vec3(_mm_extract_ps_fast<0>(m.row0), _mm_extract_ps_fast<0>(m.row1), _mm_extract_ps_fast<0>(m.row2));
 #else
     const auto& m = toWorld_;
     return Vec3(m.e11, m.e21, m.e31);

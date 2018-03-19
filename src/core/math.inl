@@ -1,4 +1,4 @@
-#include "math.hpp"
+﻿#include "math.hpp"
 
 /*
 -------------------------------------------------
@@ -2373,7 +2373,11 @@ INLINE Matrix4x4::Matrix4x4(_In_reads_(16) const float* es)
 INLINE Matrix4x4::Matrix4x4(const Matrix3x3& m33)
 {
 #if defined(MAT4X4_SIMD)
-    AL_ASSERT_ALWAYS(false);
+    const __m128 oooz = _mm_set_ps(1.0f, 1.0f, 1.0f, 0.0f);
+    row0 = _mm_mul_ps(m33.row0, oooz);
+    row1 = _mm_mul_ps(m33.row1, oooz);
+    row2 = _mm_mul_ps(m33.row2, oooz);
+    row3 = _mm_set_ps(0.0f, 0.0f, 0.0f, 1.0f);
 #else
 #if defined(AL_MATH_USE_NO_SIMD)
     e11 = m33.e11; e12 = m33.e12; e13 = m33.e13; e14 = 0.0f;
@@ -2406,7 +2410,6 @@ INLINE Matrix4x4::Matrix4x4(const Matrix3x3& m33)
 #endif
 #endif
 }
-
 
 /*
 -------------------------------------------------
@@ -2510,8 +2513,8 @@ INLINE void Matrix4x4::constructAsRotation(Vec3 axis, float angle)
 -------------------------------------------------
 */
 INLINE void Matrix4x4::constructAsViewMatrix(Vec3 origin,
-                                             Vec3 target,
-                                             Vec3 up)
+    Vec3 target,
+    Vec3 up)
 {
     const Vec3 zaxis = (target - origin).normalized();
     const Vec3 xaxis = Vec3::cross(up, zaxis).normalized();
@@ -2528,16 +2531,24 @@ INLINE void Matrix4x4::constructAsViewMatrix(Vec3 origin,
     row0 = _mm_shuffle_ps(tmp0, tmp1, 0x88);
     row1 = _mm_shuffle_ps(tmp0, tmp1, 0xDD);
     row2 = _mm_shuffle_ps(tmp2, tmp3, 0x88);
-    つづきはここから
-    AL_ASSERT_ALWAYS(false);
+    // row3の計算
+    const __m128 r30 = _mm_dp_ps(xaxis, origin, 0x7F);
+    const __m128 r31 = _mm_dp_ps(yaxis, origin, 0x7F);
+    const __m128 r32 = _mm_dp_ps(zaxis, origin, 0x7F);
+    const __m128 r33 = _mm_set_ps1(-1.0f);
+    const __m128 tmp4 = _mm_shuffle_ps(r30, r31, _MM_SHUFFLE(0, 0, 0, 0));
+    const __m128 tmp5 = _mm_shuffle_ps(r32, r33, _MM_SHUFFLE(0, 0, 0, 0));
+    const __m128 tmp6 = _mm_shuffle_ps(tmp4, tmp5, _MM_SHUFFLE(2, 0, 2, 0));
+    const __m128 neg = _mm_set_ps1(-1.0f);
+    row3 = _mm_mul_ps(neg, tmp6);
 #else
-	e11 = xaxis.x(); e12 = yaxis.x(); e13 = zaxis.x(); e14 = 0.0f;
-	e21 = xaxis.y(); e22 = yaxis.y(); e23 = zaxis.y(); e24 = 0.0f;
-	e31 = xaxis.z(); e32 = yaxis.z(); e33 = zaxis.z(); e34 = 0.0f;
-	e41 = -Vec3::dot(xaxis, origin);
-	e42 = -Vec3::dot(yaxis, origin);
-	e43 = -Vec3::dot(zaxis, origin);
-	e44 = 1.0f;
+    e11 = xaxis.x(); e12 = yaxis.x(); e13 = zaxis.x(); e14 = 0.0f;
+    e21 = xaxis.y(); e22 = yaxis.y(); e23 = zaxis.y(); e24 = 0.0f;
+    e31 = xaxis.z(); e32 = yaxis.z(); e33 = zaxis.z(); e34 = 0.0f;
+    e41 = -Vec3::dot(xaxis, origin);
+    e42 = -Vec3::dot(yaxis, origin);
+    e43 = -Vec3::dot(zaxis, origin);
+    e44 = 1.0f;
 #endif
 }
 
@@ -2904,8 +2915,11 @@ INLINE Matrix4x4 Matrix4x4::transposed() const
 INLINE Matrix3x3 Matrix4x4::extract3x3() const
 {
 #if defined(MAT4X4_SIMD)
-    AL_ASSERT_ALWAYS(false);
-    return Matrix3x3();
+    Matrix3x3 m;
+    m.row0 = row0;
+    m.row1 = row1;
+    m.row2 = row2;
+    return m;
 #else
 #if defined(AL_MATH_USE_NO_SIMD)
     Matrix3x3 m;
@@ -2991,10 +3005,13 @@ INLINE Vec4 Matrix4x4::mul(const Vec4& v, const Matrix4x4& m)
 -------------------------------------------------
 -------------------------------------------------
 */
-inline Matrix4x4& Matrix4x4::operator=(const Matrix4x4 & other)
+INLINE Matrix4x4& Matrix4x4::operator=(const Matrix4x4 & other)
 {
 #if defined(MAT4X4_SIMD)
-    AL_ASSERT_ALWAYS(false);
+    row0 = other.row0;
+    row1 = other.row1;
+    row2 = other.row2;
+    row3 = other.row3;
 #else
     const float* oe = other.e;
     e[0] = oe[0];

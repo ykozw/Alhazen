@@ -20,7 +20,7 @@ Transform::Transform(const ObjectProp& objectProp)
     // toWorld_行列の作成
     toWorld_ = constructToWorldMatrix(objectProp);
     // 法線の回転用に逆行列の転地を求める
-    toWorldDir_ = Matrix4x4(toWorld_.extract3x3().inversed().transposed());
+    toWorldDir_ = toWorld_.extract3x3().inversed().transposed();
     // それぞれの逆行列を作成する
     toLocal_ = toWorld_.inversed();
     toLocalDir_ = toWorldDir_.inversed();

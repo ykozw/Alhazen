@@ -33,6 +33,6 @@ public: // HACK:
     // 一部内部パラメーターを触っている箇所があるのでそれが解消されるまで開いておく
     Matrix4x4 toWorld_;
     Matrix4x4 toLocal_;
-    Matrix4x4 toWorldDir_;
-    Matrix4x4 toLocalDir_;
+    Matrix3x3 toWorldDir_;
+    Matrix3x3 toLocalDir_;
 };

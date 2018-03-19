@@ -2090,6 +2090,25 @@ INLINE void Matrix3x3::set(
 -------------------------------------------------
 -------------------------------------------------
 */
+INLINE void Matrix3x3::identity()
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    e11 = 1.0f; e12 = 0.0f; e13 = 0.0f; e14 = 0.0f;
+    e21 = 0.0f; e22 = 1.0f; e23 = 0.0f; e24 = 0.0f;
+    e31 = 0.0f; e32 = 0.0f; e33 = 1.0f; e34 = 0.0f;
+    e41 = 0.0f; e42 = 0.0f; e43 = 0.0f; e44 = 1.0f;
+#else
+    // NOTE: set_ps()直接は遅いかもしれない
+    row0 = _mm_set_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    row1 = _mm_set_ps(0.0f, 1.0f, 0.0f, 0.0f);
+    row2 = _mm_set_ps(0.0f, 0.0f, 1.0f, 0.0f);
+#endif
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE float Matrix3x3::det() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)

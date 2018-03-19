@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "pch.hpp"
 
 // VectorMathでSIMDを使うか否か。AVX2まで仮定する。
@@ -556,6 +556,7 @@ public:
               float e33);
     Matrix3x3(Vec3 row0, Vec3 row1, Vec3 row2);
     void set(Vec3 row0, Vec3 row1, Vec3 row2);
+    void identity();
     float det() const;
     void inverse();
     void transpose();

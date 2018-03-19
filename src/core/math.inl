@@ -57,9 +57,10 @@ _mm_extract_ps()を使ってはいけない
 cf. https://stackoverflow.com/a/17258448
 -------------------------------------------------
 */
+template<int32_t index>
 INLINE float _mm_extract_ps_fast(__m128 v)
 {
-    return _mm_cvtss_f32(_mm_shuffle_ps(v, v, _MM_SHUFFLE(0, 0, 0, 0)));
+    return _mm_cvtss_f32(_mm_shuffle_ps(v, v, _MM_SHUFFLE(0, 0, 0, index)));
 }
 
 /*
@@ -281,7 +282,7 @@ INLINE float FloatInVec::value() const
 #if defined(AL_MATH_USE_NO_SIMD)
     return v;
 #else
-    return _mm_extract_ps_fast(v);
+    return _mm_extract_ps_fast<0>(v);
 #endif
 }
 
@@ -2135,7 +2136,7 @@ INLINE float Matrix3x3::det() const
             _mm_mul_ps(_mm_mul_ps(e11_31_21, e32_22_12), e23_13_33));
     const __m128 detV = _mm_dp_ps(tmp0, C_1_1_1_0, 0x7F);
     //
-    return _mm_extract_ps_fast(detV);
+    return _mm_extract_ps_fast<0>(detV);
 #endif
 }
 
@@ -2457,7 +2458,10 @@ INLINE void Matrix4x4::constructAsRotationAxis()
 INLINE void Matrix4x4::constructAsTranslation(Vec3 v)
 {
 #if defined(MAT4X4_SIMD)
-    AL_ASSERT_ALWAYS(false);
+    row0 = _mm_set_ps(1.0f, 0.0f,0.0f,0.0f);
+    row1 = _mm_set_ps(0.0f, 1.0f, 0.0f, 0.0f);
+    row2 = _mm_set_ps(0.0f, 0.0f, 1.0f, 0.0f);
+    row3 = _mm_add_ps(_mm_mul_ps(v, _mm_set_ps(1.0f, 1.0f, 1.0f, 0.0f)), _mm_set_ps(0.0f, 0.0f, 0.0f, 1.0f));
 #else
     const float x = v.x();
     const float y = v.y();
@@ -2724,16 +2728,59 @@ INLINE Vec4 Matrix4x4::columnVector(int32_t index) const
     );
 #endif
 }
-
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE float Matrix4x4::det() const
+float Matrix4x4::det() const
 {
 #if defined(MAT4X4_SIMD)
-    AL_ASSERT_ALWAYS(false);
-    return 0.0f;
+    const float e11 = _mm_extract_ps_fast<0>(row0);
+    const float e12 = _mm_extract_ps_fast<1>(row0);
+    const float e13 = _mm_extract_ps_fast<2>(row0);
+    const float e14 = _mm_extract_ps_fast<3>(row0);
+    //
+    const float e21 = _mm_extract_ps_fast<0>(row1);
+    const float e22 = _mm_extract_ps_fast<1>(row1);
+    const float e23 = _mm_extract_ps_fast<2>(row1);
+    const float e24 = _mm_extract_ps_fast<3>(row1);
+    //
+    const float e31 = _mm_extract_ps_fast<0>(row2);
+    const float e32 = _mm_extract_ps_fast<1>(row2);
+    const float e33 = _mm_extract_ps_fast<2>(row2);
+    const float e34 = _mm_extract_ps_fast<3>(row2);
+    //
+    const float e41 = _mm_extract_ps_fast<0>(row3);
+    const float e42 = _mm_extract_ps_fast<1>(row3);
+    const float e43 = _mm_extract_ps_fast<2>(row3);
+    const float e44 = _mm_extract_ps_fast<3>(row3);
+    // 一列目を余因子展開
+    const float d1 =
+        Matrix3x3(
+            e22, e23, e24,
+            e32, e33, e34,
+            e42, e43, e44).det();
+    const float d2 =
+        Matrix3x3(
+            e21, e23, e24,
+            e31, e33, e34,
+            e41, e43, e44).det();
+    const float d3 =
+        Matrix3x3(
+            e21, e22, e24,
+            e31, e32, e34,
+            e41, e42, e44).det();
+    const float d4 =
+        Matrix3x3(
+            e21, e22, e23,
+            e31, e32, e33,
+            e41, e42, e43).det();
+    const float d =
+        +e11 * d1
+        - e12 * d2
+        + e13 * d3
+        - e14 * d4;
+    return d;
 #else
     // 一列目を余因子展開
     const float d1 =
@@ -2769,10 +2816,144 @@ INLINE float Matrix4x4::det() const
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE void Matrix4x4::inverse()
+void Matrix4x4::inverse()
 {
 #if defined(MAT4X4_SIMD)
-    AL_ASSERT_ALWAYS(false);
+    const float e11 = _mm_extract_ps_fast<0>(row0);
+    const float e12 = _mm_extract_ps_fast<1>(row0);
+    const float e13 = _mm_extract_ps_fast<2>(row0);
+    const float e14 = _mm_extract_ps_fast<3>(row0);
+    //
+    const float e21 = _mm_extract_ps_fast<0>(row1);
+    const float e22 = _mm_extract_ps_fast<1>(row1);
+    const float e23 = _mm_extract_ps_fast<2>(row1);
+    const float e24 = _mm_extract_ps_fast<3>(row1);
+    //
+    const float e31 = _mm_extract_ps_fast<0>(row2);
+    const float e32 = _mm_extract_ps_fast<1>(row2);
+    const float e33 = _mm_extract_ps_fast<2>(row2);
+    const float e34 = _mm_extract_ps_fast<3>(row2);
+    //
+    const float e41 = _mm_extract_ps_fast<0>(row3);
+    const float e42 = _mm_extract_ps_fast<1>(row3);
+    const float e43 = _mm_extract_ps_fast<2>(row3);
+    const float e44 = _mm_extract_ps_fast<3>(row3);
+    //
+    const float d = det();
+    const float id = 1.0f / d;
+    // 小行列(1行目)
+    const Matrix3x3 m11 =
+        Matrix3x3(
+            e22, e23, e24,
+            e32, e33, e34,
+            e42, e43, e44);
+    const Matrix3x3 m12 =
+        Matrix3x3(
+            e21, e23, e24,
+            e31, e33, e34,
+            e41, e43, e44);
+    const Matrix3x3 m13 =
+        Matrix3x3(
+            e21, e22, e24,
+            e31, e32, e34,
+            e41, e42, e44);
+    const Matrix3x3 m14 =
+        Matrix3x3(
+            e21, e22, e23,
+            e31, e32, e33,
+            e41, e42, e43);
+
+    // 小行列(2行目)
+    const Matrix3x3 m21 =
+        Matrix3x3(
+            e12, e13, e14,
+            e32, e33, e34,
+            e42, e43, e44);
+    const Matrix3x3 m22 =
+        Matrix3x3(
+            e11, e13, e14,
+            e31, e33, e34,
+            e41, e43, e44);
+    const Matrix3x3 m23 =
+        Matrix3x3(
+            e11, e12, e14,
+            e31, e32, e34,
+            e41, e42, e44);
+    const Matrix3x3 m24 =
+        Matrix3x3(
+            e11, e12, e13,
+            e31, e32, e33,
+            e41, e42, e43);
+
+    // 小行列(3行目)
+    const Matrix3x3 m31 =
+        Matrix3x3(
+            e12, e13, e14,
+            e22, e23, e24,
+            e42, e43, e44);
+    const Matrix3x3 m32 =
+        Matrix3x3(
+            e11, e13, e14,
+            e21, e23, e24,
+            e41, e43, e44);
+    const Matrix3x3 m33 =
+        Matrix3x3(
+            e11, e12, e14,
+            e21, e22, e24,
+            e41, e42, e44);
+    const Matrix3x3 m34 =
+        Matrix3x3(
+            e11, e12, e13,
+            e21, e22, e23,
+            e41, e42, e43);
+
+    // 小行列(4行目)
+    const Matrix3x3 m41 =
+        Matrix3x3(
+            e12, e13, e14,
+            e22, e23, e24,
+            e32, e33, e34);
+    const Matrix3x3 m42 =
+        Matrix3x3(
+            e11, e13, e14,
+            e21, e23, e24,
+            e31, e33, e34);
+    const Matrix3x3 m43 =
+        Matrix3x3(
+            e11, e12, e14,
+            e21, e22, e24,
+            e31, e32, e34);
+    const Matrix3x3 m44 =
+        Matrix3x3(
+            e11, e12, e13,
+            e21, e22, e23,
+            e31, e32, e33);
+    //
+    row0 = _mm_set_ps(
+        id * m11.det() * (+1.0f),
+        id * m21.det() * (-1.0f),
+        id * m31.det() * (+1.0f),
+        id * m41.det() * (-1.0f));
+    //
+    row1 = _mm_set_ps(
+        id * m12.det() * (-1.0f),
+        id * m22.det() * (+1.0f),
+        id * m32.det() * (-1.0f),
+        id * m42.det() * (+1.0f));
+    //
+    row2 = _mm_set_ps(
+        id * m13.det() * (+1.0f),
+        id * m23.det() * (-1.0f),
+        id * m33.det() * (+1.0f),
+        id * m43.det() * (-1.0f));
+
+
+    row2 = _mm_set_ps(
+        id * m14.det() * (-1.0f),
+        id * m24.det() * (+1.0f),
+        id * m34.det() * (-1.0f),
+        id * m44.det() * (+1.0f));
+
     return;
 #else
     const float d = det();

@@ -419,7 +419,7 @@ public:
     INLINE Vec3 invertedSafe(float defaultValue) const;
     INLINE Vec3 reflect(Vec3 v) const;
     //
-    INLINE float operator[](int32_t index) const; // TODO: FloatInVecにする
+    INLINE float operator[](int32_t index) const; // TODO: 削除する
     INLINE Vec3& operator=(const Vec3& other) = default;
 #if !defined(AL_MATH_USE_NO_SIMD)
     INLINE operator __m128() const { return xyz_; }
@@ -504,6 +504,12 @@ public:
     INLINE float y() const;
     INLINE float z() const;
     INLINE float w() const;
+    //
+    INLINE void zero();
+    INLINE bool isZero() const;
+    INLINE bool hasNan() const;
+    INLINE bool any() const;
+    INLINE bool all() const;
     // swizzle
 #include "swizzle_vec4.inl"
     //

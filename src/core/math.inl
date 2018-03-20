@@ -2160,13 +2160,13 @@ INLINE void Matrix3x3::transpose()
     std::swap(e13, e31);
     std::swap(e23, e32);
 #else
-    const __m128 tmp0 = _mm_shuffle_ps(row0, row1, 0x44);
-    const __m128 tmp2 = _mm_shuffle_ps(row0, row1, 0xEE);
-    const __m128 tmp1 = _mm_shuffle_ps(row2, row2, 0x44);
-    const __m128 tmp3 = _mm_shuffle_ps(row2, row2, 0xEE);
-    row0 = _mm_shuffle_ps(tmp0, tmp1, 0x88);
-    row1 = _mm_shuffle_ps(tmp0, tmp1, 0xDD);
-    row2 = _mm_shuffle_ps(tmp2, tmp3, 0x88);
+    const __m128 tmp0 = _mm_shuffle_ps(row0, row1, _MM_SHUFFLE(1, 0, 1, 0));
+    const __m128 tmp1 = _mm_shuffle_ps(row2, row2, _MM_SHUFFLE(1, 0, 1, 0));
+    const __m128 tmp2 = _mm_shuffle_ps(row0, row1, _MM_SHUFFLE(3, 2, 3, 2));
+    const __m128 tmp3 = _mm_shuffle_ps(row2, row2, _MM_SHUFFLE(3, 2, 3, 2));
+    row0 = _mm_shuffle_ps(tmp0, tmp1, _MM_SHUFFLE(2, 0, 2, 0));
+    row1 = _mm_shuffle_ps(tmp0, tmp1, _MM_SHUFFLE(3, 1, 3, 1));
+    row2 = _mm_shuffle_ps(tmp2, tmp3, _MM_SHUFFLE(2, 0, 2, 0));
 #endif
 }
 
@@ -2363,10 +2363,8 @@ INLINE void Matrix3x3::setRow(Vec3 v)
 -------------------------------------------------
 */
 INLINE Matrix4x4::Matrix4x4(_In_reads_(16) const float* es)
-{
-#if defined(MAT4X4_SIMD)
-    AL_ASSERT_ALWAYS(false);
-#else
+{   
+#if defined(AL_MATH_USE_NO_SIMD)
     e[0] = es[0];
     e[1] = es[1];
     e[2] = es[2];
@@ -2383,6 +2381,8 @@ INLINE Matrix4x4::Matrix4x4(_In_reads_(16) const float* es)
     e[13] = es[13];
     e[14] = es[14];
     e[15] = es[15];
+#else
+    AL_ASSERT_ALWAYS(false);
 #endif
 }
 
@@ -2392,63 +2392,18 @@ INLINE Matrix4x4::Matrix4x4(_In_reads_(16) const float* es)
 */
 INLINE Matrix4x4::Matrix4x4(const Matrix3x3& m33)
 {
-#if defined(MAT4X4_SIMD)
-    const __m128 oooz = _mm_set_ps(1.0f, 1.0f, 1.0f, 0.0f);
-    row0 = _mm_mul_ps(m33.row0, oooz);
-    row1 = _mm_mul_ps(m33.row1, oooz);
-    row2 = _mm_mul_ps(m33.row2, oooz);
-    row3 = _mm_set_ps(0.0f, 0.0f, 0.0f, 1.0f);
-#else
 #if defined(AL_MATH_USE_NO_SIMD)
     e11 = m33.e11; e12 = m33.e12; e13 = m33.e13; e14 = 0.0f;
     e21 = m33.e21; e22 = m33.e22; e23 = m33.e23; e24 = 0.0f;
     e31 = m33.e31; e32 = m33.e32; e33 = m33.e33; e34 = 0.0f;
     e41 = 0.0f;    e42 = 0.0f;    e43 = 0.0f;    e44 = 1.0f;
 #else
-    // w成分に0以外の値が入っていることがあり得ることに注意
-    ALIGN16 float ae[12];
-    _mm_store_ps(ae + 0, m33.row0);
-    _mm_store_ps(ae + 4, m33.row1);
-    _mm_store_ps(ae + 8, m33.row2);
-    //
-    e[0] = ae[0];
-    e[1] = ae[1];
-    e[2] = ae[2];
-    e[3] = 0.0f;
-    e[4] = ae[4];
-    e[5] = ae[5];
-    e[6] = ae[6];
-    e[7] = 0.0f;
-    e[8] = ae[8];
-    e[9] = ae[9];
-    e[10] = ae[10];
-    e[11] = 0.0f;
-    e[12] = 0.0f;
-    e[13] = 0.0f;
-    e[14] = 0.0f;
-    e[15] = 1.0f;
+    const Vec4 oooz = Vec4(1.0f, 1.0f, 1.0f, 0.0f);
+    row0 = _mm_mul_ps(m33.row0, oooz);
+    row1 = _mm_mul_ps(m33.row1, oooz);
+    row2 = _mm_mul_ps(m33.row2, oooz);
+    row3 = Vec4(0.0f, 0.0f, 0.0f, 1.0f);
 #endif
-#endif
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE void Matrix4x4::constructAsProjectionLH()
-{
-    // TODO: 実装
-    assert(false);
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE void Matrix4x4::constructAsRotationAxis()
-{
-    // TODO: 実装
-    assert(false);
 }
 
 /*
@@ -2457,12 +2412,7 @@ INLINE void Matrix4x4::constructAsRotationAxis()
 */
 INLINE void Matrix4x4::constructAsTranslation(Vec3 v)
 {
-#if defined(MAT4X4_SIMD)
-    row0 = _mm_set_ps(1.0f, 0.0f,0.0f,0.0f);
-    row1 = _mm_set_ps(0.0f, 1.0f, 0.0f, 0.0f);
-    row2 = _mm_set_ps(0.0f, 0.0f, 1.0f, 0.0f);
-    row3 = _mm_add_ps(_mm_mul_ps(v, _mm_set_ps(1.0f, 1.0f, 1.0f, 0.0f)), _mm_set_ps(0.0f, 0.0f, 0.0f, 1.0f));
-#else
+#if defined(AL_MATH_USE_NO_SIMD)
     const float x = v.x();
     const float y = v.y();
     const float z = v.z();
@@ -2470,6 +2420,11 @@ INLINE void Matrix4x4::constructAsTranslation(Vec3 v)
     e21 = 0.0f; e22 = 1.0f; e23 = 0.0f; e24 = 0.0f;
     e31 = 0.0f; e32 = 0.0f; e33 = 1.0f; e34 = 0.0f;
     e41 = x;    e42 = y;    e43 = z;    e44 = 1.0f;
+#else
+    row0 = _mm_set_ps(0.0f, 0.0f, 0.0f, 1.0f);
+    row1 = _mm_set_ps(0.0f, 0.0f, 1.0f, 0.0f);
+    row2 = _mm_set_ps(0.0f, 1.0f, 0.0f, 0.0f);
+    row3 = _mm_add_ps(_mm_mul_ps(v, _mm_set_ps(0.0f, 1.0f, 1.0f, 1.0f)), _mm_set_ps(1.0f, 0.0f, 0.0f, 0.0f));
 #endif
 }
 
@@ -2479,9 +2434,7 @@ INLINE void Matrix4x4::constructAsTranslation(Vec3 v)
 */
 INLINE void Matrix4x4::constructAsScale(Vec3 scale)
 {
-#if defined(MAT4X4_SIMD)
-    AL_ASSERT_ALWAYS(false);
-#else
+#if defined(AL_MATH_USE_NO_SIMD)
     const float sx = scale.x();
     const float sy = scale.y();
     const float sz = scale.z();
@@ -2489,8 +2442,14 @@ INLINE void Matrix4x4::constructAsScale(Vec3 scale)
     e21 = 0.0f; e22 = sy;   e23 = 0.0f; e24 = 0.0f;
     e31 = 0.0f; e32 = 0.0f; e33 = sz;   e34 = 0.0f;
     e41 = 0.0f; e42 = 0.0f; e43 = 0.0f; e44 = 1.0f;
+#else
+    row0 = _mm_mul_ps(scale, _mm_set_ps(0.0f, 0.0f, 0.0f, 1.0f));
+    row1 = _mm_mul_ps(scale, _mm_set_ps(0.0f, 0.0f, 1.0f, 0.0f));
+    row2 = _mm_mul_ps(scale, _mm_set_ps(0.0f, 1.0f, 0.0f, 0.0f));
+    row3 = _mm_set_ps(1.0f, 0.0f, 0.0f, 0.0f);
 #endif
 }
+
 
 /*
 -------------------------------------------------
@@ -2501,9 +2460,7 @@ http://www.euclideanspace.com/maths/geometry/rotations/conversions/angleToMatrix
 INLINE void Matrix4x4::constructAsRotation(Vec3 axis, float angle)
 {
     AL_ASSERT_DEBUG(axis.isNormalized());
-#if defined(MAT4X4_SIMD)
-    AL_ASSERT_ALWAYS(false);
-#else
+#if defined(AL_MATH_USE_NO_SIMD)
     //
     const float s = std::sinf(angle);
     const float c = std::cosf(angle);
@@ -2528,6 +2485,31 @@ INLINE void Matrix4x4::constructAsRotation(Vec3 axis, float angle)
     e21 = txy + sz; e22 = c + tyy;   e23 = tyz - sx; e24 = 0.0f;
     e31 = txz - sy; e32 = tyz + sx;  e33 = c + tzz;  e34 = 0.0f;
     e41 = 0.0f;     e42 = 0.0f;      e43 = 0.0f;     e44 = 1.0f;
+#else
+    // NOTE: 仮実装
+    const float s = std::sinf(angle);
+    const float c = std::cosf(angle);
+    const float t = 1.0f - c;
+    const float x = axis.x();
+    const float y = axis.y();
+    const float z = axis.z();
+    const float tx = t * x;
+    const float ty = t * y;
+    const float tz = t * z;
+    const float txx = tx * x;
+    const float txy = tx * y;
+    const float txz = tx * z;
+    const float tyy = ty * y;
+    const float tyz = ty * z;
+    const float tzz = tz * z;
+    const float sx = s * x;
+    const float sy = s * y;
+    const float sz = s * z;
+    //
+    row0 = _mm_set_ps(0.0f, txy + sy, txy - sz, c + txx);
+    row1 = _mm_set_ps(0.0f, tyz - sx, c + tyy, txy + sz);
+    row2 = _mm_set_ps(0.0f, c + tzz, tyz + sx, txz - sy);
+    row3 = _mm_set_ps(1.0f, 0.0f, 0.0f, 0.0f);
 #endif
 }
 
@@ -2539,10 +2521,24 @@ INLINE void Matrix4x4::constructAsViewMatrix(Vec3 origin,
     Vec3 target,
     Vec3 up)
 {
+    //
     const Vec3 zaxis = (target - origin).normalized();
     const Vec3 xaxis = Vec3::cross(up, zaxis).normalized();
     const Vec3 yaxis = Vec3::cross(zaxis, xaxis);
-#if defined(MAT4X4_SIMD)
+#if defined(AL_MATH_USE_NO_SIMD)
+    e11 = xaxis.x(); e12 = yaxis.x(); e13 = zaxis.x(); e14 = 0.0f;
+    e21 = xaxis.y(); e22 = yaxis.y(); e23 = zaxis.y(); e24 = 0.0f;
+    e31 = xaxis.z(); e32 = yaxis.z(); e33 = zaxis.z(); e34 = 0.0f;
+    e41 = -Vec3::dot(xaxis, origin);
+    e42 = -Vec3::dot(yaxis, origin);
+    e43 = -Vec3::dot(zaxis, origin);
+    e44 = 1.0f;
+#else
+    Matrix3x3 tmp;
+    tmp.row0 = xaxis;
+    tmp.row1 = yaxis;
+    tmp.row2 = zaxis;
+    tmp.transpose();
     row0 = xaxis;
     row1 = yaxis;
     row2 = zaxis;
@@ -2551,9 +2547,9 @@ INLINE void Matrix4x4::constructAsViewMatrix(Vec3 origin,
     const __m128 tmp2 = _mm_shuffle_ps(row0, row1, 0xEE);
     const __m128 tmp1 = _mm_shuffle_ps(row2, row2, 0x44);
     const __m128 tmp3 = _mm_shuffle_ps(row2, row2, 0xEE);
-    row0 = _mm_shuffle_ps(tmp0, tmp1, 0x88);
-    row1 = _mm_shuffle_ps(tmp0, tmp1, 0xDD);
-    row2 = _mm_shuffle_ps(tmp2, tmp3, 0x88);
+    row0 = _mm_mul_ps(_mm_shuffle_ps(tmp0, tmp1, 0x88), _mm_set_ps(0.0f, 1.0f, 1.0f, 1.0f));
+    row1 = _mm_mul_ps(_mm_shuffle_ps(tmp0, tmp1, 0xDD), _mm_set_ps(0.0f, 1.0f, 1.0f, 1.0f));
+    row2 = _mm_mul_ps(_mm_shuffle_ps(tmp2, tmp3, 0x88), _mm_set_ps(0.0f, 1.0f, 1.0f, 1.0f));
     // row3の計算
     const __m128 r30 = _mm_dp_ps(xaxis, origin, 0x7F);
     const __m128 r31 = _mm_dp_ps(yaxis, origin, 0x7F);
@@ -2564,14 +2560,6 @@ INLINE void Matrix4x4::constructAsViewMatrix(Vec3 origin,
     const __m128 tmp6 = _mm_shuffle_ps(tmp4, tmp5, _MM_SHUFFLE(2, 0, 2, 0));
     const __m128 neg = _mm_set_ps1(-1.0f);
     row3 = _mm_mul_ps(neg, tmp6);
-#else
-    e11 = xaxis.x(); e12 = yaxis.x(); e13 = zaxis.x(); e14 = 0.0f;
-    e21 = xaxis.y(); e22 = yaxis.y(); e23 = zaxis.y(); e24 = 0.0f;
-    e31 = xaxis.z(); e32 = yaxis.z(); e33 = zaxis.z(); e34 = 0.0f;
-    e41 = -Vec3::dot(xaxis, origin);
-    e42 = -Vec3::dot(yaxis, origin);
-    e43 = -Vec3::dot(zaxis, origin);
-    e44 = 1.0f;
 #endif
 }
 
@@ -2581,13 +2569,13 @@ INLINE void Matrix4x4::constructAsViewMatrix(Vec3 origin,
 */
 INLINE void Matrix4x4::fillZero()
 {
-#if defined(MAT4X4_SIMD)
-    AL_ASSERT_ALWAYS(false);
-#else
+#if defined(AL_MATH_USE_NO_SIMD)
     e11 = 0.0f; e12 = 0.0f; e13 = 0.0f; e14 = 0.0f;
     e21 = 0.0f; e22 = 0.0f; e23 = 0.0f; e24 = 0.0f;
     e31 = 0.0f; e32 = 0.0f; e33 = 0.0f; e34 = 0.0f;
     e41 = 0.0f; e42 = 0.0f; e43 = 0.0f; e44 = 1.0f;
+#else
+    AL_ASSERT_ALWAYS(false);
 #endif
 }
 
@@ -2597,17 +2585,17 @@ INLINE void Matrix4x4::fillZero()
 */
 INLINE void Matrix4x4::identity()
 {
-#if defined(MAT4X4_SIMD)
-    // NOTE: set_ps()直接は遅いかもしれない
-    row0 = _mm_set_ps(1.0f, 0.0f, 0.0f, 0.0f);
-    row1 = _mm_set_ps(0.0f, 1.0f, 0.0f, 0.0f);
-    row2 = _mm_set_ps(0.0f, 0.0f, 1.0f, 0.0f);
-    row3 = _mm_set_ps(0.0f, 0.0f, 0.0f, 1.0f);
-#else
+#if defined(AL_MATH_USE_NO_SIMD)
     e11 = 1.0f; e12 = 0.0f; e13 = 0.0f; e14 = 0.0f;
     e21 = 0.0f; e22 = 1.0f; e23 = 0.0f; e24 = 0.0f;
     e31 = 0.0f; e32 = 0.0f; e33 = 1.0f; e34 = 0.0f;
     e41 = 0.0f; e42 = 0.0f; e43 = 0.0f; e44 = 1.0f;
+#else
+    // NOTE: set_ps()直接は遅いかもしれない
+    row0 = _mm_set_ps(0.0f, 0.0f, 0.0f, 1.0f);
+    row1 = _mm_set_ps(0.0f, 0.0f, 1.0f, 0.0f);
+    row2 = _mm_set_ps(0.0f, 1.0f, 1.0f, 0.0f);
+    row3 = _mm_set_ps(1.0f, 0.0f, 0.0f, 0.0f);
 #endif
 }
 
@@ -2617,20 +2605,19 @@ INLINE void Matrix4x4::identity()
 */
 INLINE Vec3 Matrix4x4::transform(Vec3 v) const
 {
-#if defined(MAT4X4_SIMD)
-    __m128 tmp;
-    tmp = _mm_fmadd_ps(v.xxx(), rowVector(0), rowVector(3));
-    tmp = _mm_fmadd_ps(v.yyy(), rowVector(1), tmp);
-    tmp = _mm_fmadd_ps(v.zzz(), rowVector(2), tmp);
-    return tmp;
-#else
+#if defined(AL_MATH_USE_NO_SIMD)
     const Vec4 nv(v.x(), v.y(), v.z(), 1.0f);
     return
         Vec3(
             Vec4::dot(columnVector(0), nv),
             Vec4::dot(columnVector(1), nv),
             Vec4::dot(columnVector(2), nv));
-
+#else
+    __m128 tmp;
+    tmp = _mm_fmadd_ps(v.xxx(), row0, row3);
+    tmp = _mm_fmadd_ps(v.yyy(), row1, tmp);
+    tmp = _mm_fmadd_ps(v.zzz(), row2, tmp);
+    return tmp;
 #endif
 }
 
@@ -2640,15 +2627,15 @@ INLINE Vec3 Matrix4x4::transform(Vec3 v) const
 */
 INLINE Vec4 Matrix4x4::transform(Vec4 v) const
 {
-#if defined(MAT4X4_SIMD)
-    AL_ASSERT_ALWAYS(false);
-#else
+#if defined(AL_MATH_USE_NO_SIMD)
     return
         Vec4(
             Vec4::dot(columnVector(0), v),
             Vec4::dot(columnVector(1), v),
             Vec4::dot(columnVector(2), v),
             Vec4::dot(columnVector(3), v));
+#else
+    AL_ASSERT_ALWAYS(false);
 #endif
 }
 
@@ -2660,20 +2647,20 @@ RawVectorへのアクセス
 */
 INLINE const Vec4& Matrix4x4::operator [] (int32_t index) const
 {
-#if defined(MAT4X4_SIMD)
-    AL_ASSERT_ALWAYS(false);
-    switch(index)
-    {
-        case 0: return row0;
-        case 1: return row1;
-        case 2: return row2;
-        case 3: return row3;
-    }
-    AL_ASSERT_ALWAYS(false);
-    return row0;
-#else
+#if defined(AL_MATH_USE_NO_SIMD)
     AL_ASSERT_DEBUG(0 <= index && index <= 3);
     return *(Vec4*)(e + index * 4);
+#else
+    AL_ASSERT_ALWAYS(false);
+    switch (index)
+    {
+    case 0: return row0;
+    case 1: return row1;
+    case 2: return row2;
+    case 3: return row3;
+}
+    AL_ASSERT_ALWAYS(false);
+    return row0;
 #endif
 }
 
@@ -2685,27 +2672,12 @@ RowVectorへのアクセス
 */
 INLINE Vec4& Matrix4x4::operator [] (int32_t index)
 {
-#if defined(MAT4X4_SIMD)
-    AL_ASSERT_ALWAYS(false);
-    return Vec4(0.0f); // TODO: ローカル変数だからよくない
-#else
+#if defined(AL_MATH_USE_NO_SIMD)
     AL_ASSERT_DEBUG(0 <= index && index <= 3);
     return *(Vec4*)(e + index * 4);
-#endif
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE Vec4 Matrix4x4::rowVector(int32_t index) const
-{
-#if defined(MAT4X4_SIMD)
+#else
     AL_ASSERT_ALWAYS(false);
     return Vec4(0.0f); // TODO: ローカル変数だからよくない
-#else
-    AL_ASSERT_DEBUG(0 <= index && index <= 3);
-    return Vec4(e + index * 4);
 #endif
 }
 
@@ -2715,10 +2687,7 @@ INLINE Vec4 Matrix4x4::rowVector(int32_t index) const
 */
 INLINE Vec4 Matrix4x4::columnVector(int32_t index) const
 {
-#if defined(MAT4X4_SIMD)
-    AL_ASSERT_ALWAYS(false);
-    return Vec4(0.0f);
-#else
+#if defined(AL_MATH_USE_NO_SIMD)
     AL_ASSERT_DEBUG(0 <= index && index <= 3);
     return Vec4(
         *(&e11 + index),
@@ -2726,15 +2695,48 @@ INLINE Vec4 Matrix4x4::columnVector(int32_t index) const
         *(&e31 + index),
         *(&e41 + index)
     );
+#else
+    AL_ASSERT_ALWAYS(false);
+    return Vec4(0.0f);
 #endif
 }
+
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-float Matrix4x4::det() const
+INLINE float Matrix4x4::det() const
 {
-#if defined(MAT4X4_SIMD)
+#if defined(AL_MATH_USE_NO_SIMD)
+    // 一列目を余因子展開
+    const float d1 =
+        Matrix3x3(
+            e22, e23, e24,
+            e32, e33, e34,
+            e42, e43, e44).det();
+    const float d2 =
+        Matrix3x3(
+            e21, e23, e24,
+            e31, e33, e34,
+            e41, e43, e44).det();
+    const float d3 =
+        Matrix3x3(
+            e21, e22, e24,
+            e31, e32, e34,
+            e41, e42, e44).det();
+    const float d4 =
+        Matrix3x3(
+            e21, e22, e23,
+            e31, e32, e33,
+            e41, e42, e43).det();
+    const float d =
+        +e11 * d1
+        - e12 * d2
+        + e13 * d3
+        - e14 * d4;
+    return d;
+#else
+    // NOTE: 仮実装
     const float e11 = _mm_extract_ps_fast<0>(row0);
     const float e12 = _mm_extract_ps_fast<1>(row0);
     const float e13 = _mm_extract_ps_fast<2>(row0);
@@ -2781,34 +2783,6 @@ float Matrix4x4::det() const
         + e13 * d3
         - e14 * d4;
     return d;
-#else
-    // 一列目を余因子展開
-    const float d1 =
-        Matrix3x3(
-            e22, e23, e24,
-            e32, e33, e34,
-            e42, e43, e44).det();
-    const float d2 =
-        Matrix3x3(
-            e21, e23, e24,
-            e31, e33, e34,
-            e41, e43, e44).det();
-    const float d3 =
-        Matrix3x3(
-            e21, e22, e24,
-            e31, e32, e34,
-            e41, e42, e44).det();
-    const float d4 =
-        Matrix3x3(
-            e21, e22, e23,
-            e31, e32, e33,
-            e41, e42, e43).det();
-    const float d =
-        +e11 * d1
-        - e12 * d2
-        + e13 * d3
-        - e14 * d4;
-    return d;
 #endif
 }
 
@@ -2816,146 +2790,9 @@ float Matrix4x4::det() const
 -------------------------------------------------
 -------------------------------------------------
 */
-void Matrix4x4::inverse()
+INLINE void Matrix4x4::inverse()
 {
-#if defined(MAT4X4_SIMD)
-    const float e11 = _mm_extract_ps_fast<0>(row0);
-    const float e12 = _mm_extract_ps_fast<1>(row0);
-    const float e13 = _mm_extract_ps_fast<2>(row0);
-    const float e14 = _mm_extract_ps_fast<3>(row0);
-    //
-    const float e21 = _mm_extract_ps_fast<0>(row1);
-    const float e22 = _mm_extract_ps_fast<1>(row1);
-    const float e23 = _mm_extract_ps_fast<2>(row1);
-    const float e24 = _mm_extract_ps_fast<3>(row1);
-    //
-    const float e31 = _mm_extract_ps_fast<0>(row2);
-    const float e32 = _mm_extract_ps_fast<1>(row2);
-    const float e33 = _mm_extract_ps_fast<2>(row2);
-    const float e34 = _mm_extract_ps_fast<3>(row2);
-    //
-    const float e41 = _mm_extract_ps_fast<0>(row3);
-    const float e42 = _mm_extract_ps_fast<1>(row3);
-    const float e43 = _mm_extract_ps_fast<2>(row3);
-    const float e44 = _mm_extract_ps_fast<3>(row3);
-    //
-    const float d = det();
-    const float id = 1.0f / d;
-    // 小行列(1行目)
-    const Matrix3x3 m11 =
-        Matrix3x3(
-            e22, e23, e24,
-            e32, e33, e34,
-            e42, e43, e44);
-    const Matrix3x3 m12 =
-        Matrix3x3(
-            e21, e23, e24,
-            e31, e33, e34,
-            e41, e43, e44);
-    const Matrix3x3 m13 =
-        Matrix3x3(
-            e21, e22, e24,
-            e31, e32, e34,
-            e41, e42, e44);
-    const Matrix3x3 m14 =
-        Matrix3x3(
-            e21, e22, e23,
-            e31, e32, e33,
-            e41, e42, e43);
-
-    // 小行列(2行目)
-    const Matrix3x3 m21 =
-        Matrix3x3(
-            e12, e13, e14,
-            e32, e33, e34,
-            e42, e43, e44);
-    const Matrix3x3 m22 =
-        Matrix3x3(
-            e11, e13, e14,
-            e31, e33, e34,
-            e41, e43, e44);
-    const Matrix3x3 m23 =
-        Matrix3x3(
-            e11, e12, e14,
-            e31, e32, e34,
-            e41, e42, e44);
-    const Matrix3x3 m24 =
-        Matrix3x3(
-            e11, e12, e13,
-            e31, e32, e33,
-            e41, e42, e43);
-
-    // 小行列(3行目)
-    const Matrix3x3 m31 =
-        Matrix3x3(
-            e12, e13, e14,
-            e22, e23, e24,
-            e42, e43, e44);
-    const Matrix3x3 m32 =
-        Matrix3x3(
-            e11, e13, e14,
-            e21, e23, e24,
-            e41, e43, e44);
-    const Matrix3x3 m33 =
-        Matrix3x3(
-            e11, e12, e14,
-            e21, e22, e24,
-            e41, e42, e44);
-    const Matrix3x3 m34 =
-        Matrix3x3(
-            e11, e12, e13,
-            e21, e22, e23,
-            e41, e42, e43);
-
-    // 小行列(4行目)
-    const Matrix3x3 m41 =
-        Matrix3x3(
-            e12, e13, e14,
-            e22, e23, e24,
-            e32, e33, e34);
-    const Matrix3x3 m42 =
-        Matrix3x3(
-            e11, e13, e14,
-            e21, e23, e24,
-            e31, e33, e34);
-    const Matrix3x3 m43 =
-        Matrix3x3(
-            e11, e12, e14,
-            e21, e22, e24,
-            e31, e32, e34);
-    const Matrix3x3 m44 =
-        Matrix3x3(
-            e11, e12, e13,
-            e21, e22, e23,
-            e31, e32, e33);
-    //
-    row0 = _mm_set_ps(
-        id * m11.det() * (+1.0f),
-        id * m21.det() * (-1.0f),
-        id * m31.det() * (+1.0f),
-        id * m41.det() * (-1.0f));
-    //
-    row1 = _mm_set_ps(
-        id * m12.det() * (-1.0f),
-        id * m22.det() * (+1.0f),
-        id * m32.det() * (-1.0f),
-        id * m42.det() * (+1.0f));
-    //
-    row2 = _mm_set_ps(
-        id * m13.det() * (+1.0f),
-        id * m23.det() * (-1.0f),
-        id * m33.det() * (+1.0f),
-        id * m43.det() * (-1.0f));
-
-
-    row2 = _mm_set_ps(
-        id * m14.det() * (-1.0f),
-        id * m24.det() * (+1.0f),
-        id * m34.det() * (-1.0f),
-        id * m44.det() * (+1.0f));
-
-    return;
-#else
+#if defined(AL_MATH_USE_NO_SIMD)
     const float d = det();
     const float id = 1.0f / d;
     // 小行列(1行目)
@@ -3065,6 +2902,145 @@ void Matrix4x4::inverse()
     r.e44 = id * m44.det() * (+1.0f);
     // TODO: transposeが無駄なので最初からひっくり返しておく
     *this = r.transposed();
+#else
+    // NOTE: 仮実装
+    const float e11 = _mm_extract_ps_fast<0>(row0);
+    const float e12 = _mm_extract_ps_fast<1>(row0);
+    const float e13 = _mm_extract_ps_fast<2>(row0);
+    const float e14 = _mm_extract_ps_fast<3>(row0);
+    //
+    const float e21 = _mm_extract_ps_fast<0>(row1);
+    const float e22 = _mm_extract_ps_fast<1>(row1);
+    const float e23 = _mm_extract_ps_fast<2>(row1);
+    const float e24 = _mm_extract_ps_fast<3>(row1);
+    //
+    const float e31 = _mm_extract_ps_fast<0>(row2);
+    const float e32 = _mm_extract_ps_fast<1>(row2);
+    const float e33 = _mm_extract_ps_fast<2>(row2);
+    const float e34 = _mm_extract_ps_fast<3>(row2);
+    //
+    const float e41 = _mm_extract_ps_fast<0>(row3);
+    const float e42 = _mm_extract_ps_fast<1>(row3);
+    const float e43 = _mm_extract_ps_fast<2>(row3);
+    const float e44 = _mm_extract_ps_fast<3>(row3);
+    //
+    const float d = det();
+    const float id = 1.0f / d;
+
+    // 小行列(1行目)
+    const Matrix3x3 m11 =
+        Matrix3x3(
+            e22, e23, e24,
+            e32, e33, e34,
+            e42, e43, e44);
+    const Matrix3x3 m12 =
+        Matrix3x3(
+            e21, e23, e24,
+            e31, e33, e34,
+            e41, e43, e44);
+    const Matrix3x3 m13 =
+        Matrix3x3(
+            e21, e22, e24,
+            e31, e32, e34,
+            e41, e42, e44);
+    const Matrix3x3 m14 =
+        Matrix3x3(
+            e21, e22, e23,
+            e31, e32, e33,
+            e41, e42, e43);
+
+    // 小行列(2行目)
+    const Matrix3x3 m21 =
+        Matrix3x3(
+            e12, e13, e14,
+            e32, e33, e34,
+            e42, e43, e44);
+    const Matrix3x3 m22 =
+        Matrix3x3(
+            e11, e13, e14,
+            e31, e33, e34,
+            e41, e43, e44);
+    const Matrix3x3 m23 =
+        Matrix3x3(
+            e11, e12, e14,
+            e31, e32, e34,
+            e41, e42, e44);
+    const Matrix3x3 m24 =
+        Matrix3x3(
+            e11, e12, e13,
+            e31, e32, e33,
+            e41, e42, e43);
+
+    // 小行列(3行目)
+    const Matrix3x3 m31 =
+        Matrix3x3(
+            e12, e13, e14,
+            e22, e23, e24,
+            e42, e43, e44);
+    const Matrix3x3 m32 =
+        Matrix3x3(
+            e11, e13, e14,
+            e21, e23, e24,
+            e41, e43, e44);
+    const Matrix3x3 m33 =
+        Matrix3x3(
+            e11, e12, e14,
+            e21, e22, e24,
+            e41, e42, e44);
+    const Matrix3x3 m34 =
+        Matrix3x3(
+            e11, e12, e13,
+            e21, e22, e23,
+            e41, e42, e43);
+
+    // 小行列(4行目)
+    const Matrix3x3 m41 =
+        Matrix3x3(
+            e12, e13, e14,
+            e22, e23, e24,
+            e32, e33, e34);
+    const Matrix3x3 m42 =
+        Matrix3x3(
+            e11, e13, e14,
+            e21, e23, e24,
+            e31, e33, e34);
+    const Matrix3x3 m43 =
+        Matrix3x3(
+            e11, e12, e14,
+            e21, e22, e24,
+            e31, e32, e34);
+    const Matrix3x3 m44 =
+        Matrix3x3(
+            e11, e12, e13,
+            e21, e22, e23,
+            e31, e32, e33);
+    //
+    row0 = _mm_set_ps(
+        id * m41.det() * (-1.0f),
+        id * m31.det() * (+1.0f),
+        id * m21.det() * (-1.0f),
+        id * m11.det() * (+1.0f));
+    //
+    row1 = _mm_set_ps(
+        id * m42.det() * (+1.0f),
+        id * m32.det() * (-1.0f),
+        id * m22.det() * (+1.0f),
+        id * m12.det() * (-1.0f));
+    //
+    row2 = _mm_set_ps(
+        id * m43.det() * (-1.0f),
+        id * m33.det() * (+1.0f),
+        id * m23.det() * (-1.0f),
+        id * m13.det() * (+1.0f));
+
+
+    row3 = _mm_set_ps(
+        id * m44.det() * (+1.0f),
+        id * m34.det() * (-1.0f),
+        id * m24.det() * (+1.0f),
+        id * m14.det() * (-1.0f));
+
+    return;
 #endif
 }
 
@@ -3074,15 +3050,22 @@ void Matrix4x4::inverse()
 */
 INLINE void Matrix4x4::transpose()
 {
-#if defined(MAT4X4_SIMD)
-    AL_ASSERT_ALWAYS(false);
-#else
+#if defined(AL_MATH_USE_NO_SIMD)
     std::swap(e12, e21);
     std::swap(e13, e31);
     std::swap(e14, e41);
     std::swap(e23, e32);
     std::swap(e24, e42);
     std::swap(e34, e43);
+#else
+    const __m128 tmp0 = _mm_shuffle_ps(row0, row1, _MM_SHUFFLE(1, 0, 1, 0));
+    const __m128 tmp2 = _mm_shuffle_ps(row0, row1, _MM_SHUFFLE(3, 2, 3, 2));
+    const __m128 tmp1 = _mm_shuffle_ps(row2, row3, _MM_SHUFFLE(1, 0, 1, 0));
+    const __m128 tmp3 = _mm_shuffle_ps(row2, row3, _MM_SHUFFLE(3, 2, 3, 2));
+    row0 = _mm_shuffle_ps(tmp0, tmp1, _MM_SHUFFLE(2, 0, 2, 0));
+    row1 = _mm_shuffle_ps(tmp0, tmp1, _MM_SHUFFLE(3, 1, 3, 1));
+    row2 = _mm_shuffle_ps(tmp2, tmp3, _MM_SHUFFLE(2, 0, 2, 0));
+    row3 = _mm_shuffle_ps(tmp2, tmp3, _MM_SHUFFLE(3, 1, 3, 1));
 #endif
 }
 
@@ -3114,13 +3097,6 @@ INLINE Matrix4x4 Matrix4x4::transposed() const
 */
 INLINE Matrix3x3 Matrix4x4::extract3x3() const
 {
-#if defined(MAT4X4_SIMD)
-    Matrix3x3 m;
-    m.row0 = row0;
-    m.row1 = row1;
-    m.row2 = row2;
-    return m;
-#else
 #if defined(AL_MATH_USE_NO_SIMD)
     Matrix3x3 m;
     m.e11 = e11;
@@ -3134,11 +3110,11 @@ INLINE Matrix3x3 Matrix4x4::extract3x3() const
     m.e33 = e33;
     return m;
 #else
-    return Matrix3x3(
-        e11, e12, e13,
-        e21, e22, e23,
-        e31, e32, e33);
-#endif
+    Matrix3x3 m;
+    m.row0 = row0;
+    m.row1 = row1;
+    m.row2 = row2;
+    return m;
 #endif
 }
 
@@ -3148,10 +3124,7 @@ INLINE Matrix3x3 Matrix4x4::extract3x3() const
 */
 INLINE Matrix4x4 Matrix4x4::mul(const Matrix4x4& lhs, const Matrix4x4& rhs)
 {
-#if defined(MAT4X4_SIMD)
-    AL_ASSERT_ALWAYS(false);
-    return lhs;
-#else
+#if defined(AL_MATH_USE_NO_SIMD)
     Matrix4x4 r;
     r.e11 = lhs.e11 * rhs.e11 + lhs.e12 * rhs.e21 + lhs.e13 * rhs.e31 + lhs.e14 * rhs.e41;
     r.e12 = lhs.e11 * rhs.e12 + lhs.e12 * rhs.e22 + lhs.e13 * rhs.e32 + lhs.e14 * rhs.e42;
@@ -3174,6 +3147,36 @@ INLINE Matrix4x4 Matrix4x4::mul(const Matrix4x4& lhs, const Matrix4x4& rhs)
     r.e44 = lhs.e41 * rhs.e14 + lhs.e42 * rhs.e24 + lhs.e43 * rhs.e34 + lhs.e44 * rhs.e44;
     //
     return r;
+#else
+    Matrix4x4 tmp = rhs;
+    tmp.transpose();
+    // TODO: floatinvecのまま受けてシャッフルすべき
+    Matrix4x4 m;
+    m.row0 =
+        _mm_set_ps(
+            Vec4::dot(lhs.row0, tmp.row3),
+            Vec4::dot(lhs.row0, tmp.row2),
+            Vec4::dot(lhs.row0, tmp.row1),
+            Vec4::dot(lhs.row0, tmp.row0));
+    m.row1 =
+        _mm_set_ps(
+            Vec4::dot(lhs.row1, tmp.row3),
+            Vec4::dot(lhs.row1, tmp.row2),
+            Vec4::dot(lhs.row1, tmp.row1),
+            Vec4::dot(lhs.row1, tmp.row0));
+    m.row2 =
+        _mm_set_ps(
+            Vec4::dot(lhs.row2, tmp.row3),
+            Vec4::dot(lhs.row2, tmp.row2),
+            Vec4::dot(lhs.row2, tmp.row1),
+            Vec4::dot(lhs.row2, tmp.row0));
+    m.row3 =
+        _mm_set_ps(
+            Vec4::dot(lhs.row3, tmp.row3),
+            Vec4::dot(lhs.row3, tmp.row2),
+            Vec4::dot(lhs.row3, tmp.row1),
+            Vec4::dot(lhs.row3, tmp.row0));
+    return m;
 #endif
 }
 
@@ -3183,10 +3186,6 @@ INLINE Matrix4x4 Matrix4x4::mul(const Matrix4x4& lhs, const Matrix4x4& rhs)
 */
 INLINE Vec4 Matrix4x4::mul(const Vec4& v, const Matrix4x4& m)
 {
-#if defined(MAT4X4_SIMD)
-    AL_ASSERT_ALWAYS(false);
-    return v;
-#else
 #if defined(AL_MATH_USE_NO_SIMD)
     return
         Vec4(
@@ -3195,11 +3194,15 @@ INLINE Vec4 Matrix4x4::mul(const Vec4& v, const Matrix4x4& m)
             v.x() * m.e31 + v.y() * m.e32 + v.z() * m.e33 + v.w() * m.e34,
             v.x() * m.e41 + v.y() * m.e42 + v.z() * m.e43 + v.w() * m.e44);
 #else
-    AL_ASSERT_ALWAYS(false);
-    return Vec4();
-#endif
+    // TODO: floatinvecのまま受けてシャッフルすべき
+    const float x = Vec4::dot(v, m.row0);
+    const float y = Vec4::dot(v, m.row1);
+    const float z = Vec4::dot(v, m.row2);
+    const float w = Vec4::dot(v, m.row3);
+    return Vec4(x, y, z, w);
 #endif
 }
+
 
 /*
 -------------------------------------------------
@@ -3207,12 +3210,7 @@ INLINE Vec4 Matrix4x4::mul(const Vec4& v, const Matrix4x4& m)
 */
 INLINE Matrix4x4& Matrix4x4::operator=(const Matrix4x4 & other)
 {
-#if defined(MAT4X4_SIMD)
-    row0 = other.row0;
-    row1 = other.row1;
-    row2 = other.row2;
-    row3 = other.row3;
-#else
+#if defined(AL_MATH_USE_NO_SIMD)
     const float* oe = other.e;
     e[0] = oe[0];
     e[1] = oe[1];
@@ -3230,6 +3228,11 @@ INLINE Matrix4x4& Matrix4x4::operator=(const Matrix4x4 & other)
     e[13] = oe[13];
     e[14] = oe[14];
     e[15] = oe[15];
+#else
+    row0 = other.row0;
+    row1 = other.row1;
+    row2 = other.row2;
+    row3 = other.row3;
 #endif
     return *this;
 }
@@ -3240,9 +3243,11 @@ INLINE Matrix4x4& Matrix4x4::operator=(const Matrix4x4 & other)
 */
 INLINE Vec3 Matrix4x4::extractViewmatRight() const
 {
-#if defined(MAT4X4_SIMD)
-#else
+#if defined(AL_MATH_USE_NO_SIMD)
     return Vec3(e11, e21, e31);
+#else
+    AL_ASSERT_ALWAYS(false);
+    return Vec3();
 #endif
 }
 
@@ -3252,9 +3257,11 @@ INLINE Vec3 Matrix4x4::extractViewmatRight() const
  */
 INLINE Vec3 Matrix4x4::extractViewmatUp() const
 {
-#if defined(MAT4X4_SIMD)
-#else
+#if defined(AL_MATH_USE_NO_SIMD)
     return Vec3(e12, e22, e32);
+#else
+    AL_ASSERT_ALWAYS(false);
+    return Vec3();
 #endif
 }
 
@@ -3264,9 +3271,11 @@ INLINE Vec3 Matrix4x4::extractViewmatUp() const
  */
 INLINE Vec3 Matrix4x4::extractViewmatDir() const
 {
-#if defined(MAT4X4_SIMD)
-#else
+#if defined(AL_MATH_USE_NO_SIMD)
     return Vec3(e13, e23, e33);
+#else
+    AL_ASSERT_ALWAYS(false);
+    return Vec3();
 #endif
 }
 
@@ -3276,10 +3285,7 @@ INLINE Vec3 Matrix4x4::extractViewmatDir() const
 */
 INLINE static Matrix4x4 operator + (const Matrix4x4& lhs, const Matrix4x4& rhs)
 {
-#if defined(MAT4X4_SIMD)
-    AL_ASSERT_ALWAYS(false);
-    return lhs;
-#else
+#if defined(AL_MATH_USE_NO_SIMD)
     const float* e0 = lhs.e;
     const float* e1 = rhs.e;
     const float e[16] =
@@ -3302,6 +3308,9 @@ INLINE static Matrix4x4 operator + (const Matrix4x4& lhs, const Matrix4x4& rhs)
         e0[15] + e1[15],
     };
     return Matrix4x4(e);
+#else
+    AL_ASSERT_ALWAYS(false);
+    return lhs;
 #endif
 }
 

@@ -1,4 +1,4 @@
-﻿#include "math.hpp"
+#include "math.hpp"
 
 /*
 -------------------------------------------------
@@ -61,6 +61,16 @@ template<int32_t index>
 INLINE float _mm_extract_ps_fast(__m128 v)
 {
     return _mm_cvtss_f32(_mm_shuffle_ps(v, v, _MM_SHUFFLE(0, 0, 0, index)));
+}
+
+/*
+-------------------------------------------------
+ _mm_fmadd_ps()がXCodeだとAVX2にしてもでてこないので代替実装
+-------------------------------------------------
+*/
+INLINE __m128 _mm_fmadd_ps_compatible(__m128 v, __m128 m, __m128 a)
+{
+    return _mm_add_ps(_mm_mul_ps(v,m), a);
 }
 
 /*
@@ -2794,6 +2804,8 @@ INLINE void Matrix4x4::identity()
 #endif
 }
 
+
+
 /*
 -------------------------------------------------
 -------------------------------------------------
@@ -2809,9 +2821,9 @@ INLINE Vec3 Matrix4x4::transform(Vec3 v) const
             Vec4::dot(Vec4(e13, e23, e33, e43), nv));
 #else
     __m128 tmp;
-    tmp = _mm_fmadd_ps(v.xxx(), row0, row3);
-    tmp = _mm_fmadd_ps(v.yyy(), row1, tmp);
-    tmp = _mm_fmadd_ps(v.zzz(), row2, tmp);
+    tmp = _mm_fmadd_ps_compatible(v.xxx(), row0, row3);
+    tmp = _mm_fmadd_ps_compatible(v.yyy(), row1, tmp);
+    tmp = _mm_fmadd_ps_compatible(v.zzz(), row2, tmp);
     return tmp;
 #endif
 }

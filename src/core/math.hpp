@@ -595,18 +595,10 @@ Matrix4x4
 Row-Major/Row-Vectorの4x4行列
 -------------------------------------------------
 */
-// TODO: 移行が終わったらこのdefineは消す
-// #define MAT4X4_SIMD
-
 struct ALIGN16 Matrix4x4 AL_FINAL
 {
 public:
-#if defined(MAT4X4_SIMD)
-    __m128 row0;
-    __m128 row1;
-    __m128 row2;
-    __m128 row3;
-#else
+#if defined(AL_MATH_USE_NO_SIMD)
     union
     {
         ALIGN16 float e[16];
@@ -618,6 +610,11 @@ public:
             float e41, e42, e43, e44;
         };
     };
+#else
+    __m128 row0;
+    __m128 row1;
+    __m128 row2;
+    __m128 row3;
 #endif
 
 public:
@@ -626,8 +623,6 @@ public:
     Matrix4x4(Matrix4x4&& other) = default;
     Matrix4x4(const Matrix3x3& m33);
     Matrix4x4(_In_reads_(16) const float* es);
-    void constructAsProjectionLH();
-    void constructAsRotationAxis();
     void constructAsTranslation(Vec3 v);
     void constructAsScale(Vec3 scale);
     void constructAsRotation(Vec3 xyz_, float angle);
@@ -638,7 +633,6 @@ public:
     Vec4 transform(Vec4 v) const;
     const Vec4& operator[](int32_t index) const;
     Vec4& operator[](int32_t index);
-    Vec4 rowVector(int32_t index) const;
     Vec4 columnVector(int32_t index) const;
     float det() const;
     void inverse();

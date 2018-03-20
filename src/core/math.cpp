@@ -570,7 +570,7 @@ AL_TEST(Math, Quat)
 Mat4x4に関するテスト
 -------------------------------------------------
 */
-AL_TEST_IMM(Math, Mat4x4)
+AL_TEST(Math, Mat4x4)
 {
     const auto genRnd = []() -> Matrix4x4
     {

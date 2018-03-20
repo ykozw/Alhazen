@@ -630,7 +630,6 @@ public:
     void identity();
     Vec3 transform(Vec3 v) const;
     Vec4 transform(Vec4 v) const;
-    Vec4 columnVector(int32_t index) const;
     float det() const;
     void inverse();
     void transpose();

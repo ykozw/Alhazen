@@ -2090,11 +2090,7 @@ INLINE FloatInVec Vec4::length(Vec4 v)
 */
 INLINE FloatInVec Vec4::lengthSq(Vec4 v)
 {
-#if defined(AL_MATH_USE_NO_SIMD)
-    return (v.x_ * v.x_)+(v.y_ * v.y_)+(v.z_ * v.z_)+(v.w_ * v.w_);
-#elif defined(AL_MATH_USE_AVX2)
     return dot(v, v);
-#endif
 }
 
 /*
@@ -2181,10 +2177,91 @@ INLINE void Matrix3x3::identity()
     e21 = 0.0f; e22 = 1.0f; e23 = 0.0f;
     e31 = 0.0f; e32 = 0.0f; e33 = 1.0f;
 #else
-    // NOTE: set_ps()直接は遅いかもしれない
-    row0 = Vec3(1.0f, 0.0f, 0.0f, 0.0f);
-    row1 = Vec3(0.0f, 1.0f, 0.0f, 0.0f);
-    row2 = Vec3(0.0f, 0.0f, 1.0f, 0.0f);
+    row0 = Vec3(1.0f, 0.0f, 0.0f);
+    row1 = Vec3(0.0f, 1.0f, 0.0f);
+    row2 = Vec3(0.0f, 0.0f, 1.0f);
+#endif
+}
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE void Matrix3x3::zero()
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    AL_ASSERT_ALWAYS(false);
+#else
+    row0.zero();
+    row1.zero();
+    row2.zero();
+#endif
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE bool Matrix3x3::isZero() const
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    AL_ASSERT_ALWAYS(false);
+    return false;
+#else
+    return
+        row0.isZero() &&
+        row1.isZero() &&
+        row2.isZero();
+#endif
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE bool Matrix3x3::hasNan() const
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    AL_ASSERT_ALWAYS(false);
+    return false;
+#else
+    return
+        row0.hasNan() ||
+        row1.hasNan() ||
+        row2.hasNan();
+#endif
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE bool Matrix3x3::any() const
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    AL_ASSERT_ALWAYS(false);
+    return false;
+#else
+    return
+        row0.any() ||
+        row1.any() ||
+        row2.any();
+#endif
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE bool Matrix3x3::all() const
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    AL_ASSERT_ALWAYS(false);
+    return false;
+#else
+    return
+        row0.all() ||
+        row1.all() ||
+        row2.all();
 #endif
 }
 
@@ -2587,22 +2664,11 @@ INLINE void Matrix4x4::constructAsViewMatrix(Vec3 origin,
     e43 = -Vec3::dot(zaxis, origin);
     e44 = 1.0f;
 #else
-    Matrix3x3 tmp;
-    tmp.row0 = xaxis;
-    tmp.row1 = yaxis;
-    tmp.row2 = zaxis;
+    Matrix3x3 tmp(xaxis, yaxis, zaxis);
     tmp.transpose();
-    row0 = xaxis;
-    row1 = yaxis;
-    row2 = zaxis;
-    // transpose
-    const __m128 tmp0 = _mm_shuffle_ps(row0, row1, 0x44);
-    const __m128 tmp2 = _mm_shuffle_ps(row0, row1, 0xEE);
-    const __m128 tmp1 = _mm_shuffle_ps(row2, row2, 0x44);
-    const __m128 tmp3 = _mm_shuffle_ps(row2, row2, 0xEE);
-    row0 = _mm_mul_ps(_mm_shuffle_ps(tmp0, tmp1, 0x88), _mm_set_ps(0.0f, 1.0f, 1.0f, 1.0f));
-    row1 = _mm_mul_ps(_mm_shuffle_ps(tmp0, tmp1, 0xDD), _mm_set_ps(0.0f, 1.0f, 1.0f, 1.0f));
-    row2 = _mm_mul_ps(_mm_shuffle_ps(tmp2, tmp3, 0x88), _mm_set_ps(0.0f, 1.0f, 1.0f, 1.0f));
+    row0 = _mm_mul_ps(tmp.row0, Vec4(1.0f, 1.0f, 1.0f, 0.0f));
+    row1 = _mm_mul_ps(tmp.row1, Vec4(1.0f, 1.0f, 1.0f, 0.0f));
+    row2 = _mm_mul_ps(tmp.row2, Vec4(1.0f, 1.0f, 1.0f, 0.0f));
     // row3の計算
     const __m128 r30 = _mm_dp_ps(xaxis, origin, 0x7F);
     const __m128 r31 = _mm_dp_ps(yaxis, origin, 0x7F);
@@ -2620,7 +2686,7 @@ INLINE void Matrix4x4::constructAsViewMatrix(Vec3 origin,
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE void Matrix4x4::fillZero()
+INLINE void Matrix4x4::zero()
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     e11 = 0.0f; e12 = 0.0f; e13 = 0.0f; e14 = 0.0f;
@@ -2628,7 +2694,83 @@ INLINE void Matrix4x4::fillZero()
     e31 = 0.0f; e32 = 0.0f; e33 = 0.0f; e34 = 0.0f;
     e41 = 0.0f; e42 = 0.0f; e43 = 0.0f; e44 = 1.0f;
 #else
+    row0.zero();
+    row1.zero();
+    row2.zero();
+    row3.zero();
+#endif
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE bool Matrix4x4::isZero() const
+{
+#if defined(AL_MATH_USE_NO_SIMD)
     AL_ASSERT_ALWAYS(false);
+    return false;
+#else
+    return
+        row0.isZero() &&
+        row1.isZero() &&
+        row2.isZero() &&
+        row3.isZero();
+#endif
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE bool Matrix4x4::hasNan() const
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    AL_ASSERT_ALWAYS(false);
+    return false;
+#else
+    return
+        row0.hasNan() ||
+        row1.hasNan() ||
+        row2.hasNan() ||
+        row3.hasNan();
+#endif
+}
+
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE bool Matrix4x4::any() const
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    AL_ASSERT_ALWAYS(false);
+    return false;
+#else
+    return
+        row0.any() ||
+        row1.any() ||
+        row2.any() ||
+        row3.any();
+#endif
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE bool Matrix4x4::all() const
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    AL_ASSERT_ALWAYS(false);
+    return false;
+#else
+    return
+        row0.all() &&
+        row1.all() &&
+        row2.all() &&
+        row3.all();
 #endif
 }
 
@@ -3503,7 +3645,7 @@ INLINE Quat Quat::operator + (Quat other) const
 */
 INLINE Quat Quat::operator * (Quat q) const
 {
-    Quat p = *this;
+    const Quat p = *this;
     //
     const Vec3 pv = p.qv_;
     const float ps = p.qs_;
@@ -3516,475 +3658,3 @@ INLINE Quat Quat::operator * (Quat q) const
     return Quat(v, w);
 }
 
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE Vec3Pack8::Vec3Pack8(
-                            __m256 axs,
-                            __m256 ays,
-                            __m256 azs)
-:xs(axs), ys(ays), zs(azs)
-{}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE static __m256 combine128(__m128 a, __m128 b)
-{
-    const __m256 tmp = _mm256_castps128_ps256(a);
-    return _mm256_insertf128_ps(tmp, b, 1);
-}
-
-/*
--------------------------------------------------
-xyz_が8回連続で続くfloat配列からの構築
-参考: http://www.isus.jp/specials/3d-vector-normalization/
--------------------------------------------------
-*/
-INLINE void Vec3Pack8::set(
-                           // xyz_が8回
-                           float* xyz8)
-{
-    const __m128 x0y0z0x1 = _mm_load_ps(xyz8 + 0);
-    const __m128 y1z1x2y2 = _mm_load_ps(xyz8 + 4);
-    const __m128 z2x3y3z3 = _mm_load_ps(xyz8 + 8);
-    const __m128 x4y4z4x5 = _mm_load_ps(xyz8 + 12);
-    const __m128 y5z5x6y6 = _mm_load_ps(xyz8 + 16);
-    const __m128 z6x7y7z7 = _mm_load_ps(xyz8 + 20);
-    const __m256 x0y0z0x1x4y4z4x5 = combine128(x0y0z0x1, x4y4z4x5);
-    const __m256 y1z1x2y2y5z5x6y6 = combine128(y1z1x2y2, y5z5x6y6);
-    const __m256 z2x3y3z3z6x7y7z7 = combine128(z2x3y3z3, z6x7y7z7);
-    const __m256 x2y2x3y3x6y6x7y7 = _mm256_shuffle_ps(y1z1x2y2y5z5x6y6, z2x3y3z3z6x7y7z7, _MM_SHUFFLE(2, 1, 3, 2));
-    const __m256 y0z0y1z1y4z4y5z5 = _mm256_shuffle_ps(x0y0z0x1x4y4z4x5, y1z1x2y2y5z5x6y6, _MM_SHUFFLE(1, 0, 2, 1));
-    xs = _mm256_shuffle_ps(x0y0z0x1x4y4z4x5, x2y2x3y3x6y6x7y7, _MM_SHUFFLE(2, 0, 3, 0));
-    ys = _mm256_shuffle_ps(y0z0y1z1y4z4y5z5, x2y2x3y3x6y6x7y7, _MM_SHUFFLE(3, 1, 2, 0));
-    zs = _mm256_shuffle_ps(y0z0y1z1y4z4y5z5, z2x3y3z3z6x7y7z7, _MM_SHUFFLE(3, 0, 3, 1));
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE void Vec3Pack8::set(
-                           Vec3 v0,
-                           Vec3 v1,
-                           Vec3 v2,
-                           Vec3 v3,
-                           Vec3 v4,
-                           Vec3 v5,
-                           Vec3 v6,
-                           Vec3 v7)
-{
-#if defined(AL_MATH_USE_NO_SIMD)
-    assert(false);
-#elif defined(AL_MATH_USE_AVX2)
-    const __m256 x0y0z0w0_x4y4z4w4 = combine128(v0, v4);
-    const __m256 x1y1z1w1_x5y5z5w5 = combine128(v1, v5);
-    const __m256 x2y2z2w2_x6y6z6w6 = combine128(v2, v6);
-    const __m256 x3y3z3w3_x7y7z7w7 = combine128(v3, v7);
-    const __m256 x0x2y0y2_x4x6y4y6 = _mm256_unpacklo_ps(x0y0z0w0_x4y4z4w4, x2y2z2w2_x6y6z6w6);
-    const __m256 z0z2w0w2_z4z6w4w6 = _mm256_unpackhi_ps(x0y0z0w0_x4y4z4w4, x2y2z2w2_x6y6z6w6);
-    const __m256 x1x3y1y3_x5x7x5y7 = _mm256_unpacklo_ps(x1y1z1w1_x5y5z5w5, x3y3z3w3_x7y7z7w7);
-    const __m256 z1z3w1w3_z5z7w5w7 = _mm256_unpackhi_ps(x1y1z1w1_x5y5z5w5, x3y3z3w3_x7y7z7w7);
-    const __m256 x0x1x2x3_x4x5x6x7 = _mm256_unpacklo_ps(x0x2y0y2_x4x6y4y6, x1x3y1y3_x5x7x5y7);
-    const __m256 y0y1y2y3_y4y5y6y7 = _mm256_unpackhi_ps(x0x2y0y2_x4x6y4y6, x1x3y1y3_x5x7x5y7);
-    const __m256 z0z1z2z3_z4z5z6z7 = _mm256_unpacklo_ps(z0z2w0w2_z4z6w4w6, z1z3w1w3_z5z7w5w7);
-    xs = x0x1x2x3_x4x5x6x7;
-    ys = y0y1y2y3_y4y5y6y7;
-    zs = z0z1z2z3_z4z5z6z7;
-#endif
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE void Vec3Pack8::setZero()
-{
-#if defined(AL_MATH_USE_NO_SIMD)
-    assert(false);
-#elif defined(AL_MATH_USE_AVX2)
-    xs = _mm256_setzero_ps();
-    ys = _mm256_setzero_ps();
-    zs = _mm256_setzero_ps();
-#endif
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE Bool8 Vec3Pack8::isZero() const
-{
-#if defined(AL_MATH_USE_NO_SIMD)
-    assert(false);
-#elif defined(AL_MATH_USE_AVX2)
-    const __m256 zero = _mm256_setzero_ps();
-    const __m256 eqx = _mm256_cmp_ps(xs, zero, _CMP_EQ_OQ);
-    const __m256 eqy = _mm256_cmp_ps(xs, zero, _CMP_EQ_OQ);
-    const __m256 eqz = _mm256_cmp_ps(xs, zero, _CMP_EQ_OQ);
-    const __m256 tmp0 = _mm256_or_ps(eqx, eqy);
-    const __m256 tmp1 = _mm256_or_ps(tmp0, eqz);
-    return tmp1;
-#endif
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE Bool8 Vec3Pack8::hasNan() const
-{
-#if defined(AL_MATH_USE_NO_SIMD)
-    assert(false);
-#elif defined(AL_MATH_USE_AVX2)
-    const __m256 maskx = _mm256_cmp_ps(xs, xs, _CMP_NEQ_OQ);
-    const __m256 masky = _mm256_cmp_ps(ys, ys, _CMP_NEQ_OQ);
-    const __m256 maskz = _mm256_cmp_ps(zs, zs, _CMP_NEQ_OQ);
-    const __m256 tmp0 = _mm256_or_ps(maskx, masky);
-    const __m256 tmp1 = _mm256_or_ps(tmp0, maskz);
-    return tmp1;
-#endif
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE Vec3Pack8& Vec3Pack8::normalize()
-{
-#if defined(AL_MATH_USE_NO_SIMD)
-    assert(false);
-#elif defined(AL_MATH_USE_AVX2)
-    AL_ASSERT_ALWAYS(false);
-#if 0
-    const __m256 len = lengthSq();
-    const __m256 inv = _mm256_rsqrt_ps(len);
-    xs = _mm256_mul_ps(xs, inv);
-    ys = _mm256_mul_ps(ys, inv);
-    zs = _mm256_mul_ps(zs, inv);
-#endif
-#endif
-    return *this;
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE void Vec3Pack8::scale(float v)
-{
-#if defined(AL_MATH_USE_NO_SIMD)
-    assert(false);
-#elif defined(AL_MATH_USE_AVX2)
-    const __m256 vs = _mm256_set1_ps(v);
-    xs = _mm256_mul_ps(xs, vs);
-    ys = _mm256_mul_ps(ys, vs);
-    zs = _mm256_mul_ps(zs, vs);
-#endif
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE Bool8 Vec3Pack8::isNormalized() const
-{
-    return isNormalized(1.0e-5f);
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE Bool8 Vec3Pack8::isNormalized(float eps) const
-{
-#if defined(AL_MATH_USE_NO_SIMD)
-    assert(false);
-#elif defined(AL_MATH_USE_AVX2)
-    AL_ASSERT_ALWAYS(false);
-#if 0
-    const __m256 one = _mm256_set1_ps(1.0f);
-    const __m256 epss = _mm256_set1_ps(eps);
-    const __m256 dif = _mm256_sub_ps(length(), one);
-    const __m256 mask = _mm256_castsi256_ps(_mm256_set1_epi32(0x7FFFFFFF));
-    const __m256 difAbs = _mm256_and_ps(mask, dif);
-    const __m256 tmp = _mm256_cmp_ps(difAbs, epss, _CMP_LT_OQ);
-    return tmp;
-#endif
-    return Bool8();
-#endif
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE Float8 Vec3Pack8::length(const Vec3Pack8& v)
-{
-#if defined(AL_MATH_USE_NO_SIMD)
-    assert(false);
-#elif defined(AL_MATH_USE_AVX2)
-    return _mm256_sqrt_ps(lengthSq(v));
-#endif
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE Float8 Vec3Pack8::lengthSq(const Vec3Pack8& v)
-{
-#if defined(AL_MATH_USE_NO_SIMD)
-    assert(false);
-#elif defined(AL_MATH_USE_AVX2)
-    const __m256 xs = v.xs;
-    const __m256 ys = v.ys;
-    const __m256 zs = v.zs;
-    const __m256 xs2 = _mm256_dp_ps(xs, xs, 0xFF);
-    const __m256 ys2 = _mm256_dp_ps(ys, ys, 0xFF);
-    const __m256 zs2 = _mm256_dp_ps(zs, zs, 0xFF);
-    return _mm256_add_ps(_mm256_add_ps(xs2, ys2), zs2);
-#endif
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE Float8 Vec3Pack8::distance(const Vec3Pack8& lhs, const Vec3Pack8& rhs)
-{
-#if defined(AL_MATH_USE_NO_SIMD)
-    assert(false);
-#elif defined(AL_MATH_USE_AVX2)
-    return _mm256_sqrt_ps(distanceSq(lhs, rhs));
-#endif
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE Float8 Vec3Pack8::distanceSq(
-                                    const Vec3Pack8& lhs,
-                                    const Vec3Pack8& rhs)
-{
-#if !defined(WINDOWS)
-    AL_ASSERT_ALWAYS(false);
-    return Float8();
-#else
-    
-#if defined(AL_MATH_USE_NO_SIMD)
-    assert(false);
-#elif defined(AL_MATH_USE_AVX2)
-    const __m256 dx = _mm256_sub_ps(lhs.xs, rhs.xs);
-    const __m256 dy = _mm256_sub_ps(lhs.ys, rhs.ys);
-    const __m256 dz = _mm256_sub_ps(lhs.zs, rhs.zs);
-    return lengthSq({ dx, dy, dz });
-#endif
-#endif
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE Float8 Vec3Pack8::dot(
-                             const Vec3Pack8& lhs,
-                             const Vec3Pack8& rhs)
-{
-#if defined(AL_MATH_USE_NO_SIMD)
-    assert(false);
-#elif defined(AL_MATH_USE_AVX2)
-    const __m256 tmp0 = _mm256_mul_ps(lhs.xs, rhs.xs);
-    const __m256 tmp1 = _mm256_mul_ps(lhs.ys, rhs.ys);
-    const __m256 tmp2 = _mm256_mul_ps(lhs.zs, rhs.zs);
-    const __m256 tmp3 = _mm256_add_ps(tmp0, tmp1);
-    return _mm256_add_ps(tmp2, tmp3);
-#endif
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE static Vec3Pack8 cross(
-                              const Vec3Pack8& lhs,
-                              const Vec3Pack8& rhs)
-{
-#if defined(AL_MATH_USE_NO_SIMD)
-    assert(false);
-#elif defined(AL_MATH_USE_AVX2)
-    Vec3Pack8 ret;
-    ret.xs = _mm256_sub_ps(_mm256_mul_ps(lhs.ys, rhs.zs), _mm256_mul_ps(lhs.zs, rhs.ys));
-    ret.ys = _mm256_sub_ps(_mm256_mul_ps(lhs.zs, rhs.xs), _mm256_mul_ps(lhs.xs, rhs.zs));
-    ret.zs = _mm256_sub_ps(_mm256_mul_ps(lhs.xs, rhs.ys), _mm256_mul_ps(lhs.ys, rhs.xs));
-    return ret;
-#endif
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE static Vec3Pack8 operator + (const Vec3Pack8& lhs, const Vec3Pack8& rhs)
-{
-#if defined(AL_MATH_USE_NO_SIMD)
-    assert(false);
-#elif defined(AL_MATH_USE_AVX2)
-    Vec3Pack8 ret;
-    ret.xs = _mm256_add_ps(lhs.xs, rhs.xs);
-    ret.ys = _mm256_add_ps(lhs.ys, rhs.ys);
-    ret.zs = _mm256_add_ps(lhs.zs, rhs.zs);
-    return ret;
-#endif
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE static Vec3Pack8 operator - (const Vec3Pack8& lhs, const Vec3Pack8& rhs)
-{
-#if defined(AL_MATH_USE_NO_SIMD)
-    assert(false);
-#elif defined(AL_MATH_USE_AVX2)
-    Vec3Pack8 ret;
-    ret.xs = _mm256_sub_ps(lhs.xs, rhs.xs);
-    ret.ys = _mm256_sub_ps(lhs.ys, rhs.ys);
-    ret.zs = _mm256_sub_ps(lhs.zs, rhs.zs);
-    return ret;
-#endif
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE static Vec3Pack8 operator - (const Vec3Pack8& v)
-{
-#if defined(AL_MATH_USE_NO_SIMD)
-    assert(false);
-#elif defined(AL_MATH_USE_AVX2)
-    Vec3Pack8 ret;
-    const __m256 zero = _mm256_setzero_ps();
-    ret.xs = _mm256_sub_ps(zero, v.xs);
-    ret.ys = _mm256_sub_ps(zero, v.ys);
-    ret.zs = _mm256_sub_ps(zero, v.zs);
-    return ret;
-#endif
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE static Vec3Pack8& operator += (Vec3Pack8& lhs, const Vec3Pack8& rhs)
-{
-#if defined(AL_MATH_USE_NO_SIMD)
-    assert(false);
-#elif defined(AL_MATH_USE_AVX2)
-    lhs.xs = _mm256_add_ps(lhs.xs, rhs.xs);
-    lhs.ys = _mm256_add_ps(lhs.ys, rhs.ys);
-    lhs.zs = _mm256_add_ps(lhs.zs, rhs.zs);
-    return lhs;
-#endif
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE static Vec3Pack8& operator -= (Vec3Pack8& lhs, const Vec3Pack8& rhs)
-{
-#if defined(AL_MATH_USE_NO_SIMD)
-    assert(false);
-#elif defined(AL_MATH_USE_AVX2)
-    lhs.xs = _mm256_sub_ps(lhs.xs, rhs.xs);
-    lhs.ys = _mm256_sub_ps(lhs.ys, rhs.ys);
-    lhs.zs = _mm256_sub_ps(lhs.zs, rhs.zs);
-    return lhs;
-#endif
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE static Bool8 operator == (const Vec3Pack8& lhs, const Vec3Pack8& rhs)
-{
-#if defined(AL_MATH_USE_NO_SIMD)
-    assert(false);
-#elif defined(AL_MATH_USE_AVX2)
-    const __m256 tmp0 = _mm256_cmp_ps(lhs.xs, rhs.xs, _CMP_NEQ_OQ);
-    const __m256 tmp1 = _mm256_cmp_ps(lhs.ys, rhs.ys, _CMP_NEQ_OQ);
-    const __m256 tmp2 = _mm256_cmp_ps(lhs.zs, rhs.zs, _CMP_NEQ_OQ);
-    const __m256 tmp3 = _mm256_or_ps(tmp0, tmp1);
-    const __m256 tmp4 = _mm256_or_ps(tmp2, tmp3);
-    return tmp4;
-#endif
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE static Vec3Pack8 operator * (float f, const Vec3Pack8& v)
-{
-#if defined(AL_MATH_USE_NO_SIMD)
-    assert(false);
-#elif defined(AL_MATH_USE_AVX2)
-    const __m256 s = _mm256_set1_ps(f);
-    Vec3Pack8 ret;
-    ret.xs = _mm256_mul_ps(s, v.xs);
-    ret.ys = _mm256_mul_ps(s, v.ys);
-    ret.zs = _mm256_mul_ps(s, v.zs);
-    return ret;
-#endif
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE static Vec3Pack8 operator * (const Vec3Pack8& v, float f)
-{
-    return f * v;
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE static Vec3Pack8& operator *= (Vec3Pack8& v, float f)
-{
-#if defined(AL_MATH_USE_NO_SIMD)
-    assert(false);
-#elif defined(AL_MATH_USE_AVX2)
-    const __m256 s = _mm256_set1_ps(f);
-    v.xs = _mm256_mul_ps(s, v.xs);
-    v.ys = _mm256_mul_ps(s, v.ys);
-    v.zs = _mm256_mul_ps(s, v.zs);
-    return v;
-#endif
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE static Vec3Pack8 operator / (const Vec3Pack8& v, float f)
-{
-#if defined(AL_MATH_USE_NO_SIMD)
-    assert(false);
-#elif defined(AL_MATH_USE_AVX2)
-    const __m256 s = _mm256_set1_ps(1.0f / f);
-    Vec3Pack8 ret;
-    ret.xs = _mm256_mul_ps(s, v.xs);
-    ret.ys = _mm256_mul_ps(s, v.ys);
-    ret.zs = _mm256_mul_ps(s, v.zs);
-    return ret;
-#endif
-}

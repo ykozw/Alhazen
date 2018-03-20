@@ -563,6 +563,12 @@ public:
     Matrix3x3(Vec3 row0, Vec3 row1, Vec3 row2);
     void set(Vec3 row0, Vec3 row1, Vec3 row2);
     void identity();
+    void zero();
+    bool isZero() const;
+    bool hasNan() const;
+    bool any() const;
+    bool all() const;
+
     float det() const;
     void inverse();
     void transpose();
@@ -589,9 +595,9 @@ public:
         };
     };
 #else
-    __m128 row0;
-    __m128 row1;
-    __m128 row2;
+    Vec3 row0;
+    Vec3 row1;
+    Vec3 row2;
 #endif
 };
 
@@ -617,10 +623,10 @@ public:
         };
     };
 #else
-    __m128 row0;
-    __m128 row1;
-    __m128 row2;
-    __m128 row3;
+    Vec4 row0;
+    Vec4 row1;
+    Vec4 row2;
+    Vec4 row3;
 #endif
 
 public:
@@ -632,7 +638,11 @@ public:
     void constructAsScale(Vec3 scale);
     void constructAsRotation(Vec3 xyz_, float angle);
     void constructAsViewMatrix(Vec3 origin, Vec3 target, Vec3 up);
-    void fillZero();
+    void zero();
+    bool isZero() const;
+    bool hasNan() const;
+    bool any() const;
+    bool all() const;
     void identity();
     Vec3 transform(Vec3 v) const;
     Vec4 transform(Vec4 v) const;
@@ -686,80 +696,5 @@ public:
     Vec3 qv_;
     float qs_;
 };
-
-/*
- -------------------------------------------------
- Vec3x8のデータ構造
- -------------------------------------------------
- */
-struct ALIGN32 Vec3Pack8 AL_FINAL
-{
-public:
-    union
-    {
-        struct
-        {
-            __m256 xs; // xxxxxxxx
-            __m256 ys; // yyyyyyyy
-            __m256 zs; // zzzzzzzz
-        };
-        struct
-        {
-            float x8[8];
-            float y8[8];
-            float z8[8];
-        };
-    };
-
-public:
-    Vec3Pack8() = default;
-    Vec3Pack8(const Vec3Pack8& other) = default;
-    Vec3Pack8(Vec3Pack8&& other) = default;
-    Vec3Pack8(__m256 v0, __m256 v1, __m256 v2);
-    INLINE void set(
-      // xyz_が8回
-      float* xyzs);
-    INLINE void
-    set(Vec3 v0, Vec3 v1, Vec3 v2, Vec3 v3, Vec3 v4, Vec3 v5, Vec3 v6, Vec3 v7);
-    INLINE void setZero();
-    INLINE Bool8 isZero() const;
-    INLINE Bool8 hasNan() const;
-    INLINE Vec3Pack8& normalize();
-    INLINE void scale(float scale);
-    INLINE Bool8 isNormalized() const;
-    INLINE Bool8 isNormalized(float eps) const;
-    // INLINE Float8 length() const;
-    // INLINE Float8 lengthSq() const;
-    INLINE Bool8 isAllZero() const;
-    INLINE Vec3Pack8 inverted() const;
-    INLINE Vec3Pack8 invertedSafe(float defaultValue) const;
-    INLINE Vec3Pack8 reflect(Vec3 v) const;
-    INLINE Float8 operator[](int32_t index) const;
-
-    INLINE static Float8 length(const Vec3Pack8& v);
-    INLINE static Float8 lengthSq(const Vec3Pack8& v);
-    INLINE static Float8 distance(const Vec3Pack8& lhs, const Vec3Pack8& rhs);
-    INLINE static Float8 distanceSq(const Vec3Pack8& lhs, const Vec3Pack8& rhs);
-    INLINE static Float8 dot(const Vec3Pack8& lhs, const Vec3Pack8& rhs);
-    INLINE static Vec3Pack8 cross(const Vec3Pack8& lhs, const Vec3Pack8& rhs);
-};
-INLINE static Vec3Pack8
-operator+(const Vec3Pack8& lhs, const Vec3Pack8& rhs);
-INLINE static Vec3Pack8
-operator-(const Vec3Pack8& lhs, const Vec3Pack8& rhs);
-INLINE static Vec3Pack8
-operator-(const Vec3Pack8& v);
-INLINE static Vec3Pack8&
-operator+=(Vec3Pack8& lhs, const Vec3Pack8& rhs);
-INLINE static Vec3Pack8&
-operator-=(Vec3Pack8& lhs, const Vec3Pack8& rhs);
-INLINE static Bool8
-operator==(const Vec3Pack8& lhs, const Vec3Pack8& rhs);
-INLINE static Vec3Pack8 operator*(float f, const Vec3Pack8& v);
-INLINE static Vec3Pack8 operator*(const Vec3Pack8& v, float f);
-INLINE static Vec3Pack8&
-operator*=(Vec3Pack8& v, float factor);
-INLINE static Vec3Pack8
-operator/(const Vec3Pack8& v, float f);
 
 #include "math.inl"

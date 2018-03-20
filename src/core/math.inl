@@ -2362,34 +2362,6 @@ INLINE void Matrix3x3::setRow(Vec3 v)
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE Matrix4x4::Matrix4x4(_In_reads_(16) const float* es)
-{   
-#if defined(AL_MATH_USE_NO_SIMD)
-    e[0] = es[0];
-    e[1] = es[1];
-    e[2] = es[2];
-    e[3] = es[3];
-    e[4] = es[4];
-    e[5] = es[5];
-    e[6] = es[6];
-    e[7] = es[7];
-    e[8] = es[8];
-    e[9] = es[9];
-    e[10] = es[10];
-    e[11] = es[11];
-    e[12] = es[12];
-    e[13] = es[13];
-    e[14] = es[14];
-    e[15] = es[15];
-#else
-    AL_ASSERT_ALWAYS(false);
-#endif
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
 INLINE Matrix4x4::Matrix4x4(const Matrix3x3& m33)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
@@ -2421,10 +2393,10 @@ INLINE void Matrix4x4::constructAsTranslation(Vec3 v)
     e31 = 0.0f; e32 = 0.0f; e33 = 1.0f; e34 = 0.0f;
     e41 = x;    e42 = y;    e43 = z;    e44 = 1.0f;
 #else
-    row0 = _mm_set_ps(0.0f, 0.0f, 0.0f, 1.0f);
-    row1 = _mm_set_ps(0.0f, 0.0f, 1.0f, 0.0f);
-    row2 = _mm_set_ps(0.0f, 1.0f, 0.0f, 0.0f);
-    row3 = _mm_add_ps(_mm_mul_ps(v, _mm_set_ps(0.0f, 1.0f, 1.0f, 1.0f)), _mm_set_ps(1.0f, 0.0f, 0.0f, 0.0f));
+    row0 = Vec4(1.0f, 0.0f, 0.0f, 0.0f);
+    row1 = Vec4(0.0f, 1.0f, 0.0f, 0.0f);
+    row2 = Vec4(0.0f, 0.0f, 1.0f, 0.0f);
+    row3 = _mm_add_ps(_mm_mul_ps(v, Vec4(1.0f, 1.0f, 1.0f, 0.0f)), Vec4(0.0f, 0.0f, 0.0f, 1.0f));
 #endif
 }
 
@@ -2443,13 +2415,12 @@ INLINE void Matrix4x4::constructAsScale(Vec3 scale)
     e31 = 0.0f; e32 = 0.0f; e33 = sz;   e34 = 0.0f;
     e41 = 0.0f; e42 = 0.0f; e43 = 0.0f; e44 = 1.0f;
 #else
-    row0 = _mm_mul_ps(scale, _mm_set_ps(0.0f, 0.0f, 0.0f, 1.0f));
-    row1 = _mm_mul_ps(scale, _mm_set_ps(0.0f, 0.0f, 1.0f, 0.0f));
-    row2 = _mm_mul_ps(scale, _mm_set_ps(0.0f, 1.0f, 0.0f, 0.0f));
-    row3 = _mm_set_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    row0 = _mm_mul_ps(scale, Vec4(1.0f, 0.0f, 0.0f, 0.0f));
+    row1 = _mm_mul_ps(scale, Vec4(0.0f, 1.0f, 0.0f, 0.0f));
+    row2 = _mm_mul_ps(scale, Vec4(0.0f, 0.0f, 1.0f, 0.0f));
+    row3 = Vec4(0.0f, 0.0f, 0.0f, 1.0f);
 #endif
 }
-
 
 /*
 -------------------------------------------------
@@ -2636,48 +2607,6 @@ INLINE Vec4 Matrix4x4::transform(Vec4 v) const
             Vec4::dot(columnVector(3), v));
 #else
     AL_ASSERT_ALWAYS(false);
-#endif
-}
-
-/*
--------------------------------------------------
-operator[]
-RawVectorへのアクセス
--------------------------------------------------
-*/
-INLINE const Vec4& Matrix4x4::operator [] (int32_t index) const
-{
-#if defined(AL_MATH_USE_NO_SIMD)
-    AL_ASSERT_DEBUG(0 <= index && index <= 3);
-    return *(Vec4*)(e + index * 4);
-#else
-    AL_ASSERT_ALWAYS(false);
-    switch (index)
-    {
-    case 0: return row0;
-    case 1: return row1;
-    case 2: return row2;
-    case 3: return row3;
-}
-    AL_ASSERT_ALWAYS(false);
-    return row0;
-#endif
-}
-
-/*
--------------------------------------------------
-operator[]
-RowVectorへのアクセス
--------------------------------------------------
-*/
-INLINE Vec4& Matrix4x4::operator [] (int32_t index)
-{
-#if defined(AL_MATH_USE_NO_SIMD)
-    AL_ASSERT_DEBUG(0 <= index && index <= 3);
-    return *(Vec4*)(e + index * 4);
-#else
-    AL_ASSERT_ALWAYS(false);
-    return Vec4(0.0f); // TODO: ローカル変数だからよくない
 #endif
 }
 
@@ -3312,39 +3241,6 @@ INLINE static Matrix4x4 operator + (const Matrix4x4& lhs, const Matrix4x4& rhs)
     AL_ASSERT_ALWAYS(false);
     return lhs;
 #endif
-}
-
-/*
- -------------------------------------------------
- -------------------------------------------------
- */
-INLINE Matrix4x3::Matrix4x3(_In_reads_(12) const float* es)
-{
-    e11 = es[0]; e12 = es[1]; e13 = es[2]; e14 = es[3];
-    e21 = es[4]; e22 = es[5]; e23 = es[6]; e24 = es[7];
-    e31 = es[8]; e32 = es[9]; e33 = es[10]; e34 = es[11];
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE void Matrix4x3::fillZero()
-{
-    e11 = 0.0f; e12 = 0.0f; e13 = 0.0f; e14 = 0.0f;
-    e21 = 0.0f; e22 = 0.0f; e23 = 0.0f; e24 = 0.0f;
-    e31 = 0.0f; e32 = 0.0f; e33 = 0.0f; e34 = 0.0f;
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE void Matrix4x3::identity()
-{
-    e11 = 1.0f; e12 = 0.0f; e13 = 0.0f; e14 = 0.0f;
-    e21 = 0.0f; e22 = 1.0f; e23 = 0.0f; e24 = 0.0f;
-    e31 = 0.0f; e32 = 0.0f; e33 = 1.0f; e34 = 0.0f;
 }
 
 /*

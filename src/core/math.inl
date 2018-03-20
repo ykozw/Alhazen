@@ -558,7 +558,7 @@ INLINE BoolInVec Vec2::isZero() const
     return
     fabsf(x_) < d &&
     fabsf(y_) < d;
-#elif defined(AL_MATH_USE_AVX2)
+#else
     const __m128 zero = _mm_setzero_ps();
     const __m128 mask = _mm_cmpeq_ps(zero, xy_);
     return ((_mm_movemask_ps(mask) & 0x03) == 0x03);
@@ -1909,6 +1909,89 @@ INLINE float Vec4::w()const
 -------------------------------------------------
 -------------------------------------------------
 */
+INLINE void Vec4::zero()
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    x_ = 0.0f;
+    y_ = 0.0f;
+    z_ = 0.0f;
+    w_ = 0.0f;
+#else
+    xyzw_ = _mm_set_ps1(0.0f);
+#endif
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE bool Vec4::isZero() const
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    return
+        (x_ == 0.0f) &&
+        (y_ == 0.0f) &&
+        (z_ == 0.0f) &&
+        (w_ == 0.0f);
+#else
+    const __m128 zero = _mm_setzero_ps();
+    const __m128 mask = _mm_cmpeq_ps(zero, xyzw_);
+    return ((_mm_movemask_ps(mask) & 0x0F) == 0x0F);
+#endif
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE bool Vec4::hasNan() const
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    return
+        std::isnan(x_) ||
+        std::isnan(y_) ||
+        std::isnan(z_) ||
+        std::isnan(w_);
+#else
+    const __m128 mask = _mm_cmpeq_ps(xyzw_, xyzw_);
+    return (_mm_movemask_ps(mask) & 0x0F) != 0x0F;
+#endif
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE bool Vec4::any() const
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    return (x_ != 0.0f) || (y_ != 0.0f) || (z_ != 0.0f) || (w_ != 0.0f);
+#else
+    const __m128 zero = _mm_setzero_ps();
+    const __m128 mask = _mm_cmpeq_ps(zero, xyzw_);
+    return (_mm_movemask_ps(mask) & 0x0F) != 0x0F;
+#endif
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE bool Vec4::all() const
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    return (x_ != 0.0f) && (y_ != 0.0f) && (z_ != 0.0f) && (w_ != 0.0f);
+#else
+    const __m128 zero = _mm_setzero_ps();
+    const __m128 mask = _mm_cmpeq_ps(zero, xyzw_);
+    return (_mm_movemask_ps(mask) & 0x0F) == 0x00;
+#endif
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE FloatInVec Vec4::length() const
 {
     return Vec4::length(*this);
@@ -2562,10 +2645,10 @@ INLINE void Matrix4x4::identity()
     e41 = 0.0f; e42 = 0.0f; e43 = 0.0f; e44 = 1.0f;
 #else
     // NOTE: set_ps()直接は遅いかもしれない
-    row0 = _mm_set_ps(0.0f, 0.0f, 0.0f, 1.0f);
-    row1 = _mm_set_ps(0.0f, 0.0f, 1.0f, 0.0f);
-    row2 = _mm_set_ps(0.0f, 1.0f, 1.0f, 0.0f);
-    row3 = _mm_set_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    row0 = Vec4(1.0f, 0.0f, 0.0f, 0.0f);
+    row1 = Vec4(0.0f, 1.0f, 0.0f, 0.0f);
+    row2 = Vec4(0.0f, 0.0f, 1.0f, 0.0f);
+    row3 = Vec4(0.0f, 0.0f, 0.0f, 1.0f);
 #endif
 }
 

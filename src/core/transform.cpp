@@ -24,6 +24,11 @@ Transform::Transform(const ObjectProp& objectProp)
     // それぞれの逆行列を作成する
     toLocal_ = toWorld_.inversed();
     toLocalDir_ = toWorldDir_.inversed();
+    //
+    AL_ASSERT_DEBUG(!toWorld_.hasNan());
+    AL_ASSERT_DEBUG(!toLocal_.hasNan());
+    AL_ASSERT_DEBUG(!toWorldDir_.hasNan());
+    AL_ASSERT_DEBUG(!toLocalDir_.hasNan());
 }
 
 /*

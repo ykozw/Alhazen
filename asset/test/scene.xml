@@ -113,7 +113,7 @@
   <!--床-->
   <Shape type="RectangleShape">
       <transform name="toWorld">
-          <scale x = "2.0" y = "2.0" z = "0.0"/>
+          <scale x = "2.0" y = "2.0" z = "1.0"/>
           <rotate x = "1.0" y = "0.0" z = "0.0" angle = "90" />
           <translate x = "-0.0" y = "-0.5" z = "0.0"/>
       </transform>
@@ -123,7 +123,7 @@
   <!--天井-->
   <Shape type="RectangleShape">
       <transform name="toWorld">
-          <scale x = "2.0" y = "2.0" z = "0.0"/>
+          <scale x = "2.0" y = "2.0" z = "1.0"/>
           <rotate x = "1.0" y = "0.0" z = "0.0" angle = "-90" />
           <translate x = "0.0" y = "+1.5" z = "0.0"/>
       </transform>
@@ -133,7 +133,7 @@
   <!--奥の壁-->
   <Shape type="RectangleShape">
       <transform name="toWorld">
-          <scale x = "2.0" y = "2.0" z = "0.0"/>
+          <scale x = "2.0" y = "2.0" z = "1.0"/>
           <rotate x = "0.0" y = "0.0" z = "1.0" angle = "90" />
           <translate x = "0.0" y = "-0.0" z = "-1.0"/>
       </transform>
@@ -143,7 +143,7 @@
   <!--右の壁-->
   <Shape type="RectangleShape">
       <transform name="toWorld">
-          <scale x = "2.0" y = "2.0" z = "0.0"/>
+          <scale x = "2.0" y = "2.0" z = "1.0"/>
           <rotate x = "0.0" y = "1.0" z = "0.0" angle = "90" />
           <translate x = "1.0" y = "-0.0" z = "0.0"/>
       </transform>
@@ -153,7 +153,7 @@
   <!--左の壁-->
   <Shape type="RectangleShape">
       <transform name="toWorld">
-          <scale x = "2.0" y = "2.0" z = "0.0"/>
+          <scale x = "2.0" y = "2.0" z = "1.0"/>
           <rotate x = "0.0" y = "1.0" z = "0.0" angle = "-90" />
           <translate x = "-1.0" y = "0.0" z = "0.0"/>
       </transform>

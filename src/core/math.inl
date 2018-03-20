@@ -2094,15 +2094,14 @@ INLINE void Matrix3x3::set(
 INLINE void Matrix3x3::identity()
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    e11 = 1.0f; e12 = 0.0f; e13 = 0.0f; e14 = 0.0f;
-    e21 = 0.0f; e22 = 1.0f; e23 = 0.0f; e24 = 0.0f;
-    e31 = 0.0f; e32 = 0.0f; e33 = 1.0f; e34 = 0.0f;
-    e41 = 0.0f; e42 = 0.0f; e43 = 0.0f; e44 = 1.0f;
+    e11 = 1.0f; e12 = 0.0f; e13 = 0.0f;
+    e21 = 0.0f; e22 = 1.0f; e23 = 0.0f;
+    e31 = 0.0f; e32 = 0.0f; e33 = 1.0f;
 #else
     // NOTE: set_ps()直接は遅いかもしれない
-    row0 = _mm_set_ps(1.0f, 0.0f, 0.0f, 0.0f);
-    row1 = _mm_set_ps(0.0f, 1.0f, 0.0f, 0.0f);
-    row2 = _mm_set_ps(0.0f, 0.0f, 1.0f, 0.0f);
+    row0 = Vec3(1.0f, 0.0f, 0.0f, 0.0f);
+    row1 = Vec3(0.0f, 1.0f, 0.0f, 0.0f);
+    row2 = Vec3(0.0f, 0.0f, 1.0f, 0.0f);
 #endif
 }
 
@@ -2580,9 +2579,9 @@ INLINE Vec3 Matrix4x4::transform(Vec3 v) const
     const Vec4 nv(v.x(), v.y(), v.z(), 1.0f);
     return
         Vec3(
-            Vec4::dot(columnVector(0), nv),
-            Vec4::dot(columnVector(1), nv),
-            Vec4::dot(columnVector(2), nv));
+            Vec4::dot(Vec4(e11, e21, e31, e41), nv),
+            Vec4::dot(Vec4(e12, e22, e32, e42), nv),
+            Vec4::dot(Vec4(e13, e23, e33, e43), nv));
 #else
     __m128 tmp;
     tmp = _mm_fmadd_ps(v.xxx(), row0, row3);
@@ -2601,32 +2600,12 @@ INLINE Vec4 Matrix4x4::transform(Vec4 v) const
 #if defined(AL_MATH_USE_NO_SIMD)
     return
         Vec4(
-            Vec4::dot(columnVector(0), v),
-            Vec4::dot(columnVector(1), v),
-            Vec4::dot(columnVector(2), v),
-            Vec4::dot(columnVector(3), v));
+            Vec4::dot(Vec4(e11, e21, e31, e41), v),
+            Vec4::dot(Vec4(e12, e22, e32, e42), v),
+            Vec4::dot(Vec4(e13, e23, e33, e43), v),
+            Vec4::dot(Vec4(e14, e24, e34, e44), v));
 #else
     AL_ASSERT_ALWAYS(false);
-#endif
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-INLINE Vec4 Matrix4x4::columnVector(int32_t index) const
-{
-#if defined(AL_MATH_USE_NO_SIMD)
-    AL_ASSERT_DEBUG(0 <= index && index <= 3);
-    return Vec4(
-        *(&e11 + index),
-        *(&e21 + index),
-        *(&e31 + index),
-        *(&e41 + index)
-    );
-#else
-    AL_ASSERT_ALWAYS(false);
-    return Vec4(0.0f);
 #endif
 }
 

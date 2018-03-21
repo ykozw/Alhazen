@@ -655,7 +655,7 @@ public:
     static Matrix4x4 mul(const Matrix4x4& lhs, const Matrix4x4& rhs);
     static Vec4 mul(const Vec4& v, const Matrix4x4& m);
     Matrix4x4& operator=(const Matrix4x4& other);
-    
+
     // ViewMatrixからの取り出し
     Vec3 extractViewmatRight() const;
     Vec3 extractViewmatUp() const;

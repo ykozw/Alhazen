@@ -572,8 +572,7 @@ Mat4x4に関するテスト
 */
 AL_TEST(Math, Mat4x4)
 {
-    const auto genRnd = []() -> Matrix4x4
-    {
+    const auto genRnd = []() -> Matrix4x4 {
 
     };
 }

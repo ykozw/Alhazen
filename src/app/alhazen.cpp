@@ -1,4 +1,4 @@
-﻿#include "pch.hpp"
+#include "pch.hpp"
 #include "app/app.hpp"
 #include "app/alhazen.hpp"
 #include "integrator/integrator.hpp"
@@ -8,6 +8,7 @@
 #include "core/scene.hpp"
 #include "core/util.hpp"
 #include "core/parallelfor.hpp"
+#include "core/stats.hpp"
 
 /*
 -------------------------------------------------
@@ -37,6 +38,9 @@ Alhazen::runApp(const ArgConfig& config)
     int32_t filmNo = 0;
     uint32_t nextDevelopTime =
       g_timeUtil.elapseTimeInMs() + developIntervalInMs;
+    uint32_t nextStatPrintTime =
+    g_timeUtil.elapseTimeInMs() + 1000;
+    
     for (;;) {
         //
         if (taskNo >= totalTaskNum) {
@@ -44,10 +48,11 @@ Alhazen::runApp(const ArgConfig& config)
             break;
         }
         // レンダリング
-        const int32_t TASK_NUM_UNTILL_BY_JOIN = 2048;
+        const int32_t TASK_NUM_UNTILL_BY_JOIN = 512;
         parallelFor(
           TASK_NUM_UNTILL_BY_JOIN,
           [&](int32_t taskNoOffsetBegin, int32_t taskNoOffsetEnd) {
+              CounterStats::preParallel();
               //
               if (g_timeUtil.elapseTimeInMs() >= timeOutInMs) {
                   return;
@@ -76,7 +81,16 @@ Alhazen::runApp(const ArgConfig& config)
                       scene.developLDR("out.png", false);
 #endif
                   }
+                  
+                  //
+                  if(nextStatPrintTime < g_timeUtil.elapseTimeInMs())
+                  {
+                      nextStatPrintTime += 1000; // TODO: 複数回来ることがあり得る
+                      CounterStats::printStats(true);
+                  }
               }
+              //
+              CounterStats::postParallel();
           });
         logging("Render Task pushed (%08d->%08d)",
                 taskNo,

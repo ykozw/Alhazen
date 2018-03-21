@@ -1,5 +1,9 @@
-﻿#include "pch.hpp"
-#include "scenegeometory.hpp"
+#include "pch.hpp"
+#include "core/scenegeometory.hpp"
+#include "core/stats.hpp"
+
+//
+STATS_COUNTER("NumIsect", g_numIsect, "Rays");
 
 /*
 -------------------------------------------------
@@ -40,6 +44,7 @@ SceneGeometory::intersect(const Ray& ray,
                           bool skipLight,
                           _Inout_ Intersect* isect) const
 {
+    ++g_numIsect;
     bool isHit = false;
     // Shapeを巡回する
     for (auto& shape : shapes_) {

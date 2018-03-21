@@ -1,9 +1,12 @@
-﻿#include "pch.hpp"
+#include "pch.hpp"
 #include "core/scene.hpp"
 #include "core/object.hpp"
 #include "core/image.hpp"
 #include "core/util.hpp"
 #include "sensor/sensor.hpp"
+#include "core/stats.hpp"
+//
+STATS_COUNTER("NumSample", g_numSample, "Samples");
 
 /*
 -------------------------------------------------
@@ -179,6 +182,7 @@ Scene::render(int32_t taskNo)
             for (int32_t sampleNo = sampleBegin; sampleNo < sampleEnd;
                  ++sampleNo) {
                 sampler_->startSample(sampleNo);
+                ++g_numSample;
                 // SubPixelの生成
                 const Vec2 subPixelOffset = sampler_->get2d();
                 // TODO: フィルターインターフェイスからweightを取ってくる

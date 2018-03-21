@@ -1,10 +1,14 @@
-﻿#include "pch.hpp"
+#include "pch.hpp"
 #include "integrator.hpp"
 #include "core/orthonormalbasis.hpp"
 #include "bsdf/bsdf.hpp"
-
+#include "core/stats.hpp"
 //
 #include "core/object.hpp"
+
+
+//
+STATS_COUNTER("EvDirect", g_numEstimateOneLine, "Evals");
 
 /*
 -------------------------------------------------
@@ -249,6 +253,7 @@ PTSurfaceIntegrator::estimateOneLight(const SceneGeometory& scene,
                                       const LightPtr& light,
                                       SamplerPtr sampler)
 {
+    ++g_numEstimateOneLine;
     //
     BSDFPtr bsdf = isect.bsdf;
     /*

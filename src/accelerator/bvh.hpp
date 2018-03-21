@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "pch.hpp"
 #include "core/math.hpp"
@@ -6,9 +6,11 @@
 #include "core/bounding.hpp"
 #include "core/refarray.hpp"
 #include "shape/mesh.hpp"
+#include "shape/shape.hpp"
 
 /*
 -------------------------------------------------
+三角形メッシュ専用のBVH
 -------------------------------------------------
 */
 class BVHBase
@@ -89,6 +91,7 @@ private:
         // マテリアルID
         // MaterialId materialId;
     };
+    // TODO: 節であっても全てにv,n,tのデータがありフットプリントを逼迫しているので直す
     struct Node
     {
         // 枝であった場合の子のノードインデックス。葉の場合は全て-1が格納されている。
@@ -267,5 +270,38 @@ private:
 //
 // typedef BruteForceBVH BVH;
 typedef QBVH BVH;
+
+/*
+-------------------------------------------------
+AABBを返すもの専用のBVH
+-------------------------------------------------
+*/
+class ShapeBVH
+{
+public:
+    typedef std::vector<ShapePtr>::iterator ShapeListIte;
+public:
+    void construct(const std::vector<ShapePtr>& shapes);
+    bool intersect(const Ray& ray, _Inout_ Intersect* isect) const;
+    bool intersectSub(int32_t nodeIndex, const Ray& ray, _Inout_ Intersect* isect) const;
+private:
+    struct Node
+    {
+        // 枝であった場合の子のノードインデックス。葉の場合は全て-1が格納されている。
+        std::array<int32_t,2> childlen = {-1,-1};
+        // 葉であった場合の指し示すShape
+        ShapePtr shape;
+        // AABB
+        AABB aabb;
+    };
+private:
+    void constructSub(ShapeListIte begin,
+                      ShapeListIte end,
+                      std::vector<Node>& nodes,
+                      int32_t nodeIndex);
+    
+private:
+    std::vector<Node> nodes_;
+};
 
 #include "bvh.inl"

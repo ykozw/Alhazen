@@ -1,4 +1,4 @@
-﻿#include "pch.hpp"
+#include "pch.hpp"
 #include "accelerator/bvh.hpp"
 #include "shape/shape.hpp"
 #include "core/logging.hpp"
@@ -120,6 +120,7 @@ SimpleBVH::constructNode(int32_t nodeIndex,
     curNode.childlen[0] = -1;
     curNode.childlen[1] = -1;
     curNode.aabb.clear();
+    // TODO: 毎回全ての三角を見る必要はなく、子のAABBを合わせていけばよい
     for (int32_t triNo = 0; triNo < numTriangle; ++triNo) {
         curNode.aabb.addAABB(triangles[triNo].aabb);
     }
@@ -777,3 +778,94 @@ QBVH::maxDepth() const
 {
     return maxDepth_;
 }
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+void ShapeBVH::construct(const std::vector<ShapePtr>& aShapes)
+{
+    if(aShapes.empty())
+    {
+        return;
+    }
+    // コピー
+    std::vector<ShapePtr> shapes = aShapes;
+    nodes_.reserve(shapes.size() * 2 - 1);
+    nodes_.resize(1);
+    constructSub(shapes.begin(), shapes.end(), nodes_, 0);
+    
+#if 0
+    // テストで全てAABBの描画
+    for(auto& node : nodes_)
+    {
+        if(node.shape.get())
+        {
+            vdbmt_color_rnd();
+            vdbmt_aabb(node.aabb.min(), node.aabb.max());
+        }
+        
+    }
+#endif
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+void ShapeBVH::constructSub(ShapeListIte beginIte,
+                            ShapeListIte endIte,
+                            std::vector<Node>& nodes,
+                            int32_t nodeIndex)
+{
+    // 一つしかノードがない場合は子はなし
+    if( std::distance(beginIte,endIte) == 1 )
+    {
+        ShapePtr shape = *beginIte;
+        auto& curNode = nodes[nodeIndex];
+        curNode.aabb.clear();
+        curNode.aabb.addAABB(shape->aabb());
+        curNode.shape = shape;
+        return;
+    }
+    //
+    int32_t axis = -1;
+    // ソート
+    auto sortPred = [&axis](const ShapePtr& lhs, const ShapePtr& rhs) {
+        // AABBのcenter位置でソートする
+        // TODO: もっとましな方法があるならそれにする
+        Vec3 lhsc = lhs->aabb().center();
+        Vec3 rhsc = rhs->aabb().center();
+        return lhsc[axis] < rhsc[axis];
+    };
+    // HACK: 軸を適当に決めてしまっている。SAHでもするべき。
+    static int32_t axisNext = 0;
+    const int32_t bestAxis = (axisNext++) % 3;
+    const int32_t bestSplitIndex = std::distance(beginIte,endIte)/2;
+    // ソート
+    axis = bestAxis;
+    std::sort(beginIte, endIte, sortPred);
+    //
+    auto medIte = beginIte;
+    std::advance(medIte, bestSplitIndex);
+    //
+    AL_ASSERT_DEBUG(std::distance(beginIte,medIte) != 0);
+    AL_ASSERT_DEBUG(std::distance(endIte,medIte) != 0);
+    // 前半
+    nodes.resize(nodes.size() + 1);
+    const int32_t ch0 = int32_t(nodes.size()) - 1;
+    constructSub(beginIte, medIte, nodes, ch0);
+    // 後半
+    nodes.resize(nodes.size() + 1);
+    const int32_t ch1 = int32_t(nodes.size()) - 1;
+    constructSub(medIte, endIte, nodes, ch1);
+    //
+    auto& curNode = nodes[nodeIndex];
+    curNode.childlen[0] = ch0;
+    curNode.childlen[1] = ch1;
+    // 子のAABBの和が親のAABB
+    curNode.aabb.clear();
+    curNode.aabb.addAABB(nodes[curNode.childlen[0]].aabb);
+    curNode.aabb.addAABB(nodes[curNode.childlen[1]].aabb);
+}
+

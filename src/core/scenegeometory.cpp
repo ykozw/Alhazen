@@ -32,6 +32,16 @@ SceneGeometory::addLight(LightPtr light)
 -------------------------------------------------
 -------------------------------------------------
 */
+void SceneGeometory::buildScene()
+{
+    // BVHの作成
+    shapeBvh_.construct(shapes_);
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 const std::vector<LightPtr>&
 SceneGeometory::lights() const
 {
@@ -52,21 +62,8 @@ SceneGeometory::intersect(const Ray& ray,
     ++g_numIsect;
     //
     bool isHit = false;
-    // Shapeを巡回する
-    for (auto& shape : shapes_) {
-        // 衝突のたびにRayのtminが更新されるので最も近いShapeが得られる
-        if (shape->intersect(ray, isect)) {
-#if 1
-            AL_ASSERT_DEBUG(isect->bsdf);
-#else
-            if (!shape->hasMultiBSDFs()) {
-                isect->bsdf = shape->getBSDF();
-            }
-#endif
-            isect->sceneObject = shape.get();
-            isHit = true;
-        }
-    }
+    // shapeとの交差
+    isHit |= shapeBvh_.intersect(ray, isect);
 
     // Lightを巡回する
     if (!skipLight) {
@@ -148,3 +145,4 @@ SceneGeometory::aabb() const
     // NOTE: Lightは含んでいないことに注意
     return aabb;
 }
+

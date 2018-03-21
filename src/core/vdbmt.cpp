@@ -1,4 +1,4 @@
-﻿#include "pch.hpp"
+#include "pch.hpp"
 #include "core/vdbmt.hpp"
 #include "core/math.hpp"
 #include "core/util.hpp"
@@ -180,6 +180,19 @@ vdbmt_color(Vec3 aColor)
     auto& color = tls.color;
     color.value = aColor;
     color.dirty = true;
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+void vdbmt_color_rnd()
+{
+    const auto rndF = []() -> float
+    {
+        return float(double(rand()) / double(RAND_MAX));
+    };
+    vdbmt_color(Vec3(rndF(),rndF(),rndF()));
 }
 
 /*

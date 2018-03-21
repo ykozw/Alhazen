@@ -149,10 +149,9 @@ Transform::cameraOrigin() const
     const Vec3 ya = cameraUp();
     const Vec3 za = cameraDir();
     const auto& m = toWorld_;
-    const Vec3 org =
-        xa * _mm_extract_ps_fast<0>(m.row3) +
-        ya * _mm_extract_ps_fast<1>(m.row3) +
-        za * _mm_extract_ps_fast<2>(m.row3);
+    const Vec3 org = xa * _mm_extract_ps_fast<0>(m.row3) +
+                     ya * _mm_extract_ps_fast<1>(m.row3) +
+                     za * _mm_extract_ps_fast<2>(m.row3);
     return -org;
 #endif
 }
@@ -169,7 +168,9 @@ Transform::cameraUp() const
     return Vec3(m.e12, m.e22, m.e32);
 #else
     const auto& m = toWorld_;
-    return Vec3(_mm_extract_ps_fast<1>(m.row0), _mm_extract_ps_fast<1>(m.row1), _mm_extract_ps_fast<1>(m.row2));
+    return Vec3(_mm_extract_ps_fast<1>(m.row0),
+                _mm_extract_ps_fast<1>(m.row1),
+                _mm_extract_ps_fast<1>(m.row2));
 #endif
 }
 
@@ -185,7 +186,9 @@ Transform::cameraDir() const
     return Vec3(m.e13, m.e23, m.e33);
 #else
     const auto& m = toWorld_;
-    return Vec3(_mm_extract_ps_fast<2>(m.row0), _mm_extract_ps_fast<2>(m.row1), _mm_extract_ps_fast<2>(m.row2));
+    return Vec3(_mm_extract_ps_fast<2>(m.row0),
+                _mm_extract_ps_fast<2>(m.row1),
+                _mm_extract_ps_fast<2>(m.row2));
 #endif
 }
 
@@ -201,6 +204,8 @@ Transform::cameraRight() const
     return Vec3(m.e11, m.e21, m.e31);
 #else
     const auto& m = toWorld_;
-    return Vec3(_mm_extract_ps_fast<0>(m.row0), _mm_extract_ps_fast<0>(m.row1), _mm_extract_ps_fast<0>(m.row2));
+    return Vec3(_mm_extract_ps_fast<0>(m.row0),
+                _mm_extract_ps_fast<0>(m.row1),
+                _mm_extract_ps_fast<0>(m.row2));
 #endif
 }

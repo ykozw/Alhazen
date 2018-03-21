@@ -38,9 +38,8 @@ Alhazen::runApp(const ArgConfig& config)
     int32_t filmNo = 0;
     uint32_t nextDevelopTime =
       g_timeUtil.elapseTimeInMs() + developIntervalInMs;
-    uint32_t nextStatPrintTime =
-    g_timeUtil.elapseTimeInMs() + 1000;
-    
+    uint32_t nextStatPrintTime = g_timeUtil.elapseTimeInMs() + 1000;
+
     for (;;) {
         //
         if (taskNo >= totalTaskNum) {
@@ -81,11 +80,11 @@ Alhazen::runApp(const ArgConfig& config)
                       scene.developLDR("out.png", false);
 #endif
                   }
-                  
+
                   //
-                  if(nextStatPrintTime < g_timeUtil.elapseTimeInMs())
-                  {
-                      nextStatPrintTime += 1000; // TODO: 複数回来ることがあり得る
+                  if (nextStatPrintTime < g_timeUtil.elapseTimeInMs()) {
+                      nextStatPrintTime +=
+                        1000; // TODO: 複数回来ることがあり得る
                       CounterStats::printStats(true);
                   }
               }

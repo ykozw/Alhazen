@@ -6,7 +6,6 @@
 //
 #include "core/object.hpp"
 
-
 //
 STATS_COUNTER("EvDirect", g_numEstimateOneLine, "Evals");
 

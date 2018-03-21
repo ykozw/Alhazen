@@ -3,7 +3,10 @@
 #include "core/stats.hpp"
 
 //
-STATS_COUNTER("NumIsect", g_numIsect, "Rays");
+STATS_COUNTER("IsectTotal", g_numIsectTotal, "Rays");
+STATS_COUNTER("IsectIsect", g_numIsect, "Rays");
+STATS_COUNTER("IsectIsect", g_numIsectCheck, "Rays");
+STATS_COUNTER("IsectVisib", g_numIsectVisible, "Rays");
 
 /*
 -------------------------------------------------
@@ -44,7 +47,10 @@ SceneGeometory::intersect(const Ray& ray,
                           bool skipLight,
                           _Inout_ Intersect* isect) const
 {
+    //
+    ++g_numIsectTotal;
     ++g_numIsect;
+    //
     bool isHit = false;
     // Shapeを巡回する
     for (auto& shape : shapes_) {
@@ -87,6 +93,9 @@ SceneGeometory::intersect(const Ray& ray,
 bool
 SceneGeometory::intersectCheck(const Ray& ray, bool skipLight) const
 {
+    //
+    ++g_numIsectTotal;
+    ++g_numIsectCheck;
     // Shapeを巡回する
     for (auto& shape : shapes_) {
         if (shape->intersectCheck(ray)) {
@@ -114,6 +123,10 @@ SceneGeometory::intersectCheck(const Ray& ray, bool skipLight) const
 bool
 SceneGeometory::isVisible(const Vec3& p0, const Vec3& p1, bool skipLight) const
 {
+    // NOTE: g_numIsectTotalはダブルカウントになるのでカウントしない事
+    // ++g_numIsectTotal;
+    ++g_numIsectVisible;
+    //
     const Vec3 d = p1 - p0;
     Ray ray(p0, d);
     ray.maxt = d.length();

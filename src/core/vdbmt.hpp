@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "pch.hpp"
 
@@ -18,6 +18,8 @@ void
 vdbmt_aabb(Vec3 mn, Vec3 mx);
 void
 vdbmt_color(Vec3 color);
+void
+vdbmt_color_rnd();
 void
 vdbmt_label(const char* lbl);
 void

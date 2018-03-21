@@ -1,4 +1,4 @@
-﻿#include "pch.hpp"
+#include "pch.hpp"
 #include "bvh.hpp"
 #include "core/intersect.hpp"
 #include "shape/shape.hpp"
@@ -468,4 +468,45 @@ INLINE bool QBVH::intersectCheck(const Ray& ray) const
     Intersect ir;
     int8_t materialId;
     return intersect(ray, &ir, &materialId);
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE bool ShapeBVH::intersect(const Ray& ray, _Inout_ Intersect* isect) const
+{
+    return intersectSub(0, ray, isect);
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
+INLINE bool ShapeBVH::intersectSub(int32_t nodeIndex, const Ray& ray, _Inout_ Intersect* isect) const
+{
+    // スタック利用版
+    const auto& node = nodes_[nodeIndex];
+    // このAABBに交差しなければ終了
+    if (!node.aabb.intersectCheck(ray, isect->t))
+    {
+        return false;
+    }
+    // 葉の場合は、ノードの三角形と交差判定
+    else if (node.childlen[0] == -1)
+    {
+        const bool isHit = node.shape->intersect(ray, isect);
+        if(isHit)
+        {
+            isect->sceneObject = node.shape.get();
+        }
+        return isHit;
+    }
+    // 枝の場合は、子を見に行く
+    else
+    {
+        const bool h0 = intersectSub(node.childlen[0], ray, isect);
+        const bool h1 = intersectSub(node.childlen[1], ray, isect);
+        return h0 || h1;
+    }
 }

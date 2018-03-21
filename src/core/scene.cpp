@@ -73,6 +73,9 @@ Scene::Scene(const ObjectProp& objectProp)
         geometory_.addLight(newLight);
     }
     //
+    geometory_.buildScene();
+    
+    //
     const AABB aabb = geometory_.aabb();
     const Vec3 mn = aabb.min();
     const Vec3 mx = aabb.max();

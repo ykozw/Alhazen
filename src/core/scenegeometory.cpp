@@ -5,7 +5,7 @@
 //
 STATS_COUNTER("IsectTotal", g_numIsectTotal, "Rays");
 STATS_COUNTER("IsectIsect", g_numIsect, "Rays");
-STATS_COUNTER("IsectIsect", g_numIsectCheck, "Rays");
+STATS_COUNTER("IsectCheck", g_numIsectCheck, "Rays");
 STATS_COUNTER("IsectVisib", g_numIsectVisible, "Rays");
 
 /*

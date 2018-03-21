@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /*
  ------------------------------------------------
@@ -29,7 +29,11 @@ parallelFor(int32_t n, Fn&& jobFun)
     private:
         Fn& _fn;
     };
-    //
+    /*
+     isolated指定は、tbb::parallel_for()戻った後に
+     呼び出したスレッドに戻ってくる事を意味している。
+     これが指定されない場合は、TLSに保存している値に触れられなくなってしまうため指定している。
+     */
     tbb::task_group_context ctx(tbb::task_group_context::isolated);
     tbb::parallel_for(
       tbb::blocked_range<int32_t>(0, n), TbbAdapter(jobFun), ctx);

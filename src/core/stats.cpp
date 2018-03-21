@@ -80,7 +80,13 @@ CounterStats::addCounter(const std::string& title,
     newCI.counter = counter;
     newCI.preFun = preFun;
     newCI.postFun = postFun;
-    getCounterInfo().push_back(newCI);
+    // タイトル順でソート
+    auto& vec = getCounterInfo();
+    auto ite = std::lower_bound(vec.begin(), vec.end(), title, [](const CounterInfo& ci, const std::string& title)
+                     {
+                         return ci.title < title;
+                     });
+    vec.insert(ite, newCI);
 }
 
 /*
@@ -101,18 +107,18 @@ CounterStats::printStats(bool clearStats)
         const double counterPerSec = double(count) / (elapseTimeInMs)*1000.0;
         const double MCountPerSec = double(counterPerSec) / double(1000000);
         const double KCountPerSec = double(counterPerSec) / double(1000);
-        if (MCountPerSec > 1.0) {
-            logging("%10s: %2.1f M%s/sec",
+        if (MCountPerSec > 0.1) {
+            logging(" %-10s: %2.1f M%s/sec",
                     ci.title.c_str(),
                     MCountPerSec,
                     ci.unitName.c_str());
         } else if (KCountPerSec > 1.0) {
-            logging("%10s: %2.1f K%s/sec",
+            logging(" %-10s: %2.1f K%s/sec",
                     ci.title.c_str(),
                     KCountPerSec,
                     ci.unitName.c_str());
         } else {
-            logging("%10s: %lld %s/sec",
+            logging(" %-10s: %lld %s/sec",
                     ci.title.c_str(),
                     count,
                     ci.unitName.c_str());

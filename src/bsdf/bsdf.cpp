@@ -1,9 +1,10 @@
-﻿#include "pch.hpp"
+#include "pch.hpp"
 #include "core/object.hpp"
 #include "core/unittest.hpp"
 #include "core/floatstreamstats.hpp"
 #include "sampler/sampler.hpp"
 #include "bsdf/bsdf.hpp"
+#include "core/stats.hpp"
 
 REGISTER_OBJECT(BSDF, Lambertian);
 REGISTER_OBJECT(BSDF, Glass);
@@ -16,6 +17,11 @@ BSDFPtr BSDF::gray50 = std::make_shared<Lambertian>(
   Spectrum::createFromRGB({ { 0.50f, 0.50f, 0.50f } }, false));
 BSDFPtr BSDF::white = std::make_shared<Lambertian>(
   Spectrum::createFromRGB({ { 1.00f, 1.00f, 1.00f } }, false));
+
+//
+STATS_COUNTER("EvBsdfLamb", g_numEvalBsdfLambert, "Evals");
+STATS_COUNTER("EvPdfLamb", g_numEvalPdfLambert, "Evals");
+STATS_COUNTER("EvSampLamb", g_numSampleLambert, "Evals");
 
 /*
 -------------------------------------------------
@@ -565,6 +571,7 @@ Lambertian::Lambertian(const ObjectProp& objectProp)
 Spectrum
 Lambertian::bsdf(Vec3 localWo, Vec3 localWi) const
 {
+    ++g_numEvalBsdfLambert;
     // 同じ面で無い場合は0
     if (!sameHemisphere(localWo, localWi)) {
         return Spectrum(0.0f);
@@ -579,6 +586,7 @@ Lambertian::bsdf(Vec3 localWo, Vec3 localWi) const
 float
 Lambertian::pdf(Vec3 localWo, Vec3 localWi) const
 {
+    ++g_numEvalPdfLambert;
     // 同じ面で無い場合は0
     if (!sameHemisphere(localWo, localWi)) {
         return 0.0f;
@@ -601,6 +609,9 @@ Lambertian::bsdfSample(Vec3 localWo,
                        _Out_ Vec3* localWi,
                        _Out_ float* pdf) const
 {
+    //
+    ++g_numSampleLambert;
+    //
     float pdfHS;
     *localWi = sampler->getHemisphereCosineWeighted(&pdfHS);
     // 裏面の場合

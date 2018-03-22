@@ -24,20 +24,20 @@ public:
     //
     Spectrum radiance(const Ray& ray,
                       const SceneGeometory& scene,
-                      Sampler* sampler) override;
+                      Sampler* sampler) const override;
 
 private:
     Spectrum estimateDirectLight(const SceneGeometory& scene,
                                  const Intersect& isect,
                                  const OrthonormalBasis<>& local,
                                  const Vec3 localWo,
-                                 Sampler* sampler);
+                                 Sampler* sampler) const;
     Spectrum estimateOneLight(const SceneGeometory& scene,
                               const Intersect& isect,
                               const OrthonormalBasis<>& local,
                               const Vec3 localWo,
                               const LightPtr& light,
-                              Sampler* samler);
+                              Sampler* samler) const;
 
 private:
     BSDFPtr defaultBSDF_;
@@ -83,7 +83,7 @@ PTSurfaceIntegrator::preRendering(const SceneGeometory& scene,
 Spectrum
 PTSurfaceIntegrator::radiance(const Ray& screenRay,
                               const SceneGeometory& scene,
-                              Sampler* sampler)
+                              Sampler* sampler) const
 {
     //
     Spectrum throughput = Spectrum(1.0f);
@@ -173,7 +173,7 @@ PTSurfaceIntegrator::estimateDirectLight(const SceneGeometory& scene,
                                          const Intersect& isect,
                                          const OrthonormalBasis<>& local,
                                          const Vec3 localWo,
-                                         Sampler* sampler)
+                                         Sampler* sampler) const
 {
     switch (directLighitingLightSelectStrategy_) {
             // 全てのライトを評価
@@ -250,7 +250,7 @@ PTSurfaceIntegrator::estimateOneLight(const SceneGeometory& scene,
                                       const OrthonormalBasis<>& local,
                                       const Vec3 localWo,
                                       const LightPtr& light,
-                                      Sampler* sampler)
+                                      Sampler* sampler) const
 {
     ++g_numEstimateOneLine;
     //

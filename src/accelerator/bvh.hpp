@@ -285,9 +285,13 @@ public:
 public:
     void construct(const std::vector<ShapePtr>& shapes);
     bool intersect(const Ray& ray, Intersect* isect) const;
+    bool intersectCheck(const Ray& ray) const;
+    
+private:
     bool intersectSub(int32_t nodeIndex,
-                      const Ray& ray,
-                      Intersect* isect) const;
+        const Ray& ray,
+        Intersect* isect) const;
+    bool intersectCheckSub(int32_t nodeIndex, const Ray& ray) const;
 
 private:
     struct Node

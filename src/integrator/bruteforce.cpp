@@ -20,7 +20,7 @@ public:
     bool postRendering() override { return true; }
     Spectrum radiance(const Ray& ray,
                       const SceneGeometory& scene,
-                      Sampler* sampler) override;
+                      Sampler* sampler) const override;
 
 private:
 };
@@ -54,7 +54,7 @@ BruteForceIntegrator::preRendering(const SceneGeometory& scene,
 Spectrum
 BruteForceIntegrator::radiance(const Ray& screenRay,
                                const SceneGeometory& scene,
-                               Sampler* sampler)
+                               Sampler* sampler) const
 {
     //
     Spectrum throughput = Spectrum(1.0f);

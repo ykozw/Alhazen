@@ -25,5 +25,5 @@ public:
     virtual bool postRendering() = 0;
     virtual Spectrum radiance(const Ray& ray,
                               const SceneGeometory& scene,
-                              Sampler* sampler) = 0;
+                              Sampler* sampler) const = 0;
 };

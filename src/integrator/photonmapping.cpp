@@ -20,7 +20,7 @@ public:
     bool postRendering() override { return true; }
     Spectrum radiance(const Ray& ray,
                       const SceneGeometory& scene,
-                      Sampler* sampler) override;
+                      Sampler* sampler) const override;
 
 private:
     int32_t numPhoton_ = 0;
@@ -132,8 +132,9 @@ PMIntegrator::preRendering(const SceneGeometory& scene, AllBSDFList& bsdfList)
 Spectrum
 PMIntegrator::radiance(const Ray& screenRay,
                        const SceneGeometory& scene,
-                       Sampler* sampler)
+                       Sampler* sampler) const
 {
+#if 0
     // 適当に近いところにあるフォトンの数をそのまま輝度にする
     Intersect isect;
     const bool skipLight = true;
@@ -167,4 +168,6 @@ PMIntegrator::radiance(const Ray& screenRay,
     spectrum /= float(photons_.size());
 
     return spectrum;
+#endif
+    return Spectrum(0.0f);
 }

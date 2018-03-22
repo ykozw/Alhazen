@@ -17,7 +17,7 @@ public:
     bool postRendering() override { return true; }
     Spectrum radiance(const Ray& ray,
                       const SceneGeometory& scene,
-                      Sampler* sampler) override;
+                      Sampler* sampler) const override;
 
 private:
 };
@@ -39,7 +39,7 @@ DebugSurfaceIntegrator::DebugSurfaceIntegrator(const ObjectProp& objectProp)
 Spectrum
 DebugSurfaceIntegrator::radiance(const Ray& screenRay,
                                  const SceneGeometory& scene,
-                                 Sampler* sampler)
+                                 Sampler* sampler) const
 {
 #if 0   // UVデバッグ
     // 何もない場合は0を返す

@@ -18,7 +18,7 @@ public:
     bool postRendering() override { return true; }
     Spectrum radiance(const Ray& ray,
                       const SceneGeometory& scene,
-                      Sampler* sampler) override;
+                      Sampler* sampler) const override;
 
 private:
     int32_t sampleNum_ = 0;
@@ -52,7 +52,7 @@ AOSurfaceIntegrator::preRendering(const SceneGeometory& scene,
 Spectrum
 AOSurfaceIntegrator::radiance(const Ray& screenRay,
                               const SceneGeometory& scene,
-                              Sampler* sampler)
+                              Sampler* sampler) const
 {
     // 何もない場合は0を返す
     Intersect isect;

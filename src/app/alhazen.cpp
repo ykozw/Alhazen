@@ -46,6 +46,8 @@ Alhazen::runApp(const ArgConfig& config)
             logging("All tasks were consumed.");
             break;
         }
+        //
+        const auto startRenderTime = g_timeUtil.elapseTimeInMs();
         // レンダリング
         const int32_t TASK_NUM_UNTILL_BY_JOIN = 512;
         parallelFor(
@@ -82,18 +84,19 @@ Alhazen::runApp(const ArgConfig& config)
                   }
 
                   //
-                  if (nextStatPrintTime < g_timeUtil.elapseTimeInMs()) {
-                      nextStatPrintTime +=
-                        1000; // TODO: 複数回来ることがあり得る
-                      CounterStats::printStats(true);
-                  }
+                  //if (nextStatPrintTime < g_timeUtil.elapseTimeInMs()) {
+                  //    nextStatPrintTime +=
+                  //      1000; // TODO: 複数回来ることがあり得る
+                  //    CounterStats::printStats(true);
+                  //}
               }
               //
               CounterStats::postParallel();
           });
-        logging("Render Task pushed (%08d->%08d)",
+        logging("Render Task pushed (%08d->%08d) %d ms",
                 taskNo,
-                taskNo + TASK_NUM_UNTILL_BY_JOIN);
+                taskNo + TASK_NUM_UNTILL_BY_JOIN,
+                g_timeUtil.elapseTimeInMs() - startRenderTime);
         //
         taskNo += TASK_NUM_UNTILL_BY_JOIN;
     }

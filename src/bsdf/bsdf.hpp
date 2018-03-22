@@ -37,7 +37,7 @@ public:
     virtual float pdf(Vec3 localWo, Vec3 localWi) const = 0;
     virtual Spectrum bsdf(Vec3 localWo, Vec3 localWi) const = 0;
     virtual Spectrum bsdfSample(Vec3 localWo,
-                                SamplerPtr rng,
+                                Sampler* rng,
                                 _Out_ Vec3* localWi,
                                 _Out_ float* pdf) const = 0;
     Spectrum estimateTotalRefrectance(const int32_t sampleNum,
@@ -86,7 +86,7 @@ public:
     float pdf(Vec3 localWo, Vec3 localWi) const;
     Spectrum bsdf(Vec3 localWo, Vec3 localWi) const;
     Spectrum bsdfSample(Vec3 localWo,
-                        SamplerPtr sampler,
+                        Sampler* sampler,
                         _Out_ Vec3* localWi,
                         _Out_ float* pdf) const;
 
@@ -108,7 +108,7 @@ public:
     virtual float eval(Vec3 wh) = 0;
     virtual float pdf(Vec3 wo, Vec3 wi) = 0;
     virtual void sample(Vec3 wo,
-                        SamplerPtr sampler,
+                        Sampler* sampler,
                         _Out_ Vec3* wi,
                         _Out_ float* pdf) const = 0;
 };
@@ -126,7 +126,7 @@ public:
     float eval(Vec3 wh) override;
     float pdf(Vec3 wo, Vec3 wi) override;
     void sample(Vec3 wo,
-                SamplerPtr sampler,
+                Sampler* sampler,
                 _Out_ Vec3* wi,
                 _Out_ float* pdf) const override;
 
@@ -231,7 +231,7 @@ public:
     Spectrum bsdf(Vec3 localWo, Vec3 localWi) const override;
     float pdf(Vec3 localWo, Vec3 localWi) const override;
     Spectrum bsdfSample(Vec3 localWo,
-                        SamplerPtr sampler,
+                        Sampler* sampler,
                         _Out_ Vec3* localWi,
                         _Out_ float* pdf) const override;
 
@@ -250,7 +250,7 @@ public:
     float pdf(Vec3 localWo, Vec3 localWi) const override;
     Spectrum bsdf(Vec3 localWo, Vec3 localWi) const override;
     Spectrum bsdfSample(Vec3 localWo,
-                        SamplerPtr sampler,
+                        Sampler* sampler,
                         _Out_ Vec3* localWi,
                         _Out_ float* pdf) const override;
 
@@ -273,7 +273,7 @@ public:
     float pdf(Vec3 localWo, Vec3 localWi) const override;
     Spectrum bsdf(Vec3 localWo, Vec3 localWi) const override;
     Spectrum bsdfSample(Vec3 localWo,
-                        SamplerPtr sampler,
+                        Sampler* sampler,
                         _Out_ Vec3* localWi,
                         _Out_ float* pdf) const override;
 
@@ -294,7 +294,7 @@ public:
     float pdf(Vec3 localWo, Vec3 localWi) const override;
     Spectrum bsdf(Vec3 localWo, Vec3 localWi) const override;
     Spectrum bsdfSample(Vec3 localWo,
-                        SamplerPtr sampler,
+                        Sampler* sampler,
                         _Out_ Vec3* localWi,
                         _Out_ float* pdf) const override;
 
@@ -327,7 +327,7 @@ public:
                                  (2.f * NdotWh * NdotWi / WOdotWh)));
     }
     Spectrum bsdfSample(Vec3 localWo,
-                        SamplerPtr sampler,
+                        Sampler* sampler,
                         _Out_ Vec3* localWi,
                         _Out_ float* pdf) const override;
 
@@ -353,7 +353,7 @@ public:
     float pdf(Vec3 localWo, Vec3 localWi) const override;
     Spectrum bsdf(Vec3 localWo, Vec3 localWi) const override;
     Spectrum bsdfSample(Vec3 localWo,
-                        SamplerPtr sampler,
+                        Sampler* sampler,
                         _Out_ Vec3* localWi,
                         _Out_ float* pdf) const override;
 
@@ -376,7 +376,7 @@ public:
     float pdf(Vec3 localWo, Vec3 localWi) const override;
     Spectrum bsdf(Vec3 localWo, Vec3 localWi) const override;
     Spectrum bsdfSample(Vec3 localWo,
-                        SamplerPtr sampler,
+                        Sampler* sampler,
                         _Out_ Vec3* localWi,
                         _Out_ float* pdf) const override;
 
@@ -399,7 +399,7 @@ public:
     float pdf(Vec3 localWo, Vec3 localWi) const override;
     Spectrum bsdf(Vec3 localWo, Vec3 localWi) const override;
     Spectrum bsdfSample(Vec3 localWo,
-                        SamplerPtr sampler,
+                        Sampler* sampler,
                         _Out_ Vec3* localWi,
                         _Out_ float* pdf) const override;
 
@@ -423,7 +423,7 @@ public:
     float pdf(Vec3 localWo, Vec3 localWi) const override;
     Spectrum bsdf(Vec3 localWo, Vec3 localWi) const override;
     Spectrum bsdfSample(Vec3 localWo,
-                        SamplerPtr sampler,
+                        Sampler* sampler,
                         _Out_ Vec3* localWi,
                         _Out_ float* pdf) const override;
 
@@ -449,7 +449,7 @@ public:
     float pdf(Vec3 localWo, Vec3 localWi) const override;
     Spectrum bsdf(Vec3 localWo, Vec3 localWi) const override;
     Spectrum bsdfSample(Vec3 localWo,
-                        SamplerPtr sampler,
+                        Sampler* sampler,
                         _Out_ Vec3* localWi,
                         _Out_ float* pdf) const override;
 
@@ -489,7 +489,7 @@ public:
     float pdf(Vec3 localWo, Vec3 localWi) const override;
     Spectrum bsdf(Vec3 localWo, Vec3 localWi) const override;
     Spectrum bsdfSample(Vec3 localWo,
-                        SamplerPtr sampler,
+                        Sampler* sampler,
                         _Out_ Vec3* localWi,
                         _Out_ float* pdf) const override;
 

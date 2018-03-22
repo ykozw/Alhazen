@@ -24,20 +24,20 @@ public:
     //
     Spectrum radiance(const Ray& ray,
                       const SceneGeometory& scene,
-                      SamplerPtr sampler) override;
+                      Sampler* sampler) override;
 
 private:
     Spectrum estimateDirectLight(const SceneGeometory& scene,
                                  const Intersect& isect,
                                  const OrthonormalBasis<>& local,
                                  const Vec3 localWo,
-                                 SamplerPtr sampler);
+                                 Sampler* sampler);
     Spectrum estimateOneLight(const SceneGeometory& scene,
                               const Intersect& isect,
                               const OrthonormalBasis<>& local,
                               const Vec3 localWo,
                               const LightPtr& light,
-                              SamplerPtr samler);
+                              Sampler* samler);
 
 private:
     BSDFPtr defaultBSDF_;
@@ -83,7 +83,7 @@ PTSurfaceIntegrator::preRendering(const SceneGeometory& scene,
 Spectrum
 PTSurfaceIntegrator::radiance(const Ray& screenRay,
                               const SceneGeometory& scene,
-                              SamplerPtr sampler)
+                              Sampler* sampler)
 {
     //
     Spectrum throughput = Spectrum(1.0f);
@@ -173,7 +173,7 @@ PTSurfaceIntegrator::estimateDirectLight(const SceneGeometory& scene,
                                          const Intersect& isect,
                                          const OrthonormalBasis<>& local,
                                          const Vec3 localWo,
-                                         SamplerPtr sampler)
+                                         Sampler* sampler)
 {
     switch (directLighitingLightSelectStrategy_) {
             // 全てのライトを評価
@@ -250,7 +250,7 @@ PTSurfaceIntegrator::estimateOneLight(const SceneGeometory& scene,
                                       const OrthonormalBasis<>& local,
                                       const Vec3 localWo,
                                       const LightPtr& light,
-                                      SamplerPtr sampler)
+                                      Sampler* sampler)
 {
     ++g_numEstimateOneLine;
     //
@@ -290,7 +290,7 @@ PTSurfaceIntegrator::estimateOneLight(const SceneGeometory& scene,
     const SampleStrategy sampleStrategy = takeStragety(bsdf, light);
 
     // ライトのサンプリング
-    const auto lightSampling = [](SamplerPtr sampler,
+    const auto lightSampling = [](Sampler* sampler,
                                   LightPtr light,
                                   BSDFPtr bsdf,
                                   Vec3 isectPos,
@@ -338,7 +338,7 @@ PTSurfaceIntegrator::estimateOneLight(const SceneGeometory& scene,
         return spectrum;
     };
     // BSDFのサンプリング
-    const auto bsdfSampling = [](SamplerPtr sampler,
+    const auto bsdfSampling = [](Sampler* sampler,
                                  LightPtr light,
                                  BSDFPtr bsdf,
                                  Vec3 isectPos,

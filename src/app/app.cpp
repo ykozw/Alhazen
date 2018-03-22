@@ -1,4 +1,4 @@
-﻿#include "pch.hpp"
+#include "pch.hpp"
 #include "app/app.hpp"
 #include "core/util.hpp"
 #include "core/logging.hpp"
@@ -32,10 +32,6 @@ bool parseArgs(int32_t argc, char *argv[], ArgConfig &config)
         //
         switch (opt)
         {
-        case 'l':
-            config.dumpLensData =
-                true; // HACK: このオプションは要らないかもしれない
-            break;
         case 'f':
             config.floatException = true;
             break;
@@ -54,11 +50,10 @@ bool parseArgs(int32_t argc, char *argv[], ArgConfig &config)
 */
 int32_t App::run(int32_t argc, char *argv[])
 {
-#if defined(WINDOWS)
     // 高速化のため、Denormalized floating-pointは常に0にしておく。
     _MM_SET_FLUSH_ZERO_MODE(_MM_FLUSH_ZERO_ON);
     _MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON);
-#endif
+
     //
     ArgConfig config;
     if (!parseArgs(argc, argv, config))

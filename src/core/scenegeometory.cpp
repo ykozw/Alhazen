@@ -63,8 +63,20 @@ SceneGeometory::intersect(const Ray& ray,
     ++g_numIsect;
     //
     bool isHit = false;
+
+#if 0 // 総当たりの場合
+    // Shapeを巡回する
+    for (auto& shape : shapes_) {
+        // 衝突のたびにRayのtminが更新されるので最も近いShapeが得られる
+        if (shape->intersect(ray, isect)) {
+            isect->sceneObject = shape.get();
+            isHit = true;
+        }
+    }
+#else // BVHの場合(少ないShape数だと逆にこちらのほうが遅いことに注意)
     // shapeとの交差
     isHit |= shapeBvh_.intersect(ray, isect);
+#endif
 
     // Lightを巡回する
     if (!skipLight) {

@@ -830,21 +830,74 @@ ShapeBVH::constructSub(ShapeListIte beginIte,
     }
     //
     int32_t axis = -1;
-    // ソート
-    auto sortPred = [&axis](const ShapePtr& lhs, const ShapePtr& rhs) {
-        // AABBのcenter位置でソートする
-        // TODO: もっとましな方法があるならそれにする
-        Vec3 lhsc = lhs->aabb().center();
-        Vec3 rhsc = rhs->aabb().center();
-        return lhsc[axis] < rhsc[axis];
+
+    //
+    const auto sortShapes = [](ShapeListIte beginIte, ShapeListIte endIte, int32_t axis, int32_t splitIndex)
+    {
+        // ソート
+        auto sortPred = [&axis](const ShapePtr& lhs, const ShapePtr& rhs) {
+            // AABBのcenter位置でソートする
+            // TODO: もっとましな方法があるならそれにする
+            Vec3 lhsc = lhs->aabb().center();
+            Vec3 rhsc = rhs->aabb().center();
+            return lhsc[axis] < rhsc[axis];
+        };
+
+        // HACK: 軸を適当に決めてしまっている。SAHでもするべき。
+        static int32_t axisNext = 0;
+        const int32_t bestAxis = (axisNext++) % 3;
+        const int32_t bestSplitIndex = int32_t(std::distance(beginIte, endIte) / 2);
+        // ソート
+        axis = bestAxis;
+        std::sort(beginIte, endIte, sortPred);
     };
+
+#if 0
     // HACK: 軸を適当に決めてしまっている。SAHでもするべき。
     static int32_t axisNext = 0;
     const int32_t bestAxis = (axisNext++) % 3;
     const int32_t bestSplitIndex = int32_t(std::distance(beginIte, endIte) / 2);
+#else
+    // 軸方向を最も広がりがある方向にする
+    const auto getWideAxis = [](ShapeListIte beginIte, ShapeListIte endIte)
+    {
+        AABB aabbAll;
+        for (auto shapeIte = beginIte; shapeIte != endIte; ++shapeIte)
+        {
+            aabbAll.addAABB((*shapeIte)->aabb());
+        }
+        //
+        const Vec3 aabbSize = aabbAll.size();
+        if (aabbSize.x() < aabbSize.y())
+        {
+            if (aabbSize.y() < aabbSize.z())
+            {
+                return 2;
+            }
+            else
+            {
+                return 1;
+            }
+        }
+        else
+        {
+            if (aabbSize.x() < aabbSize.z())
+            {
+                return 2;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+    };
+    const int32_t bestAxis = getWideAxis(beginIte, endIte);
+    const int32_t bestSplitIndex = int32_t(std::distance(beginIte, endIte) / 2);
+#endif
+
     // ソート
-    axis = bestAxis;
-    std::sort(beginIte, endIte, sortPred);
+    sortShapes(beginIte, endIte, bestAxis, bestSplitIndex);
+
     //
     auto medIte = beginIte;
     std::advance(medIte, bestSplitIndex);

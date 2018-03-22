@@ -16,8 +16,7 @@
 /*
 -------------------------------------------------
 Scene
-このインスタンスはスレッド毎にshallow copyが生成されます。
-Samplerなど、スレッド毎に持っていた方が良いものは、新しく生成されます。
+render()などは複数のスレッドから同時に呼ばれることに注意
 -------------------------------------------------
 */
 class Scene AL_FINAL
@@ -41,7 +40,7 @@ private:
     TonemapperPtr tonemapper_ = nullptr;
     DenoiserPtr denoiser_ = nullptr;
     LTEIntegratorPtr integrator_ = nullptr;
-    SamplerPtr sampler_ = nullptr;
+    SamplerPtr sampler_ = nullptr; // false sharingが起きているのでなんとかする
     int32_t totalTaskNum_ = 0;
     // トーンマッピングされた画像
     ImageLDR tonemmappedImage_;

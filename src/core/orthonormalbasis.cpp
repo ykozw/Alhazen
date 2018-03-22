@@ -9,9 +9,7 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-template<typename Type>
-void
-testLocalCoord(Type localCoord)
+template <typename Type> void testLocalCoord(Type localCoord)
 {
     XorShift128 rng;
     FloatStreamStats dotErrorStats;
@@ -36,7 +34,8 @@ testLocalCoord(Type localCoord)
     // const auto startTime = std::chrono::system_clock::now();
 
     //
-    for (const Vec3 n : ns) {
+    for (const Vec3 n : ns)
+    {
         localCoord.set(n);
 #if 1
         const Vec3 s = localCoord.getS();
@@ -50,8 +49,9 @@ testLocalCoord(Type localCoord)
     }
     // const uint32_t elapsed = timeGetTime() - start;
     // printf("Elapsed: %d\n", elapsed);
-    logging(
-      "dot error    max:%g mean:%g", dotErrorStats.max(), dotErrorStats.mean());
+    logging("dot error    max:%g mean:%g",
+            dotErrorStats.max(),
+            dotErrorStats.mean());
     logging("length error max:%g mean:%g",
             lengthErrorStats.max(),
             lengthErrorStats.mean());

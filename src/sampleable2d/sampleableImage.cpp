@@ -10,7 +10,7 @@
 class SampleableImage AL_FINAL : public Sampleable2d
 {
 public:
-    SampleableImage(const ObjectProp& prop);
+    SampleableImage(const ObjectProp &prop);
     virtual Spectrum sample(float u, float v) override;
 
 private:
@@ -22,10 +22,10 @@ REGISTER_OBJECT(Sampleable2d, SampleableImage);
 -------------------------------------------------
 -------------------------------------------------
 */
-SampleableImage::SampleableImage(const ObjectProp& prop)
+SampleableImage::SampleableImage(const ObjectProp &prop)
 {
     const std::string fileName =
-      prop.findChildBy("name", "fileName").asString("none");
+        prop.findChildBy("name", "fileName").asString("none");
     const float gamma = 2.2f; // FIXME: objectPropから取り出すようにする
     image_.readBmp(fileName, gamma);
 }
@@ -34,8 +34,7 @@ SampleableImage::SampleableImage(const ObjectProp& prop)
 -------------------------------------------------
 -------------------------------------------------
 */
-Spectrum
-SampleableImage::sample(float u, float v)
+Spectrum SampleableImage::sample(float u, float v)
 {
     return image_.sample(u, v);
 }

@@ -5,10 +5,11 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-Shape::Shape(const ObjectProp& prop)
+Shape::Shape(const ObjectProp &prop)
 {
     // マテリアル名を取得(単体のマテリアルのみの場合)
-    if (!hasMultiBSDFs()) {
+    if (!hasMultiBSDFs())
+    {
         bsdfName_ = prop.findChildBy("name", "bsdf").asString("none");
     }
 }
@@ -17,15 +18,16 @@ Shape::Shape(const ObjectProp& prop)
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-Shape::setBSDF(AllBSDFList bsdfs)
+void Shape::setBSDF(AllBSDFList bsdfs)
 {
     // 単体のマテリアルのみの場合はこの場で設定する
-    if (!hasMultiBSDFs()) {
+    if (!hasMultiBSDFs())
+    {
         bsdf_ = bsdfs.find(bsdfName_);
     }
     // setBSDFs()は複数のBSDFを明示的に設定する必要がある場合のみ
-    else {
+    else
+    {
         setBSDFs(bsdfs);
     }
 }
@@ -34,8 +36,7 @@ Shape::setBSDF(AllBSDFList bsdfs)
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-Shape::setBSDFs(AllBSDFList bsdfs)
+void Shape::setBSDFs(AllBSDFList bsdfs)
 {
     /*
     setBSDFs()は複数のマテリアルがあるクラスのみで、

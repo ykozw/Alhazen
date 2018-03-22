@@ -1,9 +1,10 @@
-# 
-BasedOnStyle: Mozilla
-
-# dont sort include
+BasedOnStyle: LLVM
+BreakBeforeBraces: Allman
+AllowShortIfStatementsOnASingleLine: false
+AlignAfterOpenBracket: Align
+IndentCaseLabels: false
 SortIncludes: false
-
-# indent
+BinPackArguments: false
+BinPackParameters: false
 IndentWidth: 4
 AccessModifierOffset: -4

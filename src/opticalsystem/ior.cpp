@@ -5,8 +5,7 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-BasicIOR::init(float nd, float vd)
+void BasicIOR::init(float nd, float vd)
 {
     const float tmp = (nd - 1.0f) / vd;
     a_ = nd + 1.5168f * tmp;
@@ -17,8 +16,7 @@ BasicIOR::init(float nd, float vd)
 -------------------------------------------------
 -------------------------------------------------
 */
-float
-BasicIOR::ior(const float waveLength) const
+float BasicIOR::ior(const float waveLength) const
 {
     const float iw = 1.0f / waveLength;
     const float iw2 = iw * iw;

@@ -8,9 +8,9 @@
 class MedianFilter AL_FINAL : public Denoiser
 {
 public:
-    MedianFilter(const ObjectProp& prop);
+    MedianFilter(const ObjectProp &prop);
     ;
-    void denoise(const Image& src, Image& dst) override;
+    void denoise(const Image &src, Image &dst) override;
 
 private:
 };
@@ -20,24 +20,25 @@ REGISTER_OBJECT(Denoiser, MedianFilter);
 -------------------------------------------------
 -------------------------------------------------
 */
-MedianFilter::MedianFilter(const ObjectProp& objectProp) {}
+MedianFilter::MedianFilter(const ObjectProp &objectProp) {}
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-MedianFilter::denoise(const Image& src, Image& dst)
+void MedianFilter::denoise(const Image &src, Image &dst)
 {
     // HACK: なぜかここのprintが呼ばれない
     logging("Start denoising(median)");
     //
     loggingErrorIf((src.width() != dst.width()) ||
-                     (src.height() != dst.height()),
+                       (src.height() != dst.height()),
                    "Invalid size tonemapping target");
     //
-    for (int32_t y = 0, h = src.height(); y < h; ++y) {
-        for (int32_t x = 0, w = src.width(); x < w; ++x) {
+    for (int32_t y = 0, h = src.height(); y < h; ++y)
+    {
+        for (int32_t x = 0, w = src.width(); x < w; ++x)
+        {
             const int32_t mnx = alMax(x - 1, 0);
             const int32_t mxx = alMin(x + 1, w - 1);
             const int32_t mny = alMax(y - 1, 0);
@@ -56,18 +57,22 @@ MedianFilter::denoise(const Image& src, Image& dst)
             {
                 Spectrum spectrum;
             };
-            SpectrumWeight ps[9]{ { src.pixel(i0) }, { src.pixel(i1) },
-                                  { src.pixel(i2) }, { src.pixel(i3) },
-                                  { src.pixel(i4) }, { src.pixel(i5) },
-                                  { src.pixel(i6) }, { src.pixel(i7) },
-                                  { src.pixel(i8) } };
+            SpectrumWeight ps[9]{{src.pixel(i0)},
+                                 {src.pixel(i1)},
+                                 {src.pixel(i2)},
+                                 {src.pixel(i3)},
+                                 {src.pixel(i4)},
+                                 {src.pixel(i5)},
+                                 {src.pixel(i6)},
+                                 {src.pixel(i7)},
+                                 {src.pixel(i8)}};
             std::nth_element(
-              ps,
-              ps + 4,
-              ps + 9,
-              [](const SpectrumWeight& lhs, const SpectrumWeight& rhs) {
-                  return lhs.spectrum.luminance() < rhs.spectrum.luminance();
-              });
+                ps,
+                ps + 4,
+                ps + 9,
+                [](const SpectrumWeight &lhs, const SpectrumWeight &rhs) {
+                    return lhs.spectrum.luminance() < rhs.spectrum.luminance();
+                });
             const int32_t index = dst.index(x, y);
             dst.pixel(index) = ps[4].spectrum;
         }

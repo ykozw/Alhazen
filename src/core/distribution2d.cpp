@@ -8,16 +8,13 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-Distribution2D::Distribution2D()
-{
-    construct({ { { { 1, 1 } }, { { 1, 1 } } } });
-}
+Distribution2D::Distribution2D() { construct({{{{1, 1}}, {{1, 1}}}}); }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-Distribution2D::Distribution2D(const std::vector<std::vector<float>>& values)
+Distribution2D::Distribution2D(const std::vector<std::vector<float>> &values)
 {
     construct(values);
 }
@@ -27,10 +24,11 @@ Distribution2D::Distribution2D(const std::vector<std::vector<float>>& values)
 -------------------------------------------------
 */
 Distribution2D::Distribution2D(
-  const std::initializer_list<std::initializer_list<float>>& values)
+    const std::initializer_list<std::initializer_list<float>> &values)
 {
     std::vector<std::vector<float>> tmp;
-    for (const auto& row : values) {
+    for (const auto &row : values)
+    {
         tmp.push_back(std::vector<float>(row.begin(), row.end()));
     }
     construct(tmp);
@@ -40,12 +38,13 @@ Distribution2D::Distribution2D(
 -------------------------------------------------
 -------------------------------------------------
 */
-Distribution2D::Distribution2D(const float* values, int32_t raw, int32_t column)
+Distribution2D::Distribution2D(const float *values, int32_t raw, int32_t column)
 {
     std::vector<std::vector<float>> tmp;
-    for (int32_t i = 0; i < column; ++i) {
-        const float* begin = values + i * raw;
-        const float* end = values + (i + 1) * raw;
+    for (int32_t i = 0; i < column; ++i)
+    {
+        const float *begin = values + i * raw;
+        const float *end = values + (i + 1) * raw;
         tmp.push_back(std::vector<float>(begin, end));
     }
     construct(tmp);
@@ -58,18 +57,19 @@ Distribution2D::Distribution2D(const float* values, int32_t raw, int32_t column)
 Distribution2D::Distribution2D(std::function<float(float, float)> valueGen,
                                int32_t raw,
                                int32_t column)
-{}
+{
+}
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-Distribution2D::construct(const std::vector<std::vector<float>>& values)
+void Distribution2D::construct(const std::vector<std::vector<float>> &values)
 {
     // 長さが違う行がないかチェック
     const int32_t rowLength = static_cast<int32_t>(values[0].size());
-    for (const auto& row : values) {
+    for (const auto &row : values)
+    {
         static_cast<void>(row);
         AL_ASSERT_DEBUG(row.size() == rowLength);
     }
@@ -81,10 +81,12 @@ Distribution2D::construct(const std::vector<std::vector<float>>& values)
     //
     std::vector<float> columnTmp;
     raws_.resize(values.size());
-    for (int32_t i = 0; i < raws_.size(); ++i) {
+    for (int32_t i = 0; i < raws_.size(); ++i)
+    {
         //
         float total = 0.0f;
-        for (const float& v : values[i]) {
+        for (const float &v : values[i])
+        {
             total += v;
         }
         columnTmp.push_back(total);
@@ -98,13 +100,12 @@ Distribution2D::construct(const std::vector<std::vector<float>>& values)
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-Distribution2D::sample(float u,
-                       float v,
-                       float* pdf,
-                       Vec2* samplePoint,
-                       int32_t* offsetU,
-                       int32_t* offsetV) const
+void Distribution2D::sample(float u,
+                            float v,
+                            float *pdf,
+                            Vec2 *samplePoint,
+                            int32_t *offsetU,
+                            int32_t *offsetV) const
 {
     //
     int32_t yOffset;
@@ -116,10 +117,12 @@ Distribution2D::sample(float u,
     // PDFの算出
     *pdf = pdfY * pdfX;
     //
-    if (offsetU) {
+    if (offsetU)
+    {
         *offsetU = xOffset;
     }
-    if (offsetV) {
+    if (offsetV)
+    {
         *offsetV = yOffset;
     }
 }
@@ -128,48 +131,31 @@ Distribution2D::sample(float u,
 -------------------------------------------------
 -------------------------------------------------
 */
-int32_t
-Distribution2D::row() const
-{
-    return (int32_t)row_;
-}
+int32_t Distribution2D::row() const { return (int32_t)row_; }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-int32_t
-Distribution2D::column() const
-{
-    return (int32_t)col_;
-}
+int32_t Distribution2D::column() const { return (int32_t)col_; }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-float
-Distribution2D::invRow() const
-{
-    return invRow_;
-}
+float Distribution2D::invRow() const { return invRow_; }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-float
-Distribution2D::invColumn() const
-{
-    return invCol_;
-}
+float Distribution2D::invColumn() const { return invCol_; }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-float
-Distribution2D::pdf(int32_t x, int32_t y) const
+float Distribution2D::pdf(int32_t x, int32_t y) const
 {
     const float pdfX = raws_[y].pdf(x);
     const float pdfY = columns_.pdf(y);
@@ -187,11 +173,12 @@ AL_TEST(Distribution, TwoDimention)
     {
         XorShift128 rng;
         std::vector<std::vector<float>> samples(
-          { { { { 0.1f, 0.6f } }, { { 0.6f, 1.1f } } } });
+            {{{{0.1f, 0.6f}}, {{0.6f, 1.1f}}}});
         Distribution2D d2(samples);
         const int32_t NUM_SAMPLE = 1000;
         float total = 0.0f;
-        for (int32_t i = 0; i < NUM_SAMPLE; ++i) {
+        for (int32_t i = 0; i < NUM_SAMPLE; ++i)
+        {
             //
             float pdf;
             Vec2 sp;
@@ -203,7 +190,8 @@ AL_TEST(Distribution, TwoDimention)
         }
         total /= (float)NUM_SAMPLE;
         const float rate = total / 0.6f;
-        if (fabsf(rate - 1.0f) > 0.02f) {
+        if (fabsf(rate - 1.0f) > 0.02f)
+        {
             return;
         }
     }

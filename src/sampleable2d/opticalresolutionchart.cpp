@@ -11,7 +11,7 @@ OpticalResolutionChart
 class OpticalResolutionChart AL_FINAL : public Sampleable2d
 {
 public:
-    OpticalResolutionChart(const ObjectProp& prop);
+    OpticalResolutionChart(const ObjectProp &prop);
     virtual Spectrum sample(float u, float v) override;
 
 private:
@@ -22,7 +22,7 @@ REGISTER_OBJECT(Sampleable2d, OpticalResolutionChart);
 -------------------------------------------------
 -------------------------------------------------
 */
-OpticalResolutionChart::OpticalResolutionChart(const ObjectProp& prop)
+OpticalResolutionChart::OpticalResolutionChart(const ObjectProp &prop)
 {
     // TODO: 実装
 }
@@ -31,8 +31,7 @@ OpticalResolutionChart::OpticalResolutionChart(const ObjectProp& prop)
 -------------------------------------------------
 -------------------------------------------------
 */
-Spectrum
-OpticalResolutionChart::sample(float u, float v)
+Spectrum OpticalResolutionChart::sample(float u, float v)
 {
     // TODO: 実装
     return Spectrum::Black;

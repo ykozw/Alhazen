@@ -13,16 +13,14 @@ TODO: できたらどこか別の場所に移動させる
 class File
 {
 public:
-    File()
-      : file_(NULL)
-    {}
+    File() : file_(NULL) {}
     ~File() { fclose(file_); }
-    void openRead(const char* filename) { file_ = fopen(filename, "rt"); }
+    void openRead(const char *filename) { file_ = fopen(filename, "rt"); }
     //
-    FILE* file() { return file_; }
+    FILE *file() { return file_; }
 
 private:
-    FILE* file_;
+    FILE *file_;
 };
 
 /*
@@ -34,8 +32,8 @@ Amp
 class Amp AL_FINAL : public Tonemapper
 {
 public:
-    Amp(const ObjectProp& objectProp);
-    bool process(const Image& src, ImageLDR& dst) const override;
+    Amp(const ObjectProp &objectProp);
+    bool process(const Image &src, ImageLDR &dst) const override;
 
 private:
     float invGamma_;
@@ -51,34 +49,39 @@ REGISTER_OBJECT(Tonemapper, Amp);
 -------------------------------------------------
 -------------------------------------------------
 */
-Amp::Amp(const ObjectProp& objectProp)
-  : Tonemapper(objectProp)
+Amp::Amp(const ObjectProp &objectProp) : Tonemapper(objectProp)
 {
     const float gamma = objectProp.findChildBy("name", "gamma").asFloat(2.2f);
     invGamma_ = 1.0f / gamma;
 
     // AMPファイルのロード
     const std::string fileName =
-      objectProp.findChildBy("name", "file").asString("none");
+        objectProp.findChildBy("name", "file").asString("none");
     File file;
     file.openRead(fileName.c_str());
-    FILE* filePtr = file.file();
+    FILE *filePtr = file.file();
     fseek(filePtr, 0, SEEK_END);
     const int32_t fileSize = ftell(filePtr);
     fseek(filePtr, 0, SEEK_SET);
-    if (fileSize == 256 * 3) {
-        for (int32_t i = 0; i < 256; ++i) {
+    if (fileSize == 256 * 3)
+    {
+        for (int32_t i = 0; i < 256; ++i)
+        {
             irgb_[i] = i;
         }
         fread(&ir_, 256, 1, filePtr);
         fread(&ig_, 256, 1, filePtr);
         fread(&ib_, 256, 1, filePtr);
-    } else if (fileSize == 256 * 4 || fileSize == 256 * 5) {
+    }
+    else if (fileSize == 256 * 4 || fileSize == 256 * 5)
+    {
         fread(&irgb_, 256, 1, filePtr);
         fread(&ir_, 256, 1, filePtr);
         fread(&ig_, 256, 1, filePtr);
         fread(&ib_, 256, 1, filePtr);
-    } else {
+    }
+    else
+    {
         AL_ASSERT_DEBUG(false);
     }
 }
@@ -87,18 +90,19 @@ Amp::Amp(const ObjectProp& objectProp)
 -------------------------------------------------
 -------------------------------------------------
 */
-bool
-Amp::process(const Image& src, ImageLDR& dst) const
+bool Amp::process(const Image &src, ImageLDR &dst) const
 {
     //
     loggingErrorIf((src.width() != dst.width()) ||
-                     (src.height() != dst.height()),
+                       (src.height() != dst.height()),
                    "Invalid size tonemapping target");
     //
-    for (int32_t y = 0, h = src.height(); y < h; ++y) {
-        for (int32_t x = 0, w = src.width(); x < w; ++x) {
+    for (int32_t y = 0, h = src.height(); y < h; ++y)
+    {
+        for (int32_t x = 0, w = src.width(); x < w; ++x)
+        {
             const int32_t index = src.index(x, y);
-            const Spectrum& sp = src.pixel(index);
+            const Spectrum &sp = src.pixel(index);
 #if 0
             float weight = src.weight(index);
             weight = alMax(weight, 1.0f);
@@ -143,13 +147,13 @@ Amp::process(const Image& src, ImageLDR& dst) const
             const float ifg = tg2 * 255.0f + 0.5f;
             const float ifb = tb2 * 255.0f + 0.5f;
             const uint8_t idxr0 =
-              (uint8_t)alClamp((int32_t)(ifr), (int32_t)0, (int32_t)255);
+                (uint8_t)alClamp((int32_t)(ifr), (int32_t)0, (int32_t)255);
             const uint8_t idxg0 =
-              (uint8_t)alClamp((int32_t)(ifg), (int32_t)0, (int32_t)255);
+                (uint8_t)alClamp((int32_t)(ifg), (int32_t)0, (int32_t)255);
             const uint8_t idxb0 =
-              (uint8_t)alClamp((int32_t)(ifb), (int32_t)0, (int32_t)255);
+                (uint8_t)alClamp((int32_t)(ifb), (int32_t)0, (int32_t)255);
             // tonemapping
-            PixelLDR& dp = dst.pixel(index);
+            PixelLDR &dp = dst.pixel(index);
             dp.r = irgb_[ir_[idxr0]];
             dp.g = irgb_[ig_[idxg0]];
             dp.b = irgb_[ib_[idxb0]];

@@ -12,10 +12,10 @@
 class BoxShape AL_FINAL : public Shape
 {
 public:
-    BoxShape(const ObjectProp& objectProp);
+    BoxShape(const ObjectProp &objectProp);
     AABB aabb() const override;
-    bool intersect(const Ray& ray, Intersect* isect) const override;
-    bool intersectCheck(const Ray& ray) const override;
+    bool intersect(const Ray &ray, Intersect *isect) const override;
+    bool intersectCheck(const Ray &ray) const override;
 
 private:
 #if 0
@@ -39,8 +39,7 @@ REGISTER_OBJECT(Shape, BoxShape);
 -------------------------------------------------
 -------------------------------------------------
 */
-BoxShape::BoxShape(const ObjectProp& objectProp)
-  : Shape(objectProp)
+BoxShape::BoxShape(const ObjectProp &objectProp) : Shape(objectProp)
 {
 #if 0
     transform_ = Transform(objectProp.findChildByTag("transform"));
@@ -93,7 +92,8 @@ BoxShape::BoxShape(const ObjectProp& objectProp)
     faces_[5] = createFace(vs[1], vs[3], vs[5], vs[7]);
 #endif
     //
-    for (auto& v : vs) {
+    for (auto &v : vs)
+    {
         aabb_.addPoint(v);
     }
 }
@@ -102,18 +102,13 @@ BoxShape::BoxShape(const ObjectProp& objectProp)
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE AABB
-BoxShape::aabb() const
-{
-    return aabb_;
-}
+INLINE AABB BoxShape::aabb() const { return aabb_; }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE bool
-BoxShape::intersect(const Ray& ray, Intersect* isect) const
+INLINE bool BoxShape::intersect(const Ray &ray, Intersect *isect) const
 {
 #if 0
     // レイの位置と方向をLocal座標系に変換
@@ -137,16 +132,16 @@ BoxShape::intersect(const Ray& ray, Intersect* isect) const
 #else
     //
     const auto intersectFace =
-      [](const Ray& ray, const Face& face, Intersect* isect) {
-          const auto& vs = face.vs;
-          const Vec3 n = face.n;
-          // HACK: UVは適当
-          const Vec2 uv(0.0f);
-          return intersectTriangle(
-                   ray, vs[0], vs[1], vs[2], n, n, n, uv, uv, uv, isect) ||
-                 intersectTriangle(
-                   ray, vs[2], vs[1], vs[3], n, n, n, uv, uv, uv, isect);
-      };
+        [](const Ray &ray, const Face &face, Intersect *isect) {
+            const auto &vs = face.vs;
+            const Vec3 n = face.n;
+            // HACK: UVは適当
+            const Vec2 uv(0.0f);
+            return intersectTriangle(
+                       ray, vs[0], vs[1], vs[2], n, n, n, uv, uv, uv, isect) ||
+                   intersectTriangle(
+                       ray, vs[2], vs[1], vs[3], n, n, n, uv, uv, uv, isect);
+        };
     bool isHit = false;
     isHit |= intersectFace(ray, faces_[0], isect);
     isHit |= intersectFace(ray, faces_[1], isect);
@@ -162,8 +157,7 @@ BoxShape::intersect(const Ray& ray, Intersect* isect) const
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE bool
-BoxShape::intersectCheck(const Ray& ray) const
+INLINE bool BoxShape::intersectCheck(const Ray &ray) const
 {
     // TODO: より軽い方法があるならそれに切り替える
     Intersect isDummy;
@@ -177,10 +171,10 @@ BoxShape::intersectCheck(const Ray& ray) const
 class RectangleShape AL_FINAL : public Shape
 {
 public:
-    RectangleShape(const ObjectProp& objectProp);
+    RectangleShape(const ObjectProp &objectProp);
     AABB aabb() const override;
-    bool intersect(const Ray& ray, Intersect* isect) const override;
-    bool intersectCheck(const Ray& ray) const override;
+    bool intersect(const Ray &ray, Intersect *isect) const override;
+    bool intersectCheck(const Ray &ray) const override;
 
 private:
     std::array<Vec3, 4> verts_;
@@ -194,8 +188,7 @@ REGISTER_OBJECT(Shape, RectangleShape);
 -------------------------------------------------
 -------------------------------------------------
 */
-RectangleShape::RectangleShape(const ObjectProp& objectProp)
-  : Shape(objectProp)
+RectangleShape::RectangleShape(const ObjectProp &objectProp) : Shape(objectProp)
 {
     //
     verts_[0] = Vec3(-1.0f, -1.0f, 0.0f);
@@ -215,7 +208,7 @@ RectangleShape::RectangleShape(const ObjectProp& objectProp)
     n_ = Vec3::cross(verts_[0] - verts_[1], verts_[0] - verts_[2]);
     n_.normalize();
     //
-    aabb_.addPoints(static_cast<Vec3*>(verts_.data()),
+    aabb_.addPoints(static_cast<Vec3 *>(verts_.data()),
                     static_cast<int32_t>(verts_.size()));
 }
 
@@ -223,18 +216,13 @@ RectangleShape::RectangleShape(const ObjectProp& objectProp)
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE AABB
-RectangleShape::aabb() const
-{
-    return aabb_;
-}
+INLINE AABB RectangleShape::aabb() const { return aabb_; }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE bool
-RectangleShape::intersect(const Ray& ray, Intersect* isect) const
+INLINE bool RectangleShape::intersect(const Ray &ray, Intersect *isect) const
 {
     const bool hit0 = intersectTriangle(ray,
                                         verts_[0],
@@ -258,7 +246,8 @@ RectangleShape::intersect(const Ray& ray, Intersect* isect) const
                                         uvs_[2],
                                         uvs_[3],
                                         isect);
-    if (!hit0 && !hit1) {
+    if (!hit0 && !hit1)
+    {
         return false;
     }
     isect->bsdf = bsdf_.get();
@@ -269,8 +258,7 @@ RectangleShape::intersect(const Ray& ray, Intersect* isect) const
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE bool
-RectangleShape::intersectCheck(const Ray& ray) const
+INLINE bool RectangleShape::intersectCheck(const Ray &ray) const
 {
     // TODO: より軽い方法があるならそれに切り替える
     Intersect isDummy;
@@ -285,13 +273,11 @@ Sphere
 class Sphere AL_FINAL : public Shape
 {
 public:
-    Sphere(const ObjectProp& prop);
-    Sphere(Vec3 pos, float r)
-      : Shape(ObjectProp())
-    {}
+    Sphere(const ObjectProp &prop);
+    Sphere(Vec3 pos, float r) : Shape(ObjectProp()) {}
     AABB aabb() const override;
-    bool intersect(const Ray& ray, Intersect* isect) const override;
-    bool intersectCheck(const Ray& ray) const override;
+    bool intersect(const Ray &ray, Intersect *isect) const override;
+    bool intersectCheck(const Ray &ray) const override;
 
 private:
     Vec3 pos_;
@@ -305,8 +291,7 @@ REGISTER_OBJECT(Shape, Sphere);
 -------------------------------------------------
 -------------------------------------------------
 */
-Sphere::Sphere(const ObjectProp& prop)
-  : Shape(prop)
+Sphere::Sphere(const ObjectProp &prop) : Shape(prop)
 {
     // 幾何情報を取得
     pos_ = prop.findChildBy("name", "center").asXYZ(Vec3(0.0f));
@@ -327,20 +312,16 @@ Sphere::Sphere(const ObjectProp& prop)
 -------------------------------------------------
 -------------------------------------------------
 */
-AABB
-Sphere::aabb() const
-{
-    return aabb_;
-}
+AABB Sphere::aabb() const { return aabb_; }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-bool
-Sphere::intersect(const Ray& ray, Intersect* isect) const
+bool Sphere::intersect(const Ray &ray, Intersect *isect) const
 {
-    if (intersectSphere(ray, pos_, r2_, isect)) {
+    if (intersectSphere(ray, pos_, r2_, isect))
+    {
         isect->bsdf = bsdf_.get();
         return true;
     }
@@ -351,8 +332,7 @@ Sphere::intersect(const Ray& ray, Intersect* isect) const
 -------------------------------------------------
 -------------------------------------------------
 */
-bool
-Sphere::intersectCheck(const Ray& ray) const
+bool Sphere::intersectCheck(const Ray &ray) const
 {
     return intersectSphereCheck(ray, pos_, r2_);
 }

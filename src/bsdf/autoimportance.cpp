@@ -19,13 +19,13 @@ AutoImportance::AutoImportance() {}
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-AutoImportance::setBRDF(const BSDF* bsdf)
+void AutoImportance::setBRDF(const BSDF *bsdf)
 {
     XorShift128 rng;
     distributions_.clear();
     const int32_t numWo = 16;
-    for (int32_t i = 0; i < numWo; ++i) {
+    for (int32_t i = 0; i < numWo; ++i)
+    {
         const float coso = (float)(i + 1) / (float)numWo;
         Distribution2D dist;
         genDistribution(coso, bsdf, rng, &dist);
@@ -75,11 +75,10 @@ AutoImportance::setBRDF(const BSDF* bsdf)
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-AutoImportance::genDistribution(float coso,
-                                const BSDF* bsdf,
-                                const XorShift128& rng,
-                                Distribution2D* distribution)
+void AutoImportance::genDistribution(float coso,
+                                     const BSDF *bsdf,
+                                     const XorShift128 &rng,
+                                     Distribution2D *distribution)
 {
     // phiは0固定で考える
     const float sin0 = sqrtf(1.0f - coso * coso);
@@ -93,10 +92,12 @@ AutoImportance::genDistribution(float coso,
     // TODO: サンプリングパターンを生成する
 
     //
-    for (int32_t y = 0; y < GRID_SIZE; ++y) {
+    for (int32_t y = 0; y < GRID_SIZE; ++y)
+    {
         //
         std::vector<float> rowValues;
-        for (int32_t x = 0; x < GRID_SIZE; ++x) {
+        for (int32_t x = 0; x < GRID_SIZE; ++x)
+        {
 #if 0
             // 少なくとも円に含まれているかを判定
             const float xmn = (float)x / (float)(GRID_SIZE_HALF)-1.0f;
@@ -115,19 +116,23 @@ AutoImportance::genDistribution(float coso,
 
             //
             float mean = 0.0f;
-            for (int32_t sn = 0; sn < SAMPLE_NUM; ++sn) {
+            for (int32_t sn = 0; sn < SAMPLE_NUM; ++sn)
+            {
                 // 微妙に摂動させる
                 const float fx =
-                  ((float)x + rng.nextFloat()) / (float)(GRID_SIZE_HALF)-1.0f;
+                    ((float)x + rng.nextFloat()) / (float)(GRID_SIZE_HALF)-1.0f;
                 const float fy =
-                  ((float)y + rng.nextFloat()) / (float)(GRID_SIZE_HALF)-1.0f;
+                    ((float)y + rng.nextFloat()) / (float)(GRID_SIZE_HALF)-1.0f;
                 const float fz2 = 1.0f - (fx * fx + fy * fy);
-                if (fz2 > 0.0f) {
+                if (fz2 > 0.0f)
+                {
                     const float fz = sqrtf(fz2);
                     const Vec3 wi(fx, fy, fz);
                     const Spectrum reflectance = bsdf->bsdf(wo, wi);
                     mean += invSampleNum * reflectance.luminance();
-                } else {
+                }
+                else
+                {
                     // 何もしない
                     mean += 0.0f;
                 }
@@ -144,22 +149,23 @@ AutoImportance::genDistribution(float coso,
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-AutoImportance::sample(Vec3 localWo,
-                       XorShift128& rng,
-                       Vec3* localWi,
-                       float* pdf) const
+void AutoImportance::sample(Vec3 localWo,
+                            XorShift128 &rng,
+                            Vec3 *localWi,
+                            float *pdf) const
 {
     const float coso = localWo.z();
-    auto ite = std::lower_bound(
-      distributions_.begin(),
-      distributions_.end(),
-      coso,
-      [](const DistributionWo& lhs, float v) -> bool { return lhs.first > v; });
-    if (ite == distributions_.end()) {
+    auto ite = std::lower_bound(distributions_.begin(),
+                                distributions_.end(),
+                                coso,
+                                [](const DistributionWo &lhs, float v) -> bool {
+                                    return lhs.first > v;
+                                });
+    if (ite == distributions_.end())
+    {
         ite = distributions_.begin();
     }
-    const Distribution2D& dist2d = ite->second;
+    const Distribution2D &dist2d = ite->second;
     Vec2 samplePointOrig;
     int32_t offsetU;
     int32_t offsetV;
@@ -205,19 +211,20 @@ AutoImportance::sample(Vec3 localWo,
 -------------------------------------------------
 -------------------------------------------------
 */
-float
-AutoImportance::pdf(Vec3 localWo, Vec3 localWi) const
+float AutoImportance::pdf(Vec3 localWo, Vec3 localWi) const
 {
     const float coso = localWo.z();
-    auto ite = std::lower_bound(
-      distributions_.begin(),
-      distributions_.end(),
-      coso,
-      [](const DistributionWo& lhs, float v) -> bool { return lhs.first > v; });
-    if (ite == distributions_.end()) {
+    auto ite = std::lower_bound(distributions_.begin(),
+                                distributions_.end(),
+                                coso,
+                                [](const DistributionWo &lhs, float v) -> bool {
+                                    return lhs.first > v;
+                                });
+    if (ite == distributions_.end())
+    {
         ite = distributions_.begin();
     }
-    const Distribution2D& dist2d = ite->second;
+    const Distribution2D &dist2d = ite->second;
     //
     const float phi = -atan2f(localWo.y(), localWo.x());
     const float cosft = cosf(phi);

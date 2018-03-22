@@ -3,7 +3,8 @@
 #include "core/math.hpp"
 #include "core/logging.hpp"
 
-namespace {
+namespace
+{
 /*
 -------------------------------------------------
 テスト用のほぼ等しいかを判定
@@ -130,7 +131,7 @@ AL_TEST(Math, Vec2)
     }
     // 配列からの生成
     {
-        const float arr[] = { 1.0f, 2.0f };
+        const float arr[] = {1.0f, 2.0f};
         const Vec3 v(arr);
         AL_ASSERT_ALWAYS(v.x() == 1.0f);
         AL_ASSERT_ALWAYS(v.y() == 2.0f);
@@ -212,7 +213,7 @@ AL_TEST(Math, Vec3)
 {
     // コンストラクタと設定
     {
-        ALIGN16 const float e[3] = { 2.0f, 3.0f, 4.0f };
+        ALIGN16 const float e[3] = {2.0f, 3.0f, 4.0f};
         Vec3 v(e);
         AL_ASSERT_ALWAYS(v.x() == 2.0f);
         AL_ASSERT_ALWAYS(v.y() == 3.0f);
@@ -254,7 +255,7 @@ AL_TEST(Math, Vec3)
     }
     // 配列からの生成
     {
-        const float arr[] = { 1.0f, 2.0f, 3.0f };
+        const float arr[] = {1.0f, 2.0f, 3.0f};
         const Vec3 v(arr);
         AL_ASSERT_ALWAYS(v.x() == 1.0f);
         AL_ASSERT_ALWAYS(v.y() == 2.0f);

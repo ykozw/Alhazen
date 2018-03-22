@@ -14,11 +14,10 @@ BruteForceBVH::BruteForceBVH() {}
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE bool
-BruteForceBVH::construct(const std::vector<Vec3>& vs,
-                         const std::vector<Vec3>& ns,
-                         const std::vector<Vec2>& ts,
-                         const std::vector<MeshFace>& fs)
+INLINE bool BruteForceBVH::construct(const std::vector<Vec3> &vs,
+                                     const std::vector<Vec3> &ns,
+                                     const std::vector<Vec2> &ts,
+                                     const std::vector<MeshFace> &fs)
 {
     vs_ = vs;
     ns_ = ns;
@@ -27,7 +26,8 @@ BruteForceBVH::construct(const std::vector<Vec3>& vs,
 
     // aabbの作成
     aabb_.clear();
-    for (auto& v : vs_) {
+    for (auto &v : vs_)
+    {
         aabb_.addPoint(v);
     }
 
@@ -38,31 +38,22 @@ BruteForceBVH::construct(const std::vector<Vec3>& vs,
 -------------------------------------------------
 -------------------------------------------------
 */
-AABB
-BruteForceBVH::aabb() const
-{
-    return aabb_;
-}
+AABB BruteForceBVH::aabb() const { return aabb_; }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-int32_t
-BruteForceBVH::maxDepth() const
-{
-    return 0;
-}
+int32_t BruteForceBVH::maxDepth() const { return 0; }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-bool
-SimpleBVH::construct(const std::vector<Vec3>& vs,
-                     const std::vector<Vec3>& ns,
-                     const std::vector<Vec2>& ts,
-                     const std::vector<MeshFace>& fs)
+bool SimpleBVH::construct(const std::vector<Vec3> &vs,
+                          const std::vector<Vec3> &ns,
+                          const std::vector<Vec2> &ts,
+                          const std::vector<MeshFace> &fs)
 {
     AL_ASSERT_DEBUG(vs.size() == ns.size());
     AL_ASSERT_DEBUG(fs.size() != 0);
@@ -72,9 +63,10 @@ SimpleBVH::construct(const std::vector<Vec3>& vs,
     // 全三角形のデータをまとめたものを作成する
     const int32_t faceNum = (int32_t)fs_.size();
     triangles.reserve(faceNum);
-    for (int32_t faceNo = 0; faceNo < faceNum; ++faceNo) {
+    for (int32_t faceNo = 0; faceNo < faceNum; ++faceNo)
+    {
         //
-        const MeshFace& mf = fs_[faceNo];
+        const MeshFace &mf = fs_[faceNo];
         //
         MeshTriangle tri;
         tri.v[0] = vs[mf.vi[0]];
@@ -107,28 +99,29 @@ SimpleBVH::construct(const std::vector<Vec3>& vs,
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-SimpleBVH::constructNode(int32_t nodeIndex,
-                         MeshTriangle* triangles,
-                         int32_t numTriangle,
-                         int32_t depth)
+void SimpleBVH::constructNode(int32_t nodeIndex,
+                              MeshTriangle *triangles,
+                              int32_t numTriangle,
+                              int32_t depth)
 {
     //
     maxDepth_ = alMax(maxDepth_, depth);
     // このノードのAABBを求める
-    auto& curNode = nodes_[nodeIndex];
+    auto &curNode = nodes_[nodeIndex];
     curNode.childlen[0] = -1;
     curNode.childlen[1] = -1;
     curNode.aabb.clear();
     // TODO: 毎回全ての三角を見る必要はなく、子のAABBを合わせていけばよい
-    for (int32_t triNo = 0; triNo < numTriangle; ++triNo) {
+    for (int32_t triNo = 0; triNo < numTriangle; ++triNo)
+    {
         curNode.aabb.addAABB(triangles[triNo].aabb);
     }
     // 三角形が一つしかない場合は葉
-    if (numTriangle == 1) {
-        auto& v = triangles[0].v;
-        auto& n = triangles[0].n;
-        auto& t = triangles[0].t;
+    if (numTriangle == 1)
+    {
+        auto &v = triangles[0].v;
+        auto &n = triangles[0].n;
+        auto &t = triangles[0].t;
         curNode.v[0] = v[0];
         curNode.v[1] = v[1];
         curNode.v[2] = v[2];
@@ -147,7 +140,7 @@ SimpleBVH::constructNode(int32_t nodeIndex,
     // float bestSAH = std::numeric_limits<float>::max();
     int32_t axis = -1;
     // 三角形ソート用
-    auto sortPred = [&axis](const MeshTriangle& lhs, const MeshTriangle& rhs) {
+    auto sortPred = [&axis](const MeshTriangle &lhs, const MeshTriangle &rhs) {
         Vec3 lhsc = lhs.aabb.center();
         Vec3 rhsc = rhs.aabb.center();
         return lhsc[axis] < rhsc[axis];
@@ -217,11 +210,10 @@ SimpleBVH::constructNode(int32_t nodeIndex,
 -------------------------------------------------
 -------------------------------------------------
 */
-bool
-QBVH::construct(const std::vector<Vec3>& vs,
-                const std::vector<Vec3>& ns,
-                const std::vector<Vec2>& ts,
-                const std::vector<MeshFace>& fs)
+bool QBVH::construct(const std::vector<Vec3> &vs,
+                     const std::vector<Vec3> &ns,
+                     const std::vector<Vec2> &ts,
+                     const std::vector<MeshFace> &fs)
 {
     // AL_ASSERT_DEBUG(vs.size() == ns.size());
     AL_ASSERT_DEBUG(fs.size() != 0);
@@ -235,9 +227,10 @@ QBVH::construct(const std::vector<Vec3>& vs,
     const int32_t faceNum = (int32_t)fs_.size();
     triangles.reserve(faceNum);
     aabb_.clear();
-    for (int32_t faceNo = 0; faceNo < faceNum; ++faceNo) {
+    for (int32_t faceNo = 0; faceNo < faceNum; ++faceNo)
+    {
         //
-        const MeshFace& mf = fs_[faceNo];
+        const MeshFace &mf = fs_[faceNo];
         //
         QBVHBuildTriangle tri;
         tri.v[0] = vs[mf.vi[0]];
@@ -278,14 +271,14 @@ QBVH::construct(const std::vector<Vec3>& vs,
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-QBVH::constructNodeMedian(int32_t nodeIndex,
-                          RefArray<QBVHBuildTriangle>& tris,
-                          int32_t depth,
-                          int32_t& progress)
+void QBVH::constructNodeMedian(int32_t nodeIndex,
+                               RefArray<QBVHBuildTriangle> &tris,
+                               int32_t depth,
+                               int32_t &progress)
 {
     // 深さ2( (2)^(2+1) = 総計8ノード)までは集計しておく
-    if (depth == 2) {
+    if (depth == 2)
+    {
         ++progress;
         logging("BVH: %d/16", progress);
     }
@@ -296,37 +289,44 @@ QBVH::constructNodeMedian(int32_t nodeIndex,
     int32_t axisTop = -1;
     int32_t axisLR = -1;
     AABB thisTriAabb;
-    for (auto& tri : tris) {
+    for (auto &tri : tris)
+    {
         thisTriAabb.addAABB(tri.aabb);
     }
     const auto size = thisTriAabb.size();
     // xyz_
-    if ((size.x() < size.y()) && (size.y() < size.z())) {
+    if ((size.x() < size.y()) && (size.y() < size.z()))
+    {
         axisTop = 2;
         axisLR = 1;
     }
     // xzy
-    else if ((size.x() < size.z()) && (size.z() < size.y())) {
+    else if ((size.x() < size.z()) && (size.z() < size.y()))
+    {
         axisTop = 1;
         axisLR = 2;
     }
     // yxz
-    else if ((size.y() < size.x()) && (size.x() < size.z())) {
+    else if ((size.y() < size.x()) && (size.x() < size.z()))
+    {
         axisTop = 2;
         axisLR = 0;
     }
     // yzx
-    else if ((size.y() < size.z()) && (size.z() < size.x())) {
+    else if ((size.y() < size.z()) && (size.z() < size.x()))
+    {
         axisTop = 0;
         axisLR = 2;
     }
     // zxy
-    else if ((size.z() < size.x()) && (size.x() < size.y())) {
+    else if ((size.z() < size.x()) && (size.x() < size.y()))
+    {
         axisTop = 1;
         axisLR = 0;
     }
     // zyx
-    else {
+    else
+    {
         axisTop = 0;
         axisLR = 1;
     }
@@ -338,22 +338,22 @@ QBVH::constructNodeMedian(int32_t nodeIndex,
     const int32_t rightPivot = numTris * 3 / 4;
     // 三角形ソート用
     int32_t sortAxis = -1;
-    auto sortPred = [&sortAxis](const QBVHBuildTriangle& lhs,
-                                const QBVHBuildTriangle& rhs) {
+    auto sortPred = [&sortAxis](const QBVHBuildTriangle &lhs,
+                                const QBVHBuildTriangle &rhs) {
         Vec3 lhsc = lhs.aabb.center();
         Vec3 rhsc = rhs.aabb.center();
         return lhsc[sortAxis] < rhsc[sortAxis];
     };
     float partitionValue = 0.0f;
     auto partitionPred = [&sortAxis,
-                          &partitionValue](const QBVHBuildTriangle& tri) {
+                          &partitionValue](const QBVHBuildTriangle &tri) {
         return tri.aabb.center()[sortAxis] < partitionValue;
     };
     // topのソート
     sortAxis = axisTop;
 #if 1
     std::nth_element(
-      tris.begin(), tris.begin() + tris.size() / 2, tris.end(), sortPred);
+        tris.begin(), tris.begin() + tris.size() / 2, tris.end(), sortPred);
     partitionValue = tris[tris.size() / 2].aabb.center()[sortAxis];
     std::partition(tris.begin(), tris.end(), partitionPred);
 #else
@@ -365,11 +365,11 @@ QBVH::constructNodeMedian(int32_t nodeIndex,
     sortAxis = axisLR;
 #if 1
     std::nth_element(
-      lTris.begin(), lTris.begin() + lTris.size() / 2, lTris.end(), sortPred);
+        lTris.begin(), lTris.begin() + lTris.size() / 2, lTris.end(), sortPred);
     partitionValue = lTris[lTris.size() / 2].aabb.center()[sortAxis];
     std::partition(lTris.begin(), lTris.end(), partitionPred);
     std::nth_element(
-      rTris.begin(), rTris.begin() + rTris.size() / 2, rTris.end(), sortPred);
+        rTris.begin(), rTris.begin() + rTris.size() / 2, rTris.end(), sortPred);
     partitionValue = rTris[rTris.size() / 2].aabb.center()[sortAxis];
     std::partition(lTris.begin(), lTris.end(), partitionPred);
 #else
@@ -398,10 +398,13 @@ QBVH::constructNodeMedian(int32_t nodeIndex,
     maxysF.fill(-inf);
     maxzsF.fill(-inf);
     // それぞれのmin/maxを得る
-    for (int32_t areaNo = 0; areaNo < 4; ++areaNo) {
-        const auto& targetTris = trisPerArea[areaNo];
-        for (const auto& tri : targetTris) {
-            for (const auto& v : tri.v) {
+    for (int32_t areaNo = 0; areaNo < 4; ++areaNo)
+    {
+        const auto &targetTris = trisPerArea[areaNo];
+        for (const auto &tri : targetTris)
+        {
+            for (const auto &v : tri.v)
+            {
                 minxsF[areaNo] = alMin(v.x(), minxsF[areaNo]);
                 minysF[areaNo] = alMin(v.y(), minysF[areaNo]);
                 minzsF[areaNo] = alMin(v.z(), minzsF[areaNo]);
@@ -414,7 +417,7 @@ QBVH::constructNodeMedian(int32_t nodeIndex,
     // QBVHNodeの作成
     assert(nodeIndex == nodes_.size());
     nodes_.push_back(QBVHNode());
-    QBVHNode& node = nodes_[nodes_.size() - 1];
+    QBVHNode &node = nodes_[nodes_.size() - 1];
     node.aabbs[0][0] = _mm_loadu_ps(minxsF.data());
     node.aabbs[0][1] = _mm_loadu_ps(minysF.data());
     node.aabbs[0][2] = _mm_loadu_ps(minzsF.data());
@@ -425,56 +428,39 @@ QBVH::constructNodeMedian(int32_t nodeIndex,
     node.axisLeft = axisLR;
     node.axisRight = axisLR;
     // 子供の作成
-    for (int32_t chNo = 0; chNo < 4; ++chNo) {
+    for (int32_t chNo = 0; chNo < 4; ++chNo)
+    {
         // 葉の場合
         const bool isLeaf = trisPerArea[chNo].size() <= 4;
-        if (isLeaf) {
+        if (isLeaf)
+        {
             node.childIndex[chNo].isLeaf = true;
             // 葉の作成
-            auto& targetTri = trisPerArea[chNo];
+            auto &targetTri = trisPerArea[chNo];
             const float inf = std::numeric_limits<float>::max();
             const Vec3 infVert(inf);
             const std::array<Vec3, 3> dummyVerts = {
-                { infVert, infVert, infVert }
-            };
-            const auto& t0 =
-              targetTri.size() >= 1 ? targetTri[0].v : dummyVerts;
-            const auto& t1 =
-              targetTri.size() >= 2 ? targetTri[1].v : dummyVerts;
-            const auto& t2 =
-              targetTri.size() >= 3 ? targetTri[2].v : dummyVerts;
-            const auto& t3 =
-              targetTri.size() >= 4 ? targetTri[3].v : dummyVerts;
-            ALIGN32 float x0s[4] = {
-                t0[0].x(), t1[0].x(), t2[0].x(), t3[0].x()
-            };
-            ALIGN32 float x1s[4] = {
-                t0[1].x(), t1[1].x(), t2[1].x(), t3[1].x()
-            };
-            ALIGN32 float x2s[4] = {
-                t0[2].x(), t1[2].x(), t2[2].x(), t3[2].x()
-            };
-            ALIGN32 float y0s[4] = {
-                t0[0].y(), t1[0].y(), t2[0].y(), t3[0].y()
-            };
-            ALIGN32 float y1s[4] = {
-                t0[1].y(), t1[1].y(), t2[1].y(), t3[1].y()
-            };
-            ALIGN32 float y2s[4] = {
-                t0[2].y(), t1[2].y(), t2[2].y(), t3[2].y()
-            };
-            ALIGN32 float z0s[4] = {
-                t0[0].z(), t1[0].z(), t2[0].z(), t3[0].z()
-            };
-            ALIGN32 float z1s[4] = {
-                t0[1].z(), t1[1].z(), t2[1].z(), t3[1].z()
-            };
-            ALIGN32 float z2s[4] = {
-                t0[2].z(), t1[2].z(), t2[2].z(), t3[2].z()
-            };
+                {infVert, infVert, infVert}};
+            const auto &t0 =
+                targetTri.size() >= 1 ? targetTri[0].v : dummyVerts;
+            const auto &t1 =
+                targetTri.size() >= 2 ? targetTri[1].v : dummyVerts;
+            const auto &t2 =
+                targetTri.size() >= 3 ? targetTri[2].v : dummyVerts;
+            const auto &t3 =
+                targetTri.size() >= 4 ? targetTri[3].v : dummyVerts;
+            ALIGN32 float x0s[4] = {t0[0].x(), t1[0].x(), t2[0].x(), t3[0].x()};
+            ALIGN32 float x1s[4] = {t0[1].x(), t1[1].x(), t2[1].x(), t3[1].x()};
+            ALIGN32 float x2s[4] = {t0[2].x(), t1[2].x(), t2[2].x(), t3[2].x()};
+            ALIGN32 float y0s[4] = {t0[0].y(), t1[0].y(), t2[0].y(), t3[0].y()};
+            ALIGN32 float y1s[4] = {t0[1].y(), t1[1].y(), t2[1].y(), t3[1].y()};
+            ALIGN32 float y2s[4] = {t0[2].y(), t1[2].y(), t2[2].y(), t3[2].y()};
+            ALIGN32 float z0s[4] = {t0[0].z(), t1[0].z(), t2[0].z(), t3[0].z()};
+            ALIGN32 float z1s[4] = {t0[1].z(), t1[1].z(), t2[1].z(), t3[1].z()};
+            ALIGN32 float z2s[4] = {t0[2].z(), t1[2].z(), t2[2].z(), t3[2].z()};
             //
             leafs_.push_back(QBVHLeaf());
-            QBVHLeaf& leaf = leafs_[leafs_.size() - 1];
+            QBVHLeaf &leaf = leafs_[leafs_.size() - 1];
             leaf.x[0] = _mm_load_ps(x0s);
             leaf.x[1] = _mm_load_ps(x1s);
             leaf.x[2] = _mm_load_ps(x2s);
@@ -485,7 +471,8 @@ QBVH::constructNodeMedian(int32_t nodeIndex,
             leaf.z[1] = _mm_load_ps(z1s);
             leaf.z[2] = _mm_load_ps(z2s);
             //
-            for (int32_t ti = 0; ti < targetTri.size(); ++ti) {
+            for (int32_t ti = 0; ti < targetTri.size(); ++ti)
+            {
                 leaf.v[ti] = targetTri[ti].v;
                 leaf.n[ti] = targetTri[ti].n;
                 leaf.t[ti] = targetTri[ti].t;
@@ -495,7 +482,8 @@ QBVH::constructNodeMedian(int32_t nodeIndex,
             node.childIndex[chNo].index = (int32_t)leafs_.size() - 1;
         }
         // 節の場合
-        else {
+        else
+        {
             // 節のインデックスの算出
             node.childIndex[chNo].isLeaf = false;
             const int32_t index = (int32_t)nodes_.size();
@@ -509,14 +497,14 @@ QBVH::constructNodeMedian(int32_t nodeIndex,
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-QBVH::constructNodeSAH(int32_t nodeIndex,
-                       RefArray<QBVHBuildTriangle>& tris,
-                       int32_t depth,
-                       int32_t& progress)
+void QBVH::constructNodeSAH(int32_t nodeIndex,
+                            RefArray<QBVHBuildTriangle> &tris,
+                            int32_t depth,
+                            int32_t &progress)
 {
     // 深さ2( (2)^(2+1) = 総計8ノード)までは集計しておく
-    if (depth == 2) {
+    if (depth == 2)
+    {
         ++progress;
         logging("BVH: %d/16", progress);
     }
@@ -527,37 +515,44 @@ QBVH::constructNodeSAH(int32_t nodeIndex,
     uint8_t axisTop = 0xff;
     uint8_t axisLR = 0xff;
     AABB thisTriAabb;
-    for (auto& tri : tris) {
+    for (auto &tri : tris)
+    {
         thisTriAabb.addAABB(tri.aabb);
     }
     const auto size = thisTriAabb.size();
     // xyz_
-    if ((size.x() < size.y()) && (size.y() < size.z())) {
+    if ((size.x() < size.y()) && (size.y() < size.z()))
+    {
         axisTop = 2;
         axisLR = 1;
     }
     // xzy
-    else if ((size.x() < size.z()) && (size.z() < size.y())) {
+    else if ((size.x() < size.z()) && (size.z() < size.y()))
+    {
         axisTop = 1;
         axisLR = 2;
     }
     // yxz
-    else if ((size.y() < size.x()) && (size.x() < size.z())) {
+    else if ((size.y() < size.x()) && (size.x() < size.z()))
+    {
         axisTop = 2;
         axisLR = 0;
     }
     // yzx
-    else if ((size.y() < size.z()) && (size.z() < size.x())) {
+    else if ((size.y() < size.z()) && (size.z() < size.x()))
+    {
         axisTop = 0;
         axisLR = 2;
     }
     // zxy
-    else if ((size.z() < size.x()) && (size.x() < size.y())) {
+    else if ((size.z() < size.x()) && (size.x() < size.y()))
+    {
         axisTop = 1;
         axisLR = 0;
     }
     // zyx
-    else {
+    else
+    {
         axisTop = 0;
         axisLR = 1;
     }
@@ -569,22 +564,22 @@ QBVH::constructNodeSAH(int32_t nodeIndex,
     const int32_t rightPivot = numTris * 3 / 4;
     // 三角形ソート用
     int32_t sortAxis = -1;
-    auto sortPred = [&sortAxis](const QBVHBuildTriangle& lhs,
-                                const QBVHBuildTriangle& rhs) {
+    auto sortPred = [&sortAxis](const QBVHBuildTriangle &lhs,
+                                const QBVHBuildTriangle &rhs) {
         Vec3 lhsc = lhs.aabb.center();
         Vec3 rhsc = rhs.aabb.center();
         return lhsc[sortAxis] < rhsc[sortAxis];
     };
     float partitionValue = 0.0f;
     auto partitionPred = [&sortAxis,
-                          &partitionValue](const QBVHBuildTriangle& tri) {
+                          &partitionValue](const QBVHBuildTriangle &tri) {
         return tri.aabb.center()[sortAxis] < partitionValue;
     };
     // topのソート
     sortAxis = axisTop;
 #if 1
     std::nth_element(
-      tris.begin(), tris.begin() + tris.size() / 2, tris.end(), sortPred);
+        tris.begin(), tris.begin() + tris.size() / 2, tris.end(), sortPred);
     partitionValue = tris[tris.size() / 2].aabb.center()[sortAxis];
     std::partition(tris.begin(), tris.end(), partitionPred);
 #else
@@ -596,11 +591,11 @@ QBVH::constructNodeSAH(int32_t nodeIndex,
     sortAxis = axisLR;
 #if 1
     std::nth_element(
-      lTris.begin(), lTris.begin() + lTris.size() / 2, lTris.end(), sortPred);
+        lTris.begin(), lTris.begin() + lTris.size() / 2, lTris.end(), sortPred);
     partitionValue = lTris[lTris.size() / 2].aabb.center()[sortAxis];
     std::partition(lTris.begin(), lTris.end(), partitionPred);
     std::nth_element(
-      rTris.begin(), rTris.begin() + rTris.size() / 2, rTris.end(), sortPred);
+        rTris.begin(), rTris.begin() + rTris.size() / 2, rTris.end(), sortPred);
     partitionValue = rTris[rTris.size() / 2].aabb.center()[sortAxis];
     std::partition(lTris.begin(), lTris.end(), partitionPred);
 #else
@@ -629,10 +624,13 @@ QBVH::constructNodeSAH(int32_t nodeIndex,
     maxysF.fill(-inf);
     maxzsF.fill(-inf);
     // それぞれのmin/maxを得る
-    for (int32_t areaNo = 0; areaNo < 4; ++areaNo) {
-        const auto& targetTris = trisPerArea[areaNo];
-        for (const auto& tri : targetTris) {
-            for (const auto& v : tri.v) {
+    for (int32_t areaNo = 0; areaNo < 4; ++areaNo)
+    {
+        const auto &targetTris = trisPerArea[areaNo];
+        for (const auto &tri : targetTris)
+        {
+            for (const auto &v : tri.v)
+            {
                 minxsF[areaNo] = alMin(v.x(), minxsF[areaNo]);
                 minysF[areaNo] = alMin(v.y(), minysF[areaNo]);
                 minzsF[areaNo] = alMin(v.z(), minzsF[areaNo]);
@@ -645,7 +643,7 @@ QBVH::constructNodeSAH(int32_t nodeIndex,
     // QBVHNodeの作成
     assert(nodeIndex == nodes_.size());
     nodes_.push_back(QBVHNode());
-    QBVHNode& node = nodes_[nodes_.size() - 1];
+    QBVHNode &node = nodes_[nodes_.size() - 1];
     node.aabbs[0][0] = _mm_loadu_ps(minxsF.data());
     node.aabbs[0][1] = _mm_loadu_ps(minysF.data());
     node.aabbs[0][2] = _mm_loadu_ps(minzsF.data());
@@ -656,57 +654,40 @@ QBVH::constructNodeSAH(int32_t nodeIndex,
     node.axisLeft = axisLR;
     node.axisRight = axisLR;
     // 子供の作成
-    for (int32_t chNo = 0; chNo < 4; ++chNo) {
+    for (int32_t chNo = 0; chNo < 4; ++chNo)
+    {
         // 葉の場合
         const bool isLeaf = trisPerArea[chNo].size() <= 4;
-        if (isLeaf) {
+        if (isLeaf)
+        {
             node.childIndex[chNo].isLeaf = true;
             // 葉の作成
-            auto& targetTri = trisPerArea[chNo];
+            auto &targetTri = trisPerArea[chNo];
             // 浮動小数の例外が発生しない程度には大きすぎない値にしておく
             const float inf = 1.0e+15f;
             const Vec3 infVert(inf);
             const std::array<Vec3, 3> dummyVerts = {
-                { infVert, infVert, infVert }
-            };
-            const auto& t0 =
-              targetTri.size() >= 1 ? targetTri[0].v : dummyVerts;
-            const auto& t1 =
-              targetTri.size() >= 2 ? targetTri[1].v : dummyVerts;
-            const auto& t2 =
-              targetTri.size() >= 3 ? targetTri[2].v : dummyVerts;
-            const auto& t3 =
-              targetTri.size() >= 4 ? targetTri[3].v : dummyVerts;
-            ALIGN32 float x0s[4] = {
-                t0[0].x(), t1[0].x(), t2[0].x(), t3[0].x()
-            };
-            ALIGN32 float x1s[4] = {
-                t0[1].x(), t1[1].x(), t2[1].x(), t3[1].x()
-            };
-            ALIGN32 float x2s[4] = {
-                t0[2].x(), t1[2].x(), t2[2].x(), t3[2].x()
-            };
-            ALIGN32 float y0s[4] = {
-                t0[0].y(), t1[0].y(), t2[0].y(), t3[0].y()
-            };
-            ALIGN32 float y1s[4] = {
-                t0[1].y(), t1[1].y(), t2[1].y(), t3[1].y()
-            };
-            ALIGN32 float y2s[4] = {
-                t0[2].y(), t1[2].y(), t2[2].y(), t3[2].y()
-            };
-            ALIGN32 float z0s[4] = {
-                t0[0].z(), t1[0].z(), t2[0].z(), t3[0].z()
-            };
-            ALIGN32 float z1s[4] = {
-                t0[1].z(), t1[1].z(), t2[1].z(), t3[1].z()
-            };
-            ALIGN32 float z2s[4] = {
-                t0[2].z(), t1[2].z(), t2[2].z(), t3[2].z()
-            };
+                {infVert, infVert, infVert}};
+            const auto &t0 =
+                targetTri.size() >= 1 ? targetTri[0].v : dummyVerts;
+            const auto &t1 =
+                targetTri.size() >= 2 ? targetTri[1].v : dummyVerts;
+            const auto &t2 =
+                targetTri.size() >= 3 ? targetTri[2].v : dummyVerts;
+            const auto &t3 =
+                targetTri.size() >= 4 ? targetTri[3].v : dummyVerts;
+            ALIGN32 float x0s[4] = {t0[0].x(), t1[0].x(), t2[0].x(), t3[0].x()};
+            ALIGN32 float x1s[4] = {t0[1].x(), t1[1].x(), t2[1].x(), t3[1].x()};
+            ALIGN32 float x2s[4] = {t0[2].x(), t1[2].x(), t2[2].x(), t3[2].x()};
+            ALIGN32 float y0s[4] = {t0[0].y(), t1[0].y(), t2[0].y(), t3[0].y()};
+            ALIGN32 float y1s[4] = {t0[1].y(), t1[1].y(), t2[1].y(), t3[1].y()};
+            ALIGN32 float y2s[4] = {t0[2].y(), t1[2].y(), t2[2].y(), t3[2].y()};
+            ALIGN32 float z0s[4] = {t0[0].z(), t1[0].z(), t2[0].z(), t3[0].z()};
+            ALIGN32 float z1s[4] = {t0[1].z(), t1[1].z(), t2[1].z(), t3[1].z()};
+            ALIGN32 float z2s[4] = {t0[2].z(), t1[2].z(), t2[2].z(), t3[2].z()};
             //
             leafs_.push_back(QBVHLeaf());
-            QBVHLeaf& leaf = leafs_[leafs_.size() - 1];
+            QBVHLeaf &leaf = leafs_[leafs_.size() - 1];
             leaf.x[0] = _mm_load_ps(x0s);
             leaf.x[1] = _mm_load_ps(x1s);
             leaf.x[2] = _mm_load_ps(x2s);
@@ -717,7 +698,8 @@ QBVH::constructNodeSAH(int32_t nodeIndex,
             leaf.z[1] = _mm_load_ps(z1s);
             leaf.z[2] = _mm_load_ps(z2s);
             //
-            for (int32_t ti = 0; ti < targetTri.size(); ++ti) {
+            for (int32_t ti = 0; ti < targetTri.size(); ++ti)
+            {
                 leaf.v[ti] = targetTri[ti].v;
                 leaf.n[ti] = targetTri[ti].n;
                 leaf.t[ti] = targetTri[ti].t;
@@ -727,7 +709,8 @@ QBVH::constructNodeSAH(int32_t nodeIndex,
             node.childIndex[chNo].index = (int32_t)leafs_.size() - 1;
         }
         // 節の場合
-        else {
+        else
+        {
             // 節のインデックスの算出
             node.childIndex[chNo].isLeaf = false;
             const int32_t index = (int32_t)nodes_.size();
@@ -743,50 +726,34 @@ QBVH::constructNodeSAH(int32_t nodeIndex,
 -------------------------------------------------
 -------------------------------------------------
 */
-AABB
-QBVH::aabb() const
-{
-    return aabb_;
-}
+AABB QBVH::aabb() const { return aabb_; }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-int32_t
-QBVH::numVerts() const
-{
-    return (int32_t)vs_.size();
-}
+int32_t QBVH::numVerts() const { return (int32_t)vs_.size(); }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-int32_t
-QBVH::numFaces() const
-{
-    return (int32_t)fs_.size();
-}
+int32_t QBVH::numFaces() const { return (int32_t)fs_.size(); }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-int32_t
-QBVH::maxDepth() const
-{
-    return maxDepth_;
-}
+int32_t QBVH::maxDepth() const { return maxDepth_; }
 
 /*
  -------------------------------------------------
  -------------------------------------------------
  */
-void
-ShapeBVH::construct(const std::vector<ShapePtr>& aShapes)
+void ShapeBVH::construct(const std::vector<ShapePtr> &aShapes)
 {
-    if (aShapes.empty()) {
+    if (aShapes.empty())
+    {
         return;
     }
     // コピー
@@ -813,16 +780,16 @@ ShapeBVH::construct(const std::vector<ShapePtr>& aShapes)
  -------------------------------------------------
  -------------------------------------------------
  */
-void
-ShapeBVH::constructSub(ShapeListIte beginIte,
-                       ShapeListIte endIte,
-                       std::vector<Node>& nodes,
-                       int32_t nodeIndex)
+void ShapeBVH::constructSub(ShapeListIte beginIte,
+                            ShapeListIte endIte,
+                            std::vector<Node> &nodes,
+                            int32_t nodeIndex)
 {
     // 一つしかノードがない場合は子はなし
-    if (std::distance(beginIte, endIte) == 1) {
+    if (std::distance(beginIte, endIte) == 1)
+    {
         ShapePtr shape = *beginIte;
-        auto& curNode = nodes[nodeIndex];
+        auto &curNode = nodes[nodeIndex];
         curNode.aabb.clear();
         curNode.aabb.addAABB(shape->aabb());
         curNode.shape = shape;
@@ -832,10 +799,12 @@ ShapeBVH::constructSub(ShapeListIte beginIte,
     int32_t axis = -1;
 
     //
-    const auto sortShapes = [](ShapeListIte beginIte, ShapeListIte endIte, int32_t axis, int32_t splitIndex)
-    {
+    const auto sortShapes = [](ShapeListIte beginIte,
+                               ShapeListIte endIte,
+                               int32_t axis,
+                               int32_t splitIndex) {
         // ソート
-        auto sortPred = [&axis](const ShapePtr& lhs, const ShapePtr& rhs) {
+        auto sortPred = [&axis](const ShapePtr &lhs, const ShapePtr &rhs) {
             // AABBのcenter位置でソートする
             // TODO: もっとましな方法があるならそれにする
             Vec3 lhsc = lhs->aabb().center();
@@ -846,7 +815,8 @@ ShapeBVH::constructSub(ShapeListIte beginIte,
         // HACK: 軸を適当に決めてしまっている。SAHでもするべき。
         static int32_t axisNext = 0;
         const int32_t bestAxis = (axisNext++) % 3;
-        const int32_t bestSplitIndex = int32_t(std::distance(beginIte, endIte) / 2);
+        const int32_t bestSplitIndex =
+            int32_t(std::distance(beginIte, endIte) / 2);
         // ソート
         axis = bestAxis;
         std::sort(beginIte, endIte, sortPred);
@@ -859,8 +829,7 @@ ShapeBVH::constructSub(ShapeListIte beginIte,
     const int32_t bestSplitIndex = int32_t(std::distance(beginIte, endIte) / 2);
 #else
     // 軸方向を最も広がりがある方向にする
-    const auto getWideAxis = [](ShapeListIte beginIte, ShapeListIte endIte)
-    {
+    const auto getWideAxis = [](ShapeListIte beginIte, ShapeListIte endIte) {
         AABB aabbAll;
         for (auto shapeIte = beginIte; shapeIte != endIte; ++shapeIte)
         {
@@ -913,7 +882,7 @@ ShapeBVH::constructSub(ShapeListIte beginIte,
     const int32_t ch1 = int32_t(nodes.size()) - 1;
     constructSub(medIte, endIte, nodes, ch1);
     //
-    auto& curNode = nodes[nodeIndex];
+    auto &curNode = nodes[nodeIndex];
     curNode.childlen[0] = ch0;
     curNode.childlen[1] = ch1;
     // 子のAABBの和が親のAABB

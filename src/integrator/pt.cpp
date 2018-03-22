@@ -36,7 +36,7 @@ private:
                               const Intersect& isect,
                               const OrthonormalBasis<>& local,
                               const Vec3 localWo,
-                              const LightPtr& light,
+                              const Light* light,
                               Sampler* samler) const;
 
 private:
@@ -123,7 +123,7 @@ PTSurfaceIntegrator::radiance(const Ray& screenRay,
             break;
         }
         //
-        BSDFPtr bsdf = isect.bsdf;
+        BSDF* bsdf = isect.bsdf;
         float pdfBSDF;
         Vec3 localWi;
         const OrthonormalBasis<> local(isect.normal);
@@ -178,24 +178,24 @@ PTSurfaceIntegrator::estimateDirectLight(const SceneGeometory& scene,
     switch (directLighitingLightSelectStrategy_) {
             // 全てのライトを評価
         case DirectLighitingSelectStrategy::All: {
-            const std::vector<LightPtr>& lights = scene.lights();
+            const auto& lights = scene.lights();
             Spectrum estimated;
             for (const auto& light : lights) {
                 estimated += estimateOneLight(
-                  scene, isect, local, localWo, light, sampler);
+                  scene, isect, local, localWo, light.get(), sampler);
             }
             return estimated;
         } break;
             // ライトを一つだけ選択
         case DirectLighitingSelectStrategy::UniformOne: {
-            const std::vector<LightPtr>& lights = scene.lights();
+            const auto& lights = scene.lights();
             if (lights.empty()) {
                 return Spectrum::Black;
             }
             // ライトを一つ選択する
             const uint32_t lightIndex =
               sampler->getSize(uint32_t(lights.size()));
-            const LightPtr choochenLight = lights[lightIndex];
+            const auto& choochenLight = lights[lightIndex];
             /*
             交差点のSceneObjectとサンプルするLightが同一だった場合は終了
             HACK:
@@ -206,7 +206,7 @@ PTSurfaceIntegrator::estimateDirectLight(const SceneGeometory& scene,
             }
             //
             const Spectrum oneLightEstimated = estimateOneLight(
-              scene, isect, local, localWo, choochenLight, sampler);
+              scene, isect, local, localWo, choochenLight.get(), sampler);
             return oneLightEstimated * (float)lights.size();
         } break;
         default:
@@ -249,12 +249,12 @@ PTSurfaceIntegrator::estimateOneLight(const SceneGeometory& scene,
                                       const Intersect& isect,
                                       const OrthonormalBasis<>& local,
                                       const Vec3 localWo,
-                                      const LightPtr& light,
+                                      const Light* light,
                                       Sampler* sampler) const
 {
     ++g_numEstimateOneLine;
     //
-    BSDFPtr bsdf = isect.bsdf;
+    BSDF* bsdf = isect.bsdf;
     /*
     サンプル方法の選択
     ライトとBSDFのδ関数の組み合わせによって変化する
@@ -271,8 +271,8 @@ PTSurfaceIntegrator::estimateOneLight(const SceneGeometory& scene,
         // ライトとBSDFのサンプルを行いMISする
         MISSample,
     };
-    const auto takeStragety = [](const BSDFPtr bsdf,
-                                 const LightPtr light) -> SampleStrategy {
+    const auto takeStragety = [](const BSDF* bsdf,
+                                 const Light* light) -> SampleStrategy {
         if (bsdf->isDeltaFunc()) {
             if (light->isDeltaFunc()) {
                 return SampleStrategy::AlwaysZero;
@@ -291,8 +291,8 @@ PTSurfaceIntegrator::estimateOneLight(const SceneGeometory& scene,
 
     // ライトのサンプリング
     const auto lightSampling = [](Sampler* sampler,
-                                  LightPtr light,
-                                  BSDFPtr bsdf,
+                                  const Light* light,
+                                  BSDF* bsdf,
                                   Vec3 isectPos,
                                   const OrthonormalBasis<>& local,
                                   const Vec3 localWo,
@@ -339,8 +339,8 @@ PTSurfaceIntegrator::estimateOneLight(const SceneGeometory& scene,
     };
     // BSDFのサンプリング
     const auto bsdfSampling = [](Sampler* sampler,
-                                 LightPtr light,
-                                 BSDFPtr bsdf,
+                                 const Light* light,
+                                 BSDF* bsdf,
                                  Vec3 isectPos,
                                  const OrthonormalBasis<>& local,
                                  const Vec3 localWo,

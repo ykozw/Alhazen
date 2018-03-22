@@ -94,7 +94,7 @@ BruteForceIntegrator::radiance(const Ray& screenRay,
             lighting += isect.emission * throughput;
         }
         //
-        const BSDFPtr bsdf = isect.bsdf;
+        const BSDF* bsdf = isect.bsdf;
         Vec3 localWi;
         const OrthonormalBasis<> local(isect.normal);
         const Vec3 localWo = local.world2local(-ray.d);

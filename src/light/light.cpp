@@ -132,7 +132,7 @@ ConstantLight::intersect(const Ray& ray, Intersect* isect) const
     // ConstantLightは常に衝突対象
     isect->t = lightFar;
     isect->normal = -ray.d;
-    isect->bsdf = BSDF::vantaBlack; // NOTE: 常に反射率0
+    isect->bsdf = BSDF::vantaBlack.get(); // NOTE: 常に反射率0
     isect->emission = spectrum_;
     return true;
 }
@@ -388,7 +388,7 @@ RectangleLight::intersect(const Ray& ray, Intersect* isect) const
                                uvs_[3],
                                isect);
     if (isHit) {
-        isect->bsdf = BSDF::vantaBlack;
+        isect->bsdf = BSDF::vantaBlack.get();
         isect->emission = spectrum_;
     }
     return isHit;
@@ -680,7 +680,7 @@ SphereLight::intersect(const Ray& ray, Intersect* isect) const
 {
     const bool hit = intersectSphere(ray, center_, radius2_, isect);
     if (hit) {
-        isect->bsdf = BSDF::vantaBlack;
+        isect->bsdf = BSDF::vantaBlack.get();
         isect->emission = emission_;
     }
     return hit;

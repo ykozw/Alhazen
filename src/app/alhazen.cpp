@@ -102,6 +102,8 @@ Alhazen::runApp(const ArgConfig& config)
                 taskNo + TASK_NUM_UNTILL_BY_JOIN,
                 int32_t(taskTimeStats.mean()));
         //
+        CounterStats::printStats(true);
+        //
         taskNo += TASK_NUM_UNTILL_BY_JOIN;
     }
     // 最後まで来たら、デノイズを行い最終イメージを出力

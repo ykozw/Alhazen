@@ -480,6 +480,15 @@ INLINE bool ShapeBVH::intersect(const Ray& ray, Intersect* isect) const
 }
 
 /*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE bool ShapeBVH::intersectCheck(const Ray& ray) const
+{
+    return intersectCheckSub(0, ray);
+}
+
+/*
  -------------------------------------------------
  -------------------------------------------------
  */
@@ -507,6 +516,34 @@ INLINE bool ShapeBVH::intersectSub(int32_t nodeIndex, const Ray& ray, Intersect*
     {
         const bool h0 = intersectSub(node.childlen[0], ray, isect);
         const bool h1 = intersectSub(node.childlen[1], ray, isect);
+        return h0 || h1;
+    }
+}
+
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE bool ShapeBVH::intersectCheckSub(int32_t nodeIndex, const Ray& ray) const
+{
+    //
+    const auto& node = nodes_[nodeIndex];
+    // このAABBに交差しなければ終了
+    if (!node.aabb.intersectCheck(ray, std::numeric_limits<float>::max()))
+    {
+        return false;
+    }
+    // 葉の場合は、ノードの三角形と交差判定
+    else if (node.childlen[0] == -1)
+    {
+        return node.shape->intersectCheck(ray);
+    }
+    // 枝の場合は、子を見に行く
+    else
+    {
+        const bool h0 = intersectCheckSub(node.childlen[0], ray);
+        const bool h1 = intersectCheckSub(node.childlen[1], ray);
         return h0 || h1;
     }
 }

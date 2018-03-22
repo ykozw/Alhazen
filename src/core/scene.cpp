@@ -1,4 +1,4 @@
-#include "pch.hpp"
+﻿#include "pch.hpp"
 #include "core/scene.hpp"
 #include "core/object.hpp"
 #include "core/image.hpp"
@@ -74,7 +74,7 @@ Scene::Scene(const ObjectProp& objectProp)
     }
     //
     geometory_.buildScene();
-    
+
     //
     const AABB aabb = geometory_.aabb();
     const Vec3 mn = aabb.min();

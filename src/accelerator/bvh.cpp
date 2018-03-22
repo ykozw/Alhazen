@@ -1,4 +1,4 @@
-#include "pch.hpp"
+﻿#include "pch.hpp"
 #include "accelerator/bvh.hpp"
 #include "shape/shape.hpp"
 #include "core/logging.hpp"
@@ -783,10 +783,10 @@ QBVH::maxDepth() const
  -------------------------------------------------
  -------------------------------------------------
  */
-void ShapeBVH::construct(const std::vector<ShapePtr>& aShapes)
+void
+ShapeBVH::construct(const std::vector<ShapePtr>& aShapes)
 {
-    if(aShapes.empty())
-    {
+    if (aShapes.empty()) {
         return;
     }
     // コピー
@@ -794,7 +794,7 @@ void ShapeBVH::construct(const std::vector<ShapePtr>& aShapes)
     nodes_.reserve(shapes.size() * 2 - 1);
     nodes_.resize(1);
     constructSub(shapes.begin(), shapes.end(), nodes_, 0);
-    
+
 #if 0
     // テストで全てAABBの描画
     for(auto& node : nodes_)
@@ -813,14 +813,14 @@ void ShapeBVH::construct(const std::vector<ShapePtr>& aShapes)
  -------------------------------------------------
  -------------------------------------------------
  */
-void ShapeBVH::constructSub(ShapeListIte beginIte,
-                            ShapeListIte endIte,
-                            std::vector<Node>& nodes,
-                            int32_t nodeIndex)
+void
+ShapeBVH::constructSub(ShapeListIte beginIte,
+                       ShapeListIte endIte,
+                       std::vector<Node>& nodes,
+                       int32_t nodeIndex)
 {
     // 一つしかノードがない場合は子はなし
-    if( std::distance(beginIte,endIte) == 1 )
-    {
+    if (std::distance(beginIte, endIte) == 1) {
         ShapePtr shape = *beginIte;
         auto& curNode = nodes[nodeIndex];
         curNode.aabb.clear();
@@ -841,7 +841,7 @@ void ShapeBVH::constructSub(ShapeListIte beginIte,
     // HACK: 軸を適当に決めてしまっている。SAHでもするべき。
     static int32_t axisNext = 0;
     const int32_t bestAxis = (axisNext++) % 3;
-    const int32_t bestSplitIndex = std::distance(beginIte,endIte)/2;
+    const int32_t bestSplitIndex = int32_t(std::distance(beginIte, endIte) / 2);
     // ソート
     axis = bestAxis;
     std::sort(beginIte, endIte, sortPred);
@@ -849,8 +849,8 @@ void ShapeBVH::constructSub(ShapeListIte beginIte,
     auto medIte = beginIte;
     std::advance(medIte, bestSplitIndex);
     //
-    AL_ASSERT_DEBUG(std::distance(beginIte,medIte) != 0);
-    AL_ASSERT_DEBUG(std::distance(endIte,medIte) != 0);
+    AL_ASSERT_DEBUG(std::distance(beginIte, medIte) != 0);
+    AL_ASSERT_DEBUG(std::distance(endIte, medIte) != 0);
     // 前半
     nodes.resize(nodes.size() + 1);
     const int32_t ch0 = int32_t(nodes.size()) - 1;
@@ -868,4 +868,3 @@ void ShapeBVH::constructSub(ShapeListIte beginIte,
     curNode.aabb.addAABB(nodes[curNode.childlen[0]].aabb);
     curNode.aabb.addAABB(nodes[curNode.childlen[1]].aabb);
 }
-

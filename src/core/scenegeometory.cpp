@@ -1,9 +1,9 @@
-#include "pch.hpp"
+﻿#include "pch.hpp"
 #include "core/scenegeometory.hpp"
 #include "core/stats.hpp"
 
 //
-STATS_COUNTER("IsectTotal", g_numIsectTotal, "Rays");
+STATS_COUNTER("Isect", g_numIsectTotal, "Rays");
 STATS_COUNTER("IsectIsect", g_numIsect, "Rays");
 STATS_COUNTER("IsectCheck", g_numIsectCheck, "Rays");
 STATS_COUNTER("IsectVisib", g_numIsectVisible, "Rays");
@@ -32,7 +32,8 @@ SceneGeometory::addLight(LightPtr light)
 -------------------------------------------------
 -------------------------------------------------
 */
-void SceneGeometory::buildScene()
+void
+SceneGeometory::buildScene()
 {
     // BVHの作成
     shapeBvh_.construct(shapes_);
@@ -145,4 +146,3 @@ SceneGeometory::aabb() const
     // NOTE: Lightは含んでいないことに注意
     return aabb;
 }
-

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /*
 -------------------------------------------------
@@ -22,7 +22,7 @@ public:
 };
 
 #define STATS_COUNTER(TITLE, COUNTER, UNIT_NAME)                               \
-    __thread int64_t COUNTER;                                                  \
+    AL_TLS int64_t COUNTER;                                                  \
     std::atomic<int64_t> COUNTER##_master;                                     \
     class RegisterStats##COUNTER                                               \
     {                                                                          \

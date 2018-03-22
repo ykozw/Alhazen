@@ -1,4 +1,4 @@
-#include "pch.hpp"
+﻿#include "pch.hpp"
 #include "core/stats.hpp"
 #include "core/logging.hpp"
 
@@ -82,10 +82,13 @@ CounterStats::addCounter(const std::string& title,
     newCI.postFun = postFun;
     // タイトル順でソート
     auto& vec = getCounterInfo();
-    auto ite = std::lower_bound(vec.begin(), vec.end(), title, [](const CounterInfo& ci, const std::string& title)
-                     {
-                         return ci.title < title;
-                     });
+    auto ite =
+      std::lower_bound(vec.begin(),
+                       vec.end(),
+                       title,
+                       [](const CounterInfo& ci, const std::string& title) {
+                           return ci.title < title;
+                       });
     vec.insert(ite, newCI);
 }
 
@@ -97,14 +100,14 @@ void
 CounterStats::printStats(bool clearStats)
 {
     auto elapased = std::chrono::system_clock::now() - g_start;
-    const double elapseTimeInMs =
+    const int64_t elapseTimeInMs =
       std::chrono::duration_cast<std::chrono::milliseconds>(elapased).count();
     //
     logging("Counters");
     for (auto& ci : getCounterInfo()) {
         // そのまま表示する場合
         const int64_t count = ci.counter->load();
-        const double counterPerSec = double(count) / (elapseTimeInMs)*1000.0;
+        const double counterPerSec = double(count) / double(elapseTimeInMs)*1000.0;
         const double MCountPerSec = double(counterPerSec) / double(1000000);
         const double KCountPerSec = double(counterPerSec) / double(1000);
         if (MCountPerSec > 0.1) {

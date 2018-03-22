@@ -93,7 +93,7 @@ public:
 
     // Hemisphere(xyz_)
     Vec3 getHemisphere();
-    Vec3 getHemisphereCosineWeighted(_Out_ float* pdf);
+    Vec3 getHemisphereCosineWeighted(float* pdf);
 
     // Sphere(xyz_)
     Vec3 getSphere();

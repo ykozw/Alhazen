@@ -14,7 +14,7 @@ public:
     AABB();
     void clear();
     void addPoint(Vec3 point);
-    void addPoints(_In_reads_(numPoints) const Vec3* points, int32_t numPoints);
+    void addPoints(const Vec3* points, int32_t numPoints);
     Vec3 center() const;
     Vec3 min() const;
     Vec3 max() const;

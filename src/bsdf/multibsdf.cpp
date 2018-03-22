@@ -83,8 +83,8 @@ BSDFs::bsdf(Vec3 localWo, Vec3 localWi) const
 Spectrum
 BSDFs::bsdfSample(Vec3 localWo,
                   Sampler* sampler,
-                  _Out_ Vec3* localWi,
-                  _Out_ float* pdf) const
+                  Vec3* localWi,
+                  float* pdf) const
 {
     //
     if (bsdfs_.size() == 0) {

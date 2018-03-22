@@ -113,7 +113,7 @@ BoxShape::aabb() const
 -------------------------------------------------
 */
 INLINE bool
-BoxShape::intersect(const Ray& ray, _Inout_ Intersect* isect) const
+BoxShape::intersect(const Ray& ray, Intersect* isect) const
 {
 #if 0
     // レイの位置と方向をLocal座標系に変換
@@ -137,7 +137,7 @@ BoxShape::intersect(const Ray& ray, _Inout_ Intersect* isect) const
 #else
     //
     const auto intersectFace =
-      [](const Ray& ray, const Face& face, _Inout_ Intersect* isect) {
+      [](const Ray& ray, const Face& face, Intersect* isect) {
           const auto& vs = face.vs;
           const Vec3 n = face.n;
           // HACK: UVは適当
@@ -234,7 +234,7 @@ RectangleShape::aabb() const
 -------------------------------------------------
 */
 INLINE bool
-RectangleShape::intersect(const Ray& ray, _Inout_ Intersect* isect) const
+RectangleShape::intersect(const Ray& ray, Intersect* isect) const
 {
     const bool hit0 = intersectTriangle(ray,
                                         verts_[0],
@@ -338,7 +338,7 @@ Sphere::aabb() const
 -------------------------------------------------
 */
 bool
-Sphere::intersect(const Ray& ray, _Inout_ Intersect* isect) const
+Sphere::intersect(const Ray& ray, Intersect* isect) const
 {
     if (intersectSphere(ray, pos_, r2_, isect)) {
         isect->bsdf = bsdf_;

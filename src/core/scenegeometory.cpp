@@ -56,7 +56,7 @@ SceneGeometory::lights() const
 bool
 SceneGeometory::intersect(const Ray& ray,
                           bool skipLight,
-                          _Inout_ Intersect* isect) const
+                          Intersect* isect) const
 {
     //
     ++g_numIsectTotal;

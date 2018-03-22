@@ -100,8 +100,8 @@ Distribution1D_Naive::construct(const std::vector<float>& values)
 */
 float
 Distribution1D_Naive::sample(float u,
-                             _Out_ float* pdf,
-                             _Out_ int32_t* offset) const
+                             float* pdf,
+                             int32_t* offset) const
 {
     const auto upperIte = std::lower_bound(cdf_.begin(), cdf_.end(), u);
     const int32_t index = alMax((int32_t)(upperIte - cdf_.begin() - 1), 0);

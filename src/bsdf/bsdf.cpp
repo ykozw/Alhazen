@@ -309,8 +309,8 @@ BlinnNDF::pdf(Vec3 wo, Vec3 wi)
 void
 BlinnNDF::sample(Vec3 wo,
                  Sampler* sampler,
-                 _Out_ Vec3* wi,
-                 _Out_ float* pdf) const
+                 Vec3* wi,
+                 float* pdf) const
 {
     const float u1 = sampler->get1d();
     const float u2 = sampler->get1d();
@@ -606,8 +606,8 @@ Lambertian::pdf(Vec3 localWo, Vec3 localWi) const
 Spectrum
 Lambertian::bsdfSample(Vec3 localWo,
                        Sampler* sampler,
-                       _Out_ Vec3* localWi,
-                       _Out_ float* pdf) const
+                       Vec3* localWi,
+                       float* pdf) const
 {
     //
     ++g_numSampleLambert;
@@ -701,8 +701,8 @@ OrenNayar::bsdf(Vec3 localWo, Vec3 localWi) const
 Spectrum
 OrenNayar::bsdfSample(Vec3 localWo,
                       Sampler* sampler,
-                      _Out_ Vec3* localWi,
-                      _Out_ float* aPdf) const
+                      Vec3* localWi,
+                      float* aPdf) const
 {
     float pdfHS;
     *localWi = sampler->getHemisphereCosineWeighted(&pdfHS);
@@ -786,8 +786,8 @@ Mirror::bsdf(Vec3 localWo, Vec3 localWi) const
 Spectrum
 Mirror::bsdfSample(Vec3 localWo,
                    Sampler* sampler,
-                   _Out_ Vec3* localWi,
-                   _Out_ float* pdf) const
+                   Vec3* localWi,
+                   float* pdf) const
 {
     // 単純なreflect
     *localWi = Vec3(-localWo.x(), -localWo.y(), localWo.z());
@@ -849,8 +849,8 @@ Glass::bsdf(Vec3 localWo, Vec3 localWi) const
 Spectrum
 Glass::bsdfSample(Vec3 localWo,
                   Sampler* sampler,
-                  _Out_ Vec3* localWi,
-                  _Out_ float* pdf) const
+                  Vec3* localWi,
+                  float* pdf) const
 {
     //
     const float glassProb = sampler->get1d();
@@ -1072,8 +1072,8 @@ MicrofacetBSDF::pdf(Vec3 localWo, Vec3 localWi) const
 Spectrum
 MicrofacetBSDF::bsdfSample(Vec3 localWo,
                            Sampler* sampler,
-                           _Out_ Vec3* localWi,
-                           _Out_ float* pdf) const
+                           Vec3* localWi,
+                           float* pdf) const
 {
     distribution_->sample(localWo, sampler, localWi, pdf);
     if (!sameHemisphere(localWo, *localWi)) {
@@ -1164,8 +1164,8 @@ TorranceSparrow::bsdf(Vec3 localWo, Vec3 localWi) const
 Spectrum
 TorranceSparrow::bsdfSample(Vec3 localWo,
                             Sampler* sampler,
-                            _Out_ Vec3* localWi,
-                            _Out_ float* pdf) const
+                            Vec3* localWi,
+                            float* pdf) const
 {
     dTerm_->sample(localWo, sampler, localWi, pdf);
     if (!sameHemisphere(localWo, *localWi)) {
@@ -1245,8 +1245,8 @@ Ward::bsdf(Vec3 localWo, Vec3 localWi) const
 Spectrum
 Ward::bsdfSample(const Vec3 localWo,
                  Sampler* sampler,
-                 _Out_ Vec3* localWi,
-                 _Out_ float* pdf) const
+                 Vec3* localWi,
+                 float* pdf) const
 {
     float pdfHS;
     *localWi = sampler->getHemisphereCosineWeighted(&pdfHS);
@@ -1359,8 +1359,8 @@ Walter::bsdf(Vec3 localWo, Vec3 localWi) const
 Spectrum
 Walter::bsdfSample(Vec3 localWo,
                    Sampler* sampler,
-                   _Out_ Vec3* localWi,
-                   _Out_ float* pdf) const
+                   Vec3* localWi,
+                   float* pdf) const
 {
     float pdfHS;
     *localWi = sampler->getHemisphereCosineWeighted(&pdfHS);
@@ -1471,8 +1471,8 @@ AshikhminShirley::bsdf(Vec3 localWo, Vec3 localWi) const
 Spectrum
 AshikhminShirley::bsdfSample(Vec3 localWo,
                              Sampler* sampler,
-                             _Out_ Vec3* localWi,
-                             _Out_ float* pdf) const
+                             Vec3* localWi,
+                             float* pdf) const
 {
     float pdfHS;
     *localWi = sampler->getHemisphereCosineWeighted(&pdfHS);
@@ -1764,8 +1764,8 @@ DisneyBRDF::bsdf(Vec3 localWo, Vec3 localWi) const
 Spectrum
 DisneyBRDF::bsdfSample(Vec3 localWo,
                        Sampler* sampler,
-                       _Out_ Vec3* localWi,
-                       _Out_ float* pdf) const
+                       Vec3* localWi,
+                       float* pdf) const
 {
 #if defined(USE_AUTO_IMPORTANCE)
     autoImportance_.sample(localWo, rng, localWi, pdf);
@@ -1860,8 +1860,8 @@ MeasuredBSDF::bsdf(Vec3 localWo, Vec3 localWi) const
 Spectrum
 MeasuredBSDF::bsdfSample(Vec3 localWo,
                          Sampler* sampler,
-                         _Out_ Vec3* localWi,
-                         _Out_ float* pdf) const
+                         Vec3* localWi,
+                         float* pdf) const
 {
     // TODO: 実装
     assert(!"needs impliment");

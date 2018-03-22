@@ -153,8 +153,8 @@ Distribution1D_Optimized::construct(const std::vector<float>& values)
 */
 float
 Distribution1D_Optimized::sample(float u,
-                                 _Out_ float* pdf,
-                                 _Out_ int32_t* aOffset) const
+                                 float* pdf,
+                                 int32_t* aOffset) const
 {
     //
     uint32_t n = (uint32_t)cdfBreadthFirst_.size() - 1;

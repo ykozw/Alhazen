@@ -113,7 +113,7 @@ SubDShape::aabb() const
  -------------------------------------------------
  */
 INLINE bool
-SubDShape::intersect(const Ray& ray, _Inout_ Intersect* isect) const
+SubDShape::intersect(const Ray& ray, Intersect* isect) const
 {
 #if 0
     // レイの位置と方向をLocal座標系に変換
@@ -137,7 +137,7 @@ SubDShape::intersect(const Ray& ray, _Inout_ Intersect* isect) const
 #else
     //
     const auto intersectFace =
-      [](const Ray& ray, const Face& face, _Inout_ Intersect* isect) {
+      [](const Ray& ray, const Face& face, Intersect* isect) {
           const auto& vs = face.vs;
           const Vec3 n = face.n;
           // HACK: UVは適当

@@ -174,7 +174,7 @@ Hemisphere(xyz_)
 -------------------------------------------------
 */
 Vec3
-Sampler::getHemisphereCosineWeighted(_Out_ float* pdf)
+Sampler::getHemisphereCosineWeighted(float* pdf)
 {
     //
     const Vec2 uv = getDiscConcentric();

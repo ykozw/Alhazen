@@ -23,7 +23,7 @@ cosPhi(Vec3 v);
 float
 sinPhi(Vec3 v);
 void
-sincosPhi(Vec3 v, _Out_ float* sinPhi, _Out_ float* cosPhi);
+sincosPhi(Vec3 v, float* sinPhi, float* cosPhi);
 
 /*
 -------------------------------------------------

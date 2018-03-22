@@ -14,7 +14,7 @@ public:
     Distribution1D_Naive(const std::initializer_list<float>& pdf);
     Distribution1D_Naive(const float* values, int32_t num);
     Distribution1D_Naive(std::function<float(float)> valueGen, int32_t split);
-    float sample(float u, _Out_ float* pdf, int32_t* offset = NULL) const;
+    float sample(float u, float* pdf, int32_t* offset = nullptr) const;
     float pdf(int32_t index) const;
 
 private:
@@ -43,7 +43,7 @@ public:
     Distribution1D_Optimized(const float* values, int32_t num);
     Distribution1D_Optimized(std::function<float(float)> valueGen,
                              int32_t split);
-    float sample(float u, _Out_ float* pdf, int32_t* offset = NULL) const;
+    float sample(float u, float* pdf, int32_t* offset = nullptr) const;
     float pdf(int32_t index) const;
 
 private:

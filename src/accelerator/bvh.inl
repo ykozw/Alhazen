@@ -7,7 +7,7 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE bool BruteForceBVH::intersect(const Ray& ray, _Inout_ Intersect* isect) const
+INLINE bool BruteForceBVH::intersect(const Ray& ray, Intersect* isect) const
 {
     bool isHit = false;
     // 全ての三角形を見ていく
@@ -76,7 +76,7 @@ INLINE int32_t SimpleBVH::maxDepth() const
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE bool SimpleBVH::intersect(const Ray& ray, _Inout_ Intersect* isect) const
+INLINE bool SimpleBVH::intersect(const Ray& ray, Intersect* isect) const
 {
     return intersectSub(0, ray, isect);
 }
@@ -96,7 +96,7 @@ INLINE bool SimpleBVH::intersectCheck(const Ray& ray) const
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE bool SimpleBVH::intersectSub(int32_t nodeIndex, const Ray& ray, _Inout_ Intersect* isect) const
+INLINE bool SimpleBVH::intersectSub(int32_t nodeIndex, const Ray& ray, Intersect* isect) const
 {
     /*
     スタックレス版の方が2割ほど低速であったため再帰版を採用する
@@ -264,8 +264,8 @@ AL_FORCEINLINE __m128 select(__m128 v0, __m128 v1, __m128 mask)
 */
 INLINE bool QBVH::intersect(
     const Ray& ray,
-    _Out_ Intersect* isect,
-    _Out_ int8_t* materialId ) const
+    Intersect* isect,
+    int8_t* materialId ) const
 {
     // SIMD用レイ
     RaySIMD raySIMD(ray);
@@ -474,7 +474,7 @@ INLINE bool QBVH::intersectCheck(const Ray& ray) const
  -------------------------------------------------
  -------------------------------------------------
  */
-INLINE bool ShapeBVH::intersect(const Ray& ray, _Inout_ Intersect* isect) const
+INLINE bool ShapeBVH::intersect(const Ray& ray, Intersect* isect) const
 {
     return intersectSub(0, ray, isect);
 }
@@ -483,7 +483,7 @@ INLINE bool ShapeBVH::intersect(const Ray& ray, _Inout_ Intersect* isect) const
  -------------------------------------------------
  -------------------------------------------------
  */
-INLINE bool ShapeBVH::intersectSub(int32_t nodeIndex, const Ray& ray, _Inout_ Intersect* isect) const
+INLINE bool ShapeBVH::intersectSub(int32_t nodeIndex, const Ray& ray, Intersect* isect) const
 {
     // スタック利用版
     const auto& node = nodes_[nodeIndex];

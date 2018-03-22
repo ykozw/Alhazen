@@ -31,10 +31,10 @@ static void
 testBSDFcore(BSDFPtr bsdf)
 {
     //
-    SamplerPtr samplerWo = std::make_shared<SamplerIndepent>();
-    SamplerPtr samplerWi = std::make_shared<SamplerHalton>();
-    samplerWo->setHash(0x01);
-    samplerWi->setHash(0x01);
+    SamplerIndepent samplerWo;
+    SamplerHalton samplerWi;
+    samplerWo.setHash(0x01);
+    samplerWi.setHash(0x01);
     //
     for (int32_t i = 0; i < 128; ++i) {
         //
@@ -43,12 +43,12 @@ testBSDFcore(BSDFPtr bsdf)
         FloatStreamStats statsRhd0;
         FloatStreamStats statsRhd1;
         //
-        samplerWo->startSample(i);
-        const Vec3 wo = samplerWo->getHemisphere();
+        samplerWo.startSample(i);
+        const Vec3 wo = samplerWo.getHemisphere();
         //
         for (int32_t sn = 0; sn < 1024 * 16; ++sn) {
-            samplerWi->startSample(sn);
-            const Vec3 wi = samplerWi->getHemisphere();
+            samplerWi.startSample(sn);
+            const Vec3 wi = samplerWi.getHemisphere();
             const Spectrum ref0 = bsdf->bsdf(wo, wi);
             const Spectrum ref1 = bsdf->bsdf(wi, wo);
             // ヘルムホルツの相反性
@@ -76,7 +76,7 @@ testBSDFcore(BSDFPtr bsdf)
             Vec3 wiIS;
             float pdfIS;
             const Spectrum refIS =
-              bsdf->bsdfSample(wo, samplerWi, &wiIS, &pdfIS);
+              bsdf->bsdfSample(wo, &samplerWi, &wiIS, &pdfIS);
             if (pdfIS != 0.0f) {
                 statsRhd1.add(refIS.r * std::fabsf(wiIS.z()) / pdfIS);
             }
@@ -308,7 +308,7 @@ BlinnNDF::pdf(Vec3 wo, Vec3 wi)
 */
 void
 BlinnNDF::sample(Vec3 wo,
-                 SamplerPtr sampler,
+                 Sampler* sampler,
                  _Out_ Vec3* wi,
                  _Out_ float* pdf) const
 {
@@ -361,12 +361,12 @@ AL_TEST(BlinnNDF, 0)
     // TODO: テストが止まってしまっている
     return;
     //
-    SamplerPtr samplerWo = std::make_shared<SamplerIndepent>();
-    SamplerPtr samplerWi = std::make_shared<SamplerHalton>();
-    SamplerPtr samplerWh = std::make_shared<SamplerHalton>();
-    samplerWo->setHash(0x01);
-    samplerWi->setHash(0x02);
-    samplerWh->setHash(0x03);
+    SamplerIndepent samplerWo;
+    SamplerHalton samplerWi;
+    SamplerHalton samplerWh;
+    samplerWo.setHash(0x01);
+    samplerWi.setHash(0x02);
+    samplerWh.setHash(0x03);
     MicrofacetDistributionPtr nd = std::make_shared<BlinnNDF>(0.0f);
 
     //// TODO: pdf()が全周で1になっているかのチェック
@@ -386,12 +386,12 @@ AL_TEST(BlinnNDF, 0)
         FloatStreamStats statsRhd0;
         FloatStreamStats statsRhd1;
         //
-        samplerWo->startSample(i);
-        const Vec3 wo = samplerWo->getSphere();
+        samplerWo.startSample(i);
+        const Vec3 wo = samplerWo.getSphere();
         //
         for (int32_t sn = 0; sn < 1024; ++sn) {
-            samplerWi->startSample(sn);
-            const Vec3 wi = samplerWi->getSphere();
+            samplerWi.startSample(sn);
+            const Vec3 wi = samplerWi.getSphere();
             // HalfVectorの作成
             const Vec3 wh = (wi + wo).normalized();
             const float ref = nd->eval(wh);
@@ -409,7 +409,7 @@ AL_TEST(BlinnNDF, 0)
             // rhdの算出(ImportanceSampling)
             Vec3 wiIS;
             float pdfIS;
-            nd->sample(wo, samplerWi, &wiIS, &pdfIS);
+            nd->sample(wo, &samplerWi, &wiIS, &pdfIS);
             // statsRhd1.add(refIS.r * std::fabsf(wiIS.z) / pdfIS);
         }
         AL_ASSERT_ALWAYS(statsEnergyConservation.mean() <= 1.0f);
@@ -605,7 +605,7 @@ Lambertian::pdf(Vec3 localWo, Vec3 localWi) const
 */
 Spectrum
 Lambertian::bsdfSample(Vec3 localWo,
-                       SamplerPtr sampler,
+                       Sampler* sampler,
                        _Out_ Vec3* localWi,
                        _Out_ float* pdf) const
 {
@@ -700,7 +700,7 @@ OrenNayar::bsdf(Vec3 localWo, Vec3 localWi) const
 */
 Spectrum
 OrenNayar::bsdfSample(Vec3 localWo,
-                      SamplerPtr sampler,
+                      Sampler* sampler,
                       _Out_ Vec3* localWi,
                       _Out_ float* aPdf) const
 {
@@ -785,7 +785,7 @@ Mirror::bsdf(Vec3 localWo, Vec3 localWi) const
 */
 Spectrum
 Mirror::bsdfSample(Vec3 localWo,
-                   SamplerPtr sampler,
+                   Sampler* sampler,
                    _Out_ Vec3* localWi,
                    _Out_ float* pdf) const
 {
@@ -848,7 +848,7 @@ Glass::bsdf(Vec3 localWo, Vec3 localWi) const
 */
 Spectrum
 Glass::bsdfSample(Vec3 localWo,
-                  SamplerPtr sampler,
+                  Sampler* sampler,
                   _Out_ Vec3* localWi,
                   _Out_ float* pdf) const
 {
@@ -1071,7 +1071,7 @@ MicrofacetBSDF::pdf(Vec3 localWo, Vec3 localWi) const
 */
 Spectrum
 MicrofacetBSDF::bsdfSample(Vec3 localWo,
-                           SamplerPtr sampler,
+                           Sampler* sampler,
                            _Out_ Vec3* localWi,
                            _Out_ float* pdf) const
 {
@@ -1163,7 +1163,7 @@ TorranceSparrow::bsdf(Vec3 localWo, Vec3 localWi) const
 */
 Spectrum
 TorranceSparrow::bsdfSample(Vec3 localWo,
-                            SamplerPtr sampler,
+                            Sampler* sampler,
                             _Out_ Vec3* localWi,
                             _Out_ float* pdf) const
 {
@@ -1244,7 +1244,7 @@ Ward::bsdf(Vec3 localWo, Vec3 localWi) const
 */
 Spectrum
 Ward::bsdfSample(const Vec3 localWo,
-                 SamplerPtr sampler,
+                 Sampler* sampler,
                  _Out_ Vec3* localWi,
                  _Out_ float* pdf) const
 {
@@ -1358,7 +1358,7 @@ Walter::bsdf(Vec3 localWo, Vec3 localWi) const
 */
 Spectrum
 Walter::bsdfSample(Vec3 localWo,
-                   SamplerPtr sampler,
+                   Sampler* sampler,
                    _Out_ Vec3* localWi,
                    _Out_ float* pdf) const
 {
@@ -1470,7 +1470,7 @@ AshikhminShirley::bsdf(Vec3 localWo, Vec3 localWi) const
 */
 Spectrum
 AshikhminShirley::bsdfSample(Vec3 localWo,
-                             SamplerPtr sampler,
+                             Sampler* sampler,
                              _Out_ Vec3* localWi,
                              _Out_ float* pdf) const
 {
@@ -1763,7 +1763,7 @@ DisneyBRDF::bsdf(Vec3 localWo, Vec3 localWi) const
 */
 Spectrum
 DisneyBRDF::bsdfSample(Vec3 localWo,
-                       SamplerPtr sampler,
+                       Sampler* sampler,
                        _Out_ Vec3* localWi,
                        _Out_ float* pdf) const
 {
@@ -1859,7 +1859,7 @@ MeasuredBSDF::bsdf(Vec3 localWo, Vec3 localWi) const
 */
 Spectrum
 MeasuredBSDF::bsdfSample(Vec3 localWo,
-                         SamplerPtr sampler,
+                         Sampler* sampler,
                          _Out_ Vec3* localWi,
                          _Out_ float* pdf) const
 {

@@ -82,7 +82,7 @@ BSDFs::bsdf(Vec3 localWo, Vec3 localWi) const
 */
 Spectrum
 BSDFs::bsdfSample(Vec3 localWo,
-                  SamplerPtr sampler,
+                  Sampler* sampler,
                   _Out_ Vec3* localWi,
                   _Out_ float* pdf) const
 {

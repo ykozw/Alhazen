@@ -33,7 +33,7 @@ Scene::Scene(const ObjectProp& objectProp)
     denoiser_ = createObject<Denoiser>(objectProp);
     denoiseBuffer_.resize(img.width(), img.height());
     // サンプラーの作成
-    sampler_ = createObject<Sampler>(objectProp);
+    //sampler_ = createObject<Sampler>(objectProp);
     // その他プロパティ
     timeout_ = objectProp.findChildBy("name", "timeout").asInt(60);
     isProgressive_ =
@@ -169,12 +169,14 @@ Scene::render(int32_t taskNo)
     SubFilm& subFilm = film->subFilm(subFilmIndex);
     const Image& image = film->image();
     Image& subFilmImage = subFilm.image();
+    // HACK: 暫定的に直接サンプラーを宣言しておく
+    SamplerIndepent sampler;
     // タイルの描画
     const auto& region = subFilm.region();
     for (int32_t y = region.top; y < region.bottom; ++y) {
         for (int32_t x = region.left; x < region.right; ++x) {
             //
-            sampler_->setHash(calcPixelHash(x, y, image.width()));
+            sampler.setHash(calcPixelHash(x, y, image.width()));
             //
             Spectrum spectrumTotal(0.0f);
             // TODO: ちゃんとシーンファイルから取ってくるようにする
@@ -184,10 +186,10 @@ Scene::render(int32_t taskNo)
             // SubPixel巡回
             for (int32_t sampleNo = sampleBegin; sampleNo < sampleEnd;
                  ++sampleNo) {
-                sampler_->startSample(sampleNo);
+                sampler.startSample(sampleNo);
                 ++g_numSample;
                 // SubPixelの生成
-                const Vec2 subPixelOffset = sampler_->get2d();
+                const Vec2 subPixelOffset = sampler.get2d();
                 // TODO: フィルターインターフェイスからweightを取ってくる
                 const float weight = 1.0f;
                 const float spx = x + subPixelOffset.x();
@@ -199,7 +201,7 @@ Scene::render(int32_t taskNo)
                 if (pdf != 0.0f) {
                     Spectrum spectrum = Spectrum::Black;
                     spectrum =
-                      integrator_->radiance(screenRay, geometory_, sampler_);
+                      integrator_->radiance(screenRay, geometory_, &sampler);
                     AL_ASSERT_DEBUG(!spectrum.hasNaN());
                     // TODO: pdfをちゃんと扱うようにする
                     spectrumTotal += spectrum * spWeight;
@@ -235,8 +237,10 @@ Scene::renderPixel(int32_t x, int32_t y)
     float pdf = 0.0f;
     const Ray screenRay = sensor_->generateRay(float(x), float(y), pdf);
     Spectrum spectrum = Spectrum::Black;
-    sampler_->setHash(calcPixelHash(x, y, image.width()));
-    spectrum = integrator_->radiance(screenRay, geometory_, sampler_);
+    // HACK: 暫定的に直接サンプラーを宣言しておく
+    SamplerIndepent sampler;
+    sampler.setHash(calcPixelHash(x, y, image.width()));
+    spectrum = integrator_->radiance(screenRay, geometory_, &sampler);
     AL_ASSERT_DEBUG(!spectrum.hasNaN());
     return spectrum;
 }

@@ -40,7 +40,7 @@ private:
     TonemapperPtr tonemapper_ = nullptr;
     DenoiserPtr denoiser_ = nullptr;
     LTEIntegratorPtr integrator_ = nullptr;
-    SamplerPtr sampler_ = nullptr; // false sharingが起きているのでなんとかする
+    //SamplerPtr sampler_ = nullptr; // false sharingが起きているのでなんとかする
     int32_t totalTaskNum_ = 0;
     // トーンマッピングされた画像
     ImageLDR tonemmappedImage_;

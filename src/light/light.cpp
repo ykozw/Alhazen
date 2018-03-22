@@ -103,7 +103,7 @@ ConstantLight::pdf(Vec3 targetPos, Vec3 dir) const
 -------------------------------------------------
 */
 Spectrum
-ConstantLight::sampleLe(SamplerPtr sampler,
+ConstantLight::sampleLe(Sampler* sampler,
                         Vec3 targetPos,
                         _Out_ Vec3* samplePos,
                         _Out_ float* pdf) const
@@ -149,12 +149,12 @@ AL_TEST(ConstantLight, 0)
     ConstantLight light;
     light.init(Spectrum::White);
     // TODO: ランダムにサンプル
-    SamplerPtr sampler = std::make_shared<SamplerIndepent>();
-    sampler->setHash(0x01);
+    SamplerIndepent sampler;
+    sampler.setHash(0x01);
     FloatStreamStats stats;
     for (int32_t sn = 0; sn < 1024 * 16; ++sn) {
-        sampler->startSample(sn);
-        const Vec3 dir = sampler->getHemisphere();
+        sampler.startSample(sn);
+        const Vec3 dir = sampler.getHemisphere();
         Intersect isect;
         isect.clear();
         const bool hit =
@@ -170,11 +170,11 @@ AL_TEST(ConstantLight, 0)
     FloatStreamStats stats2;
     // 明示的にサンプル
     for (int32_t sn = 0; sn < 1024 * 128; ++sn) {
-        sampler->startSample(sn);
+        sampler.startSample(sn);
         Vec3 samplePos;
         float pdf;
         const Spectrum e =
-          light.sampleLe(sampler, Vec3(0.0f, 0.0f, 0.0f), &samplePos, &pdf);
+          light.sampleLe(&sampler, Vec3(0.0f, 0.0f, 0.0f), &samplePos, &pdf);
         if (samplePos.z() < 0.0f) {
             stats2.add(0.0f);
         } else {
@@ -340,7 +340,7 @@ RectangleLight::pdf(Vec3 targetPos, Vec3 dir) const
 -------------------------------------------------
 */
 Spectrum
-RectangleLight::sampleLe(SamplerPtr sampler,
+RectangleLight::sampleLe(Sampler* sampler,
                          Vec3 targetPos,
                          _Out_ Vec3* samplePos,
                          _Out_ float* pdf) const
@@ -422,12 +422,12 @@ AL_TEST(RectangleLight, 0)
                Vec3(1.0f, 0.0f, 0.0f),
                Vec3(0.0f, 1.0f, 0.0f));
     // TODO: ランダムにサンプル
-    SamplerPtr sampler = std::make_shared<SamplerIndepent>();
-    sampler->setHash(0x01);
+    SamplerIndepent sampler;
+    sampler.setHash(0x01);
     FloatStreamStats stats;
     for (int32_t sn = 0; sn < 1024 * 1024; ++sn) {
-        sampler->startSample(sn);
-        const Vec3 dir = sampler->getHemisphere();
+        sampler.startSample(sn);
+        const Vec3 dir = sampler.getHemisphere();
         Intersect isect;
         isect.clear();
         const bool hit =
@@ -443,11 +443,11 @@ AL_TEST(RectangleLight, 0)
     FloatStreamStats stats2;
     // 明示的にサンプル
     for (int32_t sn = 0; sn < 1024; ++sn) {
-        sampler->startSample(sn);
+        sampler.startSample(sn);
         Vec3 samplePos;
         float pdf;
         const Spectrum e =
-          light.sampleLe(sampler, Vec3(0.0f, 0.0f, 0.0f), &samplePos, &pdf);
+          light.sampleLe(&sampler, Vec3(0.0f, 0.0f, 0.0f), &samplePos, &pdf);
         stats2.add(e.r / pdf);
     }
     // 真値が同じ範囲に入っているかチェック
@@ -470,12 +470,12 @@ AL_TEST(RectangleLight, 1)
                Vec3(1000.0f, 0.0f, 0.0f),
                Vec3(0.0f, 1000.0f, 0.0f));
     // TODO: ランダムにサンプル
-    SamplerPtr sampler = std::make_shared<SamplerIndepent>();
-    sampler->setHash(0x01);
+    SamplerIndepent sampler;
+    sampler.setHash(0x01);
     FloatStreamStats stats;
     for (int32_t sn = 0; sn < 1024 * 16; ++sn) {
-        sampler->startSample(sn);
-        const Vec3 dir = sampler->getHemisphere();
+        sampler.startSample(sn);
+        const Vec3 dir = sampler.getHemisphere();
         Intersect isect;
         isect.clear();
         const bool hit =
@@ -491,11 +491,11 @@ AL_TEST(RectangleLight, 1)
     FloatStreamStats stats2;
     // 明示的にサンプル
     for (int32_t sn = 0; sn < 1024 * 128; ++sn) {
-        sampler->startSample(sn);
+        sampler.startSample(sn);
         Vec3 samplePos;
         float pdf;
         const Spectrum e =
-          light.sampleLe(sampler, Vec3(0.0f, 0.0f, 0.0f), &samplePos, &pdf);
+          light.sampleLe(&sampler, Vec3(0.0f, 0.0f, 0.0f), &samplePos, &pdf);
         const Vec3 wi = samplePos.normalized();
         stats2.add(e.r * wi.z() / pdf);
     }
@@ -609,7 +609,7 @@ SphereLight::pdf(Vec3 targetPos, Vec3 dir) const
 -------------------------------------------------
 */
 Spectrum
-SphereLight::sampleLe(SamplerPtr sampler,
+SphereLight::sampleLe(Sampler* sampler,
                       Vec3 targetPos,
                       _Out_ Vec3* samplePos,
                       _Out_ float* pdf) const
@@ -698,12 +698,12 @@ AL_TEST(SphereLight, 1)
     SphereLight light;
     light.init(Vec3(0.0f, 0.0f, 0.2f), 0.1f, Spectrum::White);
     // TODO: ランダムにサンプル
-    SamplerPtr sampler = std::make_shared<SamplerIndepent>();
-    sampler->setHash(0x01);
+    SamplerIndepent sampler;
+    sampler.setHash(0x01);
     FloatStreamStats stats;
     for (int32_t sn = 0; sn < 1024 * 16; ++sn) {
-        sampler->startSample(sn);
-        const Vec3 dir = sampler->getHemisphere();
+        sampler.startSample(sn);
+        const Vec3 dir = sampler.getHemisphere();
         Intersect isect;
         isect.clear();
         const bool hit =
@@ -719,11 +719,11 @@ AL_TEST(SphereLight, 1)
     FloatStreamStats stats2;
     // 明示的にサンプル
     for (int32_t sn = 0; sn < 1024 * 128; ++sn) {
-        sampler->startSample(sn);
+        sampler.startSample(sn);
         Vec3 samplePos;
         float pdf;
         const Spectrum e =
-          light.sampleLe(sampler, Vec3(0.0f, 0.0f, 0.0f), &samplePos, &pdf);
+          light.sampleLe(&sampler, Vec3(0.0f, 0.0f, 0.0f), &samplePos, &pdf);
         const Vec3 wi = samplePos.normalized();
         stats2.add(e.r * wi.z() / pdf);
     }
@@ -915,7 +915,7 @@ EnviromentLight::emission(Vec3 pos, Vec3 dir) const
 -------------------------------------------------
 */
 Spectrum
-EnviromentLight::sampleLe(SamplerPtr sampler,
+EnviromentLight::sampleLe(Sampler* sampler,
                           Vec3 targetPos,
                           _Out_ Vec3* samplePos,
                           _Out_ float* pdf) const

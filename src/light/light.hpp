@@ -27,7 +27,7 @@ public:
     virtual bool isDeltaFunc() const = 0;
     virtual Spectrum emission(Vec3 targetPos, Vec3 dir) const = 0;
     virtual float pdf(Vec3 targetPos, Vec3 dir) const = 0;
-    virtual Spectrum sampleLe(SamplerPtr sampler,
+    virtual Spectrum sampleLe(Sampler* sampler,
                               Vec3 targetPos,
                               _Out_ Vec3* samplePos,
                               _Out_ float* pdf) const = 0;
@@ -52,7 +52,7 @@ public:
     bool isDeltaFunc() const override;
     Spectrum emission(Vec3 targetPos, Vec3 dir) const override;
     float pdf(Vec3 targetPos, Vec3 dir) const override;
-    virtual Spectrum sampleLe(SamplerPtr sampler,
+    virtual Spectrum sampleLe(Sampler* sampler,
                               Vec3 targetPos,
                               _Out_ Vec3* samplePos,
                               _Out_ float* pdf) const override;
@@ -86,7 +86,7 @@ public:
     bool isDeltaFunc() const override;
     Spectrum emission(Vec3 targetPos, Vec3 dir) const override;
     float pdf(Vec3 targetPos, Vec3 dir) const override;
-    Spectrum sampleLe(SamplerPtr sampler,
+    Spectrum sampleLe(Sampler* sampler,
                       Vec3 targetPos,
                       _Out_ Vec3* samplePos,
                       _Out_ float* pdf) const override;
@@ -132,7 +132,7 @@ public:
     bool isDeltaFunc() const override;
     Spectrum emission(Vec3 targetPos, Vec3 dir) const override;
     float pdf(Vec3 targetPos, Vec3 dir) const override;
-    Spectrum sampleLe(SamplerPtr sampler,
+    Spectrum sampleLe(Sampler* sampler,
                       Vec3 targetPos,
                       _Out_ Vec3* samplePos,
                       _Out_ float* pdf) const override;
@@ -170,7 +170,7 @@ public:
         AL_ASSERT_ALWAYS(false);
         return 0.0f;
     }
-    Spectrum sampleLe(SamplerPtr sampler,
+    Spectrum sampleLe(Sampler* sampler,
                       Vec3 targetPos,
                       _Out_ Vec3* samplePos,
                       _Out_ float* pdf) const override;

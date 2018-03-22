@@ -99,7 +99,7 @@ ObjShape::intersect(const Ray& ray, Intersect* isect) const
 {
     int8_t materialId = 0;
     if (bvh_.intersect(ray, isect, &materialId)) {
-        isect->bsdf = bsdfs_[materialId];
+        isect->bsdf = bsdfs_[materialId].get();
         return true;
     }
     return false;

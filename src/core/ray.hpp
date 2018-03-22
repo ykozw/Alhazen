@@ -109,7 +109,7 @@ public:
     Vec3 normal = Vec3(1.0f, 0.0f, 0.0);
     Vec3 position = Vec3(0.0f);
     Vec2 uv = Vec2(0.0f, 0.0f);
-    BSDFPtr bsdf = nullptr;
+    BSDF* bsdf = nullptr;
     // 交差点でのEmission
     Spectrum emission = Spectrum::Black;
     // 交差したオブジェクト

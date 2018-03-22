@@ -261,7 +261,7 @@ RectangleShape::intersect(const Ray& ray, Intersect* isect) const
     if (!hit0 && !hit1) {
         return false;
     }
-    isect->bsdf = bsdf_;
+    isect->bsdf = bsdf_.get();
     return true;
 }
 
@@ -341,7 +341,7 @@ bool
 Sphere::intersect(const Ray& ray, Intersect* isect) const
 {
     if (intersectSphere(ray, pos_, r2_, isect)) {
-        isect->bsdf = bsdf_;
+        isect->bsdf = bsdf_.get();
         return true;
     }
     return false;

@@ -9,6 +9,7 @@
 #include "core/util.hpp"
 #include "core/parallelfor.hpp"
 #include "core/stats.hpp"
+#include "core/floatstreamstats.hpp"
 
 /*
 -------------------------------------------------
@@ -39,6 +40,8 @@ Alhazen::runApp(const ArgConfig& config)
     uint32_t nextDevelopTime =
       g_timeUtil.elapseTimeInMs() + developIntervalInMs;
     uint32_t nextStatPrintTime = g_timeUtil.elapseTimeInMs() + 1000;
+    //
+    FloatStreamStats taskTimeStats;
 
     for (;;) {
         //
@@ -93,10 +96,11 @@ Alhazen::runApp(const ArgConfig& config)
               //
               CounterStats::postParallel();
           });
+        taskTimeStats.add(float(g_timeUtil.elapseTimeInMs() - startRenderTime));
         logging("Render Task pushed (%08d->%08d) %d ms",
                 taskNo,
                 taskNo + TASK_NUM_UNTILL_BY_JOIN,
-                g_timeUtil.elapseTimeInMs() - startRenderTime);
+                int32_t(taskTimeStats.mean()));
         //
         taskNo += TASK_NUM_UNTILL_BY_JOIN;
     }

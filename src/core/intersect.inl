@@ -11,8 +11,8 @@ INLINE bool intersectSphereShapeCore(
     const Ray& ray,
     Vec3 o,
     float r2,
-    _Out_ float* t,
-    _Out_ bool* intersectBackside)
+    float* t,
+    bool* intersectBackside)
 {
     //
     const Vec3 rs = ray.o - o;
@@ -59,7 +59,7 @@ INLINE bool intersectSphere(
     const Ray& ray,
     Vec3 o,
     float r2,
-    _Inout_ Intersect* isect)
+    Intersect* isect)
 {
     float t;
     bool intersectBackside = false;
@@ -107,10 +107,10 @@ INLINE bool intersectTriangleCore(
     Vec3 v0,
     Vec3 v1,
     Vec3 v2,
-    _Out_ float* t,
-    _Out_ float* u,
-    _Out_ float* v,
-    _Out_ bool* isFlip)
+    float* t,
+    float* u,
+    float* v,
+    bool* isFlip)
 {
     //
     Vec3 e1, e2;  //Edge1, Edge2
@@ -169,7 +169,7 @@ INLINE bool intersectTriangle(
    Vec2 t0,
    Vec2 t1,
    Vec2 t2,
-    _Inout_ Intersect* isect)
+   Intersect* isect)
 {
     //
     float t, u, v;
@@ -232,7 +232,7 @@ INLINE bool intersectPlaneShapeCore(
     const Ray& ray,
     Vec3 dir,
     const float dist,
-    _Out_ float* t)
+    float* t)
 {
     //
     const float nDotD = Vec3::dot(dir, ray.d);
@@ -264,7 +264,7 @@ INLINE bool intersectPlane(
     const Ray& ray,
     Vec3 dir,
     float dist,
-    _Inout_ Intersect* isect)
+    Intersect* isect)
 {
     float t;
     if (!intersectPlaneShapeCore(ray, dir, dist, &t))

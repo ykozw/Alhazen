@@ -105,8 +105,8 @@ ConstantLight::pdf(Vec3 targetPos, Vec3 dir) const
 Spectrum
 ConstantLight::sampleLe(Sampler* sampler,
                         Vec3 targetPos,
-                        _Out_ Vec3* samplePos,
-                        _Out_ float* pdf) const
+                        Vec3* samplePos,
+                        float* pdf) const
 {
     // 常に一定
     *pdf = this->pdf(Vec3(), Vec3());
@@ -342,8 +342,8 @@ RectangleLight::pdf(Vec3 targetPos, Vec3 dir) const
 Spectrum
 RectangleLight::sampleLe(Sampler* sampler,
                          Vec3 targetPos,
-                         _Out_ Vec3* samplePos,
-                         _Out_ float* pdf) const
+                         Vec3* samplePos,
+                         float* pdf) const
 {
     // 位置を一様にサンプルする
     const Vec2 uv = sampler->get2d();
@@ -362,7 +362,7 @@ RectangleLight::sampleLe(Sampler* sampler,
 -------------------------------------------------
 */
 bool
-RectangleLight::intersect(const Ray& ray, _Inout_ Intersect* isect) const
+RectangleLight::intersect(const Ray& ray, Intersect* isect) const
 {
     bool isHit = false;
     isHit |= intersectTriangle(ray,
@@ -611,8 +611,8 @@ SphereLight::pdf(Vec3 targetPos, Vec3 dir) const
 Spectrum
 SphereLight::sampleLe(Sampler* sampler,
                       Vec3 targetPos,
-                      _Out_ Vec3* samplePos,
-                      _Out_ float* pdf) const
+                      Vec3* samplePos,
+                      float* pdf) const
 {
 #if 0 // 単純な方法
     // 球の表面を選択
@@ -676,7 +676,7 @@ SphereLight::sampleLe(Sampler* sampler,
 -------------------------------------------------
 */
 bool
-SphereLight::intersect(const Ray& ray, _Inout_ Intersect* isect) const
+SphereLight::intersect(const Ray& ray, Intersect* isect) const
 {
     const bool hit = intersectSphere(ray, center_, radius2_, isect);
     if (hit) {
@@ -810,7 +810,7 @@ dir2tex()
 -------------------------------------------------
 */
 static void
-dir2tex(const Vec3& dir, _Out_ Vec2* uv)
+dir2tex(const Vec3& dir, Vec2* uv)
 {
     const float invPI = 1.0f / PI;
     const float x = (atan2f(dir.x(), -dir.y()) * invPI + 1.0f) * 0.5f;
@@ -824,7 +824,7 @@ tex2dir()
 -------------------------------------------------
 */
 static void
-tex2dir(const Vec2& uv, _Out_ Vec3* dir)
+tex2dir(const Vec2& uv, Vec3* dir)
 {
     const float u = 2.0f * uv.x();
     const float v = uv.y();
@@ -917,8 +917,8 @@ EnviromentLight::emission(Vec3 pos, Vec3 dir) const
 Spectrum
 EnviromentLight::sampleLe(Sampler* sampler,
                           Vec3 targetPos,
-                          _Out_ Vec3* samplePos,
-                          _Out_ float* pdf) const
+                          Vec3* samplePos,
+                          float* pdf) const
 {
     //
     const float u1 = sampler->get1d();

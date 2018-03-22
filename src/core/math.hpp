@@ -168,7 +168,7 @@ public:
     Size2D() = default;
     Size2D(const Size2D& other) = default;
     Size2D(Size2D&& other) = default;
-    Size2D(_In_reads_(2) int32_t* es);
+    Size2D(int32_t* es);
     Size2D(int32_t awidth, int32_t aheight);
     int32_t index(int32_t x, int32_t y) const;
 };
@@ -321,7 +321,7 @@ public:
     Vec2() = default;
     Vec2(const Vec2& other) = default;
     Vec2(Vec2&& other) = default;
-    Vec2(_In_reads_(4) const float* es);
+    Vec2(const float* es);
     Vec2(float ax, float ay);
     Vec2(__m128 other);
     explicit Vec2(float e);
@@ -396,7 +396,7 @@ public:
     INLINE Vec3() = default;
     INLINE Vec3(const Vec3& other) = default;
     INLINE Vec3(Vec3&& other) = default;
-    INLINE Vec3(_In_reads_(4) const float* es);
+    INLINE Vec3(const float* es);
     INLINE Vec3(float ax, float ay, float az);
     INLINE Vec3(float e);
     INLINE Vec3(__m128 other);
@@ -495,7 +495,7 @@ public:
     INLINE Vec4() = default;
     INLINE Vec4(const Vec4& other) = default;
     INLINE Vec4(Vec4&& other) = default;
-    INLINE Vec4(_In_reads_(4) const float* es);
+    INLINE Vec4(const float* es);
     INLINE Vec4(float x, float y, float z, float w);
     INLINE explicit Vec4(float e);
     INLINE Vec4(__m128 other);
@@ -550,7 +550,7 @@ public:
     Matrix3x3() = default;
     Matrix3x3(const Matrix3x3& other) = default;
     Matrix3x3(Matrix3x3&& other) = default;
-    Matrix3x3(_In_reads_(9) const float* es);
+    Matrix3x3(const float* es);
     Matrix3x3(float e11,
               float e12,
               float e13,

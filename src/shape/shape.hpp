@@ -21,7 +21,7 @@ public:
     Shape(const ObjectProp& prop);
     virtual ~Shape() {}
     virtual AABB aabb() const = 0;
-    virtual bool intersect(const Ray& ray, _Inout_ Intersect* isect) const = 0;
+    virtual bool intersect(const Ray& ray, Intersect* isect) const = 0;
     virtual bool intersectCheck(const Ray& ray) const = 0;
     void setBSDF(AllBSDFList bsdfs);
     virtual bool hasMultiBSDFs() { return false; }

@@ -153,14 +153,6 @@
 #pragma warning(disable : 4127) // 条件式が定数
 #pragma warning(disable : 4503) // chaiscript対策
 
-// SALの代替をここにかいておく
-#if !defined(WINDOWS)
-#define _In_reads_(expr)
-#define _In_
-#define _Out_
-#define _Inout_
-#endif
-
 // TLS
 #if defined(WINDOWS)
 #define AL_TLS __declspec(thread)

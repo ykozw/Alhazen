@@ -20,7 +20,7 @@ public:
     Light(const ObjectProp& objectProp);
     virtual ~Light() = default;
     //
-    virtual bool intersect(const Ray& ray, _Inout_ Intersect* isect) const = 0;
+    virtual bool intersect(const Ray& ray, Intersect* isect) const = 0;
     virtual bool intersectCheck(const Ray& ray) const = 0;
     //
     int32_t sampleNum() const;
@@ -29,8 +29,8 @@ public:
     virtual float pdf(Vec3 targetPos, Vec3 dir) const = 0;
     virtual Spectrum sampleLe(Sampler* sampler,
                               Vec3 targetPos,
-                              _Out_ Vec3* samplePos,
-                              _Out_ float* pdf) const = 0;
+                              Vec3* samplePos,
+                              float* pdf) const = 0;
 
 protected:
     int32_t sampleNum_;
@@ -54,8 +54,8 @@ public:
     float pdf(Vec3 targetPos, Vec3 dir) const override;
     virtual Spectrum sampleLe(Sampler* sampler,
                               Vec3 targetPos,
-                              _Out_ Vec3* samplePos,
-                              _Out_ float* pdf) const override;
+                              Vec3* samplePos,
+                              float* pdf) const override;
 
     // ShapeのOverride
     bool intersect(const Ray& ray, Intersect* isect) const override;
@@ -88,12 +88,12 @@ public:
     float pdf(Vec3 targetPos, Vec3 dir) const override;
     Spectrum sampleLe(Sampler* sampler,
                       Vec3 targetPos,
-                      _Out_ Vec3* samplePos,
-                      _Out_ float* pdf) const override;
+                      Vec3* samplePos,
+                      float* pdf) const override;
     float area() const;
 
     // ShapeのOverride
-    bool intersect(const Ray& ray, _Inout_ Intersect* isect) const override;
+    bool intersect(const Ray& ray, Intersect* isect) const override;
     bool intersectCheck(const Ray& ray) const override;
 
 private:
@@ -134,9 +134,9 @@ public:
     float pdf(Vec3 targetPos, Vec3 dir) const override;
     Spectrum sampleLe(Sampler* sampler,
                       Vec3 targetPos,
-                      _Out_ Vec3* samplePos,
-                      _Out_ float* pdf) const override;
-    bool intersect(const Ray& ray, _Inout_ Intersect* isect) const override;
+                      Vec3* samplePos,
+                      float* pdf) const override;
+    bool intersect(const Ray& ray, Intersect* isect) const override;
     bool intersectCheck(const Ray& ray) const override
     {
         AL_ASSERT_ALWAYS(false);
@@ -172,8 +172,8 @@ public:
     }
     Spectrum sampleLe(Sampler* sampler,
                       Vec3 targetPos,
-                      _Out_ Vec3* samplePos,
-                      _Out_ float* pdf) const override;
+                      Vec3* samplePos,
+                      float* pdf) const override;
     const Image& image();
 
     // ShapeのOverride

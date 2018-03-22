@@ -101,8 +101,8 @@ Distribution2D::construct(const std::vector<std::vector<float>>& values)
 void
 Distribution2D::sample(float u,
                        float v,
-                       _Out_ float* pdf,
-                       _Out_ Vec2* samplePoint,
+                       float* pdf,
+                       Vec2* samplePoint,
                        int32_t* offsetU,
                        int32_t* offsetV) const
 {

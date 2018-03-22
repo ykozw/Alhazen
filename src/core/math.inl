@@ -77,7 +77,7 @@ INLINE __m128 _mm_fmadd_ps_compatible(__m128 v, __m128 m, __m128 a)
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE Size2D::Size2D(_In_reads_(2) int32_t* es)
+INLINE Size2D::Size2D(int32_t* es)
     :width(es[0]), height(es[1])
 {}
 /*
@@ -430,7 +430,7 @@ INLINE bool BoolInVec::value() const
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE Vec2::Vec2(_In_reads_(4) const float* es)
+INLINE Vec2::Vec2(const float* es)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     x_ = es[0];
@@ -938,7 +938,7 @@ INLINE static Vec2 operator / (Vec2 v, float f)
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE Vec3::Vec3(_In_reads_(4) const float* es)
+INLINE Vec3::Vec3(const float* es)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     x_ = es[0];
@@ -1800,7 +1800,7 @@ INLINE static Vec3 operator / (Vec3 v, float f)
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE Vec4::Vec4(_In_reads_(4) const float* es)
+INLINE Vec4::Vec4(const float* es)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     x_ = es[0];
@@ -2107,7 +2107,7 @@ INLINE FloatInVec Vec4::lengthSq(Vec4 v)
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE Matrix3x3::Matrix3x3(_In_reads_(9) const float* es)
+INLINE Matrix3x3::Matrix3x3(const float* es)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     e[0] = es[0];

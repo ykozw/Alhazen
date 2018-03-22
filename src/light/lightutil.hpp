@@ -14,8 +14,8 @@ calcFormFactor(const Vec3& p0,
                const Vec3& n0,
                const Vec3& p1,
                const Vec3& n1,
-               _Out_ float* formFactor,
-               _Out_ float* pdf)
+               float* formFactor,
+               float* pdf)
 {
     const Vec3 dir = p0 - p1;
     const Vec3 dirNormalized = dir.normalized();

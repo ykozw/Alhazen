@@ -26,7 +26,7 @@ public:
     virtual int32_t numVerts() const { return 0; }
     virtual int32_t numFaces() const { return 0; }
     virtual int32_t maxDepth() const = 0;
-    virtual bool intersect(const Ray& ray, _Inout_ Intersect* isect) const = 0;
+    virtual bool intersect(const Ray& ray, Intersect* isect) const = 0;
     virtual bool intersectCheck(const Ray& ray) const = 0;
 };
 typedef std::shared_ptr<BVHBase> BVHAcceleratorPtr;
@@ -46,7 +46,7 @@ public:
                    const std::vector<MeshFace>& fs) override;
     AABB aabb() const override;
     int32_t maxDepth() const override;
-    bool intersect(const Ray& ray, _Inout_ Intersect* isect) const override;
+    bool intersect(const Ray& ray, Intersect* isect) const override;
     bool intersectCheck(const Ray& ray) const override;
 
 private:
@@ -74,7 +74,7 @@ public:
                    const std::vector<MeshFace>& fs) override;
     AABB aabb() const override;
     int32_t maxDepth() const override;
-    bool intersect(const Ray& ray, _Inout_ Intersect* isect) const override;
+    bool intersect(const Ray& ray, Intersect* isect) const override;
     bool intersectCheck(const Ray& ray) const override;
 
 private:
@@ -111,12 +111,12 @@ private:
 
 private:
     void constructNode(int32_t nodeIndex,
-                       _In_ MeshTriangle* triangles,
+                       MeshTriangle* triangles,
                        int32_t numTriangle,
                        int32_t depth);
     bool intersectSub(int32_t nodeIndex,
                       const Ray& ray,
-                      _Inout_ Intersect* isect) const;
+                      Intersect* isect) const;
 
 private:
     std::vector<Vec3> vs_;
@@ -214,8 +214,8 @@ public:
     int32_t maxDepth() const;
     AABB aabb() const;
     bool intersect(const Ray& ray,
-                   _Out_ Intersect* isect,
-                   _Out_ int8_t* materialId) const;
+                   Intersect* isect,
+                   int8_t* materialId) const;
     bool intersectCheck(const Ray& ray) const;
 
 private:
@@ -284,10 +284,10 @@ public:
 
 public:
     void construct(const std::vector<ShapePtr>& shapes);
-    bool intersect(const Ray& ray, _Inout_ Intersect* isect) const;
+    bool intersect(const Ray& ray, Intersect* isect) const;
     bool intersectSub(int32_t nodeIndex,
                       const Ray& ray,
-                      _Inout_ Intersect* isect) const;
+                      Intersect* isect) const;
 
 private:
     struct Node

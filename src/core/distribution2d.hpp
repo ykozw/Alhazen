@@ -22,10 +22,10 @@ public:
     void construct(const std::vector<std::vector<float>>& valules);
     void sample(float u,
                 float v,
-                _Out_ float* pdf,
-                _Out_ Vec2* samplePoint,
-                int32_t* offsetU = NULL,
-                int32_t* offsetV = NULL) const;
+                float* pdf,
+                Vec2* samplePoint,
+                int32_t* offsetU = nullptr,
+                int32_t* offsetV = nullptr) const;
     int32_t row() const;
     int32_t column() const;
     float invRow() const;

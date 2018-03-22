@@ -36,7 +36,7 @@ INLINE void AABB::addPoint(Vec3 point)
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE void AABB::addPoints(_In_reads_(numPoints) const Vec3* points, int32_t numPoints)
+INLINE void AABB::addPoints(const Vec3* points, int32_t numPoints)
 {
     for (int32_t i = 0; i < numPoints; ++i)
     {

@@ -22,7 +22,7 @@ public:
     const std::vector<LightPtr>& lights() const;
     bool intersect(const Ray& ray,
                    bool skipLight,
-                   _Out_ Intersect* isect) const;
+                   Intersect* isect) const;
     bool intersectCheck(const Ray& ray, bool skipLight) const;
     bool isVisible(const Vec3& p0, const Vec3& p1, bool skipLight) const;
     AABB aabb() const;

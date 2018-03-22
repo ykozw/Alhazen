@@ -107,7 +107,7 @@ INLINE float sinPhi(Vec3 v)
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE void sincosPhi(Vec3 v, _Out_ float* sinPhi, _Out_ float* cosPhi)
+INLINE void sincosPhi(Vec3 v, float* sinPhi, float* cosPhi)
 {
     AL_ASSERT_DEBUG(v.isNormalized());
     const float st = sinTheta(v);

@@ -323,8 +323,8 @@ private:
                    Vec3 dir,
                    float waveLength,
                    float imageSensorOffset,
-                   _Out_ std::vector<Vec3>* points,
-                   _Out_ Ray* outRay) const;
+                   std::vector<Vec3>* points,
+                   Ray* outRay) const;
     float workingDistance(float imageSensorOffset) const;
     void autoFocus(float distance);
     float sensorOffsetRangeUpperBound() const;
@@ -913,7 +913,7 @@ INLINE void
 intersectPlaneAsStopPlane(Vec3 rayOrig,
                           Vec3 rayDir,
                           const float dist,
-                          _Out_ Vec3* hitPos)
+                          Vec3* hitPos)
 {
     // 平面は常に(0,0,1)を向いているので、dot(rayDir,planeNormal) = rayDir.z
     const float nDotD = rayDir.z();
@@ -952,8 +952,8 @@ RealSensor::lensTrace(float xOnFilmInMM,
                       Vec3 dir,
                       float waveLength,
                       float imageSensorOffset,
-                      _Out_ std::vector<Vec3>* points,
-                      _Out_ Ray* outRay) const
+                      std::vector<Vec3>* points,
+                      Ray* outRay) const
 {
     AL_ASSERT_DEBUG(dir.isNormalized());
     const Vec3 ro(xOnFilmInMM, yOnFilmInMM, imageSensorOffset);

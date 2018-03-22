@@ -7,8 +7,7 @@ FileSystem g_fileSystem;
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-FileSystem::init(const char* sceneFilePath, const char* exeFilePath)
+void FileSystem::init(const char *sceneFilePath, const char *exeFilePath)
 {
     // 出力フォルダを作成する
     std::string sceneFileDir;
@@ -36,14 +35,15 @@ FileSystem::init(const char* sceneFilePath, const char* exeFilePath)
 
 -------------------------------------------------
 */
-std::string
-FileSystem::getOutputFolderPath() const
+std::string FileSystem::getOutputFolderPath() const
 {
-    if (outputDir_ != "" && outputDir_ != "/output/") {
+    if (outputDir_ != "" && outputDir_ != "/output/")
+    {
         return outputDir_;
     }
     // 出力フォルダが決定していないときはexeがあるパスにする
-    else {
+    else
+    {
         return exeDir_;
     }
 }
@@ -53,13 +53,15 @@ FileSystem::getOutputFolderPath() const
 
 -------------------------------------------------
 */
-const char*
-FileSystem::getExt(const char* fileName)
+const char *FileSystem::getExt(const char *fileName)
 {
-    const char* lastDot = strrchr(fileName, '.');
-    if (lastDot == NULL) {
+    const char *lastDot = strrchr(fileName, '.');
+    if (lastDot == NULL)
+    {
         return "";
-    } else {
+    }
+    else
+    {
         return lastDot;
     }
 }
@@ -70,10 +72,9 @@ TODO:
 ポータビリティ、特殊なケースに対応していないので、C++0zでfilesystemが入ったら改築する
 -------------------------------------------------
 */
-void
-FileSystem::getDirPath(const std::string& fullPath,
-                       std::string& aDirPath,
-                       std::string& aFileName)
+void FileSystem::getDirPath(const std::string &fullPath,
+                            std::string &aDirPath,
+                            std::string &aFileName)
 {
 #if defined(WINDOWS)
     const char split = '\\';
@@ -89,12 +90,12 @@ FileSystem::getDirPath(const std::string& fullPath,
 -------------------------------------------------
 -------------------------------------------------
 */
-std::string
-FileSystem::readTextFileAll(const std::string& filePath)
+std::string FileSystem::readTextFileAll(const std::string &filePath)
 {
     // TODO: 実装
-    FILE* file = fopen(filePath.c_str(), "rt");
-    if (file == nullptr) {
+    FILE *file = fopen(filePath.c_str(), "rt");
+    if (file == nullptr)
+    {
         return "";
     }
     // ファイルサイズを取得する
@@ -104,7 +105,7 @@ FileSystem::readTextFileAll(const std::string& filePath)
     //　ファイルの内容を全てロードする
     std::string ret;
     ret.resize(fileSize);
-    fread((void*)ret.data(), ret.size(), 1, file);
+    fread((void *)ret.data(), ret.size(), 1, file);
     //
     fclose(file);
     //
@@ -121,21 +122,17 @@ TimeUtil g_timeUtil;
 -------------------------------------------------
 -------------------------------------------------
 */
-TimeUtil::TimeUtil()
-{
-    startTime_ = std::chrono::system_clock::now();
-}
+TimeUtil::TimeUtil() { startTime_ = std::chrono::system_clock::now(); }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-uint32_t
-TimeUtil::elapseTimeInMs()
+uint32_t TimeUtil::elapseTimeInMs()
 {
     const auto duration = std::chrono::system_clock::now() - startTime_;
     int64_t elapsedInMs =
-      std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
+        std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
     return uint32_t(elapsedInMs);
 }
 
@@ -143,17 +140,18 @@ TimeUtil::elapseTimeInMs()
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-SpinLock::lock()
+void SpinLock::lock()
 {
     using clock_t = std::chrono::high_resolution_clock;
     const auto before = clock_t::now();
     long long elapsed = 0;
     //
-    while (!mtx_.try_lock()) {
+    while (!mtx_.try_lock())
+    {
         elapsed = (clock_t::now() - before).count();
         // いつもよりも2倍以上待ってもロックできなければ通常のロックに入る
-        if (elapsed >= predictedWaitTime_ * 2) {
+        if (elapsed >= predictedWaitTime_ * 2)
+        {
             mtx_.lock();
             break;
         }
@@ -166,8 +164,4 @@ SpinLock::lock()
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-SpinLock::unlock()
-{
-    mtx_.unlock();
-}
+void SpinLock::unlock() { mtx_.unlock(); }

@@ -9,8 +9,7 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-inline static void
-sh_eval_basis_1(Vec3 dir, float b[4])
+inline static void sh_eval_basis_1(Vec3 dir, float b[4])
 {
     //
     const float x = dir.x();
@@ -35,8 +34,7 @@ sh_eval_basis_1(Vec3 dir, float b[4])
 -------------------------------------------------
 -------------------------------------------------
 */
-inline static void
-sh_eval_basis_2(Vec3 dir, float b[9])
+inline static void sh_eval_basis_2(Vec3 dir, float b[9])
 {
     //
     const float x = dir.x();
@@ -84,8 +82,7 @@ sh_eval_basis_2(Vec3 dir, float b[9])
 */
 // input pF only consists of Yl0 values, normalizes coefficients for directional
 // lights.
-static inline float
-cosWtInt(const size_t order)
+static inline float cosWtInt(const size_t order)
 {
     const float fCW0 = 0.25f;
     const float fCW1 = 0.5f;
@@ -112,20 +109,20 @@ cosWtInt(const size_t order)
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-_evalDirection(float* values, int32_t order, Vec3 dir)
+void _evalDirection(float *values, int32_t order, Vec3 dir)
 {
     // TODO:
-    switch (order) {
-        case 2:
-            sh_eval_basis_1(dir, values);
-            break;
-        case 3:
-            sh_eval_basis_2(dir, values);
-            break;
-        default:
-            assert(false);
-            break;
+    switch (order)
+    {
+    case 2:
+        sh_eval_basis_1(dir, values);
+        break;
+    case 3:
+        sh_eval_basis_2(dir, values);
+        break;
+    default:
+        assert(false);
+        break;
     }
 }
 
@@ -133,8 +130,7 @@ _evalDirection(float* values, int32_t order, Vec3 dir)
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-_evalDirectionalLight(float* values, int32_t order, Vec3 dir)
+void _evalDirectionalLight(float *values, int32_t order, Vec3 dir)
 {
     _evalDirection(values, order, dir);
 
@@ -142,7 +138,8 @@ _evalDirectionalLight(float* values, int32_t order, Vec3 dir)
     // now compute "normalization" and scale vector for each valid spectral band
     const float fNorm = PI / cosWtInt(order);
     const int32_t numCoeff = order * order;
-    for (size_t i = 0; i < numCoeff; ++i) {
+    for (size_t i = 0; i < numCoeff; ++i)
+    {
         values[i] *= fNorm;
     }
 }

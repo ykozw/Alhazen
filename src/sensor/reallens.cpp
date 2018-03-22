@@ -21,15 +21,15 @@ Snellの法則を使って透過方向を計算する
 全反射が発生してしまう場合はfalseが戻る
 -------------------------------------------------
 */
-inline bool
-refract(Vec3 wi, Vec3 n, float eta, Vec3* wt)
+inline bool refract(Vec3 wi, Vec3 n, float eta, Vec3 *wt)
 {
     // Snellの法則
     const float ctIn = Vec3::dot(n, wi);
     const float stIn2 = alMax(0.0f, 1.0f - ctIn * ctIn);
     const float stTr2 = eta * eta * stIn2;
     // 完全反射をしていないかチェック
-    if (stTr2 >= 1.0f) {
+    if (stTr2 >= 1.0f)
+    {
         return false;
     }
     //
@@ -49,7 +49,7 @@ class RealIOR AL_FINAL
 {
 public:
     RealIOR();
-    RealIOR(const std::string& glassName);
+    RealIOR(const std::string &glassName);
     float ior(const float waveLength = WAVE_LENGTH_D) const;
 
 private:
@@ -80,8 +80,7 @@ RealIOR()
 硝材を指定して初期化する
 -------------------------------------------------
 */
-RealIOR::RealIOR(const std::string& glassName)
-  : glassName_(glassName)
+RealIOR::RealIOR(const std::string &glassName) : glassName_(glassName)
 {
     float nd, vd;
     getGlassSpec(glassName, nd, vd);
@@ -92,8 +91,7 @@ RealIOR::RealIOR(const std::string& glassName)
 -------------------------------------------------
 -------------------------------------------------
 */
-float
-RealIOR::ior(const float waveLength) const
+float RealIOR::ior(const float waveLength) const
 {
     const float iw = 1.0f / waveLength;
     const float iw2 = iw * iw;
@@ -105,8 +103,7 @@ RealIOR::ior(const float waveLength) const
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-RealIOR::init(float nd, float vd)
+void RealIOR::init(float nd, float vd)
 {
     const float tmp = (nd - 1.0f) / vd;
     a_ = nd + 1.5168f * tmp;
@@ -137,12 +134,9 @@ public:
     float z;
 
 public:
-    LensSurface()
-      : isStop(false)
-      , radius(1.0f)
-      , radius2(1.0f)
-      , distance(1.0f)
-    {}
+    LensSurface() : isStop(false), radius(1.0f), radius2(1.0f), distance(1.0f)
+    {
+    }
 };
 typedef std::vector<LensSurface> LensSet;
 
@@ -152,8 +146,7 @@ loadOtx()
 Optalixファイルをロードする
 -------------------------------------------------
 */
-bool
-loadOtx(const std::string& fileName, LensSet& lensSet)
+bool loadOtx(const std::string &fileName, LensSet &lensSet)
 {
     lensSet.clear();
     std::ifstream file;
@@ -161,13 +154,15 @@ loadOtx(const std::string& fileName, LensSet& lensSet)
     AL_ASSERT_DEBUG(file);
     std::string buffer;
     // int32_t surfNo = 0;
-    LensSurface* curLensSurface = NULL;
+    LensSurface *curLensSurface = NULL;
     //
-    while (std::getline(file, buffer)) {
-        char tag[0xff + 1] = { '\0' };
-        char value[0xff + 1] = { '\0' };
+    while (std::getline(file, buffer))
+    {
+        char tag[0xff + 1] = {'\0'};
+        char value[0xff + 1] = {'\0'};
         //
-        if (sscanf(buffer.c_str(), "%255s %255s", tag, value) < 1) {
+        if (sscanf(buffer.c_str(), "%255s %255s", tag, value) < 1)
+        {
             continue;
         }
         /*
@@ -176,11 +171,12 @@ loadOtx(const std::string& fileName, LensSet& lensSet)
         -------------------------------------------------
         */
         // 無視するタグ一覧
-        const char* ignoreTags =
-          "!|VERS|FILE|NRD|RAIM|RAIC|PIM|PSFPATH|FNO|WL|WTW|REF|OSPF|"
-          "FTYP|NFLD|FLD|MFR|MFRF|MTFAVG|AFR|DEF|KLDR|"
-          "PLSC|PLSC2|AF|TRPLANE|TRXLAM|REM";
-        if (strstr(ignoreTags, tag) != NULL) {
+        const char *ignoreTags =
+            "!|VERS|FILE|NRD|RAIM|RAIC|PIM|PSFPATH|FNO|WL|WTW|REF|OSPF|"
+            "FTYP|NFLD|FLD|MFR|MFRF|MTFAVG|AFR|DEF|KLDR|"
+            "PLSC|PLSC2|AF|TRPLANE|TRXLAM|REM";
+        if (strstr(ignoreTags, tag) != NULL)
+        {
             continue;
         }
         /*
@@ -188,7 +184,8 @@ loadOtx(const std::string& fileName, LensSet& lensSet)
         ゴースト周り
         -------------------------------------------------
         */
-        else if (strcmp(tag, "GHO") == 0) {
+        else if (strcmp(tag, "GHO") == 0)
+        {
             // とりあえず現状全て無視
             continue;
         }
@@ -198,16 +195,19 @@ loadOtx(const std::string& fileName, LensSet& lensSet)
         -------------------------------------------------
         */
         // 面の交代
-        else if (strcmp(tag, "SUR") == 0) {
+        else if (strcmp(tag, "SUR") == 0)
+        {
             lensSet.push_back(LensSurface());
             curLensSurface = &lensSet[lensSet.size() - 1];
         }
         // ストップ面の場合
-        else if (strcmp(tag, "STO") == 0) {
+        else if (strcmp(tag, "STO") == 0)
+        {
             curLensSurface->isStop = true;
         }
         // 半径(の逆数)
-        else if (strcmp(tag, "CUY") == 0) {
+        else if (strcmp(tag, "CUY") == 0)
+        {
             const float invRadius = static_cast<float>(atof(value));
             curLensSurface->invRadius = invRadius;
             const float inf = std::numeric_limits<float>::infinity();
@@ -216,20 +216,24 @@ loadOtx(const std::string& fileName, LensSet& lensSet)
             curLensSurface->radius2 = radius * radius;
         }
         // 硝材
-        else if (strcmp(tag, "GLA") == 0) {
+        else if (strcmp(tag, "GLA") == 0)
+        {
             curLensSurface->realIor = RealIOR(value);
         }
         // 曲面タイプ
-        else if (strcmp(tag, "SUT") == 0) {
+        else if (strcmp(tag, "SUT") == 0)
+        {
             // "S"(球面)以外の場合は受け付けない
             AL_ASSERT_DEBUG(strcmp(value, "S") == 0);
         }
         // 面間距離
-        else if (strcmp(tag, "THI") == 0) {
+        else if (strcmp(tag, "THI") == 0)
+        {
             curLensSurface->distance = static_cast<float>(atof(value));
         }
         // 口径
-        else if (strcmp(tag, "APE") == 0) {
+        else if (strcmp(tag, "APE") == 0)
+        {
             int32_t numApe;
             float apeX;
             float apeY;
@@ -245,7 +249,8 @@ loadOtx(const std::string& fileName, LensSet& lensSet)
                        &apes[2],
                        &dummys[0],
                        &dummys[1],
-                       &dummys[2]) != 9) {
+                       &dummys[2]) != 9)
+            {
                 AL_ASSERT_DEBUG(false);
             }
             AL_ASSERT_DEBUG(numApe == 1);
@@ -253,8 +258,11 @@ loadOtx(const std::string& fileName, LensSet& lensSet)
             curLensSurface->apeY = apeY;
         }
         //
-        else if (strcmp(tag, "FH") == 0) {
-        } else {
+        else if (strcmp(tag, "FH") == 0)
+        {
+        }
+        else
+        {
             AL_ASSERT_DEBUG(false);
         }
     }
@@ -268,7 +276,8 @@ loadOtx(const std::string& fileName, LensSet& lensSet)
     lensSet.erase(lensSet.begin() + lensSet.size() - 1);
 
     // 後ろ玉に相当するものに無意味な面が一枚付いている場合がある。その場合も削除
-    while (lensSet.back().invRadius == 0.0f) {
+    while (lensSet.back().invRadius == 0.0f)
+    {
         // さらに一つ奥のdistanceを調整しておく
         lensSet[lensSet.size() - 2].distance += lensSet.back().distance;
         // 削除
@@ -281,17 +290,20 @@ loadOtx(const std::string& fileName, LensSet& lensSet)
     // 一番後ろの撮像素子のzが0になるようにして座標系を設定
     // 同時にレンズの硝材データのインデックスを一つずらす(撮像素子側からトレースを行うため)
     float z = 0.0f;
-    for (int32_t i = static_cast<int32_t>(lensSet.size()) - 1; i >= 0; --i) {
-        auto& lens = lensSet[i];
+    for (int32_t i = static_cast<int32_t>(lensSet.size()) - 1; i >= 0; --i)
+    {
+        auto &lens = lensSet[i];
         z += lens.distance;
         lens.z = z;
         // IORデータをずらす
-        if (i > 0) {
-            auto& lensNext = lensSet[i - 1];
+        if (i > 0)
+        {
+            auto &lensNext = lensSet[i - 1];
             lens.realIor = lensNext.realIor;
         }
         // 前玉前面は常に空気
-        else {
+        else
+        {
             lens.realIor = RealIOR();
         }
     }
@@ -310,8 +322,8 @@ class RealSensor AL_FINAL : public Sensor
 {
 public:
     RealSensor();
-    RealSensor(const ObjectProp& objectProp);
-    Ray generateRay(float imageX, float imageY, float& pdf) const override;
+    RealSensor(const ObjectProp &objectProp);
+    Ray generateRay(float imageX, float imageY, float &pdf) const override;
     FilmPtr film() const override;
 
 private:
@@ -323,8 +335,8 @@ private:
                    Vec3 dir,
                    float waveLength,
                    float imageSensorOffset,
-                   std::vector<Vec3>* points,
-                   Ray* outRay) const;
+                   std::vector<Vec3> *points,
+                   Ray *outRay) const;
     float workingDistance(float imageSensorOffset) const;
     void autoFocus(float distance);
     float sensorOffsetRangeUpperBound() const;
@@ -371,7 +383,7 @@ RealSensor::RealSensor() {}
 RealSensor
 -------------------------------------------------
 */
-RealSensor::RealSensor(const ObjectProp& objectProp)
+RealSensor::RealSensor(const ObjectProp &objectProp)
 {
     //
     const Transform transform(objectProp.findChildByTag("transform"));
@@ -392,12 +404,12 @@ RealSensor::RealSensor(const ObjectProp& objectProp)
     const float focalLength = focalLengthProp.findChildBy("name", "fov").asFloat(50.0f * 0.0001f); // [0,1]
 #endif
     perspectiveFovy_ = DEG2RAD(objectProp.findChildBy("name", "fov")
-                                 .asFloat(90.0f)); // TODO: デフォルト値の調査
+                                   .asFloat(90.0f)); // TODO: デフォルト値の調査
     scale_ = objectProp.findChildBy("name", "scale").asFloat(0.001f);
     AL_ASSERT_DEBUG(scale_ != 0.0f);
     //
     film_ = std::make_shared<Film>(objectProp.findChildByTag("film"));
-    const auto& image = film_->image();
+    const auto &image = film_->image();
     screenWidth_ = static_cast<float>(image.width());
     screenHeight_ = static_cast<float>(image.height());
     filmWidthInMM_ = film_->filmWidthInMM();
@@ -413,11 +425,11 @@ RealSensor::RealSensor(const ObjectProp& objectProp)
     upDir_ *= tf;
     // レンズの作成
     const std::string lensFileName =
-      objectProp.findChildBy("name", "otxfile").asString("test.otx");
+        objectProp.findChildBy("name", "otxfile").asString("test.otx");
     loadOtx(lensFileName, surfs_);
     // オートフォーカス
     const float aimWorkingDistance =
-      objectProp.findChildBy("name", "workingDistance").asFloat(1000.0f);
+        objectProp.findChildBy("name", "workingDistance").asFloat(1000.0f);
     autoFocus(aimWorkingDistance);
     // 入射瞳サイズの計算
     calcExitPupile();
@@ -427,14 +439,9 @@ RealSensor::RealSensor(const ObjectProp& objectProp)
     dumpLensSpecImage();
 }
 
-float
-fract(float v)
-{
-    return v - floor(v);
-}
+float fract(float v) { return v - floor(v); }
 //
-Vec3
-HSV2RGB(const Vec3& hsv)
+Vec3 HSV2RGB(const Vec3 &hsv)
 {
     const float h = fract(hsv.x());
     const float s = hsv.y();
@@ -447,37 +454,38 @@ HSV2RGB(const Vec3& hsv)
     const float p = v * (1.0f - s * (1.0f - fr));
     //
     float r, g, b;
-    switch (hueI) {
-        case 0:
-            r = v;
-            g = p;
-            b = m;
-            break;
-        case 1:
-            r = n;
-            g = v;
-            b = m;
-            break;
-        case 2:
-            r = m;
-            g = v;
-            b = p;
-            break;
-        case 3:
-            r = m;
-            g = n;
-            b = v;
-            break;
-        case 4:
-            r = p;
-            g = m;
-            b = v;
-            break;
-        default:
-            r = v;
-            g = m;
-            b = n;
-            break;
+    switch (hueI)
+    {
+    case 0:
+        r = v;
+        g = p;
+        b = m;
+        break;
+    case 1:
+        r = n;
+        g = v;
+        b = m;
+        break;
+    case 2:
+        r = m;
+        g = v;
+        b = p;
+        break;
+    case 3:
+        r = m;
+        g = n;
+        b = v;
+        break;
+    case 4:
+        r = p;
+        g = m;
+        b = v;
+        break;
+    default:
+        r = v;
+        g = m;
+        b = n;
+        break;
     }
     return Vec3(r, g, b);
 }
@@ -486,11 +494,10 @@ HSV2RGB(const Vec3& hsv)
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-RealSensor::calcExitPupile()
+void RealSensor::calcExitPupile()
 {
     //
-    const auto& img = film_->image();
+    const auto &img = film_->image();
     // 全ピクセル上の入射瞳のサイズを事前計算しておく
     const float backLensDist = surfs_.back().distance;
     const float backLensApeX = surfs_.back().apeX;
@@ -529,23 +536,27 @@ RealSensor::calcExitPupile()
     AL_ASSERT_DEBUG(img.height() % (sampleNumRowColumn - 1) == 0);
     exitPupilsCoarse.resize(sampleNumRowColumn * sampleNumRowColumn);
     // 左上1/4だけを見ればよい
-    for (int32_t py = 0, h = img.height(); py <= h / 2; py += pixelSkipY) {
-        for (int32_t px = 0, w = img.width(); px <= w / 2; px += pixelSkipX) {
+    for (int32_t py = 0, h = img.height(); py <= h / 2; py += pixelSkipY)
+    {
+        for (int32_t px = 0, w = img.width(); px <= w / 2; px += pixelSkipX)
+        {
             const float xOnFilmInMM =
-              ((float)px / (float)(w - 1) - 0.5f) * filmWidthInMM_;
+                ((float)px / (float)(w - 1) - 0.5f) * filmWidthInMM_;
             const float yOnFilmInMM =
-              ((float)py / (float)(h - 1) - 0.5f) * filmHeightInMM_;
+                ((float)py / (float)(h - 1) - 0.5f) * filmHeightInMM_;
             AABB2D exitPupil;
-            for (int32_t gy = 0; gy < gridSize; ++gy) {
+            for (int32_t gy = 0; gy < gridSize; ++gy)
+            {
 #pragma omp parallel for schedule(dynamic, 1)
-                for (int32_t gx = 0; gx < gridSize; ++gx) {
+                for (int32_t gx = 0; gx < gridSize; ++gx)
+                {
                     // レンズトレースがうまくいく場合は入射瞳を拡張する
                     const float blx =
-                      backLensApeX *
-                      (2.0f * (float)gx / (float)(gridSize - 1) - 1.0f);
+                        backLensApeX *
+                        (2.0f * (float)gx / (float)(gridSize - 1) - 1.0f);
                     const float bly =
-                      backLensApeY *
-                      (2.0f * (float)gy / (float)(gridSize - 1) - 1.0f);
+                        backLensApeY *
+                        (2.0f * (float)gy / (float)(gridSize - 1) - 1.0f);
                     const float blz = backLensDist - imageSensorOffset_;
                     Vec3 rayDir(blx - xOnFilmInMM, bly - yOnFilmInMM, blz);
                     rayDir.normalize();
@@ -557,7 +568,8 @@ RealSensor::calcExitPupile()
                                    WAVE_LENGTH_D,
                                    imageSensorOffset_,
                                    NULL,
-                                   &outRay)) {
+                                   &outRay))
+                    {
                         continue;
                     }
 #pragma omp critical
@@ -580,21 +592,23 @@ RealSensor::calcExitPupile()
             exitPupilsCoarse[cx + (cy * cw)] = exitPupil;
             // X反転
             exitPupilsCoarse[(cw1 - cx) + (cy * cw)] =
-              AABB2D(-mx.x(), mn.y(), -mn.x(), mx.y());
+                AABB2D(-mx.x(), mn.y(), -mn.x(), mx.y());
             // Y反転
             exitPupilsCoarse[cx + ((ch1 - cy) * cw)] =
-              AABB2D(mn.x(), -mx.y(), mx.x(), -mn.y());
+                AABB2D(mn.x(), -mx.y(), mx.x(), -mn.y());
             // XY反転
             exitPupilsCoarse[(cw1 - cx) + ((ch1 - cy) * cw)] =
-              AABB2D(-mx.x(), -mx.y(), -mn.x(), -mn.y());
+                AABB2D(-mx.x(), -mx.y(), -mn.x(), -mn.y());
         }
     }
 
     // 詳細なものに変換する。単純にlerp。
     exitPupils_.resize(img.width() * img.height());
-    for (int32_t py = 0, h = img.height(); py < h; ++py) {
-        for (int32_t px = 0, w = img.width(); px < w; ++px) {
-            auto& dst = exitPupils_[px + py * w];
+    for (int32_t py = 0, h = img.height(); py < h; ++py)
+    {
+        for (int32_t px = 0, w = img.width(); px < w; ++px)
+        {
+            auto &dst = exitPupils_[px + py * w];
             const int32_t x0 = px / pixelSkipX;
             const int32_t x1 = alMin(x0 + 1, sampleNumRowColumn - 1);
             const int32_t y0 = py / pixelSkipY;
@@ -602,10 +616,10 @@ RealSensor::calcExitPupile()
             const float fx = (float)(px % pixelSkipX) / (float)pixelSkipX;
             const float fy = (float)(py % pixelSkipY) / (float)pixelSkipY;
             // 近い4つをバイリニアサンプリング
-            const auto& lu = exitPupilsCoarse[x0 + y0 * sampleNumRowColumn];
-            const auto& ru = exitPupilsCoarse[x1 + y0 * sampleNumRowColumn];
-            const auto& ld = exitPupilsCoarse[x0 + y1 * sampleNumRowColumn];
-            const auto& rd = exitPupilsCoarse[x1 + y1 * sampleNumRowColumn];
+            const auto &lu = exitPupilsCoarse[x0 + y0 * sampleNumRowColumn];
+            const auto &ru = exitPupilsCoarse[x1 + y0 * sampleNumRowColumn];
+            const auto &ld = exitPupilsCoarse[x0 + y1 * sampleNumRowColumn];
+            const auto &rd = exitPupilsCoarse[x1 + y1 * sampleNumRowColumn];
             const AABB2D u = AABB2D::lerp(lu, ru, fx);
             const AABB2D d = AABB2D::lerp(ld, rd, fx);
             const AABB2D src = AABB2D::lerp(u, d, fy);
@@ -616,7 +630,8 @@ RealSensor::calcExitPupile()
 
     // TODO: 入射瞳の最大を算出
     AABB2D exitPupilMax;
-    for (const auto& exitPupil : exitPupils_) {
+    for (const auto &exitPupil : exitPupils_)
+    {
         exitPupilMax.add(exitPupil);
     }
 
@@ -627,8 +642,7 @@ RealSensor::calcExitPupile()
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-RealSensor::calcPrecomputeTable()
+void RealSensor::calcPrecomputeTable()
 {
     // TODO: まずは要素を洗い出す
     /*
@@ -642,16 +656,20 @@ RealSensor::calcPrecomputeTable()
     */
     //
     //
-    const auto& img = film_->image();
+    const auto &img = film_->image();
     const int32_t width = img.width();
     const int32_t height = img.height();
     // exitPupils_.resize(img.width()*img.height());
-    for (int32_t filmX = 0; filmX < width; ++filmX) {
-        for (int32_t filmY = 0; filmY < height; ++filmY) {
+    for (int32_t filmX = 0; filmX < width; ++filmX)
+    {
+        for (int32_t filmY = 0; filmY < height; ++filmY)
+        {
             // const AABB2D& aabb = exitPupils_[filmX + filmY*width];
             //
-            for (int32_t filmY = 0; filmY < 512; ++filmY) {
-                for (int32_t filmY = 0; filmY < 512; ++filmY) {
+            for (int32_t filmY = 0; filmY < 512; ++filmY)
+            {
+                for (int32_t filmY = 0; filmY < 512; ++filmY)
+                {
                 }
             }
         }
@@ -662,8 +680,7 @@ RealSensor::calcPrecomputeTable()
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-RealSensor::dumpLensSpecImage() const
+void RealSensor::dumpLensSpecImage() const
 {
 #if 0
     // 最も高いレンズの高さを出す
@@ -862,7 +879,7 @@ rは負の値も受け付ける
 -------------------------------------------------
 */
 INLINE bool
-intersectSphereAsLens(const Ray& ray, float oz, float r, IntersectLens& isect)
+intersectSphereAsLens(const Ray &ray, float oz, float r, IntersectLens &isect)
 {
     float t;
     Vec3 rs = ray.o - Vec3(0.0f, 0.0f, oz);
@@ -873,22 +890,26 @@ intersectSphereAsLens(const Ray& ray, float oz, float r, IntersectLens& isect)
     const float lhs = Vec3::dot(ray.d, rs);
     // 交点がない場合は失敗
     const float D = lhs * lhs - rs2 + radius2;
-    if (D < 0.0f) {
+    if (D < 0.0f)
+    {
         return false;
     }
     //
     const float t0 = -lhs - sqrtf(D);
     const float t1 = -lhs + sqrtf(D);
     // 両方ともレイの後ろの場合は失敗
-    if (t0 < 0.0f && t1 < 0.0f) {
+    if (t0 < 0.0f && t1 < 0.0f)
+    {
         return false;
     }
     // 半径が負の場合は中心よりも手前の点を選択する
-    if (r < 0.0f) {
+    if (r < 0.0f)
+    {
         t = t0;
     }
     // 半径が正の場合は中心よりも奥の点を選択する
-    else {
+    else
+    {
         t = t1;
     }
     // レンズでの使い方であれば常に正になるはず
@@ -898,7 +919,8 @@ intersectSphereAsLens(const Ray& ray, float oz, float r, IntersectLens& isect)
     isect.normal = (isect.position - Vec3(0.0f, 0.0f, oz));
     isect.normal.normalize();
     // 半径が正の場合は法線が反転する
-    if (r >= 0.0f) {
+    if (r >= 0.0f)
+    {
         isect.normal = -isect.normal;
     }
     isect.t = t;
@@ -909,11 +931,10 @@ intersectSphereAsLens(const Ray& ray, float oz, float r, IntersectLens& isect)
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE void
-intersectPlaneAsStopPlane(Vec3 rayOrig,
-                          Vec3 rayDir,
-                          const float dist,
-                          Vec3* hitPos)
+INLINE void intersectPlaneAsStopPlane(Vec3 rayOrig,
+                                      Vec3 rayDir,
+                                      const float dist,
+                                      Vec3 *hitPos)
 {
     // 平面は常に(0,0,1)を向いているので、dot(rayDir,planeNormal) = rayDir.z
     const float nDotD = rayDir.z();
@@ -932,8 +953,7 @@ intersectPlaneAsStopPlane(Vec3 rayOrig,
 -------------------------------------------------
 -------------------------------------------------
 */
-static bool
-isInsideElapse(float x, float y, float rx, float ry)
+static bool isInsideElapse(float x, float y, float rx, float ry)
 {
     const float x2 = x * x;
     const float y2 = y * y;
@@ -946,14 +966,13 @@ isInsideElapse(float x, float y, float rx, float ry)
 -------------------------------------------------
 -------------------------------------------------
 */
-bool
-RealSensor::lensTrace(float xOnFilmInMM,
-                      float yOnFilmInMM,
-                      Vec3 dir,
-                      float waveLength,
-                      float imageSensorOffset,
-                      std::vector<Vec3>* points,
-                      Ray* outRay) const
+bool RealSensor::lensTrace(float xOnFilmInMM,
+                           float yOnFilmInMM,
+                           Vec3 dir,
+                           float waveLength,
+                           float imageSensorOffset,
+                           std::vector<Vec3> *points,
+                           Ray *outRay) const
 {
     AL_ASSERT_DEBUG(dir.isNormalized());
     const Vec3 ro(xOnFilmInMM, yOnFilmInMM, imageSensorOffset);
@@ -962,42 +981,51 @@ RealSensor::lensTrace(float xOnFilmInMM,
     float lastNd = 1.0f;
     // 全てのレンズを見ていく
     const int32_t lensNumM1 = static_cast<int32_t>(surfs_.size()) - 1;
-    for (int32_t i = lensNumM1; i >= 0; --i) {
+    for (int32_t i = lensNumM1; i >= 0; --i)
+    {
         //
-        if (points) {
+        if (points)
+        {
             points->push_back(ray.o);
         }
         //
-        const auto& lens = surfs_[i];
+        const auto &lens = surfs_[i];
         // ストップ面の場合は、口径を通過するかを判定
-        if (lens.isStop) {
+        if (lens.isStop)
+        {
             Vec3 hitPos;
             intersectPlaneAsStopPlane(ray.o, ray.d, lens.z, &hitPos);
             //
-            if (!isInsideElapse(hitPos.x(), hitPos.y(), lens.apeX, lens.apeY)) {
+            if (!isInsideElapse(hitPos.x(), hitPos.y(), lens.apeX, lens.apeY))
+            {
                 // 最初から外しているのは何かがまずい
                 // AL_ASSERT_DEBUG(i != surfs_.size() - 1);
                 return false;
             }
         }
         // レンズの場合
-        else {
+        else
+        {
             IntersectLens isect;
             // 球面の場合
-            if (lens.invRadius != 0.0f) {
+            if (lens.invRadius != 0.0f)
+            {
                 // レンズに交差しない場合は失敗
                 if (!intersectSphereAsLens(
-                      ray, lens.z - lens.radius, lens.radius, isect)) {
+                        ray, lens.z - lens.radius, lens.radius, isect))
+                {
                     return false;
                 }
             }
             // 平面の表面の場合
-            else {
+            else
+            {
                 AL_ASSERT_DEBUG(false);
             }
             // レンズ口径以上の場所に交差した場合も失敗
             const Vec3 p = isect.position;
-            if (!isInsideElapse(p.x(), p.y(), lens.apeX, lens.apeY)) {
+            if (!isInsideElapse(p.x(), p.y(), lens.apeX, lens.apeY))
+            {
                 // 最初から外しているのは何かがまずい
                 // AL_ASSERT_DEBUG(i != surfs_.size() - 1);
                 return false;
@@ -1006,7 +1034,8 @@ RealSensor::lensTrace(float xOnFilmInMM,
             const float nd = lens.realIor.ior(waveLength);
             Vec3 refractDir;
             // 全反射してしまった場合は失敗とする
-            if (!refract(-ray.d, isect.normal, lastNd / nd, &refractDir)) {
+            if (!refract(-ray.d, isect.normal, lastNd / nd, &refractDir))
+            {
                 return false;
             }
             lastNd = nd;
@@ -1015,7 +1044,8 @@ RealSensor::lensTrace(float xOnFilmInMM,
         }
     }
     //
-    if (points) {
+    if (points)
+    {
         points->push_back(ray.o);
         points->push_back(ray.o + ray.d * 30.0f);
     }
@@ -1031,8 +1061,7 @@ workingDistance()
 現在の設定でのピント位置からレンズ先端までの距離を返す(mm単位)
 -------------------------------------------------
 */
-float
-RealSensor::workingDistance(const float imageSensorOffset) const
+float RealSensor::workingDistance(const float imageSensorOffset) const
 {
     // 結像地点を算出
     const float smallup = 0.00001f;
@@ -1045,7 +1074,8 @@ RealSensor::workingDistance(const float imageSensorOffset) const
                    WAVE_LENGTH_D,
                    imageSensorOffset,
                    NULL,
-                   &outRay)) {
+                   &outRay))
+    {
         AL_ASSERT_DEBUG(false);
     }
     const float wd = -outRay.o.y() * outRay.d.z() / outRay.d.y();
@@ -1058,8 +1088,7 @@ autoFocus()
 指定した焦点距離に合わせるためにイメージプレーンを動かす
 -------------------------------------------------
 */
-void
-RealSensor::autoFocus(float aimWorkingDistance)
+void RealSensor::autoFocus(float aimWorkingDistance)
 {
     //
     AL_ASSERT_DEBUG(!surfs_.empty());
@@ -1074,27 +1103,31 @@ RealSensor::autoFocus(float aimWorkingDistance)
     logging("Finish AF");
 #else // バイナリサーチ版
     // const float smallup = 0.00001f;
-    const LensSurface& lastSurf = surfs_.back();
+    const LensSurface &lastSurf = surfs_.back();
     float sensorOffsetLow = -lastSurf.distance * 2.0f;
     float sensorOffsetHigh = sensorOffsetRangeUpperBound();
     // フォーカス位置を探す
-    for (int32_t loopNo = 0; loopNo < 32; ++loopNo) {
+    for (int32_t loopNo = 0; loopNo < 32; ++loopNo)
+    {
         const float mid = (sensorOffsetHigh + sensorOffsetLow) * 0.5f;
         //
         const float imageSensorOffsetTmp = mid;
         const float wd = workingDistance(imageSensorOffsetTmp);
         // 十分近づけば終了
-        if (fabsf(1.0f - wd / aimWorkingDistance) < 0.0001f) {
+        if (fabsf(1.0f - wd / aimWorkingDistance) < 0.0001f)
+        {
             imageSensorOffset_ = imageSensorOffsetTmp;
             logging("Finish AF");
             return;
         }
         // イメージプレーンを前に進める場合
-        if (wd < aimWorkingDistance) {
+        if (wd < aimWorkingDistance)
+        {
             sensorOffsetLow = mid;
         }
         // イメージプレーンを後ろに進める場合
-        else {
+        else
+        {
             sensorOffsetHigh = mid;
         }
     }
@@ -1108,30 +1141,34 @@ sensorOffsetRange()
 センサー位置の上限と下限を算出する
 -------------------------------------------------
 */
-float
-RealSensor::sensorOffsetRangeUpperBound() const
+float RealSensor::sensorOffsetRangeUpperBound() const
 {
     // const float smallup = 0.00001f;
-    const LensSurface& lastSurf = surfs_.back();
+    const LensSurface &lastSurf = surfs_.back();
     // float base = 0.0f;
     // HACK: 下限の開始位置が適当。
     float sensorOffsetLow = -lastSurf.distance * 2.0f;
     float sensorOffsetHigh = lastSurf.distance * 0.999f;
     // WorkingDistanceが無限遠になるイメージセンサー位置を探す
-    for (int32_t loopNo = 0; loopNo < 32; ++loopNo) {
+    for (int32_t loopNo = 0; loopNo < 32; ++loopNo)
+    {
         const float mid = (sensorOffsetHigh + sensorOffsetLow) * 0.5f;
         //
         const float imageSensorOffsetTmp = mid;
         const float wd = workingDistance(imageSensorOffsetTmp);
         // 十分近づけば終了
         if (fabsf(1.0f - sensorOffsetHigh / sensorOffsetLow) < 0.0001f &&
-            wd > 0.0f) {
+            wd > 0.0f)
+        {
             return imageSensorOffsetTmp;
         }
         // WorkingDistanceが負(収束しない)の場合は、進め過ぎたので後ろにする
-        if (wd < 0.0f) {
+        if (wd < 0.0f)
+        {
             sensorOffsetHigh = mid;
-        } else {
+        }
+        else
+        {
             sensorOffsetLow = mid;
         }
     }
@@ -1144,14 +1181,15 @@ RealSensor::sensorOffsetRangeUpperBound() const
 -------------------------------------------------
 -------------------------------------------------
 */
-float
-RealSensor::lensPower() const
+float RealSensor::lensPower() const
 {
     float prevIOR = 1.0f;
     float power = 0.0f;
 
-    for (int32_t sn = 0; sn < surfs_.size() - 1; ++sn) {
-        if (surfs_[sn].isStop) {
+    for (int32_t sn = 0; sn < surfs_.size() - 1; ++sn)
+    {
+        if (surfs_[sn].isStop)
+        {
             prevIOR = 1.0f;
             continue;
         }
@@ -1171,17 +1209,16 @@ RealSensor::lensPower() const
 -------------------------------------------------
 -------------------------------------------------
 */
-Ray
-RealSensor::generateRay(float imageX, float imageY, float& pdf) const
+Ray RealSensor::generateRay(float imageX, float imageY, float &pdf) const
 {
     //
     const Vec2 lensSample(
-      0.0f, 0.0f); // TODO: RealLensにSamplerが引数で渡されるのを待つ
+        0.0f, 0.0f); // TODO: RealLensにSamplerが引数で渡されるのを待つ
     ++sampleNo_; // TOOD: サンプル番号は呼び出し元からもらうようにする。
     const float xOnFilmInMM =
-      (0.5f - imageX * invScreenWidth_) * filmWidthInMM_;
+        (0.5f - imageX * invScreenWidth_) * filmWidthInMM_;
     const float yOnFilmInMM =
-      (imageY * invScreenHeight_ - 0.5f) * filmHeightInMM_;
+        (imageY * invScreenHeight_ - 0.5f) * filmHeightInMM_;
     /*
     フィルム上から後玉上の射出瞳上へのレイのサンプル位置を決定する
     HACK:
@@ -1190,14 +1227,14 @@ RealSensor::generateRay(float imageX, float imageY, float& pdf) const
     */
     // Vec2 sampleOnLens = remapSquareToDiscConcentric(lensSample);
     Vec2 sampleOnLens = Vec2(0.0f, 0.0f);
-    const LensSurface& lastLensSurf = surfs_.back();
+    const LensSurface &lastLensSurf = surfs_.back();
     const float sampleOnLensZ = lastLensSurf.distance;
 #if 1
     sampleOnLens.setX(sampleOnLens.x() * lastLensSurf.apeX);
     sampleOnLens.setY(sampleOnLens.y() * lastLensSurf.apeY);
 #else
     const int32_t epIndex = (int32_t)imageX + (int32_t)imageY * imageWidth;
-    const auto& ep = exitPupils_[epIndex];
+    const auto &ep = exitPupils_[epIndex];
     // sampleOnLensは[-1,1]で、onCoord()は[0,1]を期待している
     CONST Vec2 samplePoint = ep.onCoord(sampleOnLens * 0.5f + Vec2(0.5f, 0.5f));
     sampleOnLens.x = samplePoint.x;
@@ -1216,7 +1253,8 @@ RealSensor::generateRay(float imageX, float imageY, float& pdf) const
                    WAVE_LENGTH_D,
                    imageSensorOffset_,
                    NULL,
-                   &outRay)) {
+                   &outRay))
+    {
         pdf = 0.0f;
         return Ray();
     }
@@ -1240,8 +1278,4 @@ RealSensor::generateRay(float imageX, float imageY, float& pdf) const
 -------------------------------------------------
 -------------------------------------------------
 */
-FilmPtr
-RealSensor::film() const
-{
-    return film_;
-}
+FilmPtr RealSensor::film() const { return film_; }

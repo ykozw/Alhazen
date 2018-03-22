@@ -12,28 +12,19 @@ STATS_COUNTER("IsectVisib", g_numIsectVisible, "Rays");
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-SceneGeometory::addShape(ShapePtr shape)
-{
-    shapes_.push_back(shape);
-}
+void SceneGeometory::addShape(ShapePtr shape) { shapes_.push_back(shape); }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-SceneGeometory::addLight(LightPtr light)
-{
-    lights_.push_back(light);
-}
+void SceneGeometory::addLight(LightPtr light) { lights_.push_back(light); }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-SceneGeometory::buildScene()
+void SceneGeometory::buildScene()
 {
     // BVHの作成
     shapeBvh_.construct(shapes_);
@@ -43,20 +34,15 @@ SceneGeometory::buildScene()
 -------------------------------------------------
 -------------------------------------------------
 */
-const std::vector<LightPtr>&
-SceneGeometory::lights() const
-{
-    return lights_;
-}
+const std::vector<LightPtr> &SceneGeometory::lights() const { return lights_; }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-bool
-SceneGeometory::intersect(const Ray& ray,
-                          bool skipLight,
-                          Intersect* isect) const
+bool SceneGeometory::intersect(const Ray &ray,
+                               bool skipLight,
+                               Intersect *isect) const
 {
     //
     ++g_numIsectTotal;
@@ -79,9 +65,12 @@ SceneGeometory::intersect(const Ray& ray,
 #endif
 
     // Lightを巡回する
-    if (!skipLight) {
-        for (const auto& light : lights_) {
-            if (light->intersect(ray, isect)) {
+    if (!skipLight)
+    {
+        for (const auto &light : lights_)
+        {
+            if (light->intersect(ray, isect))
+            {
                 AL_ASSERT_DEBUG(isect->bsdf);
                 isect->sceneObject = light.get();
                 isHit = true;
@@ -100,8 +89,7 @@ SceneGeometory::intersect(const Ray& ray,
 交差がある場合はtrueが返る
 -------------------------------------------------
 */
-bool
-SceneGeometory::intersectCheck(const Ray& ray, bool skipLight) const
+bool SceneGeometory::intersectCheck(const Ray &ray, bool skipLight) const
 {
     //
     ++g_numIsectTotal;
@@ -113,7 +101,7 @@ SceneGeometory::intersectCheck(const Ray& ray, bool skipLight) const
             return true;
         }
     }
-#else 
+#else
     if (shapeBvh_.intersectCheck(ray))
     {
         return true;
@@ -121,9 +109,12 @@ SceneGeometory::intersectCheck(const Ray& ray, bool skipLight) const
 #endif
 
     // Lightを巡回する
-    if (!skipLight) {
-        for (const auto& light : lights_) {
-            if (light->intersectCheck(ray)) {
+    if (!skipLight)
+    {
+        for (const auto &light : lights_)
+        {
+            if (light->intersectCheck(ray))
+            {
                 return true;
             }
         }
@@ -137,8 +128,9 @@ SceneGeometory::intersectCheck(const Ray& ray, bool skipLight) const
 可視の場合はtrueが返る(isect系と意味が逆になっている)事に注意
 -------------------------------------------------
 */
-bool
-SceneGeometory::isVisible(const Vec3& p0, const Vec3& p1, bool skipLight) const
+bool SceneGeometory::isVisible(const Vec3 &p0,
+                               const Vec3 &p1,
+                               bool skipLight) const
 {
     // NOTE: g_numIsectTotalはダブルカウントになるのでカウントしない事
     // ++g_numIsectTotal;
@@ -154,12 +146,12 @@ SceneGeometory::isVisible(const Vec3& p0, const Vec3& p1, bool skipLight) const
 -------------------------------------------------
 -------------------------------------------------
 */
-AABB
-SceneGeometory::aabb() const
+AABB SceneGeometory::aabb() const
 {
     AABB aabb;
     //
-    for (auto& shape : shapes_) {
+    for (auto &shape : shapes_)
+    {
         aabb.addAABB(shape->aabb());
     }
     // NOTE: Lightは含んでいないことに注意

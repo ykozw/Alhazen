@@ -5,8 +5,7 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-BSDFPtr
-MatteMaterial::genBSDF() const
+BSDFPtr MatteMaterial::genBSDF() const
 {
     // TODO: 交差からBSDFを作るようにする
     return nullptr;

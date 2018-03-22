@@ -12,13 +12,13 @@ class AOSurfaceIntegrator AL_FINAL : public LTEIntegrator
 {
 public:
     AOSurfaceIntegrator() {}
-    AOSurfaceIntegrator(const ObjectProp& objectProp);
-    bool preRendering(const SceneGeometory& scene,
-                      AllBSDFList& bsdfList) override;
+    AOSurfaceIntegrator(const ObjectProp &objectProp);
+    bool preRendering(const SceneGeometory &scene,
+                      AllBSDFList &bsdfList) override;
     bool postRendering() override { return true; }
-    Spectrum radiance(const Ray& ray,
-                      const SceneGeometory& scene,
-                      Sampler* sampler) const override;
+    Spectrum radiance(const Ray &ray,
+                      const SceneGeometory &scene,
+                      Sampler *sampler) const override;
 
 private:
     int32_t sampleNum_ = 0;
@@ -29,7 +29,7 @@ REGISTER_OBJECT(LTEIntegrator, AOSurfaceIntegrator);
 -------------------------------------------------
 -------------------------------------------------
 */
-AOSurfaceIntegrator::AOSurfaceIntegrator(const ObjectProp& objectProp)
+AOSurfaceIntegrator::AOSurfaceIntegrator(const ObjectProp &objectProp)
 {
     sampleNum_ = objectProp.findChildBy("name", "sampleNum").asInt(64);
 }
@@ -38,9 +38,8 @@ AOSurfaceIntegrator::AOSurfaceIntegrator(const ObjectProp& objectProp)
 -------------------------------------------------
 -------------------------------------------------
 */
-bool
-AOSurfaceIntegrator::preRendering(const SceneGeometory& scene,
-                                  AllBSDFList& bsdfList)
+bool AOSurfaceIntegrator::preRendering(const SceneGeometory &scene,
+                                       AllBSDFList &bsdfList)
 {
     return true;
 }
@@ -49,22 +48,23 @@ AOSurfaceIntegrator::preRendering(const SceneGeometory& scene,
 -------------------------------------------------
 -------------------------------------------------
 */
-Spectrum
-AOSurfaceIntegrator::radiance(const Ray& screenRay,
-                              const SceneGeometory& scene,
-                              Sampler* sampler) const
+Spectrum AOSurfaceIntegrator::radiance(const Ray &screenRay,
+                                       const SceneGeometory &scene,
+                                       Sampler *sampler) const
 {
     // 何もない場合は0を返す
     Intersect isect;
     const bool skipLight = true;
-    if (!scene.intersect(screenRay, skipLight, &isect)) {
+    if (!scene.intersect(screenRay, skipLight, &isect))
+    {
         return Spectrum(0.0f);
     }
     OrthonormalBasis<> local;
     local.set(isect.normal);
     //
     float visibility = 0.0f;
-    for (int32_t sn = 0; sn < sampleNum_; ++sn) {
+    for (int32_t sn = 0; sn < sampleNum_; ++sn)
+    {
         sampler->startSample(sn);
         float pdf;
         const Vec3 localDir = sampler->getHemisphereCosineWeighted(&pdf);

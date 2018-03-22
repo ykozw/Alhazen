@@ -23,7 +23,7 @@ struct CounterInfo
 {
     std::string title;
     std::string unitName;
-    std::atomic<int64_t>* counter;
+    std::atomic<int64_t> *counter;
     CounterStats::PreFun preFun;
     CounterStats::PostFun postFun;
 };
@@ -32,8 +32,7 @@ struct CounterInfo
 -------------------------------------------------
 -------------------------------------------------
 */
-std::vector<CounterInfo>&
-getCounterInfo()
+std::vector<CounterInfo> &getCounterInfo()
 {
     static std::vector<CounterInfo> counterInfo;
     return counterInfo;
@@ -43,10 +42,10 @@ getCounterInfo()
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-CounterStats::preParallel()
+void CounterStats::preParallel()
 {
-    for (auto& ci : getCounterInfo()) {
+    for (auto &ci : getCounterInfo())
+    {
         ci.preFun();
     }
 }
@@ -55,10 +54,10 @@ CounterStats::preParallel()
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-CounterStats::postParallel()
+void CounterStats::postParallel()
 {
-    for (auto& ci : getCounterInfo()) {
+    for (auto &ci : getCounterInfo())
+    {
         ci.postFun();
     }
 }
@@ -67,12 +66,11 @@ CounterStats::postParallel()
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-CounterStats::addCounter(const std::string& title,
-                         const std::string& unitName,
-                         std::atomic<int64_t>* counter,
-                         PreFun preFun,
-                         PostFun postFun)
+void CounterStats::addCounter(const std::string &title,
+                              const std::string &unitName,
+                              std::atomic<int64_t> *counter,
+                              PreFun preFun,
+                              PostFun postFun)
 {
     CounterInfo newCI;
     newCI.title = title;
@@ -81,14 +79,14 @@ CounterStats::addCounter(const std::string& title,
     newCI.preFun = preFun;
     newCI.postFun = postFun;
     // タイトル順でソート
-    auto& vec = getCounterInfo();
+    auto &vec = getCounterInfo();
     auto ite =
-      std::lower_bound(vec.begin(),
-                       vec.end(),
-                       title,
-                       [](const CounterInfo& ci, const std::string& title) {
-                           return ci.title < title;
-                       });
+        std::lower_bound(vec.begin(),
+                         vec.end(),
+                         title,
+                         [](const CounterInfo &ci, const std::string &title) {
+                             return ci.title < title;
+                         });
     vec.insert(ite, newCI);
 }
 
@@ -96,31 +94,37 @@ CounterStats::addCounter(const std::string& title,
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-CounterStats::printStats(bool clearStats)
+void CounterStats::printStats(bool clearStats)
 {
     auto elapased = std::chrono::system_clock::now() - g_start;
     const int64_t elapseTimeInMs =
-      std::chrono::duration_cast<std::chrono::milliseconds>(elapased).count();
+        std::chrono::duration_cast<std::chrono::milliseconds>(elapased).count();
     //
     logging("Counters");
-    for (auto& ci : getCounterInfo()) {
+    for (auto &ci : getCounterInfo())
+    {
         // そのまま表示する場合
         const int64_t count = ci.counter->load();
-        const double counterPerSec = double(count) / double(elapseTimeInMs)*1000.0;
+        const double counterPerSec =
+            double(count) / double(elapseTimeInMs) * 1000.0;
         const double MCountPerSec = double(counterPerSec) / double(1000000);
         const double KCountPerSec = double(counterPerSec) / double(1000);
-        if (MCountPerSec > 0.1) {
+        if (MCountPerSec > 0.1)
+        {
             logging(" %-10s: %2.1f M%s/sec",
                     ci.title.c_str(),
                     MCountPerSec,
                     ci.unitName.c_str());
-        } else if (KCountPerSec > 1.0) {
+        }
+        else if (KCountPerSec > 1.0)
+        {
             logging(" %-10s: %2.1f K%s/sec",
                     ci.title.c_str(),
                     KCountPerSec,
                     ci.unitName.c_str());
-        } else {
+        }
+        else
+        {
             logging(" %-10s: %lld %s/sec",
                     ci.title.c_str(),
                     count,
@@ -128,8 +132,10 @@ CounterStats::printStats(bool clearStats)
         }
     }
 
-    if (clearStats) {
-        for (auto& ci : getCounterInfo()) {
+    if (clearStats)
+    {
+        for (auto &ci : getCounterInfo())
+        {
             *ci.counter = 0;
         }
         // 時間計測を開始する

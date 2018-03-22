@@ -15,8 +15,7 @@ const float ONE_MINUS_EPS = 0.999999940f; // nextFloatDown(1.0f);
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-Sampler::setHash(uint64_t hash)
+void Sampler::setHash(uint64_t hash)
 {
     AL_ASSERT_ALWAYS(hash != 0);
     hash_ = hash;
@@ -26,8 +25,7 @@ Sampler::setHash(uint64_t hash)
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-Sampler::startSample(int32_t sampleNo)
+void Sampler::startSample(int32_t sampleNo)
 {
     //
     AL_ASSERT_DEBUG(hash_ != 0);
@@ -42,28 +40,19 @@ Sampler::startSample(int32_t sampleNo)
 -------------------------------------------------
 -------------------------------------------------
 */
-uint32_t
-Sampler::dimention() const
-{
-    return dimention_;
-}
+uint32_t Sampler::dimention() const { return dimention_; }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-Sampler::setDimention(uint32_t dimention)
-{
-    dimention_ = dimention;
-}
+void Sampler::setDimention(uint32_t dimention) { dimention_ = dimention; }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-Vec2
-Sampler::get2d()
+Vec2 Sampler::get2d()
 {
     const float x = get1d();
     const float y = get1d();
@@ -78,8 +67,7 @@ Squre -> Discの変換
 詳しくはpbrt2 13.6.2を参照
 -------------------------------------------------
 */
-Vec2
-Sampler::getDiscAccurate()
+Vec2 Sampler::getDiscAccurate()
 {
     const Vec2 xy = get2d();
     //
@@ -92,8 +80,7 @@ Sampler::getDiscAccurate()
 -------------------------------------------------
 -------------------------------------------------
 */
-Vec2
-Sampler::getDiscConcentric()
+Vec2 Sampler::getDiscConcentric()
 {
     const Vec2 xy = get2d();
     //
@@ -102,36 +89,47 @@ Sampler::getDiscConcentric()
     const float sy = 2.0f * xy.y() - 1.0f;
     //
     Vec2 uv;
-    if (sx == 0.0 && sy == 0.0) {
+    if (sx == 0.0 && sy == 0.0)
+    {
         uv = Vec2(0.0f, 0.0f);
         return uv;
     }
     //
     float r;
     float theta;
-    if (sx >= -sy) {
+    if (sx >= -sy)
+    {
         // 右の領域
-        if (sx > sy) {
+        if (sx > sy)
+        {
             r = sx;
-            if (sy > 0.0f) {
+            if (sy > 0.0f)
+            {
                 theta = sy / r;
-            } else {
+            }
+            else
+            {
                 theta = 8.0f + sy / r;
             }
         }
         // 上の領域
-        else {
+        else
+        {
             r = sy;
             theta = 2.0f - sx / r;
         }
-    } else {
+    }
+    else
+    {
         // 左の領域
-        if (sx <= sy) {
+        if (sx <= sy)
+        {
             r = -sx;
             theta = 4.0f - sy / r;
         }
         // 下の領域
-        else {
+        else
+        {
             r = -sy;
             theta = 6.0f + sx / r;
         }
@@ -151,8 +149,7 @@ Hemisphere(xyz_)
 単位球上で一様に分布する
 -------------------------------------------------
 */
-Vec3
-Sampler::getHemisphere()
+Vec3 Sampler::getHemisphere()
 {
     //
     const Vec2 xy = get2d();
@@ -161,7 +158,7 @@ Sampler::getHemisphere()
     const float cosPhi = std::cosf(phi);
     const float cosTheta = 1.0f - xy.y();
     const float sinTheta = std::sqrtf(1 - cosTheta * cosTheta);
-    const Vec3 r = { sinTheta * cosPhi, sinTheta * sinPhi, cosTheta };
+    const Vec3 r = {sinTheta * cosPhi, sinTheta * sinPhi, cosTheta};
     //
     AL_ASSERT_DEBUG(std::fabsf(Vec3::dot(r, r) - 1.0f) < 0.01f);
     return r;
@@ -173,8 +170,7 @@ Hemisphere(xyz_)
 自動的にcosine weightになる
 -------------------------------------------------
 */
-Vec3
-Sampler::getHemisphereCosineWeighted(float* pdf)
+Vec3 Sampler::getHemisphereCosineWeighted(float *pdf)
 {
     //
     const Vec2 uv = getDiscConcentric();
@@ -185,7 +181,7 @@ Sampler::getHemisphereCosineWeighted(float* pdf)
     //
     const float lenSq = Vec2::dot(uv, uv);
     const float z = std::sqrtf(std::max(1.0f - lenSq, 0.0f));
-    const Vec3 r = { uv.x(), uv.y(), z };
+    const Vec3 r = {uv.x(), uv.y(), z};
     const float cosTheta = z;
     *pdf = cosTheta;
     //
@@ -198,8 +194,7 @@ Sampler::getHemisphereCosineWeighted(float* pdf)
 Sphere(xyz_)
 -------------------------------------------------
 */
-Vec3
-Sampler::getSphere()
+Vec3 Sampler::getSphere()
 {
     const Vec2 xy = get2d();
     const float z = 2.0f * xy.x() - 1.0f;
@@ -207,7 +202,7 @@ Sampler::getSphere()
     const float iz = sqrtf(1.0f - z * z);
     const float x = sinf(theta) * iz;
     const float y = cosf(theta) * iz;
-    return Vec3{ x, y, z };
+    return Vec3{x, y, z};
 }
 
 /*
@@ -216,8 +211,7 @@ Cone(xyz_)
 Coneの球冠をサンプル。-1を指定すると球面上と同等になる。
 -------------------------------------------------
 */
-Vec3
-Sampler::getCone(float cosThetaMax)
+Vec3 Sampler::getCone(float cosThetaMax)
 {
     const Vec2 xy = get2d();
     const float cosTheta = alLerp2(cosThetaMax, 1.0f, xy.x());
@@ -225,15 +219,14 @@ Sampler::getCone(float cosThetaMax)
     const float phi = 2.0f * PI * xy.y();
     const float cosPhi = std::cosf(phi);
     const float sinPhi = std::sinf(phi);
-    return Vec3{ cosPhi * sinTheta, sinPhi * sinTheta, cosTheta };
+    return Vec3{cosPhi * sinTheta, sinPhi * sinTheta, cosTheta};
 }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-uint32_t
-Sampler::getSize(uint32_t size)
+uint32_t Sampler::getSize(uint32_t size)
 {
     const int32_t v = int32_t(get1d() * float(size));
     AL_ASSERT_DEBUG(v < int32_t(size));
@@ -250,7 +243,7 @@ REGISTER_OBJECT(Sampler, SamplerIndepent);
 -------------------------------------------------
 -------------------------------------------------
 */
-SamplerIndepent::SamplerIndepent(const ObjectProp& prop)
+SamplerIndepent::SamplerIndepent(const ObjectProp &prop)
 {
     //
 }
@@ -258,8 +251,7 @@ SamplerIndepent::SamplerIndepent(const ObjectProp& prop)
 -------------------------------------------------
 -------------------------------------------------
 */
-float
-SamplerIndepent::get1d()
+float SamplerIndepent::get1d()
 {
     ++dimention_;
     return std::min(ONE_MINUS_EPS, rng_.nextFloat());
@@ -269,8 +261,7 @@ SamplerIndepent::get1d()
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-SamplerIndepent::onStartSample(uint32_t sampleNo)
+void SamplerIndepent::onStartSample(uint32_t sampleNo)
 {
     /*
     NOTE:
@@ -293,7 +284,7 @@ REGISTER_OBJECT(Sampler, SamplerHalton);
 -------------------------------------------------
 -------------------------------------------------
 */
-SamplerHalton::SamplerHalton(const ObjectProp& prop)
+SamplerHalton::SamplerHalton(const ObjectProp &prop)
 {
     //
 }
@@ -302,12 +293,11 @@ SamplerHalton::SamplerHalton(const ObjectProp& prop)
 -------------------------------------------------
 -------------------------------------------------
 */
-float
-SamplerHalton::get1d()
+float SamplerHalton::get1d()
 {
     const float offset = offsets_[dimention_ % offsets_.size()];
     const float v =
-      std::fmodf(radicalInverseFast(dimention_, sampleNo_) + offset, 1.0f);
+        std::fmodf(radicalInverseFast(dimention_, sampleNo_) + offset, 1.0f);
     const float sv = std::min(v, ONE_MINUS_EPS);
     ++dimention_;
     return sv;
@@ -317,13 +307,13 @@ SamplerHalton::get1d()
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-SamplerHalton::onStartSample(uint32_t sampleNo)
+void SamplerHalton::onStartSample(uint32_t sampleNo)
 {
     (void)sampleNo;
     XorShift128 rng((int32_t)hash_);
     offsets_.resize(512);
-    for (auto& offset : offsets_) {
+    for (auto &offset : offsets_)
+    {
         offset = rng.nextFloat();
     }
 }
@@ -373,16 +363,13 @@ AL_TEST(Sampler, Halton)
 -------------------------------------------------
 -------------------------------------------------
 */
-SphericalFibonacci::SphericalFibonacci(uint32_t seed)
-{
-    rng_.setSeed(seed);
-}
+SphericalFibonacci::SphericalFibonacci(uint32_t seed) { rng_.setSeed(seed); }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-SphericalFibonacci::SphericalFibonacci(const ObjectProp& objectProp)
+SphericalFibonacci::SphericalFibonacci(const ObjectProp &objectProp)
 {
     // カテゴリー名が"SamplerHemisphere"かチェック
     // AL_ASSERT_DEBUG(objectProp.tag() == "SamplerHemisphere");
@@ -391,7 +378,7 @@ SphericalFibonacci::SphericalFibonacci(const ObjectProp& objectProp)
 
     // シード設定する
     const int32_t seed =
-      objectProp.findChildBy("name", "seed").asInt(123456789);
+        objectProp.findChildBy("name", "seed").asInt(123456789);
     rng_.setSeed(seed);
 }
 
@@ -399,20 +386,16 @@ SphericalFibonacci::SphericalFibonacci(const ObjectProp& objectProp)
 -------------------------------------------------
 -------------------------------------------------
 */
-bool
-SphericalFibonacci::isCosineWeighted() const
-{
-    return true;
-}
+bool SphericalFibonacci::isCosineWeighted() const { return true; }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-SphericalFibonacci::prepare(const int32_t sampleNum)
+void SphericalFibonacci::prepare(const int32_t sampleNum)
 {
-    if (permutation_.size() != sampleNum) {
+    if (permutation_.size() != sampleNum)
+    {
         permutation_.resize(sampleNum);
         std::iota(permutation_.begin(), permutation_.end(), 0);
     }
@@ -426,8 +409,7 @@ SphericalFibonacci::prepare(const int32_t sampleNum)
 -------------------------------------------------
 -------------------------------------------------
 */
-Vec3
-SphericalFibonacci::sample(int32_t sampleNo)
+Vec3 SphericalFibonacci::sample(int32_t sampleNo)
 {
     AL_ASSERT_DEBUG(sampleNo < permutation_.size());
 #if 0
@@ -455,8 +437,10 @@ AL_TEST(Sampler, RadicalInverse)
     // radicalInverseSlow()とradicalInverseFast()が同じ結果を返すかチェック
     {
         bool fail = false;
-        for (int32_t i = 0; i < 1188; ++i) {
-            for (int32_t j = 0; j < 1024; ++j) {
+        for (int32_t i = 0; i < 1188; ++i)
+        {
+            for (int32_t j = 0; j < 1024; ++j)
+            {
                 const float v0 = radicalInverseSlow(i, j);
                 const float v1 = radicalInverseFast(i, j);
                 fail |= (fabsf(v0 - v1) > 0.0001f);
@@ -469,9 +453,11 @@ AL_TEST(Sampler, RadicalInverse)
     (実際には高次元の近い次元は次元はかなり相関してくる)
     */
     {
-        for (int32_t pi = 0; pi < 5; pi += 1) {
+        for (int32_t pi = 0; pi < 5; pi += 1)
+        {
             std::vector<Vec2> v;
-            for (int32_t i = 0; i < 1000; ++i) {
+            for (int32_t i = 0; i < 1000; ++i)
+            {
                 const float v0 = radicalInverseFast(pi + 0, i);
                 const float v1 = radicalInverseFast(pi + 1, i);
                 v.push_back(Vec2(v0, v1));
@@ -496,14 +482,16 @@ AL_TEST(Sampler, SamplerIndepent)
     */
     {
         SamplerIndepent sampler;
-        for (uint32_t si = 0; si < 5; ++si) {
+        for (uint32_t si = 0; si < 5; ++si)
+        {
             std::vector<Vec2> v;
             sampler.setHash(Hash::hash(si + 1));
-            for (int32_t i = 0; i < 1000; ++i) {
+            for (int32_t i = 0; i < 1000; ++i)
+            {
                 v.push_back(sampler.get2d());
             }
             const std::string fileName =
-              "sampler_independent_" + std::to_string(si) + ".m";
+                "sampler_independent_" + std::to_string(si) + ".m";
             MathmaticaUtil::writePlotPoint2D(fileName, v);
         }
     }
@@ -522,15 +510,17 @@ AL_TEST(Sampler, SamplerHalton)
     {
         SamplerHalton sampler;
         sampler.setHash(Hash::hash(uint32_t(25)));
-        for (uint32_t si = 0; si < 5; ++si) {
+        for (uint32_t si = 0; si < 5; ++si)
+        {
             std::vector<Vec2> v;
-            for (int32_t i = 0; i < 1000; ++i) {
+            for (int32_t i = 0; i < 1000; ++i)
+            {
                 sampler.startSample(i);
                 sampler.setDimention(si);
                 v.push_back(sampler.get2d());
             }
             const std::string fileName =
-              "sampler_halton_" + std::to_string(si + 0) + ".m";
+                "sampler_halton_" + std::to_string(si + 0) + ".m";
             MathmaticaUtil::writePlotPoint2D(fileName, v);
         }
     }
@@ -548,15 +538,17 @@ AL_TEST(Sampler, SphericalFibonacci)
     */
     {
         ;
-        for (uint32_t si = 0; si < 5; ++si) {
+        for (uint32_t si = 0; si < 5; ++si)
+        {
             std::vector<Vec3> v;
             SphericalFibonacci sampler(Hash::hash(si + 1));
             sampler.prepare(1000);
-            for (int32_t i = 0; i < 1000; ++i) {
+            for (int32_t i = 0; i < 1000; ++i)
+            {
                 v.push_back(sampler.sample(i));
             }
             const std::string fileName =
-              "sampler_fibonacci_" + std::to_string(si + 0) + ".m";
+                "sampler_fibonacci_" + std::to_string(si + 0) + ".m";
             MathmaticaUtil::writePlotPoint3D(fileName, v);
         }
     }

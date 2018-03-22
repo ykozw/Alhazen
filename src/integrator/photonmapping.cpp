@@ -14,13 +14,13 @@ class PMIntegrator AL_FINAL : public LTEIntegrator
 {
 public:
     PMIntegrator() {}
-    PMIntegrator(const ObjectProp& objectProp);
-    bool preRendering(const SceneGeometory& scene,
-                      AllBSDFList& bsdfList) override;
+    PMIntegrator(const ObjectProp &objectProp);
+    bool preRendering(const SceneGeometory &scene,
+                      AllBSDFList &bsdfList) override;
     bool postRendering() override { return true; }
-    Spectrum radiance(const Ray& ray,
-                      const SceneGeometory& scene,
-                      Sampler* sampler) const override;
+    Spectrum radiance(const Ray &ray,
+                      const SceneGeometory &scene,
+                      Sampler *sampler) const override;
 
 private:
     int32_t numPhoton_ = 0;
@@ -34,7 +34,7 @@ private:
         Vec3 position() const { return pos; }
     };
     KdTree<Photon> photonMap_;
-    std::vector<const Photon*> photons_;
+    std::vector<const Photon *> photons_;
     std::vector<Photon> photonsSrc_;
 };
 REGISTER_OBJECT(LTEIntegrator, PMIntegrator);
@@ -43,7 +43,7 @@ REGISTER_OBJECT(LTEIntegrator, PMIntegrator);
 -------------------------------------------------
 -------------------------------------------------
 */
-PMIntegrator::PMIntegrator(const ObjectProp& objectProp)
+PMIntegrator::PMIntegrator(const ObjectProp &objectProp)
 {
     numPhoton_ = 1024 * 16;
 }
@@ -52,13 +52,14 @@ PMIntegrator::PMIntegrator(const ObjectProp& objectProp)
 -------------------------------------------------
 -------------------------------------------------
 */
-bool
-PMIntegrator::preRendering(const SceneGeometory& scene, AllBSDFList& bsdfList)
+bool PMIntegrator::preRendering(const SceneGeometory &scene,
+                                AllBSDFList &bsdfList)
 {
     //
-    const auto& lights = scene.lights();
+    const auto &lights = scene.lights();
     // 光源がなければ終了
-    if (lights.empty()) {
+    if (lights.empty())
+    {
         return false;
     }
 
@@ -68,7 +69,8 @@ PMIntegrator::preRendering(const SceneGeometory& scene, AllBSDFList& bsdfList)
     sampler->setHash(1);
 
     // フォトントレーシング
-    for (int32_t pn = 0; pn < numPhoton_; ++pn) {
+    for (int32_t pn = 0; pn < numPhoton_; ++pn)
+    {
         sampler->startSample(pn);
         // 光源の選択
         // const uint32_t lightIndex =
@@ -85,16 +87,19 @@ PMIntegrator::preRendering(const SceneGeometory& scene, AllBSDFList& bsdfList)
         const Vec3 launchDirWorld = lightLocalCoord.local2world(launchDirLocal);
         //
         Ray ray(samplePos, launchDirWorld);
-        for (int32_t pathNo = 0; pathNo < 8; ++pathNo) {
+        for (int32_t pathNo = 0; pathNo < 8; ++pathNo)
+        {
             //
             Intersect isect;
             const bool skipLight = true;
-            if (!scene.intersect(ray, skipLight, &isect)) {
+            if (!scene.intersect(ray, skipLight, &isect))
+            {
                 continue;
             }
             // フォトンの格納
             // HACK: 全てDiffuseかつ反射率が0.5と仮定している
-            if (sampler->get1d() <= 0.5f) {
+            if (sampler->get1d() <= 0.5f)
+            {
                 Photon newPhoton;
                 newPhoton.pos = isect.position;
                 newPhoton.wiWorld = -ray.d;
@@ -129,10 +134,9 @@ PMIntegrator::preRendering(const SceneGeometory& scene, AllBSDFList& bsdfList)
 -------------------------------------------------
 -------------------------------------------------
 */
-Spectrum
-PMIntegrator::radiance(const Ray& screenRay,
-                       const SceneGeometory& scene,
-                       Sampler* sampler) const
+Spectrum PMIntegrator::radiance(const Ray &screenRay,
+                                const SceneGeometory &scene,
+                                Sampler *sampler) const
 {
 #if 0
     // 適当に近いところにあるフォトンの数をそのまま輝度にする

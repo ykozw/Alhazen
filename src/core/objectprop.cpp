@@ -7,59 +7,48 @@
 ObjectPropString()
 -------------------------------------------------
 */
-ObjectPropString::ObjectPropString()
-  : valid_(false)
-{}
+ObjectPropString::ObjectPropString() : valid_(false) {}
 
 /*
 -------------------------------------------------
 ObjectPropString()
 -------------------------------------------------
 */
-ObjectPropString::ObjectPropString(const std::string& value)
-  : valid_((value != ""))
-  , value_(value)
-{}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-const std::string&
-ObjectPropString::value() const
+ObjectPropString::ObjectPropString(const std::string &value)
+    : valid_((value != "")), value_(value)
 {
-    return value_;
 }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-bool
-ObjectPropString::valid()
-{
-    return valid_;
-}
+const std::string &ObjectPropString::value() const { return value_; }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-ObjectPropString::operator bool() const
-{
-    return valid_;
-}
+bool ObjectPropString::valid() { return valid_; }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-std::string
-ObjectPropString::asString(const std::string& defaultValue) const
+ObjectPropString::operator bool() const { return valid_; }
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+std::string ObjectPropString::asString(const std::string &defaultValue) const
 {
-    if (valid_) {
+    if (valid_)
+    {
         return value_;
-    } else {
+    }
+    else
+    {
         return defaultValue;
     }
 }
@@ -68,9 +57,9 @@ ObjectPropString::asString(const std::string& defaultValue) const
 -------------------------------------------------
 -------------------------------------------------
 */
-ObjectProp::ObjectProp(const std::string& tag,
-                       const std::string& name,
-                       const std::string& value)
+ObjectProp::ObjectProp(const std::string &tag,
+                       const std::string &name,
+                       const std::string &value)
 {
     tag_ = tag;
     addAttribute("name", name);
@@ -82,14 +71,14 @@ ObjectProp::ObjectProp(const std::string& tag,
 load()
 -------------------------------------------------
 */
-bool
-ObjectProp::load(const std::string& fileName)
+bool ObjectProp::load(const std::string &fileName)
 {
     // xmlのロード
     using namespace tinyxml2;
     tinyxml2::XMLDocument xml;
     XMLError error = xml.LoadFile(fileName.c_str());
-    if (error != XML_SUCCESS) {
+    if (error != XML_SUCCESS)
+    {
         loggingError("%s not found.", fileName.c_str());
         return false;
     }
@@ -107,18 +96,19 @@ ObjectProp::load(const std::string& fileName)
 load()
 -------------------------------------------------
 */
-void
-ObjectProp::loadSub(tinyxml2::XMLNode* node, ObjectProp& parentProp)
+void ObjectProp::loadSub(tinyxml2::XMLNode *node, ObjectProp &parentProp)
 {
     ObjectProp objectProp;
     auto element = node->ToElement();
-    if (element) {
-        const char* tag = element->Name();
+    if (element)
+    {
+        const char *tag = element->Name();
         objectProp.tag_ = tag;
         auto attribute = element->FirstAttribute();
-        while (attribute != nullptr) {
-            const char* name = attribute->Name();
-            const char* value = attribute->Value();
+        while (attribute != nullptr)
+        {
+            const char *name = attribute->Name();
+            const char *value = attribute->Value();
             objectProp.attributes_[name] = value;
             //
             attribute = attribute->Next();
@@ -128,12 +118,14 @@ ObjectProp::loadSub(tinyxml2::XMLNode* node, ObjectProp& parentProp)
     // auto* child = node->FirstChild();
     // auto* elm = node->FirstChildElement();
     // const bool noChild = node->NoChildren();
-    for (auto childNode = node->FirstChild(); childNode != nullptr;) {
+    for (auto childNode = node->FirstChild(); childNode != nullptr;)
+    {
         loadSub(childNode, objectProp);
         childNode = childNode->NextSibling();
     }
     //
-    if (!objectProp.isEmpty()) {
+    if (!objectProp.isEmpty())
+    {
         parentProp.childProps_.push_back(objectProp);
     }
 }
@@ -142,47 +134,30 @@ ObjectProp::loadSub(tinyxml2::XMLNode* node, ObjectProp& parentProp)
  -------------------------------------------------
  -------------------------------------------------
  */
-void
-ObjectPropString::setString(const std::string& v)
-{
-    value_ = v;
-}
+void ObjectPropString::setString(const std::string &v) { value_ = v; }
 
 /*
  -------------------------------------------------
  -------------------------------------------------
  */
-void
-ObjectPropString::setBool(bool v)
-{
-    value_ = std::to_string(v);
-}
+void ObjectPropString::setBool(bool v) { value_ = std::to_string(v); }
 
 /*
  -------------------------------------------------
  -------------------------------------------------
  */
-void
-ObjectPropString::setInt(int32_t v)
-{
-    value_ = std::to_string(v);
-}
+void ObjectPropString::setInt(int32_t v) { value_ = std::to_string(v); }
 
 /*
  -------------------------------------------------
  -------------------------------------------------
  */
-void
-ObjectPropString::setFloat(float v)
-{
-    value_ = std::to_string(v);
-}
+void ObjectPropString::setFloat(float v) { value_ = std::to_string(v); }
 /*
  -------------------------------------------------
  -------------------------------------------------
  */
-void
-ObjectPropString::setVec3(const Vec3& v)
+void ObjectPropString::setVec3(const Vec3 &v)
 {
     value_ = std::to_string(v.x()) + "," + std::to_string(v.y()) + "," +
              std::to_string(v.z());
@@ -192,21 +167,28 @@ ObjectPropString::setVec3(const Vec3& v)
 -------------------------------------------------
 -------------------------------------------------
 */
-bool
-ObjectPropString::asBool(bool defaultValue) const
+bool ObjectPropString::asBool(bool defaultValue) const
 {
-    if (!valid_) {
+    if (!valid_)
+    {
         // TODO: warning
         return defaultValue;
     }
     int32_t v = false;
-    if (value_ == "true") {
+    if (value_ == "true")
+    {
         return true;
-    } else if (value_ == "false") {
+    }
+    else if (value_ == "false")
+    {
         return false;
-    } else if (sscanf(value_.c_str(), "%d", &v) == 1) {
+    }
+    else if (sscanf(value_.c_str(), "%d", &v) == 1)
+    {
         return v != 0;
-    } else {
+    }
+    else
+    {
         // TODO: warning
         return defaultValue;
     }
@@ -216,11 +198,11 @@ ObjectPropString::asBool(bool defaultValue) const
 -------------------------------------------------
 -------------------------------------------------
 */
-int32_t
-ObjectPropString::asInt(int32_t defaultValue) const
+int32_t ObjectPropString::asInt(int32_t defaultValue) const
 {
     int32_t v = 0;
-    if (sscanf(value_.c_str(), "%d", &v) != 1) {
+    if (sscanf(value_.c_str(), "%d", &v) != 1)
+    {
         // TODO: warning
         return defaultValue;
     }
@@ -231,11 +213,11 @@ ObjectPropString::asInt(int32_t defaultValue) const
 -------------------------------------------------
 -------------------------------------------------
 */
-float
-ObjectPropString::asFloat(float defaultValue) const
+float ObjectPropString::asFloat(float defaultValue) const
 {
     float v = 0;
-    if (sscanf(value_.c_str(), "%f", &v) != 1) {
+    if (sscanf(value_.c_str(), "%f", &v) != 1)
+    {
         // TODO: warning
         return defaultValue;
     }
@@ -247,17 +229,20 @@ ObjectPropString::asFloat(float defaultValue) const
 asVec3()
 -------------------------------------------------
 */
-Vec3
-ObjectPropString::asVec3(Vec3 defaultValue) const
+Vec3 ObjectPropString::asVec3(Vec3 defaultValue) const
 {
-    if (valid_) {
+    if (valid_)
+    {
         float x, y, z;
-        if (sscanf(value_.c_str(), "%f, %f, %f", &x, &y, &z) != 3) {
+        if (sscanf(value_.c_str(), "%f, %f, %f", &x, &y, &z) != 3)
+        {
             // TODO: warning
             return defaultValue;
         }
         return Vec3(x, y, z);
-    } else {
+    }
+    else
+    {
         return defaultValue;
     }
 }
@@ -267,11 +252,11 @@ ObjectPropString::asVec3(Vec3 defaultValue) const
 attribute()
 -------------------------------------------------
 */
-ObjectPropString
-ObjectProp::attribute(const std::string& attributeName) const
+ObjectPropString ObjectProp::attribute(const std::string &attributeName) const
 {
     auto ite = attributes_.find(attributeName);
-    if (ite == attributes_.end()) {
+    if (ite == attributes_.end())
+    {
         return ObjectPropString();
     }
     return ObjectPropString(ite->second);
@@ -282,13 +267,14 @@ ObjectProp::attribute(const std::string& attributeName) const
 findChildBy()
 -------------------------------------------------
 */
-ObjectProp
-ObjectProp::findChildBy(const std::string& attributeName,
-                        const std::string& attributeValue) const
+ObjectProp ObjectProp::findChildBy(const std::string &attributeName,
+                                   const std::string &attributeValue) const
 {
-    for (const auto& cp : childProps_) {
+    for (const auto &cp : childProps_)
+    {
         const auto attr = cp.attribute(attributeName);
-        if (attr && attr.asString("") == attributeValue) {
+        if (attr && attr.asString("") == attributeValue)
+        {
             return cp;
         }
     }
@@ -300,11 +286,12 @@ ObjectProp::findChildBy(const std::string& attributeName,
 findChildByTag()
 -------------------------------------------------
 */
-ObjectProp
-ObjectProp::findChildByTag(const std::string& tagName) const
+ObjectProp ObjectProp::findChildByTag(const std::string &tagName) const
 {
-    for (const auto& cp : childProps_) {
-        if (cp.tag() == tagName) {
+    for (const auto &cp : childProps_)
+    {
+        if (cp.tag() == tagName)
+        {
             return cp;
         }
     }
@@ -316,8 +303,7 @@ ObjectProp::findChildByTag(const std::string& tagName) const
 -------------------------------------------------
 -------------------------------------------------
 */
-const ObjectProp::Attributes&
-ObjectProp::attributes() const
+const ObjectProp::Attributes &ObjectProp::attributes() const
 {
     return attributes_;
 }
@@ -326,8 +312,7 @@ ObjectProp::attributes() const
 -------------------------------------------------
 -------------------------------------------------
 */
-const ObjectProp::ChildProps&
-ObjectProp::childProps() const
+const ObjectProp::ChildProps &ObjectProp::childProps() const
 {
     return childProps_;
 }
@@ -336,19 +321,14 @@ ObjectProp::childProps() const
 -------------------------------------------------
 -------------------------------------------------
 */
-std::string
-ObjectProp::tag() const
-{
-    return tag_;
-}
+std::string ObjectProp::tag() const { return tag_; }
 
 /*
 -------------------------------------------------
 isEmpty()
 -------------------------------------------------
 */
-bool
-ObjectProp::isEmpty() const
+bool ObjectProp::isEmpty() const
 {
     return tag_ == "" && attributes_.empty() && childProps_.empty();
 }
@@ -357,8 +337,7 @@ ObjectProp::isEmpty() const
 -------------------------------------------------
 -------------------------------------------------
 */
-bool
-ObjectProp::asBool(bool defaultValue) const
+bool ObjectProp::asBool(bool defaultValue) const
 {
     return attribute("value").asBool(defaultValue);
 }
@@ -367,8 +346,7 @@ ObjectProp::asBool(bool defaultValue) const
 -------------------------------------------------
 -------------------------------------------------
 */
-int32_t
-ObjectProp::asInt(int32_t defaultValue) const
+int32_t ObjectProp::asInt(int32_t defaultValue) const
 {
     return attribute("value").asInt(defaultValue);
 }
@@ -377,18 +355,19 @@ ObjectProp::asInt(int32_t defaultValue) const
 -------------------------------------------------
 -------------------------------------------------
 */
-float
-ObjectProp::asFloat(float defaultValue) const
+float ObjectProp::asFloat(float defaultValue) const
 {
     const ObjectPropString attr = attribute("value");
     // int32_t v = 0;
-    if (!attr) {
+    if (!attr)
+    {
         // TODO: warning
         return defaultValue;
     }
     const auto value = attr.value();
     float ret;
-    if (sscanf(value.c_str(), "%f", &ret) != 1) {
+    if (sscanf(value.c_str(), "%f", &ret) != 1)
+    {
         // TODO: warning
         return defaultValue;
     }
@@ -399,8 +378,7 @@ ObjectProp::asFloat(float defaultValue) const
 -------------------------------------------------
 -------------------------------------------------
 */
-std::string
-ObjectProp::asString(const std::string& defaultValue) const
+std::string ObjectProp::asString(const std::string &defaultValue) const
 {
     return attribute("value").asString(defaultValue);
 }
@@ -409,21 +387,22 @@ ObjectProp::asString(const std::string& defaultValue) const
 -------------------------------------------------
 -------------------------------------------------
 */
-Vec3
-ObjectProp::asXYZ(Vec3 defaultValue) const
+Vec3 ObjectProp::asXYZ(Vec3 defaultValue) const
 {
     //
     ObjectPropString ax = attribute("x");
     ObjectPropString ay = attribute("y");
     ObjectPropString az = attribute("z");
-    if (!ax || !ay || !az) {
+    if (!ax || !ay || !az)
+    {
         return defaultValue;
     }
     //
     float x, y, z;
     if (sscanf(ax.value().c_str(), "%f", &x) != 1 ||
         sscanf(ay.value().c_str(), "%f", &y) != 1 ||
-        sscanf(az.value().c_str(), "%f", &z) != 1) {
+        sscanf(az.value().c_str(), "%f", &z) != 1)
+    {
         // TODO: warning
         return defaultValue;
     }
@@ -434,8 +413,7 @@ ObjectProp::asXYZ(Vec3 defaultValue) const
 -------------------------------------------------
 -------------------------------------------------
 */
-float
-ObjectProp::asAngle(float defaultValue) const
+float ObjectProp::asAngle(float defaultValue) const
 {
     return attribute("angle").asFloat(defaultValue);
 }

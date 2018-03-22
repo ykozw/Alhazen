@@ -11,8 +11,8 @@ class Perspective AL_FINAL : public Sensor
 {
 public:
     Perspective();
-    Perspective(const ObjectProp& objectProp);
-    Ray generateRay(float imageX, float imageY, float& pdf) const override;
+    Perspective(const ObjectProp &objectProp);
+    Ray generateRay(float imageX, float imageY, float &pdf) const override;
     FilmPtr film() const override;
 
 private:
@@ -41,7 +41,7 @@ Perspective::Perspective() {}
 -------------------------------------------------
 -------------------------------------------------
 */
-Perspective::Perspective(const ObjectProp& objectProp)
+Perspective::Perspective(const ObjectProp &objectProp)
 {
     //
     const Transform transform(objectProp.findChildByTag("transform"));
@@ -55,11 +55,11 @@ Perspective::Perspective(const ObjectProp& objectProp)
     forwardDir_.normalize();
     // TODO: kc
     perspectiveFovy_ = DEG2RAD(objectProp.findChildBy("name", "fov")
-                                 .asFloat(90.0f)); // TODO: デフォルト値の調査
+                                   .asFloat(90.0f)); // TODO: デフォルト値の調査
 
     //
     film_ = std::make_shared<Film>(objectProp.findChildByTag("film"));
-    const auto& image = film_->image();
+    const auto &image = film_->image();
     screenWidth_ = static_cast<float>(image.width());
     screenHeight_ = static_cast<float>(image.height());
     screenAspect_ = screenWidth_ / screenHeight_;
@@ -82,8 +82,7 @@ Perspective::Perspective(const ObjectProp& objectProp)
 -------------------------------------------------
 -------------------------------------------------
 */
-Ray
-Perspective::generateRay(float imageX, float imageY, float& pdf) const
+Ray Perspective::generateRay(float imageX, float imageY, float &pdf) const
 {
 #if 1
     // レイ方向の作成
@@ -105,8 +104,4 @@ Perspective::generateRay(float imageX, float imageY, float& pdf) const
 -------------------------------------------------
 -------------------------------------------------
 */
-FilmPtr
-Perspective::film() const
-{
-    return film_;
-}
+FilmPtr Perspective::film() const { return film_; }

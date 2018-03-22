@@ -5,7 +5,7 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-Convexhull2d::Convexhull2d(const std::vector<Vec2>& aPoints)
+Convexhull2d::Convexhull2d(const std::vector<Vec2> &aPoints)
 {
 #if 0
     //

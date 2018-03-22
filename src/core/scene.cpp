@@ -18,7 +18,7 @@ Scene::Scene() {}
 -------------------------------------------------
 -------------------------------------------------
 */
-Scene::Scene(const ObjectProp& objectProp)
+Scene::Scene(const ObjectProp &objectProp)
 {
     //
     integrator_ = createObject<LTEIntegrator>(objectProp);
@@ -27,33 +27,37 @@ Scene::Scene(const ObjectProp& objectProp)
     // トーンマッパーの作成
     tonemapper_ = createObject<Tonemapper>(objectProp);
     // トーンマッピング先のイメージの作成
-    const Image& img = sensor_->film()->image();
+    const Image &img = sensor_->film()->image();
     tonemmappedImage_.resize(img.width(), img.height());
     // デノイザーの作成
     denoiser_ = createObject<Denoiser>(objectProp);
     denoiseBuffer_.resize(img.width(), img.height());
     // サンプラーの作成
-    //sampler_ = createObject<Sampler>(objectProp);
+    // sampler_ = createObject<Sampler>(objectProp);
     // その他プロパティ
     timeout_ = objectProp.findChildBy("name", "timeout").asInt(60);
     isProgressive_ =
-      objectProp.findChildBy("name", "progressive").asBool(false);
+        objectProp.findChildBy("name", "progressive").asBool(false);
     snapshotInterval_ =
-      objectProp.findChildBy("name", "snapshotinterval").asInt(10);
+        objectProp.findChildBy("name", "snapshotinterval").asInt(10);
     snapshotDenoise_ =
-      objectProp.findChildBy("name", "snapshotdenoise").asBool(false);
+        objectProp.findChildBy("name", "snapshotdenoise").asBool(false);
     sppPerInterval_ = objectProp.findChildBy("name", "sppinterval").asInt(4);
 
     // BSDFの構築
     AllBSDFList bsdfs;
-    for (const ObjectProp& child : objectProp.childProps()) {
-        if (child.tag() == "BSDF") {
+    for (const ObjectProp &child : objectProp.childProps())
+    {
+        if (child.tag() == "BSDF")
+        {
             bsdfs.add(child);
         }
     }
     // SceneGeometoryの構築
-    for (const ObjectProp& child : objectProp.childProps()) {
-        if (child.tag() == "Shape") {
+    for (const ObjectProp &child : objectProp.childProps())
+    {
+        if (child.tag() == "Shape")
+        {
             // Shapeのロード
             ShapePtr newShape = createObject<Shape>(child);
             // BSDFの設定
@@ -64,8 +68,10 @@ Scene::Scene(const ObjectProp& objectProp)
     }
 
     // TODO: Lightの追加
-    for (const ObjectProp& child : objectProp.childProps()) {
-        if (child.tag() != "Light") {
+    for (const ObjectProp &child : objectProp.childProps())
+    {
+        if (child.tag() != "Light")
+        {
             continue;
         }
         // const auto& type = child.attribute("type");
@@ -104,12 +110,14 @@ Scene::~Scene() {}
 -------------------------------------------------
 -------------------------------------------------
 */
-int32_t
-Scene::totalTaskNum() const
+int32_t Scene::totalTaskNum() const
 {
-    if (isProgressive_) {
+    if (isProgressive_)
+    {
         return std::numeric_limits<int32_t>::max();
-    } else {
+    }
+    else
+    {
         return totalTaskNum_;
     }
 }
@@ -118,38 +126,25 @@ Scene::totalTaskNum() const
 -------------------------------------------------
 -------------------------------------------------
 */
-int32_t
-Scene::taskNumPerLoop() const
-{
-    return sensor_->film()->subFilmNum();
-}
+int32_t Scene::taskNumPerLoop() const { return sensor_->film()->subFilmNum(); }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-uint32_t
-Scene::developIntervalInMs() const
-{
-    return snapshotInterval_ * 1000;
-}
+uint32_t Scene::developIntervalInMs() const { return snapshotInterval_ * 1000; }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-uint32_t
-Scene::timeOutInMs() const
-{
-    return timeout_ * 1000;
-}
+uint32_t Scene::timeOutInMs() const { return timeout_ * 1000; }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-static uint64_t
-calcPixelHash(int32_t x, int32_t y, int32_t width)
+static uint64_t calcPixelHash(int32_t x, int32_t y, int32_t width)
 {
     return Hash::hash(uint64_t(x + y * width + 1));
 }
@@ -158,23 +153,24 @@ calcPixelHash(int32_t x, int32_t y, int32_t width)
 -------------------------------------------------
 -------------------------------------------------
 */
-SubFilm&
-Scene::render(int32_t taskNo)
+SubFilm &Scene::render(int32_t taskNo)
 {
     // task番号から描画するべきものを決定する
     auto film = sensor_->film();
     const int32_t subFilmNum = film->subFilmNum();
     const int32_t subFilmIndex = taskNo % subFilmNum;
     const int32_t loopNo = taskNo / subFilmNum;
-    SubFilm& subFilm = film->subFilm(subFilmIndex);
-    const Image& image = film->image();
-    Image& subFilmImage = subFilm.image();
+    SubFilm &subFilm = film->subFilm(subFilmIndex);
+    const Image &image = film->image();
+    Image &subFilmImage = subFilm.image();
     // HACK: 暫定的に直接サンプラーを宣言しておく
     SamplerIndepent sampler;
     // タイルの描画
-    const auto& region = subFilm.region();
-    for (int32_t y = region.top; y < region.bottom; ++y) {
-        for (int32_t x = region.left; x < region.right; ++x) {
+    const auto &region = subFilm.region();
+    for (int32_t y = region.top; y < region.bottom; ++y)
+    {
+        for (int32_t x = region.left; x < region.right; ++x)
+        {
             //
             sampler.setHash(calcPixelHash(x, y, image.width()));
             //
@@ -185,7 +181,8 @@ Scene::render(int32_t taskNo)
             const int32_t sampleEnd = (loopNo + 1) * sppPerLoop;
             // SubPixel巡回
             for (int32_t sampleNo = sampleBegin; sampleNo < sampleEnd;
-                 ++sampleNo) {
+                 ++sampleNo)
+            {
                 sampler.startSample(sampleNo);
                 ++g_numSample;
                 // SubPixelの生成
@@ -198,10 +195,11 @@ Scene::render(int32_t taskNo)
                 //
                 float pdf = 0.0f;
                 const Ray screenRay = sensor_->generateRay(spx, spy, pdf);
-                if (pdf != 0.0f) {
+                if (pdf != 0.0f)
+                {
                     Spectrum spectrum = Spectrum::Black;
                     spectrum =
-                      integrator_->radiance(screenRay, geometory_, &sampler);
+                        integrator_->radiance(screenRay, geometory_, &sampler);
                     AL_ASSERT_DEBUG(!spectrum.hasNaN());
                     // TODO: pdfをちゃんと扱うようにする
                     spectrumTotal += spectrum * spWeight;
@@ -228,11 +226,10 @@ Scene::render(int32_t taskNo)
 指定のピクセルのSpectrumを取得するデバッグ用
 -------------------------------------------------
 */
-Spectrum
-Scene::renderPixel(int32_t x, int32_t y)
+Spectrum Scene::renderPixel(int32_t x, int32_t y)
 {
     //
-    const Image& image = sensor_->film()->image();
+    const Image &image = sensor_->film()->image();
     //
     float pdf = 0.0f;
     const Ray screenRay = sensor_->generateRay(float(x), float(y), pdf);
@@ -249,22 +246,22 @@ Scene::renderPixel(int32_t x, int32_t y)
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-Scene::developLDR(const std::string& filmName, bool isFinal)
+void Scene::developLDR(const std::string &filmName, bool isFinal)
 {
     // FIXME: renderが走っていないかを確認する
 
     // 最終スナップは必ずデノイズを掛ける
     const bool denoise = isFinal || snapshotDenoise_;
-    const Image& radianceImage = sensor_->film()->image();
+    const Image &radianceImage = sensor_->film()->image();
     // ノイズを除去する
-    if (denoise) {
+    if (denoise)
+    {
         //
         AL_ASSERT_DEBUG((radianceImage.width() == denoiseBuffer_.width()) &&
                         (radianceImage.height() == denoiseBuffer_.height()));
         denoiser_->denoise(radianceImage, denoiseBuffer_);
     }
-    const Image& image = denoise ? denoiseBuffer_ : radianceImage;
+    const Image &image = denoise ? denoiseBuffer_ : radianceImage;
     // Tonemappingを掛けつつ出力する
     tonemapper_->process(image, tonemmappedImage_);
     tonemmappedImage_.writePNG(filmName);
@@ -274,8 +271,7 @@ Scene::developLDR(const std::string& filmName, bool isFinal)
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-Scene::dumpHDR(const std::string& fileName)
+void Scene::dumpHDR(const std::string &fileName)
 {
     // 内部にあるHDRをそのまま出力する
     // const auto& image = sensor_->film()->image();

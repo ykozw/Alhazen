@@ -9,8 +9,7 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-template<typename Type>
-class DirtyableValue
+template <typename Type> class DirtyableValue
 {
 public:
     Type value;
@@ -26,7 +25,7 @@ struct TLS_Data
     // 前回の色
     DirtyableValue<Vec3> color;
     // 前回のラベル
-    DirtyableValue<const char*> label;
+    DirtyableValue<const char *> label;
     DirtyableValue<int32_t> label_i;
 };
 AL_TLS TLS_Data tls = {};
@@ -44,24 +43,26 @@ SpinLock global_vdmt_mutex;
 -------------------------------------------------
 -------------------------------------------------
 */
-static void
-setAdditionalAttributes()
+static void setAdditionalAttributes()
 {
     // 色
-    auto& col = tls.color;
-    if (col.dirty) {
-        auto& c = col.value;
+    auto &col = tls.color;
+    if (col.dirty)
+    {
+        auto &c = col.value;
         vdb_color(c.x(), c.y(), c.z());
         col.dirty = false;
     }
     // ラベル
-    auto& label = tls.label;
-    if (label.dirty) {
+    auto &label = tls.label;
+    if (label.dirty)
+    {
         vdb_label(label.value);
         label.dirty = false;
     }
-    auto& label_i = tls.label_i;
-    if (label_i.dirty) {
+    auto &label_i = tls.label_i;
+    if (label_i.dirty)
+    {
         vdb_label_i(label_i.value);
         label_i.dirty = false;
     }
@@ -71,8 +72,7 @@ setAdditionalAttributes()
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-vdbmt_begin()
+void vdbmt_begin()
 {
     // 実装がややこしくなるので非対応
     AL_ASSERT_ALWAYS(false);
@@ -83,8 +83,7 @@ vdbmt_begin()
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-vdbmt_end()
+void vdbmt_end()
 {
     // 実装がややこしくなるので非対応
     AL_ASSERT_ALWAYS(false);
@@ -95,8 +94,7 @@ vdbmt_end()
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-vdbmt_point(Vec3 p)
+void vdbmt_point(Vec3 p)
 {
     std::lock_guard<decltype(global_vdmt_mutex)> lock(global_vdmt_mutex);
     setAdditionalAttributes();
@@ -107,8 +105,7 @@ vdbmt_point(Vec3 p)
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-vdbmt_line(Vec3 p0, Vec3 p1)
+void vdbmt_line(Vec3 p0, Vec3 p1)
 {
     std::lock_guard<decltype(global_vdmt_mutex)> lock(global_vdmt_mutex);
     setAdditionalAttributes();
@@ -119,8 +116,7 @@ vdbmt_line(Vec3 p0, Vec3 p1)
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-vdbmt_normal(Vec3 p, Vec3 n)
+void vdbmt_normal(Vec3 p, Vec3 n)
 {
     std::lock_guard<decltype(global_vdmt_mutex)> lock(global_vdmt_mutex);
     setAdditionalAttributes();
@@ -131,21 +127,19 @@ vdbmt_normal(Vec3 p, Vec3 n)
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-vdbmt_triangle(Vec3 v0, Vec3 v1, Vec3 v2)
+void vdbmt_triangle(Vec3 v0, Vec3 v1, Vec3 v2)
 {
     std::lock_guard<decltype(global_vdmt_mutex)> lock(global_vdmt_mutex);
     setAdditionalAttributes();
     vdb_triangle(
-      v0.x(), v0.y(), v0.z(), v1.x(), v1.y(), v1.z(), v2.x(), v2.y(), v2.z());
+        v0.x(), v0.y(), v0.z(), v1.x(), v1.y(), v1.z(), v2.x(), v2.y(), v2.z());
 }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-vdbmt_aabb(Vec3 mn, Vec3 mx)
+void vdbmt_aabb(Vec3 mn, Vec3 mx)
 {
     const float mnx = mn.x();
     const float mny = mn.y();
@@ -173,11 +167,10 @@ vdbmt_aabb(Vec3 mn, Vec3 mx)
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-vdbmt_color(Vec3 aColor)
+void vdbmt_color(Vec3 aColor)
 {
     std::lock_guard<decltype(global_vdmt_mutex)> lock(global_vdmt_mutex);
-    auto& color = tls.color;
+    auto &color = tls.color;
     color.value = aColor;
     color.dirty = true;
 }
@@ -186,8 +179,7 @@ vdbmt_color(Vec3 aColor)
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-vdbmt_color_rnd()
+void vdbmt_color_rnd()
 {
     const auto rndF = []() -> float {
         return float(double(rand()) / double(RAND_MAX));
@@ -199,11 +191,10 @@ vdbmt_color_rnd()
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-vdbmt_label(const char* lbl)
+void vdbmt_label(const char *lbl)
 {
     std::lock_guard<decltype(global_vdmt_mutex)> lock(global_vdmt_mutex);
-    auto& label = tls.label;
+    auto &label = tls.label;
     label.value = lbl;
     label.dirty = true;
 }
@@ -212,11 +203,10 @@ vdbmt_label(const char* lbl)
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-vdbmt_label_i(int32_t i)
+void vdbmt_label_i(int32_t i)
 {
     std::lock_guard<decltype(global_vdmt_mutex)> lock(global_vdmt_mutex);
-    auto& label = tls.label_i;
+    auto &label = tls.label_i;
     label.value = i;
     label.dirty = true;
 }
@@ -225,8 +215,7 @@ vdbmt_label_i(int32_t i)
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-vdbmt_frame()
+void vdbmt_frame()
 {
     std::lock_guard<decltype(global_vdmt_mutex)> lock(global_vdmt_mutex);
     vdb_frame();

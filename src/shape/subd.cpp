@@ -11,10 +11,10 @@
 class SubDShape AL_FINAL : public Shape
 {
 public:
-    SubDShape(const ObjectProp& objectProp);
+    SubDShape(const ObjectProp &objectProp);
     AABB aabb() const override;
-    bool intersect(const Ray& ray, Intersect* isect) const override;
-    bool intersectCheck(const Ray& ray) const override;
+    bool intersect(const Ray &ray, Intersect *isect) const override;
+    bool intersectCheck(const Ray &ray) const override;
 
 private:
 #if 0
@@ -39,8 +39,7 @@ REGISTER_OBJECT(Shape, SubDShape);
  -------------------------------------------------
  -------------------------------------------------
  */
-SubDShape::SubDShape(const ObjectProp& objectProp)
-  : Shape(objectProp)
+SubDShape::SubDShape(const ObjectProp &objectProp) : Shape(objectProp)
 {
 #if 0
     transform_ = Transform(objectProp.findChildByTag("transform"));
@@ -93,7 +92,8 @@ SubDShape::SubDShape(const ObjectProp& objectProp)
     faces_[5] = createFace(vs[1], vs[3], vs[5], vs[7]);
 #endif
     //
-    for (auto& v : vs) {
+    for (auto &v : vs)
+    {
         aabb_.addPoint(v);
     }
 }
@@ -102,18 +102,13 @@ SubDShape::SubDShape(const ObjectProp& objectProp)
  -------------------------------------------------
  -------------------------------------------------
  */
-INLINE AABB
-SubDShape::aabb() const
-{
-    return aabb_;
-}
+INLINE AABB SubDShape::aabb() const { return aabb_; }
 
 /*
  -------------------------------------------------
  -------------------------------------------------
  */
-INLINE bool
-SubDShape::intersect(const Ray& ray, Intersect* isect) const
+INLINE bool SubDShape::intersect(const Ray &ray, Intersect *isect) const
 {
 #if 0
     // レイの位置と方向をLocal座標系に変換
@@ -137,16 +132,16 @@ SubDShape::intersect(const Ray& ray, Intersect* isect) const
 #else
     //
     const auto intersectFace =
-      [](const Ray& ray, const Face& face, Intersect* isect) {
-          const auto& vs = face.vs;
-          const Vec3 n = face.n;
-          // HACK: UVは適当
-          const Vec2 uv(0.0f);
-          return intersectTriangle(
-                   ray, vs[0], vs[1], vs[2], n, n, n, uv, uv, uv, isect) ||
-                 intersectTriangle(
-                   ray, vs[2], vs[1], vs[3], n, n, n, uv, uv, uv, isect);
-      };
+        [](const Ray &ray, const Face &face, Intersect *isect) {
+            const auto &vs = face.vs;
+            const Vec3 n = face.n;
+            // HACK: UVは適当
+            const Vec2 uv(0.0f);
+            return intersectTriangle(
+                       ray, vs[0], vs[1], vs[2], n, n, n, uv, uv, uv, isect) ||
+                   intersectTriangle(
+                       ray, vs[2], vs[1], vs[3], n, n, n, uv, uv, uv, isect);
+        };
     bool isHit = false;
     isHit |= intersectFace(ray, faces_[0], isect);
     isHit |= intersectFace(ray, faces_[1], isect);
@@ -162,8 +157,7 @@ SubDShape::intersect(const Ray& ray, Intersect* isect) const
  -------------------------------------------------
  -------------------------------------------------
  */
-INLINE bool
-SubDShape::intersectCheck(const Ray& ray) const
+INLINE bool SubDShape::intersectCheck(const Ray &ray) const
 {
     // TODO: より軽い方法があるならそれに切り替える
     Intersect isDummy;

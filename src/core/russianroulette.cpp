@@ -6,10 +6,7 @@
 -------------------------------------------------
 */
 RussianRoulette::RussianRoulette()
-  : numContribution_(0.0f)
-  , aveRayCount_(0.0f)
-  , cAve_(0.0f)
-  , cM_(0.0f)
+    : numContribution_(0.0f), aveRayCount_(0.0f), cAve_(0.0f), cM_(0.0f)
 {
     reset();
 }
@@ -18,8 +15,7 @@ RussianRoulette::RussianRoulette()
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-RussianRoulette::addContribution(float contribtuion, int32_t rayCount)
+void RussianRoulette::addContribution(float contribtuion, int32_t rayCount)
 {
     // ray数の平均の更新
     aveRayCount_ = 1.0f / (1.0f + (float)numContribution_) *
@@ -28,7 +24,7 @@ RussianRoulette::addContribution(float contribtuion, int32_t rayCount)
     // Contributionの平均の更新
     const float cAveOld = cAve_;
     cAve_ =
-      1.0f / (1.0f + (float)numContribution_) * ((float)cAve_ - contribtuion);
+        1.0f / (1.0f + (float)numContribution_) * ((float)cAve_ - contribtuion);
     // ContributionのMの更新
     cM_ = cM_ + (contribtuion - cAve_) * (contribtuion - cAveOld);
     //
@@ -39,8 +35,7 @@ RussianRoulette::addContribution(float contribtuion, int32_t rayCount)
 -------------------------------------------------
 -------------------------------------------------
 */
-void
-RussianRoulette::reset()
+void RussianRoulette::reset()
 {
     numContribution_ = 0.0f;
     aveRayCount_ = 0.0f;
@@ -52,8 +47,7 @@ RussianRoulette::reset()
 -------------------------------------------------
 -------------------------------------------------
 */
-float
-RussianRoulette::rouletteProb() const
+float RussianRoulette::rouletteProb() const
 {
     // TODO: 実装
     AL_ASSERT_DEBUG(false);

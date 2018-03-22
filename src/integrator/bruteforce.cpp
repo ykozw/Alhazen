@@ -14,13 +14,13 @@ class BruteForceIntegrator AL_FINAL : public LTEIntegrator
 {
 public:
     BruteForceIntegrator() = default;
-    BruteForceIntegrator(const ObjectProp& objectProp);
-    bool preRendering(const SceneGeometory& scene,
-                      AllBSDFList& bsdfList) override;
+    BruteForceIntegrator(const ObjectProp &objectProp);
+    bool preRendering(const SceneGeometory &scene,
+                      AllBSDFList &bsdfList) override;
     bool postRendering() override { return true; }
-    Spectrum radiance(const Ray& ray,
-                      const SceneGeometory& scene,
-                      Sampler* sampler) const override;
+    Spectrum radiance(const Ray &ray,
+                      const SceneGeometory &scene,
+                      Sampler *sampler) const override;
 
 private:
 };
@@ -31,7 +31,7 @@ REGISTER_OBJECT(LTEIntegrator, BruteForceIntegrator);
 -------------------------------------------------
 -------------------------------------------------
 */
-BruteForceIntegrator::BruteForceIntegrator(const ObjectProp& objectProp)
+BruteForceIntegrator::BruteForceIntegrator(const ObjectProp &objectProp)
 {
     static_cast<void>(objectProp);
 }
@@ -40,9 +40,8 @@ BruteForceIntegrator::BruteForceIntegrator(const ObjectProp& objectProp)
 -------------------------------------------------
 -------------------------------------------------
 */
-bool
-BruteForceIntegrator::preRendering(const SceneGeometory& scene,
-                                   AllBSDFList& bsdfList)
+bool BruteForceIntegrator::preRendering(const SceneGeometory &scene,
+                                        AllBSDFList &bsdfList)
 {
     return true;
 }
@@ -51,10 +50,9 @@ BruteForceIntegrator::preRendering(const SceneGeometory& scene,
 -------------------------------------------------
 -------------------------------------------------
 */
-Spectrum
-BruteForceIntegrator::radiance(const Ray& screenRay,
-                               const SceneGeometory& scene,
-                               Sampler* sampler) const
+Spectrum BruteForceIntegrator::radiance(const Ray &screenRay,
+                                        const SceneGeometory &scene,
+                                        Sampler *sampler) const
 {
     //
     Spectrum throughput = Spectrum(1.0f);
@@ -64,9 +62,11 @@ BruteForceIntegrator::radiance(const Ray& screenRay,
     // bool isOutside = true;
     // float ior = 1.0f;
     //
-    for (int32_t bounce = 0; bounce < maxBounce; ++bounce) {
+    for (int32_t bounce = 0; bounce < maxBounce; ++bounce)
+    {
         // ロシアンルーレット確率は現在のスループットから決定する
-        if (bounce > maxBounce) {
+        if (bounce > maxBounce)
+        {
             break;
         }
 #if 0
@@ -85,16 +85,18 @@ BruteForceIntegrator::radiance(const Ray& screenRay,
         // 何も衝突しなかったらContributionが0で終了
         // ライトを直接サンプルするわけではないのでライトと交差する必要がある
         bool skipLight = false;
-        if (!scene.intersect(ray, skipLight, &isect)) {
+        if (!scene.intersect(ray, skipLight, &isect))
+        {
             break;
         }
         //
-        if (!isect.emission.isBlack()) {
+        if (!isect.emission.isBlack())
+        {
             // const float d = isect.t;
             lighting += isect.emission * throughput;
         }
         //
-        const BSDF* bsdf = isect.bsdf;
+        const BSDF *bsdf = isect.bsdf;
         Vec3 localWi;
         const OrthonormalBasis<> local(isect.normal);
         const Vec3 localWo = local.world2local(-ray.d);
@@ -108,7 +110,8 @@ BruteForceIntegrator::radiance(const Ray& screenRay,
 #endif
         Spectrum reflection = bsdf->bsdf(localWo, localWi);
         // 反射率が0の場合は終了
-        if (reflection.isBlack()) {
+        if (reflection.isBlack())
+        {
             break;
         }
         const Vec3 worldWi = local.local2world(localWi);

@@ -77,3 +77,15 @@ project "Alhazen"
       "tbbmalloc"
     }
 
+  configuration "windows"
+    sysincludedirs {
+      "thirdparty/tbb/include"
+    }
+    libdirs {
+      "thirdparty/tbb/lib/intel64/vc14"
+    }
+    links {
+      "tbb.lib",
+      "tbbmalloc_proxy.lib",
+      "tbbmalloc.lib"
+    }

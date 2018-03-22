@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #define _CRT_SECURE_NO_WARNINGS 1
+#define NOMINMAX
 
 #if _MSC_VER && !__INTEL_COMPILER
 #define WINDOWS
@@ -61,6 +62,8 @@
 #if defined(WINDOWS)
 // portableだけれども各種SDKに依存するヘッダ
 #include <direct.h>
+// TBB内にwindows.hがあり、これよりも先にwinsock2.hがないとビルドエラーになってしまう
+#include <winsock2.h>
 #else
 #include <sys/stat.h> // for mkdir()
 #endif

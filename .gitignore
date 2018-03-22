@@ -15,5 +15,4 @@
 *.bmp
 bin/*
 generated/*
-todo.txt
-todo.md
+thirdparty/tbb/*

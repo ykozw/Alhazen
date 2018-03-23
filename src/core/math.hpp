@@ -261,16 +261,26 @@ public:
     INLINE FloatInVec() = default;
     INLINE FloatInVec(const FloatInVec& other) = default;
     INLINE FloatInVec(FloatInVec&& other) = default;
-    INLINE FloatInVec(__m128 v);
-    INLINE FloatInVec(float v);
+    INLINE explicit FloatInVec(__m128 v);
+    INLINE explicit FloatInVec(float v);
     INLINE operator __m128() const;
     INLINE operator float() const;
     INLINE FloatInVec operator-() const;
     INLINE float value() const;
     INLINE bool isNan() const;
 };
+INLINE FloatInVec
+operator-(FloatInVec lhs, FloatInVec rhs);
+INLINE FloatInVec
+operator*(FloatInVec lhs, FloatInVec rhs);
 INLINE bool
 operator<(FloatInVec lhs, FloatInVec rhs);
+INLINE bool
+operator>(FloatInVec lhs, FloatInVec rhs);
+INLINE bool
+operator <= (FloatInVec lhs, FloatInVec rhs);
+INLINE bool
+operator>=(FloatInVec lhs, FloatInVec rhs);
 
 /*
 -------------------------------------------------

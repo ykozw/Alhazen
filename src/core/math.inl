@@ -62,7 +62,6 @@ INLINE float _mm_extract_ps_fast(__m128 v)
 {
     return _mm_cvtss_f32(_mm_shuffle_ps(v, v, _MM_SHUFFLE(0, 0, 0, index)));
 }
-//  
 template<>
 INLINE float _mm_extract_ps_fast<0>(__m128 v)
 {

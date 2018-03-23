@@ -266,7 +266,6 @@ public:
     INLINE operator __m128() const;
     INLINE operator float() const;
     INLINE FloatInVec operator-() const;
-    INLINE float value() const;
     INLINE bool isNan() const;
 };
 INLINE FloatInVec

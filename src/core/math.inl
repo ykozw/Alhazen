@@ -268,7 +268,11 @@ INLINE FloatInVec::operator __m128 () const
  */
 INLINE FloatInVec::operator float() const
 {
-    return value();
+#if defined(AL_MATH_USE_NO_SIMD)
+    return v;
+#else
+    return _mm_extract_ps_fast<0>(v);
+#endif
 }
 
 /*
@@ -291,22 +295,9 @@ INLINE FloatInVec FloatInVec::operator -() const
  -------------------------------------------------
  -------------------------------------------------
  */
-INLINE float FloatInVec::value() const
-{
-#if defined(AL_MATH_USE_NO_SIMD)
-    return v;
-#else
-    return _mm_extract_ps_fast<0>(v);
-#endif
-}
-
-/*
- -------------------------------------------------
- -------------------------------------------------
- */
 INLINE bool FloatInVec::isNan() const
 {
-    return std::isnan(value());
+    return std::isnan(float(*this));
 }
 
 

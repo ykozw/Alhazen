@@ -85,8 +85,7 @@ AL_TEST(Math, FloatInVec)
     // 基本的な設定
     {
         FloatInVec v(1.0f);
-        AL_ASSERT_ALWAYS(v.value() == 1.0f);
-        AL_ASSERT_ALWAYS((float)v == 1.0f);
+        AL_ASSERT_ALWAYS(float(v) == 1.0f);
     }
     // 他のレーンを汚染しても大丈夫かチェック
     {

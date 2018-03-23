@@ -38,7 +38,6 @@ int32_t Alhazen::runApp(const ArgConfig& config)
     int32_t filmNo = 0;
     uint32_t nextDevelopTime =
         g_timeUtil.elapseTimeInMs() + developIntervalInMs;
-    uint32_t nextStatPrintTime = g_timeUtil.elapseTimeInMs() + 1000;
     //
     FloatStreamStats taskTimeStats;
 

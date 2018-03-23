@@ -14,10 +14,10 @@ BruteForceBVH::BruteForceBVH() {}
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE bool BruteForceBVH::construct(const std::vector<Vec3> &vs,
-                                     const std::vector<Vec3> &ns,
-                                     const std::vector<Vec2> &ts,
-                                     const std::vector<MeshFace> &fs)
+INLINE bool BruteForceBVH::construct(const std::vector<Vec3>& vs,
+                                     const std::vector<Vec3>& ns,
+                                     const std::vector<Vec2>& ts,
+                                     const std::vector<MeshFace>& fs)
 {
     vs_ = vs;
     ns_ = ns;
@@ -26,7 +26,7 @@ INLINE bool BruteForceBVH::construct(const std::vector<Vec3> &vs,
 
     // aabbの作成
     aabb_.clear();
-    for (auto &v : vs_)
+    for (auto& v : vs_)
     {
         aabb_.addPoint(v);
     }
@@ -50,10 +50,10 @@ int32_t BruteForceBVH::maxDepth() const { return 0; }
 -------------------------------------------------
 -------------------------------------------------
 */
-bool SimpleBVH::construct(const std::vector<Vec3> &vs,
-                          const std::vector<Vec3> &ns,
-                          const std::vector<Vec2> &ts,
-                          const std::vector<MeshFace> &fs)
+bool SimpleBVH::construct(const std::vector<Vec3>& vs,
+                          const std::vector<Vec3>& ns,
+                          const std::vector<Vec2>& ts,
+                          const std::vector<MeshFace>& fs)
 {
     AL_ASSERT_DEBUG(vs.size() == ns.size());
     AL_ASSERT_DEBUG(fs.size() != 0);
@@ -66,7 +66,7 @@ bool SimpleBVH::construct(const std::vector<Vec3> &vs,
     for (int32_t faceNo = 0; faceNo < faceNum; ++faceNo)
     {
         //
-        const MeshFace &mf = fs_[faceNo];
+        const MeshFace& mf = fs_[faceNo];
         //
         MeshTriangle tri;
         tri.v[0] = vs[mf.vi[0]];
@@ -100,14 +100,14 @@ bool SimpleBVH::construct(const std::vector<Vec3> &vs,
 -------------------------------------------------
 */
 void SimpleBVH::constructNode(int32_t nodeIndex,
-                              MeshTriangle *triangles,
+                              MeshTriangle* triangles,
                               int32_t numTriangle,
                               int32_t depth)
 {
     //
     maxDepth_ = alMax(maxDepth_, depth);
     // このノードのAABBを求める
-    auto &curNode = nodes_[nodeIndex];
+    auto& curNode = nodes_[nodeIndex];
     curNode.childlen[0] = -1;
     curNode.childlen[1] = -1;
     curNode.aabb.clear();
@@ -119,9 +119,9 @@ void SimpleBVH::constructNode(int32_t nodeIndex,
     // 三角形が一つしかない場合は葉
     if (numTriangle == 1)
     {
-        auto &v = triangles[0].v;
-        auto &n = triangles[0].n;
-        auto &t = triangles[0].t;
+        auto& v = triangles[0].v;
+        auto& n = triangles[0].n;
+        auto& t = triangles[0].t;
         curNode.v[0] = v[0];
         curNode.v[1] = v[1];
         curNode.v[2] = v[2];
@@ -140,7 +140,7 @@ void SimpleBVH::constructNode(int32_t nodeIndex,
     // float bestSAH = std::numeric_limits<float>::max();
     int32_t axis = -1;
     // 三角形ソート用
-    auto sortPred = [&axis](const MeshTriangle &lhs, const MeshTriangle &rhs) {
+    auto sortPred = [&axis](const MeshTriangle& lhs, const MeshTriangle& rhs) {
         Vec3 lhsc = lhs.aabb.center();
         Vec3 rhsc = rhs.aabb.center();
         return lhsc[axis] < rhsc[axis];
@@ -210,10 +210,10 @@ void SimpleBVH::constructNode(int32_t nodeIndex,
 -------------------------------------------------
 -------------------------------------------------
 */
-bool QBVH::construct(const std::vector<Vec3> &vs,
-                     const std::vector<Vec3> &ns,
-                     const std::vector<Vec2> &ts,
-                     const std::vector<MeshFace> &fs)
+bool QBVH::construct(const std::vector<Vec3>& vs,
+                     const std::vector<Vec3>& ns,
+                     const std::vector<Vec2>& ts,
+                     const std::vector<MeshFace>& fs)
 {
     // AL_ASSERT_DEBUG(vs.size() == ns.size());
     AL_ASSERT_DEBUG(fs.size() != 0);
@@ -230,7 +230,7 @@ bool QBVH::construct(const std::vector<Vec3> &vs,
     for (int32_t faceNo = 0; faceNo < faceNum; ++faceNo)
     {
         //
-        const MeshFace &mf = fs_[faceNo];
+        const MeshFace& mf = fs_[faceNo];
         //
         QBVHBuildTriangle tri;
         tri.v[0] = vs[mf.vi[0]];
@@ -272,9 +272,9 @@ bool QBVH::construct(const std::vector<Vec3> &vs,
 -------------------------------------------------
 */
 void QBVH::constructNodeMedian(int32_t nodeIndex,
-                               RefArray<QBVHBuildTriangle> &tris,
+                               RefArray<QBVHBuildTriangle>& tris,
                                int32_t depth,
-                               int32_t &progress)
+                               int32_t& progress)
 {
     // 深さ2( (2)^(2+1) = 総計8ノード)までは集計しておく
     if (depth == 2)
@@ -289,7 +289,7 @@ void QBVH::constructNodeMedian(int32_t nodeIndex,
     int32_t axisTop = -1;
     int32_t axisLR = -1;
     AABB thisTriAabb;
-    for (auto &tri : tris)
+    for (auto& tri : tris)
     {
         thisTriAabb.addAABB(tri.aabb);
     }
@@ -338,15 +338,15 @@ void QBVH::constructNodeMedian(int32_t nodeIndex,
     const int32_t rightPivot = numTris * 3 / 4;
     // 三角形ソート用
     int32_t sortAxis = -1;
-    auto sortPred = [&sortAxis](const QBVHBuildTriangle &lhs,
-                                const QBVHBuildTriangle &rhs) {
+    auto sortPred = [&sortAxis](const QBVHBuildTriangle& lhs,
+                                const QBVHBuildTriangle& rhs) {
         Vec3 lhsc = lhs.aabb.center();
         Vec3 rhsc = rhs.aabb.center();
         return lhsc[sortAxis] < rhsc[sortAxis];
     };
     float partitionValue = 0.0f;
     auto partitionPred = [&sortAxis,
-                          &partitionValue](const QBVHBuildTriangle &tri) {
+                          &partitionValue](const QBVHBuildTriangle& tri) {
         return tri.aabb.center()[sortAxis] < partitionValue;
     };
     // topのソート
@@ -400,10 +400,10 @@ void QBVH::constructNodeMedian(int32_t nodeIndex,
     // それぞれのmin/maxを得る
     for (int32_t areaNo = 0; areaNo < 4; ++areaNo)
     {
-        const auto &targetTris = trisPerArea[areaNo];
-        for (const auto &tri : targetTris)
+        const auto& targetTris = trisPerArea[areaNo];
+        for (const auto& tri : targetTris)
         {
-            for (const auto &v : tri.v)
+            for (const auto& v : tri.v)
             {
                 minxsF[areaNo] = alMin(v.x(), minxsF[areaNo]);
                 minysF[areaNo] = alMin(v.y(), minysF[areaNo]);
@@ -417,7 +417,7 @@ void QBVH::constructNodeMedian(int32_t nodeIndex,
     // QBVHNodeの作成
     assert(nodeIndex == nodes_.size());
     nodes_.push_back(QBVHNode());
-    QBVHNode &node = nodes_[nodes_.size() - 1];
+    QBVHNode& node = nodes_[nodes_.size() - 1];
     node.aabbs[0][0] = _mm_loadu_ps(minxsF.data());
     node.aabbs[0][1] = _mm_loadu_ps(minysF.data());
     node.aabbs[0][2] = _mm_loadu_ps(minzsF.data());
@@ -436,18 +436,18 @@ void QBVH::constructNodeMedian(int32_t nodeIndex,
         {
             node.childIndex[chNo].isLeaf = true;
             // 葉の作成
-            auto &targetTri = trisPerArea[chNo];
+            auto& targetTri = trisPerArea[chNo];
             const float inf = std::numeric_limits<float>::max();
             const Vec3 infVert(inf);
             const std::array<Vec3, 3> dummyVerts = {
                 {infVert, infVert, infVert}};
-            const auto &t0 =
+            const auto& t0 =
                 targetTri.size() >= 1 ? targetTri[0].v : dummyVerts;
-            const auto &t1 =
+            const auto& t1 =
                 targetTri.size() >= 2 ? targetTri[1].v : dummyVerts;
-            const auto &t2 =
+            const auto& t2 =
                 targetTri.size() >= 3 ? targetTri[2].v : dummyVerts;
-            const auto &t3 =
+            const auto& t3 =
                 targetTri.size() >= 4 ? targetTri[3].v : dummyVerts;
             ALIGN32 float x0s[4] = {t0[0].x(), t1[0].x(), t2[0].x(), t3[0].x()};
             ALIGN32 float x1s[4] = {t0[1].x(), t1[1].x(), t2[1].x(), t3[1].x()};
@@ -460,7 +460,7 @@ void QBVH::constructNodeMedian(int32_t nodeIndex,
             ALIGN32 float z2s[4] = {t0[2].z(), t1[2].z(), t2[2].z(), t3[2].z()};
             //
             leafs_.push_back(QBVHLeaf());
-            QBVHLeaf &leaf = leafs_[leafs_.size() - 1];
+            QBVHLeaf& leaf = leafs_[leafs_.size() - 1];
             leaf.x[0] = _mm_load_ps(x0s);
             leaf.x[1] = _mm_load_ps(x1s);
             leaf.x[2] = _mm_load_ps(x2s);
@@ -498,9 +498,9 @@ void QBVH::constructNodeMedian(int32_t nodeIndex,
 -------------------------------------------------
 */
 void QBVH::constructNodeSAH(int32_t nodeIndex,
-                            RefArray<QBVHBuildTriangle> &tris,
+                            RefArray<QBVHBuildTriangle>& tris,
                             int32_t depth,
-                            int32_t &progress)
+                            int32_t& progress)
 {
     // 深さ2( (2)^(2+1) = 総計8ノード)までは集計しておく
     if (depth == 2)
@@ -515,7 +515,7 @@ void QBVH::constructNodeSAH(int32_t nodeIndex,
     uint8_t axisTop = 0xff;
     uint8_t axisLR = 0xff;
     AABB thisTriAabb;
-    for (auto &tri : tris)
+    for (auto& tri : tris)
     {
         thisTriAabb.addAABB(tri.aabb);
     }
@@ -564,15 +564,15 @@ void QBVH::constructNodeSAH(int32_t nodeIndex,
     const int32_t rightPivot = numTris * 3 / 4;
     // 三角形ソート用
     int32_t sortAxis = -1;
-    auto sortPred = [&sortAxis](const QBVHBuildTriangle &lhs,
-                                const QBVHBuildTriangle &rhs) {
+    auto sortPred = [&sortAxis](const QBVHBuildTriangle& lhs,
+                                const QBVHBuildTriangle& rhs) {
         Vec3 lhsc = lhs.aabb.center();
         Vec3 rhsc = rhs.aabb.center();
         return lhsc[sortAxis] < rhsc[sortAxis];
     };
     float partitionValue = 0.0f;
     auto partitionPred = [&sortAxis,
-                          &partitionValue](const QBVHBuildTriangle &tri) {
+                          &partitionValue](const QBVHBuildTriangle& tri) {
         return tri.aabb.center()[sortAxis] < partitionValue;
     };
     // topのソート
@@ -626,10 +626,10 @@ void QBVH::constructNodeSAH(int32_t nodeIndex,
     // それぞれのmin/maxを得る
     for (int32_t areaNo = 0; areaNo < 4; ++areaNo)
     {
-        const auto &targetTris = trisPerArea[areaNo];
-        for (const auto &tri : targetTris)
+        const auto& targetTris = trisPerArea[areaNo];
+        for (const auto& tri : targetTris)
         {
-            for (const auto &v : tri.v)
+            for (const auto& v : tri.v)
             {
                 minxsF[areaNo] = alMin(v.x(), minxsF[areaNo]);
                 minysF[areaNo] = alMin(v.y(), minysF[areaNo]);
@@ -643,7 +643,7 @@ void QBVH::constructNodeSAH(int32_t nodeIndex,
     // QBVHNodeの作成
     assert(nodeIndex == nodes_.size());
     nodes_.push_back(QBVHNode());
-    QBVHNode &node = nodes_[nodes_.size() - 1];
+    QBVHNode& node = nodes_[nodes_.size() - 1];
     node.aabbs[0][0] = _mm_loadu_ps(minxsF.data());
     node.aabbs[0][1] = _mm_loadu_ps(minysF.data());
     node.aabbs[0][2] = _mm_loadu_ps(minzsF.data());
@@ -662,19 +662,19 @@ void QBVH::constructNodeSAH(int32_t nodeIndex,
         {
             node.childIndex[chNo].isLeaf = true;
             // 葉の作成
-            auto &targetTri = trisPerArea[chNo];
+            auto& targetTri = trisPerArea[chNo];
             // 浮動小数の例外が発生しない程度には大きすぎない値にしておく
             const float inf = 1.0e+15f;
             const Vec3 infVert(inf);
             const std::array<Vec3, 3> dummyVerts = {
                 {infVert, infVert, infVert}};
-            const auto &t0 =
+            const auto& t0 =
                 targetTri.size() >= 1 ? targetTri[0].v : dummyVerts;
-            const auto &t1 =
+            const auto& t1 =
                 targetTri.size() >= 2 ? targetTri[1].v : dummyVerts;
-            const auto &t2 =
+            const auto& t2 =
                 targetTri.size() >= 3 ? targetTri[2].v : dummyVerts;
-            const auto &t3 =
+            const auto& t3 =
                 targetTri.size() >= 4 ? targetTri[3].v : dummyVerts;
             ALIGN32 float x0s[4] = {t0[0].x(), t1[0].x(), t2[0].x(), t3[0].x()};
             ALIGN32 float x1s[4] = {t0[1].x(), t1[1].x(), t2[1].x(), t3[1].x()};
@@ -687,7 +687,7 @@ void QBVH::constructNodeSAH(int32_t nodeIndex,
             ALIGN32 float z2s[4] = {t0[2].z(), t1[2].z(), t2[2].z(), t3[2].z()};
             //
             leafs_.push_back(QBVHLeaf());
-            QBVHLeaf &leaf = leafs_[leafs_.size() - 1];
+            QBVHLeaf& leaf = leafs_[leafs_.size() - 1];
             leaf.x[0] = _mm_load_ps(x0s);
             leaf.x[1] = _mm_load_ps(x1s);
             leaf.x[2] = _mm_load_ps(x2s);
@@ -750,7 +750,7 @@ int32_t QBVH::maxDepth() const { return maxDepth_; }
  -------------------------------------------------
  -------------------------------------------------
  */
-void ShapeBVH::construct(const std::vector<ShapePtr> &aShapes)
+void ShapeBVH::construct(const std::vector<ShapePtr>& aShapes)
 {
     if (aShapes.empty())
     {
@@ -782,14 +782,14 @@ void ShapeBVH::construct(const std::vector<ShapePtr> &aShapes)
  */
 void ShapeBVH::constructSub(ShapeListIte beginIte,
                             ShapeListIte endIte,
-                            std::vector<Node> &nodes,
+                            std::vector<Node>& nodes,
                             int32_t nodeIndex)
 {
     // 一つしかノードがない場合は子はなし
     if (std::distance(beginIte, endIte) == 1)
     {
         ShapePtr shape = *beginIte;
-        auto &curNode = nodes[nodeIndex];
+        auto& curNode = nodes[nodeIndex];
         curNode.aabb.clear();
         curNode.aabb.addAABB(shape->aabb());
         curNode.shape = shape;
@@ -804,7 +804,7 @@ void ShapeBVH::constructSub(ShapeListIte beginIte,
                                int32_t axis,
                                int32_t splitIndex) {
         // ソート
-        auto sortPred = [&axis](const ShapePtr &lhs, const ShapePtr &rhs) {
+        auto sortPred = [&axis](const ShapePtr& lhs, const ShapePtr& rhs) {
             // AABBのcenter位置でソートする
             // TODO: もっとましな方法があるならそれにする
             Vec3 lhsc = lhs->aabb().center();
@@ -882,7 +882,7 @@ void ShapeBVH::constructSub(ShapeListIte beginIte,
     const int32_t ch1 = int32_t(nodes.size()) - 1;
     constructSub(medIte, endIte, nodes, ch1);
     //
-    auto &curNode = nodes[nodeIndex];
+    auto& curNode = nodes[nodeIndex];
     curNode.childlen[0] = ch0;
     curNode.childlen[1] = ch1;
     // 子のAABBの和が親のAABB

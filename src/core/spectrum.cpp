@@ -25,7 +25,7 @@ AL_TEST(spectrum, SpectrumSampled_SameAllCoeffWhenRGBisEqual)
         const SpectrumSampled refColor =
             SpectrumSampled::createFromRGB({{v, v, v}}, false);
         const float fv = refColor.samples[0];
-        for (const float &s : refColor.samples)
+        for (const float& s : refColor.samples)
         {
             //
             if (fv == 0.0f)

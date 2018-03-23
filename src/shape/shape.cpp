@@ -5,7 +5,7 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-Shape::Shape(const ObjectProp &prop)
+Shape::Shape(const ObjectProp& prop)
 {
     // マテリアル名を取得(単体のマテリアルのみの場合)
     if (!hasMultiBSDFs())

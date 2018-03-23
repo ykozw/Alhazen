@@ -8,7 +8,7 @@
 star discrepancyを推定する
 -------------------------------------------------
 */
-float estimateStarDiscrepancy(const std::vector<Vec2> &srcSamples)
+float estimateStarDiscrepancy(const std::vector<Vec2>& srcSamples)
 {
 #if 0
     /*
@@ -32,7 +32,7 @@ float estimateStarDiscrepancy(const std::vector<Vec2> &srcSamples)
     //
     std::vector<Vec2> samples(srcSamples);
     std::sort(
-        samples.begin(), samples.end(), [](const Vec2 &lhs, const Vec2 &rhs) {
+        samples.begin(), samples.end(), [](const Vec2& lhs, const Vec2& rhs) {
             //
             if (lhs.x() < rhs.x())
             {
@@ -76,7 +76,7 @@ float estimateStarDiscrepancy(const std::vector<Vec2> &srcSamples)
             std::lower_bound(samples.begin(),
                              samples.end(),
                              mn,
-                             [](const Vec2 &lhs, const Vec2 &rhs) {
+                             [](const Vec2& lhs, const Vec2& rhs) {
                                  if (lhs.x() < rhs.x())
                                  {
                                      return true;
@@ -91,7 +91,7 @@ float estimateStarDiscrepancy(const std::vector<Vec2> &srcSamples)
             std::upper_bound(samples.begin(),
                              samples.end(),
                              mn,
-                             [](const Vec2 &lhs, const Vec2 &rhs) {
+                             [](const Vec2& lhs, const Vec2& rhs) {
                                  if (lhs.x() < rhs.x())
                                  {
                                      return true;
@@ -125,7 +125,7 @@ float estimateStarDiscrepancy(const std::vector<Vec2> &srcSamples)
 最小の距離を得る
 -------------------------------------------------
 */
-float minimumDisptance(const std::vector<Vec2> &samples)
+float minimumDisptance(const std::vector<Vec2>& samples)
 {
     // kd-treeの構築
     struct KDP
@@ -135,10 +135,10 @@ float minimumDisptance(const std::vector<Vec2> &samples)
     };
     static_assert(sizeof(KDP) == sizeof(Vec2), "");
     KdTree<KDP> kdtree;
-    kdtree.construct((KDP *)&samples, int32_t(sizeof(Vec2) * samples.size()));
+    kdtree.construct((KDP*)&samples, int32_t(sizeof(Vec2) * samples.size()));
     // 全てのサンプル点に対して最小距離を出しその中での最小距離を出す
     float minMinDist = std::numeric_limits<float>::max();
-    for (const Vec2 &s : samples)
+    for (const Vec2& s : samples)
     {
         float minDist = 0.0;
         AL_ASSERT_DEBUG(

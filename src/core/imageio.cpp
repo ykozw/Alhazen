@@ -16,11 +16,11 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-void Image::readBmp(const std::string &fileName, bool sRGB)
+void Image::readBmp(const std::string& fileName, bool sRGB)
 {
     // ロード
     int32_t comp;
-    uint8_t *image =
+    uint8_t* image =
         stbi_load(fileName.c_str(), &width_, &height_, &comp, STBI_rgb);
     if (image == nullptr)
     {
@@ -53,7 +53,7 @@ void Image::readBmp(const std::string &fileName, bool sRGB)
 -------------------------------------------------
 -------------------------------------------------
 */
-void ImageLDR::writePNG(const std::string &fileName) const
+void ImageLDR::writePNG(const std::string& fileName) const
 {
     // フルパスを得る
     const std::string fullPath = g_fileSystem.getOutputFolderPath() + fileName;
@@ -75,7 +75,7 @@ void ImageLDR::writePNG(const std::string &fileName) const
     }
     //
     const int32_t comp = 3;
-    const void *data = tmp.data();
+    const void* data = tmp.data();
     const int32_t strideInBytes = width_ * comp;
     stbi_write_png(
         fullPath.c_str(), width_, height_, comp, data, strideInBytes);
@@ -108,7 +108,7 @@ AL_TEST(ImageLDR, write)
 -------------------------------------------------
 -------------------------------------------------
 */
-void Image::readHdr(const std::string &fileName)
+void Image::readHdr(const std::string& fileName)
 {
 #if !defined(WINDOWS) || true
     AL_ASSERT_ALWAYS(false);
@@ -194,7 +194,7 @@ void Image::readHdr(const std::string &fileName)
         // RGBEからRGBを復元する
         for (int32_t x = 0; x < width; ++x)
         {
-            auto &p = pixel(x, y);
+            auto& p = pixel(x, y);
             uint8_t r = imageLineBuffer[x + 0];
             uint8_t g = imageLineBuffer[x + width * 1];
             uint8_t b = imageLineBuffer[x + width * 2];
@@ -214,7 +214,7 @@ void Image::readHdr(const std::string &fileName)
 // HACK: 何かHDR感がない出力になる。修正する
 -------------------------------------------------
 */
-void Image::writeHdr(const std::string &fileName) const
+void Image::writeHdr(const std::string& fileName) const
 {
 #if !defined(WINDOWS) || true
     AL_ASSERT_ALWAYS(false);
@@ -242,13 +242,13 @@ void Image::writeHdr(const std::string &fileName) const
         // 行はじめを書く
         uint8_t b = 0;
         b = 0x02;
-        file.write((const char *)&b, sizeof(b));
-        file.write((const char *)&b, sizeof(b));
+        file.write((const char*)&b, sizeof(b));
+        file.write((const char*)&b, sizeof(b));
         // 行幅を書く
         b = ((width & 0xFF00) >> 8);
-        file.write((char *)&b, sizeof(b));
+        file.write((char*)&b, sizeof(b));
         b = (width & 0xFF);
-        file.write((char *)&b, sizeof(b));
+        file.write((char*)&b, sizeof(b));
         //
         lineR.clear();
         lineG.clear();
@@ -287,11 +287,11 @@ void Image::writeHdr(const std::string &fileName) const
             {
                 // HACK: 全てのデータを無圧縮として書き込む
                 b = 64;
-                file.write((char *)&b, sizeof(b));
+                file.write((char*)&b, sizeof(b));
                 for (int32_t i = 0; i < 64; ++i)
                 {
                     b = line[x + i];
-                    file.write((char *)&b, sizeof(b));
+                    file.write((char*)&b, sizeof(b));
                 }
                 x += 64;
             }

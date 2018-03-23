@@ -14,13 +14,13 @@ class BruteForceIntegrator AL_FINAL : public LTEIntegrator
 {
 public:
     BruteForceIntegrator() = default;
-    BruteForceIntegrator(const ObjectProp &objectProp);
-    bool preRendering(const SceneGeometory &scene,
-                      AllBSDFList &bsdfList) override;
+    BruteForceIntegrator(const ObjectProp& objectProp);
+    bool preRendering(const SceneGeometory& scene,
+                      AllBSDFList& bsdfList) override;
     bool postRendering() override { return true; }
-    Spectrum radiance(const Ray &ray,
-                      const SceneGeometory &scene,
-                      Sampler *sampler) const override;
+    Spectrum radiance(const Ray& ray,
+                      const SceneGeometory& scene,
+                      Sampler* sampler) const override;
 
 private:
 };
@@ -31,7 +31,7 @@ REGISTER_OBJECT(LTEIntegrator, BruteForceIntegrator);
 -------------------------------------------------
 -------------------------------------------------
 */
-BruteForceIntegrator::BruteForceIntegrator(const ObjectProp &objectProp)
+BruteForceIntegrator::BruteForceIntegrator(const ObjectProp& objectProp)
 {
     static_cast<void>(objectProp);
 }
@@ -40,8 +40,8 @@ BruteForceIntegrator::BruteForceIntegrator(const ObjectProp &objectProp)
 -------------------------------------------------
 -------------------------------------------------
 */
-bool BruteForceIntegrator::preRendering(const SceneGeometory &scene,
-                                        AllBSDFList &bsdfList)
+bool BruteForceIntegrator::preRendering(const SceneGeometory& scene,
+                                        AllBSDFList& bsdfList)
 {
     return true;
 }
@@ -50,9 +50,9 @@ bool BruteForceIntegrator::preRendering(const SceneGeometory &scene,
 -------------------------------------------------
 -------------------------------------------------
 */
-Spectrum BruteForceIntegrator::radiance(const Ray &screenRay,
-                                        const SceneGeometory &scene,
-                                        Sampler *sampler) const
+Spectrum BruteForceIntegrator::radiance(const Ray& screenRay,
+                                        const SceneGeometory& scene,
+                                        Sampler* sampler) const
 {
     //
     Spectrum throughput = Spectrum(1.0f);
@@ -96,7 +96,7 @@ Spectrum BruteForceIntegrator::radiance(const Ray &screenRay,
             lighting += isect.emission * throughput;
         }
         //
-        const BSDF *bsdf = isect.bsdf;
+        const BSDF* bsdf = isect.bsdf;
         Vec3 localWi;
         const OrthonormalBasis<> local(isect.normal);
         const Vec3 localWo = local.world2local(-ray.d);

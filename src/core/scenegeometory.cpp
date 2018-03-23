@@ -34,15 +34,15 @@ void SceneGeometory::buildScene()
 -------------------------------------------------
 -------------------------------------------------
 */
-const std::vector<LightPtr> &SceneGeometory::lights() const { return lights_; }
+const std::vector<LightPtr>& SceneGeometory::lights() const { return lights_; }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-bool SceneGeometory::intersect(const Ray &ray,
+bool SceneGeometory::intersect(const Ray& ray,
                                bool skipLight,
-                               Intersect *isect) const
+                               Intersect* isect) const
 {
     //
     ++g_numIsectTotal;
@@ -67,7 +67,7 @@ bool SceneGeometory::intersect(const Ray &ray,
     // Lightを巡回する
     if (!skipLight)
     {
-        for (const auto &light : lights_)
+        for (const auto& light : lights_)
         {
             if (light->intersect(ray, isect))
             {
@@ -89,7 +89,7 @@ bool SceneGeometory::intersect(const Ray &ray,
 交差がある場合はtrueが返る
 -------------------------------------------------
 */
-bool SceneGeometory::intersectCheck(const Ray &ray, bool skipLight) const
+bool SceneGeometory::intersectCheck(const Ray& ray, bool skipLight) const
 {
     //
     ++g_numIsectTotal;
@@ -111,7 +111,7 @@ bool SceneGeometory::intersectCheck(const Ray &ray, bool skipLight) const
     // Lightを巡回する
     if (!skipLight)
     {
-        for (const auto &light : lights_)
+        for (const auto& light : lights_)
         {
             if (light->intersectCheck(ray))
             {
@@ -128,8 +128,8 @@ bool SceneGeometory::intersectCheck(const Ray &ray, bool skipLight) const
 可視の場合はtrueが返る(isect系と意味が逆になっている)事に注意
 -------------------------------------------------
 */
-bool SceneGeometory::isVisible(const Vec3 &p0,
-                               const Vec3 &p1,
+bool SceneGeometory::isVisible(const Vec3& p0,
+                               const Vec3& p1,
                                bool skipLight) const
 {
     // NOTE: g_numIsectTotalはダブルカウントになるのでカウントしない事
@@ -150,7 +150,7 @@ AABB SceneGeometory::aabb() const
 {
     AABB aabb;
     //
-    for (auto &shape : shapes_)
+    for (auto& shape : shapes_)
     {
         aabb.addAABB(shape->aabb());
     }

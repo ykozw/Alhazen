@@ -8,7 +8,7 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-bool parseArgs(int32_t argc, char *argv[], ArgConfig &config)
+bool parseArgs(int32_t argc, char* argv[], ArgConfig& config)
 {
     // シーンファイルの指定がない場合は終了
     if (argc < 2)
@@ -23,7 +23,7 @@ bool parseArgs(int32_t argc, char *argv[], ArgConfig &config)
     // オプションの解釈
     for (int argi = 2; argi < argc; ++argi)
     {
-        const char *arg = argv[argi];
+        const char* arg = argv[argi];
         if (strlen(arg) < 2 || arg[0] != '-')
         {
             continue;
@@ -48,7 +48,7 @@ bool parseArgs(int32_t argc, char *argv[], ArgConfig &config)
 -------------------------------------------------
 -------------------------------------------------
 */
-int32_t App::run(int32_t argc, char *argv[])
+int32_t App::run(int32_t argc, char* argv[])
 {
     // 高速化のため、Denormalized floating-pointは常に0にしておく。
     _MM_SET_FLUSH_ZERO_MODE(_MM_FLUSH_ZERO_ON);

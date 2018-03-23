@@ -19,7 +19,7 @@ AutoImportance::AutoImportance() {}
 -------------------------------------------------
 -------------------------------------------------
 */
-void AutoImportance::setBRDF(const BSDF *bsdf)
+void AutoImportance::setBRDF(const BSDF* bsdf)
 {
     XorShift128 rng;
     distributions_.clear();
@@ -76,9 +76,9 @@ void AutoImportance::setBRDF(const BSDF *bsdf)
 -------------------------------------------------
 */
 void AutoImportance::genDistribution(float coso,
-                                     const BSDF *bsdf,
-                                     const XorShift128 &rng,
-                                     Distribution2D *distribution)
+                                     const BSDF* bsdf,
+                                     const XorShift128& rng,
+                                     Distribution2D* distribution)
 {
     // phiは0固定で考える
     const float sin0 = sqrtf(1.0f - coso * coso);
@@ -150,22 +150,22 @@ void AutoImportance::genDistribution(float coso,
 -------------------------------------------------
 */
 void AutoImportance::sample(Vec3 localWo,
-                            XorShift128 &rng,
-                            Vec3 *localWi,
-                            float *pdf) const
+                            XorShift128& rng,
+                            Vec3* localWi,
+                            float* pdf) const
 {
     const float coso = localWo.z();
     auto ite = std::lower_bound(distributions_.begin(),
                                 distributions_.end(),
                                 coso,
-                                [](const DistributionWo &lhs, float v) -> bool {
+                                [](const DistributionWo& lhs, float v) -> bool {
                                     return lhs.first > v;
                                 });
     if (ite == distributions_.end())
     {
         ite = distributions_.begin();
     }
-    const Distribution2D &dist2d = ite->second;
+    const Distribution2D& dist2d = ite->second;
     Vec2 samplePointOrig;
     int32_t offsetU;
     int32_t offsetV;
@@ -217,14 +217,14 @@ float AutoImportance::pdf(Vec3 localWo, Vec3 localWi) const
     auto ite = std::lower_bound(distributions_.begin(),
                                 distributions_.end(),
                                 coso,
-                                [](const DistributionWo &lhs, float v) -> bool {
+                                [](const DistributionWo& lhs, float v) -> bool {
                                     return lhs.first > v;
                                 });
     if (ite == distributions_.end())
     {
         ite = distributions_.begin();
     }
-    const Distribution2D &dist2d = ite->second;
+    const Distribution2D& dist2d = ite->second;
     //
     const float phi = -atan2f(localWo.y(), localWo.x());
     const float cosft = cosf(phi);

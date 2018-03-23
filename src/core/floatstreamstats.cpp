@@ -80,8 +80,8 @@ std::tuple<float, float> FloatStreamStats::meanConfidenceInterval() const
 恐らく真値は同じであることの確認
 -------------------------------------------------
 */
-bool FloatStreamStats::maybeSameMean(const FloatStreamStats &lhs,
-                                     const FloatStreamStats &rhs)
+bool FloatStreamStats::maybeSameMean(const FloatStreamStats& lhs,
+                                     const FloatStreamStats& rhs)
 {
     auto i0 = lhs.meanConfidenceInterval();
     auto i1 = rhs.meanConfidenceInterval();

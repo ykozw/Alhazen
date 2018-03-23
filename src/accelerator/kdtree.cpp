@@ -19,25 +19,25 @@ AL_TEST(Accel, kdtree0)
 
     public:
         TestPoint() {}
-        TestPoint(const TestPoint &other)
+        TestPoint(const TestPoint& other)
         {
             pos = other.pos;
             dummy = other.dummy;
         }
-        TestPoint(TestPoint &&other) { *this = std::move(other); }
-        TestPoint &operator=(TestPoint &&other)
+        TestPoint(TestPoint&& other) { *this = std::move(other); }
+        TestPoint& operator=(TestPoint&& other)
         {
             pos = std::move(other.pos);
             dummy = std::move(other.dummy);
             return *this;
         }
         Vec3 position() const { return pos; }
-        TestPoint &operator=(const TestPoint &other) = default;
-        bool operator==(const TestPoint &other) const
+        TestPoint& operator=(const TestPoint& other) = default;
+        bool operator==(const TestPoint& other) const
         {
             return (pos == other.pos);
         }
-        bool operator!=(const TestPoint &other) const
+        bool operator!=(const TestPoint& other) const
         {
             return !(*this == other);
         }
@@ -100,8 +100,8 @@ AL_TEST(Accel, kdtree0)
     for (int32_t i = 0; i < 1024; ++i)
     {
         const Vec3 v = rp();
-        std::vector<const TestPoint *> points0;
-        std::vector<const TestPoint *> points1;
+        std::vector<const TestPoint*> points0;
+        std::vector<const TestPoint*> points1;
         const float farDist0 = kdtree.findKNN(v, 3, points0);
         const float farDist1 = kdtree.findKNNBF(v, 3, points1);
 #if 0
@@ -177,12 +177,12 @@ AL_TEST(Accel, kdtree1)
         // この場で全探索(ソートして上から取る)
         std::sort(points.begin(),
                   points.end(),
-                  [serch](const Point &lhs, const Point &rhs) {
+                  [serch](const Point& lhs, const Point& rhs) {
                       return Vec3::distance(serch, lhs) <
                              Vec3::distance(serch, rhs);
                   });
         //
-        std::vector<const Point *> result0;
+        std::vector<const Point*> result0;
         kdtree.findKNNBF(serch, 16, result0);
         for (int32_t i = 0; i < result0.size(); ++i)
         {
@@ -191,7 +191,7 @@ AL_TEST(Accel, kdtree1)
             fail |= !same;
         }
         //
-        std::vector<const Point *> result1;
+        std::vector<const Point*> result1;
         kdtree.findKNN(serch, 16, result1);
         for (int32_t i = 0; i < result1.size(); ++i)
         {

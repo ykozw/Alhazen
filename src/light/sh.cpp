@@ -109,7 +109,7 @@ static inline float cosWtInt(const size_t order)
 -------------------------------------------------
 -------------------------------------------------
 */
-void _evalDirection(float *values, int32_t order, Vec3 dir)
+void _evalDirection(float* values, int32_t order, Vec3 dir)
 {
     // TODO:
     switch (order)
@@ -130,7 +130,7 @@ void _evalDirection(float *values, int32_t order, Vec3 dir)
 -------------------------------------------------
 -------------------------------------------------
 */
-void _evalDirectionalLight(float *values, int32_t order, Vec3 dir)
+void _evalDirectionalLight(float* values, int32_t order, Vec3 dir)
 {
     _evalDirection(values, order, dir);
 

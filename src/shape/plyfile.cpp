@@ -6,10 +6,10 @@
  -------------------------------------------------
  -------------------------------------------------
  */
-void PlyFile::loadPly(const char *filePath)
+void PlyFile::loadPly(const char* filePath)
 {
     //
-    FILE *file = fopen(filePath, "rb");
+    FILE* file = fopen(filePath, "rb");
     if (file == nullptr)
     {
         return;
@@ -45,7 +45,7 @@ void PlyFile::loadPly(const char *filePath)
  Headerのロード
  -------------------------------------------------
  */
-bool PlyFile::readHeader(FILE *file, PlyHeader &header) const
+bool PlyFile::readHeader(FILE* file, PlyHeader& header) const
 {
     if (file == nullptr)
     {
@@ -110,13 +110,13 @@ bool PlyFile::readHeader(FILE *file, PlyHeader &header) const
  Bodyのロード
  -------------------------------------------------
  */
-bool PlyFile::readBodyAsAscii(FILE *file,
-                              const PlyFile::PlyHeader &header,
-                              PlyBody &body) const
+bool PlyFile::readBodyAsAscii(FILE* file,
+                              const PlyFile::PlyHeader& header,
+                              PlyBody& body) const
 {
     std::array<char, 0xff> buffer, tmp0, tmp1, tmp2, tmp3;
     // 頂点データをロード
-    auto &vtxs = body.vertex_;
+    auto& vtxs = body.vertex_;
     vtxs.reserve(header.numVertex);
     for (int32_t vi = 0; vi < header.numVertex; ++vi)
     {
@@ -140,7 +140,7 @@ bool PlyFile::readBodyAsAscii(FILE *file,
         }
     }
     // 面データをロード
-    auto &faces = body.faces_;
+    auto& faces = body.faces_;
     faces.reserve(header.numFace);
     for (int32_t fi = 0; fi < header.numFace; ++fi)
     {
@@ -177,12 +177,12 @@ bool PlyFile::readBodyAsAscii(FILE *file,
  Bodyのロード
  -------------------------------------------------
  */
-bool PlyFile::readBodyAsBinary(FILE *file,
-                               const PlyFile::PlyHeader &header,
-                               PlyBody &body) const
+bool PlyFile::readBodyAsBinary(FILE* file,
+                               const PlyFile::PlyHeader& header,
+                               PlyBody& body) const
 {
     // 頂点データをロード
-    auto &vtxs = body.vertex_;
+    auto& vtxs = body.vertex_;
     for (int32_t vi = 0; vi < header.numVertex; ++vi)
     {
         float x, y, z;

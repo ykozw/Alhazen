@@ -8,9 +8,9 @@
 class MedianFilter AL_FINAL : public Denoiser
 {
 public:
-    MedianFilter(const ObjectProp &prop);
+    MedianFilter(const ObjectProp& prop);
     ;
-    void denoise(const Image &src, Image &dst) override;
+    void denoise(const Image& src, Image& dst) override;
 
 private:
 };
@@ -20,13 +20,13 @@ REGISTER_OBJECT(Denoiser, MedianFilter);
 -------------------------------------------------
 -------------------------------------------------
 */
-MedianFilter::MedianFilter(const ObjectProp &objectProp) {}
+MedianFilter::MedianFilter(const ObjectProp& objectProp) {}
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-void MedianFilter::denoise(const Image &src, Image &dst)
+void MedianFilter::denoise(const Image& src, Image& dst)
 {
     // HACK: なぜかここのprintが呼ばれない
     logging("Start denoising(median)");
@@ -70,7 +70,7 @@ void MedianFilter::denoise(const Image &src, Image &dst)
                 ps,
                 ps + 4,
                 ps + 9,
-                [](const SpectrumWeight &lhs, const SpectrumWeight &rhs) {
+                [](const SpectrumWeight& lhs, const SpectrumWeight& rhs) {
                     return lhs.spectrum.luminance() < rhs.spectrum.luminance();
                 });
             const int32_t index = dst.index(x, y);

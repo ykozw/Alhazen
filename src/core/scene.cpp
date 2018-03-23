@@ -18,7 +18,7 @@ Scene::Scene() {}
 -------------------------------------------------
 -------------------------------------------------
 */
-Scene::Scene(const ObjectProp &objectProp)
+Scene::Scene(const ObjectProp& objectProp)
 {
     //
     integrator_ = createObject<LTEIntegrator>(objectProp);
@@ -27,7 +27,7 @@ Scene::Scene(const ObjectProp &objectProp)
     // トーンマッパーの作成
     tonemapper_ = createObject<Tonemapper>(objectProp);
     // トーンマッピング先のイメージの作成
-    const Image &img = sensor_->film()->image();
+    const Image& img = sensor_->film()->image();
     tonemmappedImage_.resize(img.width(), img.height());
     // デノイザーの作成
     denoiser_ = createObject<Denoiser>(objectProp);
@@ -46,7 +46,7 @@ Scene::Scene(const ObjectProp &objectProp)
 
     // BSDFの構築
     AllBSDFList bsdfs;
-    for (const ObjectProp &child : objectProp.childProps())
+    for (const ObjectProp& child : objectProp.childProps())
     {
         if (child.tag() == "BSDF")
         {
@@ -54,7 +54,7 @@ Scene::Scene(const ObjectProp &objectProp)
         }
     }
     // SceneGeometoryの構築
-    for (const ObjectProp &child : objectProp.childProps())
+    for (const ObjectProp& child : objectProp.childProps())
     {
         if (child.tag() == "Shape")
         {
@@ -68,7 +68,7 @@ Scene::Scene(const ObjectProp &objectProp)
     }
 
     // TODO: Lightの追加
-    for (const ObjectProp &child : objectProp.childProps())
+    for (const ObjectProp& child : objectProp.childProps())
     {
         if (child.tag() != "Light")
         {
@@ -153,20 +153,20 @@ static uint64_t calcPixelHash(int32_t x, int32_t y, int32_t width)
 -------------------------------------------------
 -------------------------------------------------
 */
-SubFilm &Scene::render(int32_t taskNo)
+SubFilm& Scene::render(int32_t taskNo)
 {
     // task番号から描画するべきものを決定する
     auto film = sensor_->film();
     const int32_t subFilmNum = film->subFilmNum();
     const int32_t subFilmIndex = taskNo % subFilmNum;
     const int32_t loopNo = taskNo / subFilmNum;
-    SubFilm &subFilm = film->subFilm(subFilmIndex);
-    const Image &image = film->image();
-    Image &subFilmImage = subFilm.image();
+    SubFilm& subFilm = film->subFilm(subFilmIndex);
+    const Image& image = film->image();
+    Image& subFilmImage = subFilm.image();
     // HACK: 暫定的に直接サンプラーを宣言しておく
     SamplerIndepent sampler;
     // タイルの描画
-    const auto &region = subFilm.region();
+    const auto& region = subFilm.region();
     for (int32_t y = region.top; y < region.bottom; ++y)
     {
         for (int32_t x = region.left; x < region.right; ++x)
@@ -229,7 +229,7 @@ SubFilm &Scene::render(int32_t taskNo)
 Spectrum Scene::renderPixel(int32_t x, int32_t y)
 {
     //
-    const Image &image = sensor_->film()->image();
+    const Image& image = sensor_->film()->image();
     //
     float pdf = 0.0f;
     const Ray screenRay = sensor_->generateRay(float(x), float(y), pdf);
@@ -246,13 +246,13 @@ Spectrum Scene::renderPixel(int32_t x, int32_t y)
 -------------------------------------------------
 -------------------------------------------------
 */
-void Scene::developLDR(const std::string &filmName, bool isFinal)
+void Scene::developLDR(const std::string& filmName, bool isFinal)
 {
     // FIXME: renderが走っていないかを確認する
 
     // 最終スナップは必ずデノイズを掛ける
     const bool denoise = isFinal || snapshotDenoise_;
-    const Image &radianceImage = sensor_->film()->image();
+    const Image& radianceImage = sensor_->film()->image();
     // ノイズを除去する
     if (denoise)
     {
@@ -261,7 +261,7 @@ void Scene::developLDR(const std::string &filmName, bool isFinal)
                         (radianceImage.height() == denoiseBuffer_.height()));
         denoiser_->denoise(radianceImage, denoiseBuffer_);
     }
-    const Image &image = denoise ? denoiseBuffer_ : radianceImage;
+    const Image& image = denoise ? denoiseBuffer_ : radianceImage;
     // Tonemappingを掛けつつ出力する
     tonemapper_->process(image, tonemmappedImage_);
     tonemmappedImage_.writePNG(filmName);
@@ -271,7 +271,7 @@ void Scene::developLDR(const std::string &filmName, bool isFinal)
 -------------------------------------------------
 -------------------------------------------------
 */
-void Scene::dumpHDR(const std::string &fileName)
+void Scene::dumpHDR(const std::string& fileName)
 {
     // 内部にあるHDRをそのまま出力する
     // const auto& image = sensor_->film()->image();

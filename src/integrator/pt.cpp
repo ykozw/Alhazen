@@ -17,27 +17,27 @@ class PTSurfaceIntegrator AL_FINAL : public LTEIntegrator
 {
 public:
     PTSurfaceIntegrator() = default;
-    PTSurfaceIntegrator(const ObjectProp &objectProp);
-    bool preRendering(const SceneGeometory &scene,
-                      AllBSDFList &bsdfList) override;
+    PTSurfaceIntegrator(const ObjectProp& objectProp);
+    bool preRendering(const SceneGeometory& scene,
+                      AllBSDFList& bsdfList) override;
     bool postRendering() override { return true; }
     //
-    Spectrum radiance(const Ray &ray,
-                      const SceneGeometory &scene,
-                      Sampler *sampler) const override;
+    Spectrum radiance(const Ray& ray,
+                      const SceneGeometory& scene,
+                      Sampler* sampler) const override;
 
 private:
-    Spectrum estimateDirectLight(const SceneGeometory &scene,
-                                 const Intersect &isect,
-                                 const OrthonormalBasis<> &local,
+    Spectrum estimateDirectLight(const SceneGeometory& scene,
+                                 const Intersect& isect,
+                                 const OrthonormalBasis<>& local,
                                  const Vec3 localWo,
-                                 Sampler *sampler) const;
-    Spectrum estimateOneLight(const SceneGeometory &scene,
-                              const Intersect &isect,
-                              const OrthonormalBasis<> &local,
+                                 Sampler* sampler) const;
+    Spectrum estimateOneLight(const SceneGeometory& scene,
+                              const Intersect& isect,
+                              const OrthonormalBasis<>& local,
                               const Vec3 localWo,
-                              const Light *light,
-                              Sampler *samler) const;
+                              const Light* light,
+                              Sampler* samler) const;
 
 private:
     BSDFPtr defaultBSDF_;
@@ -62,14 +62,14 @@ REGISTER_OBJECT(LTEIntegrator, PTSurfaceIntegrator);
 -------------------------------------------------
 -------------------------------------------------
 */
-PTSurfaceIntegrator::PTSurfaceIntegrator(const ObjectProp &objectProp) {}
+PTSurfaceIntegrator::PTSurfaceIntegrator(const ObjectProp& objectProp) {}
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-bool PTSurfaceIntegrator::preRendering(const SceneGeometory &scene,
-                                       AllBSDFList &bsdfList)
+bool PTSurfaceIntegrator::preRendering(const SceneGeometory& scene,
+                                       AllBSDFList& bsdfList)
 {
     defaultBSDF_ = bsdfList.find("default");
     return true;
@@ -79,9 +79,9 @@ bool PTSurfaceIntegrator::preRendering(const SceneGeometory &scene,
 -------------------------------------------------
 -------------------------------------------------
 */
-Spectrum PTSurfaceIntegrator::radiance(const Ray &screenRay,
-                                       const SceneGeometory &scene,
-                                       Sampler *sampler) const
+Spectrum PTSurfaceIntegrator::radiance(const Ray& screenRay,
+                                       const SceneGeometory& scene,
+                                       Sampler* sampler) const
 {
     //
     Spectrum throughput = Spectrum(1.0f);
@@ -125,7 +125,7 @@ Spectrum PTSurfaceIntegrator::radiance(const Ray &screenRay,
             break;
         }
         //
-        BSDF *bsdf = isect.bsdf;
+        BSDF* bsdf = isect.bsdf;
         float pdfBSDF;
         Vec3 localWi;
         const OrthonormalBasis<> local(isect.normal);
@@ -173,20 +173,20 @@ Spectrum PTSurfaceIntegrator::radiance(const Ray &screenRay,
 -------------------------------------------------
 */
 Spectrum
-PTSurfaceIntegrator::estimateDirectLight(const SceneGeometory &scene,
-                                         const Intersect &isect,
-                                         const OrthonormalBasis<> &local,
+PTSurfaceIntegrator::estimateDirectLight(const SceneGeometory& scene,
+                                         const Intersect& isect,
+                                         const OrthonormalBasis<>& local,
                                          const Vec3 localWo,
-                                         Sampler *sampler) const
+                                         Sampler* sampler) const
 {
     switch (directLighitingLightSelectStrategy_)
     {
         // 全てのライトを評価
     case DirectLighitingSelectStrategy::All:
     {
-        const auto &lights = scene.lights();
+        const auto& lights = scene.lights();
         Spectrum estimated;
-        for (const auto &light : lights)
+        for (const auto& light : lights)
         {
             estimated += estimateOneLight(
                 scene, isect, local, localWo, light.get(), sampler);
@@ -197,14 +197,14 @@ PTSurfaceIntegrator::estimateDirectLight(const SceneGeometory &scene,
         // ライトを一つだけ選択
     case DirectLighitingSelectStrategy::UniformOne:
     {
-        const auto &lights = scene.lights();
+        const auto& lights = scene.lights();
         if (lights.empty())
         {
             return Spectrum::Black;
         }
         // ライトを一つ選択する
         const uint32_t lightIndex = sampler->getSize(uint32_t(lights.size()));
-        const auto &choochenLight = lights[lightIndex];
+        const auto& choochenLight = lights[lightIndex];
         /*
         交差点のSceneObjectとサンプルするLightが同一だった場合は終了
         HACK:
@@ -254,16 +254,16 @@ static float misPowerHeuristic(float fPdf, float gPdf)
 指定したisect/localWiでの指定されたライトの直接光のContributionを推定
 -------------------------------------------------
 */
-Spectrum PTSurfaceIntegrator::estimateOneLight(const SceneGeometory &scene,
-                                               const Intersect &isect,
-                                               const OrthonormalBasis<> &local,
+Spectrum PTSurfaceIntegrator::estimateOneLight(const SceneGeometory& scene,
+                                               const Intersect& isect,
+                                               const OrthonormalBasis<>& local,
                                                const Vec3 localWo,
-                                               const Light *light,
-                                               Sampler *sampler) const
+                                               const Light* light,
+                                               Sampler* sampler) const
 {
     ++g_numEstimateOneLine;
     //
-    BSDF *bsdf = isect.bsdf;
+    BSDF* bsdf = isect.bsdf;
     /*
     サンプル方法の選択
     ライトとBSDFのδ関数の組み合わせによって変化する
@@ -280,8 +280,8 @@ Spectrum PTSurfaceIntegrator::estimateOneLight(const SceneGeometory &scene,
         // ライトとBSDFのサンプルを行いMISする
         MISSample,
     };
-    const auto takeStragety = [](const BSDF *bsdf,
-                                 const Light *light) -> SampleStrategy {
+    const auto takeStragety = [](const BSDF* bsdf,
+                                 const Light* light) -> SampleStrategy {
         if (bsdf->isDeltaFunc())
         {
             if (light->isDeltaFunc())
@@ -308,13 +308,13 @@ Spectrum PTSurfaceIntegrator::estimateOneLight(const SceneGeometory &scene,
     const SampleStrategy sampleStrategy = takeStragety(bsdf, light);
 
     // ライトのサンプリング
-    const auto lightSampling = [](Sampler *sampler,
-                                  const Light *light,
-                                  BSDF *bsdf,
+    const auto lightSampling = [](Sampler* sampler,
+                                  const Light* light,
+                                  BSDF* bsdf,
                                   Vec3 isectPos,
-                                  const OrthonormalBasis<> &local,
+                                  const OrthonormalBasis<>& local,
                                   const Vec3 localWo,
-                                  const SceneGeometory &scene,
+                                  const SceneGeometory& scene,
                                   bool isUseMIS) {
         // ライト上のサンプル
         Vec3 lightSamplePos;
@@ -360,13 +360,13 @@ Spectrum PTSurfaceIntegrator::estimateOneLight(const SceneGeometory &scene,
         return spectrum;
     };
     // BSDFのサンプリング
-    const auto bsdfSampling = [](Sampler *sampler,
-                                 const Light *light,
-                                 BSDF *bsdf,
+    const auto bsdfSampling = [](Sampler* sampler,
+                                 const Light* light,
+                                 BSDF* bsdf,
                                  Vec3 isectPos,
-                                 const OrthonormalBasis<> &local,
+                                 const OrthonormalBasis<>& local,
                                  const Vec3 localWo,
-                                 const SceneGeometory &scene,
+                                 const SceneGeometory& scene,
                                  bool isUseMIS) {
         Vec3 localWi;
         float pdfBSDF;

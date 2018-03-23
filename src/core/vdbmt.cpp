@@ -25,7 +25,7 @@ struct TLS_Data
     // 前回の色
     DirtyableValue<Vec3> color;
     // 前回のラベル
-    DirtyableValue<const char *> label;
+    DirtyableValue<const char*> label;
     DirtyableValue<int32_t> label_i;
 };
 AL_TLS TLS_Data tls = {};
@@ -46,21 +46,21 @@ SpinLock global_vdmt_mutex;
 static void setAdditionalAttributes()
 {
     // 色
-    auto &col = tls.color;
+    auto& col = tls.color;
     if (col.dirty)
     {
-        auto &c = col.value;
+        auto& c = col.value;
         vdb_color(c.x(), c.y(), c.z());
         col.dirty = false;
     }
     // ラベル
-    auto &label = tls.label;
+    auto& label = tls.label;
     if (label.dirty)
     {
         vdb_label(label.value);
         label.dirty = false;
     }
-    auto &label_i = tls.label_i;
+    auto& label_i = tls.label_i;
     if (label_i.dirty)
     {
         vdb_label_i(label_i.value);
@@ -170,7 +170,7 @@ void vdbmt_aabb(Vec3 mn, Vec3 mx)
 void vdbmt_color(Vec3 aColor)
 {
     std::lock_guard<decltype(global_vdmt_mutex)> lock(global_vdmt_mutex);
-    auto &color = tls.color;
+    auto& color = tls.color;
     color.value = aColor;
     color.dirty = true;
 }
@@ -191,10 +191,10 @@ void vdbmt_color_rnd()
 -------------------------------------------------
 -------------------------------------------------
 */
-void vdbmt_label(const char *lbl)
+void vdbmt_label(const char* lbl)
 {
     std::lock_guard<decltype(global_vdmt_mutex)> lock(global_vdmt_mutex);
-    auto &label = tls.label;
+    auto& label = tls.label;
     label.value = lbl;
     label.dirty = true;
 }
@@ -206,7 +206,7 @@ void vdbmt_label(const char *lbl)
 void vdbmt_label_i(int32_t i)
 {
     std::lock_guard<decltype(global_vdmt_mutex)> lock(global_vdmt_mutex);
-    auto &label = tls.label_i;
+    auto& label = tls.label_i;
     label.value = i;
     label.dirty = true;
 }

@@ -8,8 +8,8 @@
 class UC2 AL_FINAL : public Tonemapper
 {
 public:
-    UC2(const ObjectProp &objectProp);
-    bool process(const Image &src, ImageLDR &dst) const override;
+    UC2(const ObjectProp& objectProp);
+    bool process(const Image& src, ImageLDR& dst) const override;
 };
 
 REGISTER_OBJECT(Tonemapper, UC2);
@@ -18,13 +18,13 @@ REGISTER_OBJECT(Tonemapper, UC2);
 -------------------------------------------------
 -------------------------------------------------
 */
-UC2::UC2(const ObjectProp &objectProp) : Tonemapper(objectProp) {}
+UC2::UC2(const ObjectProp& objectProp) : Tonemapper(objectProp) {}
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-bool UC2::process(const Image &src, ImageLDR &dst) const
+bool UC2::process(const Image& src, ImageLDR& dst) const
 {
     // TODO: https://www.shadertoy.com/view/lslGzl を参考に実装
     return false;

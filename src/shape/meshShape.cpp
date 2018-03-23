@@ -11,13 +11,13 @@
 class ObjShape AL_FINAL : public Shape
 {
 public:
-    ObjShape(const ObjectProp &objectProp);
+    ObjShape(const ObjectProp& objectProp);
     int32_t numVerts() const;
     int32_t numFaces() const;
     AABB aabb() const override;
     int32_t maxDepth() const;
-    bool intersect(const Ray &ray, Intersect *isect) const override;
-    bool intersectCheck(const Ray &ray) const override;
+    bool intersect(const Ray& ray, Intersect* isect) const override;
+    bool intersectCheck(const Ray& ray) const override;
     void setBSDFs(AllBSDFList bsdfs) override;
 
 private:
@@ -32,7 +32,7 @@ REGISTER_OBJECT(Shape, ObjShape);
 -------------------------------------------------
 -------------------------------------------------
 */
-ObjShape::ObjShape(const ObjectProp &objectProp) : Shape(objectProp)
+ObjShape::ObjShape(const ObjectProp& objectProp) : Shape(objectProp)
 {
     const std::string fileName =
         objectProp.findChildBy("name", "filename").asString("test.obj");
@@ -77,7 +77,7 @@ int32_t ObjShape::maxDepth() const { return bvh_.maxDepth(); }
 -------------------------------------------------
 -------------------------------------------------
 */
-bool ObjShape::intersect(const Ray &ray, Intersect *isect) const
+bool ObjShape::intersect(const Ray& ray, Intersect* isect) const
 {
     int8_t materialId = 0;
     if (bvh_.intersect(ray, isect, &materialId))
@@ -92,7 +92,7 @@ bool ObjShape::intersect(const Ray &ray, Intersect *isect) const
 -------------------------------------------------
 -------------------------------------------------
 */
-bool ObjShape::intersectCheck(const Ray &ray) const
+bool ObjShape::intersectCheck(const Ray& ray) const
 {
     return bvh_.intersectCheck(ray);
 }
@@ -103,9 +103,9 @@ bool ObjShape::intersectCheck(const Ray &ray) const
 */
 void ObjShape::setBSDFs(AllBSDFList bsdfs)
 {
-    for (const auto &materialId : materialIds_)
+    for (const auto& materialId : materialIds_)
     {
-        const std::string &name = materialId.first;
+        const std::string& name = materialId.first;
         const int32_t id = materialId.second;
         const BSDFPtr bsdf = bsdfs.find(name);
         bsdfs_[id] = bsdf;

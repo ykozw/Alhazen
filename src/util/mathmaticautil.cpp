@@ -6,8 +6,8 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-void MathmaticaUtil::writePlotPoint2D(const std::string &fileName,
-                                      const std::vector<Vec2> &points)
+void MathmaticaUtil::writePlotPoint2D(const std::string& fileName,
+                                      const std::vector<Vec2>& points)
 {
     const std::string fullPath = g_fileSystem.getOutputFolderPath() + fileName;
     //
@@ -36,8 +36,8 @@ void MathmaticaUtil::writePlotPoint2D(const std::string &fileName,
 -------------------------------------------------
 -------------------------------------------------
 */
-void MathmaticaUtil::writePlotPoint3D(const std::string &fileName,
-                                      const std::vector<Vec3> &points)
+void MathmaticaUtil::writePlotPoint3D(const std::string& fileName,
+                                      const std::vector<Vec3>& points)
 {
     const std::string fullPath = g_fileSystem.getOutputFolderPath() + fileName;
     //

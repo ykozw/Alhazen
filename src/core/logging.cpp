@@ -6,10 +6,10 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-void loggingCore(LoggingLevel level, const char *format, ...)
+void loggingCore(LoggingLevel level, const char* format, ...)
 {
     //
-    const char *levelStr = (level == LoggingLevel::LOG_INFO)
+    const char* levelStr = (level == LoggingLevel::LOG_INFO)
                                ? "[INFO] "
                                : (level == LoggingLevel::LOG_TRACE)
                                      ? "[TRACE]"

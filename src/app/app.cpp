@@ -1,4 +1,4 @@
-#include "pch.hpp"
+﻿#include "pch.hpp"
 #include "app/app.hpp"
 #include "core/util.hpp"
 #include "core/logging.hpp"

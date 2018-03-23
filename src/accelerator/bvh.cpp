@@ -796,9 +796,6 @@ void ShapeBVH::constructSub(ShapeListIte beginIte,
         return;
     }
     //
-    int32_t axis = -1;
-
-    //
     const auto sortShapes = [](ShapeListIte beginIte,
                                ShapeListIte endIte,
                                int32_t axis,
@@ -815,8 +812,6 @@ void ShapeBVH::constructSub(ShapeListIte beginIte,
         // HACK: 軸を適当に決めてしまっている。SAHでもするべき。
         static int32_t axisNext = 0;
         const int32_t bestAxis = (axisNext++) % 3;
-        const int32_t bestSplitIndex =
-            int32_t(std::distance(beginIte, endIte) / 2);
         // ソート
         axis = bestAxis;
         std::sort(beginIte, endIte, sortPred);

@@ -1,4 +1,4 @@
-﻿#include "math.hpp"
+#include "math.hpp"
 
 /*
 -------------------------------------------------
@@ -2181,6 +2181,7 @@ INLINE Vec4& Vec4::normalizeAccurate()
 #else
     // 0xFFは上側4つを使い、上側4つに格納することを意味する (1,1,1,1) -> (1,1,1,1)
     xyzw_ = _mm_div_ps(xyzw_, _mm_sqrt_ps(_mm_dp_ps(xyzw_, xyzw_, 0xFF)));
+    return *this;
 #endif
 }
 

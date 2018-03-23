@@ -640,8 +640,8 @@ INLINE Vec2& Vec2::normalize()
     y_ *= invLen;
     return *this;
 #else
-    // デフォルト実装はfast
-    return normalizeFast();
+    // デフォルト実装はAccurate
+    return normalizeAccurate();
 #endif
 }
 
@@ -682,8 +682,9 @@ INLINE Vec2& Vec2::normalizeAccurate()
  */
 INLINE Vec2 Vec2::normalized() const
 {
-    // デフォルト実装はfast
-    return normalizedFast();
+    Vec2 tmp = *this;
+    tmp.normalize();
+    return tmp;
 }
 
 /*
@@ -1176,8 +1177,8 @@ INLINE Vec3& Vec3::normalize()
     z_ *= invLen;
 
 #else
-    // デフォルト実装はfast
-    return normalizeFast();
+    // デフォルト実装はAccurate
+    return normalizeAccurate();
 #endif
 }
 
@@ -1228,8 +1229,9 @@ INLINE Vec3& Vec3::normalizeAccurate()
 */
 INLINE Vec3 Vec3::normalized() const
 {
-    // デフォルト実装はfast
-    return normalizedFast();
+    Vec3 v = *this;
+    v.normalize();
+    return v;
 }
 
 /*
@@ -2145,8 +2147,8 @@ INLINE Vec4& Vec4::normalize()
     w_ *= invLen;
     return *this;
 #else
-    // デフォルト実装はfast
-    return normalizeFast();
+    // デフォルト実装はAccurate
+    return normalizeAccurate();
 #endif
     
 }
@@ -2188,8 +2190,9 @@ INLINE Vec4& Vec4::normalizeAccurate()
  */
 INLINE Vec4 Vec4::normalized() const
 {
-    // デフォルト実装はfast
-    return normalizedFast();
+    Vec4 ret = *this;
+    ret.normalize();
+    return ret;
 }
 
 /*

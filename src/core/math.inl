@@ -268,7 +268,11 @@ INLINE FloatInVec::operator __m128 () const
  */
 INLINE FloatInVec::operator float() const
 {
-    return value();
+#if defined(AL_MATH_USE_NO_SIMD)
+    return v;
+#else
+    return _mm_extract_ps_fast<0>(v);
+#endif
 }
 
 /*
@@ -283,20 +287,7 @@ INLINE FloatInVec FloatInVec::operator -() const
 #else
     const __m128 neg = _mm_set_ss(-1.0f);
     const __m128 negv = _mm_mul_ss(neg,v);
-    return negv;
-#endif
-}
-
-/*
- -------------------------------------------------
- -------------------------------------------------
- */
-INLINE float FloatInVec::value() const
-{
-#if defined(AL_MATH_USE_NO_SIMD)
-    return v;
-#else
-    return _mm_extract_ps_fast<0>(v);
+    return FloatInVec(negv);
 #endif
 }
 
@@ -306,77 +297,76 @@ INLINE float FloatInVec::value() const
  */
 INLINE bool FloatInVec::isNan() const
 {
-    return std::isnan(value());
+    return std::isnan(float(*this));
 }
+
 
 /*
  -------------------------------------------------
  -------------------------------------------------
  */
+INLINE FloatInVec operator - (FloatInVec lhs, FloatInVec rhs)
+{
+    return FloatInVec(_mm_sub_ss(lhs,rhs));
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE FloatInVec operator * (FloatInVec lhs, FloatInVec rhs)
+{
+    return FloatInVec(_mm_mul_ss(lhs,rhs));
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE bool operator < (FloatInVec lhs, FloatInVec rhs)
 {
     return float(lhs) < float(rhs);
 }
 
 /*
- -------------------------------------------------
- -------------------------------------------------
- */
-INLINE Float8::Float8(__m256 other)
-:v(other)
-{}
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE bool
+operator>(FloatInVec lhs, FloatInVec rhs)
+{
+    return float(lhs) > float(rhs);
+}
 
 /*
- -------------------------------------------------
- -------------------------------------------------
- */
-INLINE Float8::operator __m256()const
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE bool operator <= (FloatInVec lhs, FloatInVec rhs)
 {
-    return v;
+    return float(lhs) <= float(rhs);
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE bool
+operator>=(FloatInVec lhs, FloatInVec rhs)
+{
+    return float(lhs) >= float(rhs);
 }
 
 /*
  -------------------------------------------------
  -------------------------------------------------
  */
-INLINE Bool8::Bool8(__m256 other)
-{
-#if defined(AL_MATH_USE_NO_SIMD)
-    AL_ASSERT_ALWAYS(false);
-#else
-    v = other;
-#endif
-}
-
-/*
- -------------------------------------------------
- -------------------------------------------------
- */
-INLINE bool Bool8::at(int32_t index) const
-{
-#if defined(AL_MATH_USE_NO_SIMD)
-    AL_ASSERT_ALWAYS(false);
-    return false;
-#else
-    // TODO: SIMD化
-    AL_ASSERT_ALWAYS(false);
-    //return v[index];
-    return 0.0f;
-#endif
-}
-
-/*
- -------------------------------------------------
- -------------------------------------------------
- */
+#if !defined(AL_MATH_USE_NO_SIMD)
 INLINE BoolInVec::BoolInVec(__m128i av)
 {
-#if defined(AL_MATH_USE_NO_SIMD)
-    v = (_mm_cvtsi128_si32(av) != 0);
-#else
     v = av;
-#endif
 }
+#endif
 
 /*
  -------------------------------------------------
@@ -395,14 +385,12 @@ INLINE BoolInVec::BoolInVec(bool av)
  -------------------------------------------------
  -------------------------------------------------
  */
+#if !defined(AL_MATH_USE_NO_SIMD)
 INLINE BoolInVec::operator __m128i () const
 {
-#if defined(AL_MATH_USE_NO_SIMD)
-    return _mm_set1_epi32(v);
-#else
     return v;
-#endif
 }
+#endif
 
 /*
  -------------------------------------------------
@@ -510,6 +498,32 @@ INLINE float Vec2::y() const
     return y_;
 #else
     return _mm_extract_ps_fast<1>(xy_);
+#endif
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE FloatInVec Vec2::vx() const
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    return FloatInVec(x_);
+#else
+    return FloatInVec(_mm_extract_ps_fast<0>(xy_));
+#endif
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE FloatInVec Vec2::vy() const
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    return FloatInVec(y_);
+#else
+    return FloatInVec(_mm_extract_ps_fast<1>(xy_));
 #endif
 }
 
@@ -743,7 +757,7 @@ INLINE FloatInVec Vec2::length() const
 #if defined(AL_MATH_USE_NO_SIMD)
     return std::sqrtf(lengthSq());
 #else
-    return _mm_sqrt_ps(lengthSq(*this));
+    return FloatInVec(_mm_sqrt_ps(lengthSq(*this)));
 #endif
 }
 
@@ -784,7 +798,7 @@ INLINE FloatInVec Vec2::length(Vec2 v)
 #if defined(AL_MATH_USE_NO_SIMD)
     AL_ASSERT_ALWAYS(false);
 #else
-    return _mm_sqrt_ss(lengthSq(v));
+    return FloatInVec(_mm_sqrt_ss(lengthSq(v)));
 #endif
 }
 
@@ -813,7 +827,7 @@ INLINE FloatInVec Vec2::dot(Vec2 lhs, Vec2 rhs)
         lhs.y_ * rhs.y_;
 #else
     // 0x31は上側2つを使い、上側1つに格納することを意味する (1,1,0,0) -> (1,0,0,0)
-    return _mm_dp_ps(lhs.xy_, rhs.xy_, 0x31);
+    return FloatInVec(_mm_dp_ps(lhs.xy_, rhs.xy_, 0x31));
 #endif
 }
 
@@ -1426,7 +1440,7 @@ INLINE FloatInVec Vec3::vx() const
 #if defined(AL_MATH_USE_NO_SIMD)
     return FloatInVec(x_);
 #else
-    return _mm_extract_ps_fast<0>(xyz_);
+    return FloatInVec(_mm_extract_ps_fast<0>(xyz_));
 #endif
 }
 
@@ -1439,7 +1453,7 @@ INLINE FloatInVec Vec3::vy() const
 #if defined(AL_MATH_USE_NO_SIMD)
     return FloatInVec(y_);
 #else
-    return _mm_extract_ps_fast<1>(xyz_);
+    return FloatInVec(_mm_extract_ps_fast<1>(xyz_));
 #endif
 }
 
@@ -1452,7 +1466,7 @@ INLINE FloatInVec Vec3::vz() const
 #if defined(AL_MATH_USE_NO_SIMD)
     return FloatInVec(z_);
 #else
-    return _mm_extract_ps_fast<2>(xyz_);
+    return FloatInVec(_mm_extract_ps_fast<2>(xyz_));
 #endif
 }
 
@@ -1579,7 +1593,7 @@ INLINE FloatInVec Vec3::length(Vec3 v)
 #if defined(AL_MATH_USE_NO_SIMD)
     return std::sqrtf(Vec3::lengthSq(v));
 #else
-    return _mm_sqrt_ss(lengthSq(v));
+    return FloatInVec(_mm_sqrt_ss(lengthSq(v)));
 #endif
 }
 
@@ -1706,7 +1720,7 @@ INLINE FloatInVec Vec3::dot(Vec3 lhs, Vec3 rhs)
         lhs.z_ * rhs.z_;
 #else
     // 0x71は上側3つを使い、上側1つに格納することを意味する (1,1,1,0) -> (1,0,0,0)
-    return _mm_dp_ps(lhs.xyz_, rhs.xyz_, 0x71);
+    return FloatInVec(_mm_dp_ps(lhs.xyz_, rhs.xyz_, 0x71));
 #endif
 }
 
@@ -2020,15 +2034,67 @@ INLINE float Vec4::z()const
 }
 
 /*
- -------------------------------------------------
- -------------------------------------------------
- */
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE float Vec4::w()const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     return w_;
 #else
     return _mm_extract_ps_fast<3>(xyzw_);
+#endif
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE FloatInVec Vec4::vx() const
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    return FloatInVec(x_);
+#else
+    return FloatInVec(_mm_extract_ps_fast<0>(xyzw_));
+#endif
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE FloatInVec Vec4::vy() const
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    return FloatInVec(y_);
+#else
+    return FloatInVec(_mm_extract_ps_fast<1>(xyzw_));
+#endif
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE FloatInVec Vec4::vz() const
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    return FloatInVec(z_);
+#else
+    return FloatInVec(_mm_extract_ps_fast<2>(xyzw_));
+#endif
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE FloatInVec Vec4::vw() const
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    return FloatInVec(w_);
+#else
+    return FloatInVec(_mm_extract_ps_fast<3>(xyzw_));
 #endif
 }
 
@@ -2249,7 +2315,7 @@ INLINE FloatInVec Vec4::dot(Vec4 lhs, Vec4 rhs)
         lhs.w_ * rhs.w_;
 #else
     // 0xF1は上側4つを使い、上側1つに格納することを意味する (1,1,1,1) -> (1,0,0,0)
-    return _mm_dp_ps(lhs.xyzw_, rhs.xyzw_, 0xF1);
+    return FloatInVec(_mm_dp_ps(lhs.xyzw_, rhs.xyzw_, 0xF1));
 #endif
 }
 
@@ -2262,7 +2328,7 @@ INLINE FloatInVec Vec4::length(Vec4 v)
 #if defined(AL_MATH_USE_NO_SIMD)
     return std::sqrtf(v.lengthSq());
 #else
-    return _mm_sqrt_ss(lengthSq(v));
+    return FloatInVec(_mm_sqrt_ss(lengthSq(v)));
 #endif
 }
 

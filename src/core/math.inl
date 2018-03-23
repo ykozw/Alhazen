@@ -62,8 +62,8 @@ INLINE float _mm_extract_ps_fast(__m128 v)
 {
     return _mm_cvtss_f32(_mm_shuffle_ps(v, v, _MM_SHUFFLE(0, 0, 0, index)));
 }
-template<0>
-INLINE float _mm_extract_ps_fast(__m128 v)
+template<>
+INLINE float _mm_extract_ps_fast<0>(__m128 v)
 {
     return _mm_cvtss_f32(v);
 }
@@ -1450,7 +1450,7 @@ INLINE FloatInVec Vec3::vz() const
 #if defined(AL_MATH_USE_NO_SIMD)
     return FloatInVec(z_);
 #else
-    return _mm_extract_ps_fast<3>(xyz_);
+    return _mm_extract_ps_fast<2>(xyz_);
 #endif
 }
 

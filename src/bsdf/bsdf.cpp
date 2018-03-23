@@ -53,7 +53,7 @@ static void testBSDFcore(BSDFPtr bsdf)
             const Spectrum ref0 = bsdf->bsdf(wo, wi);
             const Spectrum ref1 = bsdf->bsdf(wi, wo);
             // ヘルムホルツの相反性
-            const auto same = [](const Spectrum &lhs, const Spectrum &rhs) {
+            const auto same = [](const Spectrum& lhs, const Spectrum& rhs) {
                 const Spectrum d = lhs - rhs;
                 const float eps = 0.0001f;
                 return (fabsf(d.r) < eps) && (fabsf(d.g) < eps) &&
@@ -108,7 +108,7 @@ BSDF::BSDF() : name_("UNKNOWN") {}
 BSDF
 -------------------------------------------------
 */
-BSDF::BSDF(const ObjectProp &objectProp)
+BSDF::BSDF(const ObjectProp& objectProp)
 {
     name_ = objectProp.attribute("type").asString("unkown");
 }
@@ -219,7 +219,7 @@ AllBSDFList::AllBSDFList()
 add()
 -------------------------------------------------
 */
-void AllBSDFList::add(const ObjectProp &objectProp)
+void AllBSDFList::add(const ObjectProp& objectProp)
 {
     // const auto& type = objectProp.attribute("type");
     const std::string idStr = objectProp.attribute("id").asString("unkown");
@@ -231,7 +231,7 @@ void AllBSDFList::add(const ObjectProp &objectProp)
 find()
 -------------------------------------------------
 */
-const BSDFPtr AllBSDFList::find(const std::string &bsdfName) const
+const BSDFPtr AllBSDFList::find(const std::string& bsdfName) const
 {
     auto ite = bsdfs_.find(bsdfName);
     if (ite == bsdfs_.end())
@@ -296,7 +296,7 @@ float BlinnNDF::pdf(Vec3 wo, Vec3 wi)
 -------------------------------------------------
 -------------------------------------------------
 */
-void BlinnNDF::sample(Vec3 wo, Sampler *sampler, Vec3 *wi, float *pdf) const
+void BlinnNDF::sample(Vec3 wo, Sampler* sampler, Vec3* wi, float* pdf) const
 {
     const float u1 = sampler->get1d();
     const float u2 = sampler->get1d();
@@ -441,7 +441,7 @@ Spectrum FresnelNone::eval(float surfNormalDotIncomeDir) const
 -------------------------------------------------
 -------------------------------------------------
 */
-FresnelConductor::FresnelConductor(const Spectrum &eta, const Spectrum &k)
+FresnelConductor::FresnelConductor(const Spectrum& eta, const Spectrum& k)
     : eta_(eta), k_(k)
 {
 }
@@ -513,13 +513,13 @@ INLINE Spectrum FresnelDielectric::eval(float surfNormalDotIncomeDir) const
 -------------------------------------------------
 -------------------------------------------------
 */
-Lambertian::Lambertian(const Spectrum &spectrum) { baseColor_ = spectrum; }
+Lambertian::Lambertian(const Spectrum& spectrum) { baseColor_ = spectrum; }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-Lambertian::Lambertian(const ObjectProp &objectProp) : BSDF(objectProp)
+Lambertian::Lambertian(const ObjectProp& objectProp) : BSDF(objectProp)
 {
     // HACK:
     // reflectance以外も持つ場合があるから"reflectance"で検索掛けるようにした方がいいかも。
@@ -595,9 +595,9 @@ float Lambertian::pdf(Vec3 localWo, Vec3 localWi) const
 -------------------------------------------------
 */
 Spectrum Lambertian::bsdfSample(Vec3 localWo,
-                                Sampler *sampler,
-                                Vec3 *localWi,
-                                float *pdf) const
+                                Sampler* sampler,
+                                Vec3* localWi,
+                                float* pdf) const
 {
     //
     ++g_numSampleLambert;
@@ -628,7 +628,7 @@ AL_TEST(Lambertian, 0)
 -------------------------------------------------
 -------------------------------------------------
 */
-OrenNayar::OrenNayar(const Spectrum &baseColor, float sigma)
+OrenNayar::OrenNayar(const Spectrum& baseColor, float sigma)
     : BSDF(ObjectProp()), baseColor_(baseColor)
 {
     const float sigma2 = sigma * sigma;
@@ -692,9 +692,9 @@ Spectrum OrenNayar::bsdf(Vec3 localWo, Vec3 localWi) const
 -------------------------------------------------
 */
 Spectrum OrenNayar::bsdfSample(Vec3 localWo,
-                               Sampler *sampler,
-                               Vec3 *localWi,
-                               float *aPdf) const
+                               Sampler* sampler,
+                               Vec3* localWi,
+                               float* aPdf) const
 {
     float pdfHS;
     *localWi = sampler->getHemisphereCosineWeighted(&pdfHS);
@@ -730,7 +730,7 @@ REGISTER_OBJECT(BSDF, Mirror);
 -------------------------------------------------
 -------------------------------------------------
 */
-Mirror::Mirror(const ObjectProp &objectProp) : BSDF(objectProp)
+Mirror::Mirror(const ObjectProp& objectProp) : BSDF(objectProp)
 {
     // TODO: リフレクタンスを指定できるようにする
 }
@@ -770,9 +770,9 @@ Spectrum Mirror::bsdf(Vec3 localWo, Vec3 localWi) const
 -------------------------------------------------
 */
 Spectrum Mirror::bsdfSample(Vec3 localWo,
-                            Sampler *sampler,
-                            Vec3 *localWi,
-                            float *pdf) const
+                            Sampler* sampler,
+                            Vec3* localWi,
+                            float* pdf) const
 {
     // 単純なreflect
     *localWi = Vec3(-localWo.x(), -localWo.y(), localWo.z());
@@ -785,7 +785,7 @@ Spectrum Mirror::bsdfSample(Vec3 localWo,
 -------------------------------------------------
 -------------------------------------------------
 */
-Glass::Glass(const ObjectProp &objectProp) : BSDF(objectProp)
+Glass::Glass(const ObjectProp& objectProp) : BSDF(objectProp)
 {
     ior_ = objectProp.findChildBy("name", "ior").asFloat(2.0f);
 }
@@ -825,9 +825,9 @@ Spectrum Glass::bsdf(Vec3 localWo, Vec3 localWi) const
 -------------------------------------------------
 */
 Spectrum Glass::bsdfSample(Vec3 localWo,
-                           Sampler *sampler,
-                           Vec3 *localWi,
-                           float *pdf) const
+                           Sampler* sampler,
+                           Vec3* localWi,
+                           float* pdf) const
 {
     //
     const float glassProb = sampler->get1d();
@@ -984,7 +984,7 @@ AL_TEST(BSDF, testMISC)
 -------------------------------------------------
 -------------------------------------------------
 */
-MicrofacetBSDF::MicrofacetBSDF(const ObjectProp &objectProp) : BSDF(objectProp)
+MicrofacetBSDF::MicrofacetBSDF(const ObjectProp& objectProp) : BSDF(objectProp)
 {
     // HACK: しばらくは決め打ちで作成する
     R = Spectrum::White;
@@ -1002,7 +1002,7 @@ MicrofacetBSDF::MicrofacetBSDF(const ObjectProp &objectProp) : BSDF(objectProp)
 -------------------------------------------------
 -------------------------------------------------
 */
-MicrofacetBSDF::MicrofacetBSDF(const Spectrum &baseColor,
+MicrofacetBSDF::MicrofacetBSDF(const Spectrum& baseColor,
                                FresnelTermPtr fTerm,
                                MicrofacetDistributionPtr dTerm)
 {
@@ -1055,9 +1055,9 @@ float MicrofacetBSDF::pdf(Vec3 localWo, Vec3 localWi) const
 -------------------------------------------------
 */
 Spectrum MicrofacetBSDF::bsdfSample(Vec3 localWo,
-                                    Sampler *sampler,
-                                    Vec3 *localWi,
-                                    float *pdf) const
+                                    Sampler* sampler,
+                                    Vec3* localWi,
+                                    float* pdf) const
 {
     distribution_->sample(localWo, sampler, localWi, pdf);
     if (!sameHemisphere(localWo, *localWi))
@@ -1088,9 +1088,9 @@ AL_TEST(MicrofacetBSDF, 0)
 -------------------------------------------------
 -------------------------------------------------
 */
-TorranceSparrow::TorranceSparrow(const Spectrum &baseColor,
-                                 const MicrofacetDistributionPtr &dTerm,
-                                 const GeometricTermPtr &gTerm,
+TorranceSparrow::TorranceSparrow(const Spectrum& baseColor,
+                                 const MicrofacetDistributionPtr& dTerm,
+                                 const GeometricTermPtr& gTerm,
                                  const FresnelTermPtr fTerm)
     : BSDF(ObjectProp()), baseColor_(baseColor), dTerm_(dTerm), gTerm_(gTerm),
       fTerm_(fTerm)
@@ -1146,9 +1146,9 @@ Spectrum TorranceSparrow::bsdf(Vec3 localWo, Vec3 localWi) const
 -------------------------------------------------
 */
 Spectrum TorranceSparrow::bsdfSample(Vec3 localWo,
-                                     Sampler *sampler,
-                                     Vec3 *localWi,
-                                     float *pdf) const
+                                     Sampler* sampler,
+                                     Vec3* localWi,
+                                     float* pdf) const
 {
     dTerm_->sample(localWo, sampler, localWi, pdf);
     if (!sameHemisphere(localWo, *localWi))
@@ -1168,7 +1168,7 @@ REGISTER_OBJECT(BSDF, Ward);
 -------------------------------------------------
 -------------------------------------------------
 */
-Ward::Ward(const ObjectProp &objectProp) : BSDF(objectProp)
+Ward::Ward(const ObjectProp& objectProp) : BSDF(objectProp)
 {
     alpha_x = 0.15f;
     alpha_y = 0.15f;
@@ -1226,9 +1226,9 @@ Spectrum Ward::bsdf(Vec3 localWo, Vec3 localWi) const
 -------------------------------------------------
 */
 Spectrum Ward::bsdfSample(const Vec3 localWo,
-                          Sampler *sampler,
-                          Vec3 *localWi,
-                          float *pdf) const
+                          Sampler* sampler,
+                          Vec3* localWi,
+                          float* pdf) const
 {
     float pdfHS;
     *localWi = sampler->getHemisphereCosineWeighted(&pdfHS);
@@ -1252,7 +1252,7 @@ REGISTER_OBJECT(BSDF, Walter);
 -------------------------------------------------
 -------------------------------------------------
 */
-Walter::Walter(const ObjectProp &objectProp) : BSDF(objectProp)
+Walter::Walter(const ObjectProp& objectProp) : BSDF(objectProp)
 {
     Kd_ = 0.0f;
     Ks_ = 0.1f;
@@ -1338,9 +1338,9 @@ Spectrum Walter::bsdf(Vec3 localWo, Vec3 localWi) const
 -------------------------------------------------
 */
 Spectrum Walter::bsdfSample(Vec3 localWo,
-                            Sampler *sampler,
-                            Vec3 *localWi,
-                            float *pdf) const
+                            Sampler* sampler,
+                            Vec3* localWi,
+                            float* pdf) const
 {
     float pdfHS;
     *localWi = sampler->getHemisphereCosineWeighted(&pdfHS);
@@ -1364,7 +1364,7 @@ REGISTER_OBJECT(BSDF, AshikhminShirley);
 -------------------------------------------------
 -------------------------------------------------
 */
-AshikhminShirley::AshikhminShirley(const ObjectProp &objectProp)
+AshikhminShirley::AshikhminShirley(const ObjectProp& objectProp)
     : BSDF(objectProp)
 {
     rs_ = 0.1f;
@@ -1450,9 +1450,9 @@ Spectrum AshikhminShirley::bsdf(Vec3 localWo, Vec3 localWi) const
 -------------------------------------------------
 */
 Spectrum AshikhminShirley::bsdfSample(Vec3 localWo,
-                                      Sampler *sampler,
-                                      Vec3 *localWi,
-                                      float *pdf) const
+                                      Sampler* sampler,
+                                      Vec3* localWi,
+                                      float* pdf) const
 {
     float pdfHS;
     *localWi = sampler->getHemisphereCosineWeighted(&pdfHS);
@@ -1476,7 +1476,7 @@ const float SPECULAR_CLAMP = 100.0f;
 -------------------------------------------------
 -------------------------------------------------
 */
-DisneyBRDF::DisneyBRDF(const ObjectProp &objectProp) : BSDF(objectProp)
+DisneyBRDF::DisneyBRDF(const ObjectProp& objectProp) : BSDF(objectProp)
 {
     //
     std::string baseColorTexture = "none";
@@ -1739,9 +1739,9 @@ Spectrum DisneyBRDF::bsdf(Vec3 localWo, Vec3 localWi) const
 -------------------------------------------------
 */
 Spectrum DisneyBRDF::bsdfSample(Vec3 localWo,
-                                Sampler *sampler,
-                                Vec3 *localWi,
-                                float *pdf) const
+                                Sampler* sampler,
+                                Vec3* localWi,
+                                float* pdf) const
 {
 #if defined(USE_AUTO_IMPORTANCE)
     autoImportance_.sample(localWo, rng, localWi, pdf);
@@ -1777,7 +1777,7 @@ Spectrum DisneyBRDF::bsdfSample(Vec3 localWo,
 -------------------------------------------------
 -------------------------------------------------
 */
-MeasuredBSDF::MeasuredBSDF(const std::string &fileName) : BSDF(ObjectProp())
+MeasuredBSDF::MeasuredBSDF(const std::string& fileName) : BSDF(ObjectProp())
 {
     //
     std::ifstream file(fileName.c_str(),
@@ -1795,10 +1795,10 @@ MeasuredBSDF::MeasuredBSDF(const std::string &fileName) : BSDF(ObjectProp())
     //
     std::vector<double> tmpBuffer;
     tmpBuffer.resize(sizeof(double) * 3 * n);
-    file.read((char *)tmpBuffer.data(), tmpBuffer.size());
+    file.read((char*)tmpBuffer.data(), tmpBuffer.size());
     //
     brdf.reserve(tmpBuffer.size());
-    for (auto &v : tmpBuffer)
+    for (auto& v : tmpBuffer)
     {
         brdf.push_back((float)v);
     }
@@ -1833,9 +1833,9 @@ Spectrum MeasuredBSDF::bsdf(Vec3 localWo, Vec3 localWi) const
 -------------------------------------------------
 */
 Spectrum MeasuredBSDF::bsdfSample(Vec3 localWo,
-                                  Sampler *sampler,
-                                  Vec3 *localWi,
-                                  float *pdf) const
+                                  Sampler* sampler,
+                                  Vec3* localWi,
+                                  float* pdf) const
 {
     // TODO: 実装
     assert(!"needs impliment");

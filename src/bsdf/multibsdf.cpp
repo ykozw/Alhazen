@@ -7,7 +7,7 @@ REGISTER_OBJECT(BSDF, BSDFs);
 -------------------------------------------------
 -------------------------------------------------
 */
-BSDFs::BSDFs(const ObjectProp &objectProp) : BSDF(objectProp), name_("default")
+BSDFs::BSDFs(const ObjectProp& objectProp) : BSDF(objectProp), name_("default")
 {
 }
 
@@ -15,13 +15,13 @@ BSDFs::BSDFs(const ObjectProp &objectProp) : BSDF(objectProp), name_("default")
 -------------------------------------------------
 -------------------------------------------------
 */
-void BSDFs::setName(const std::string &name) { name_ = name; }
+void BSDFs::setName(const std::string& name) { name_ = name; }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-const std::string &BSDFs::getName() const { return name_; }
+const std::string& BSDFs::getName() const { return name_; }
 
 /*
 -------------------------------------------------
@@ -42,7 +42,7 @@ float BSDFs::pdf(Vec3 localWo, Vec3 localWi) const
     }
     //
     float total = 0.0f;
-    for (auto &bsdf : bsdfs_)
+    for (auto& bsdf : bsdfs_)
     {
         total += bsdf->pdf(localWo, localWi);
     }
@@ -57,7 +57,7 @@ float BSDFs::pdf(Vec3 localWo, Vec3 localWi) const
 Spectrum BSDFs::bsdf(Vec3 localWo, Vec3 localWi) const
 {
     Spectrum r(0.0f);
-    for (auto &bsdf : bsdfs_)
+    for (auto& bsdf : bsdfs_)
     {
         r += bsdf->bsdf(localWo, localWi);
     }
@@ -69,9 +69,9 @@ Spectrum BSDFs::bsdf(Vec3 localWo, Vec3 localWi) const
 -------------------------------------------------
 */
 Spectrum BSDFs::bsdfSample(Vec3 localWo,
-                           Sampler *sampler,
-                           Vec3 *localWi,
-                           float *pdf) const
+                           Sampler* sampler,
+                           Vec3* localWi,
+                           float* pdf) const
 {
     //
     if (bsdfs_.size() == 0)
@@ -80,7 +80,7 @@ Spectrum BSDFs::bsdfSample(Vec3 localWo,
     }
     // どのBSDFをサンプルするかを選択
     const int32_t bsdfIndex = sampler->getSize(int32_t(bsdfs_.size()));
-    const auto &bsdf = bsdfs_[bsdfIndex];
+    const auto& bsdf = bsdfs_[bsdfIndex];
 
     // bsdfをサンプル
     return bsdf->bsdfSample(localWo, sampler, localWi, pdf);

@@ -8,16 +8,16 @@
 class DebugSurfaceIntegrator : public LTEIntegrator
 {
 public:
-    DebugSurfaceIntegrator(const ObjectProp &objectProp);
-    bool preRendering(const SceneGeometory &scene,
-                      AllBSDFList &bsdfList) override
+    DebugSurfaceIntegrator(const ObjectProp& objectProp);
+    bool preRendering(const SceneGeometory& scene,
+                      AllBSDFList& bsdfList) override
     {
         return true;
     }
     bool postRendering() override { return true; }
-    Spectrum radiance(const Ray &ray,
-                      const SceneGeometory &scene,
-                      Sampler *sampler) const override;
+    Spectrum radiance(const Ray& ray,
+                      const SceneGeometory& scene,
+                      Sampler* sampler) const override;
 
 private:
 };
@@ -27,7 +27,7 @@ REGISTER_OBJECT(LTEIntegrator, DebugSurfaceIntegrator);
 -------------------------------------------------
 -------------------------------------------------
 */
-DebugSurfaceIntegrator::DebugSurfaceIntegrator(const ObjectProp &objectProp)
+DebugSurfaceIntegrator::DebugSurfaceIntegrator(const ObjectProp& objectProp)
 {
     static_cast<void>(objectProp);
 }
@@ -36,9 +36,9 @@ DebugSurfaceIntegrator::DebugSurfaceIntegrator(const ObjectProp &objectProp)
 -------------------------------------------------
 -------------------------------------------------
 */
-Spectrum DebugSurfaceIntegrator::radiance(const Ray &screenRay,
-                                          const SceneGeometory &scene,
-                                          Sampler *sampler) const
+Spectrum DebugSurfaceIntegrator::radiance(const Ray& screenRay,
+                                          const SceneGeometory& scene,
+                                          Sampler* sampler) const
 {
 #if 0   // UVデバッグ
     // 何もない場合は0を返す
@@ -79,8 +79,8 @@ Spectrum DebugSurfaceIntegrator::radiance(const Ray &screenRay,
     HACK: 間に合わせ。
     -------------------------------------------------
     */
-    const auto hashFunc = [](const void *buf, size_t buflength) -> uint32_t {
-        const uint8_t *buffer = (const uint8_t *)buf;
+    const auto hashFunc = [](const void* buf, size_t buflength) -> uint32_t {
+        const uint8_t* buffer = (const uint8_t*)buf;
 
         uint32_t s1 = 1;
         uint32_t s2 = 0;

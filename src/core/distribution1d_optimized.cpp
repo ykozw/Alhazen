@@ -16,7 +16,7 @@ Distribution1D_Optimized::Distribution1D_Optimized() { construct({{}}); }
 -------------------------------------------------
 */
 Distribution1D_Optimized::Distribution1D_Optimized(
-    const std::vector<float> &values)
+    const std::vector<float>& values)
 {
     construct(values);
 }
@@ -26,7 +26,7 @@ Distribution1D_Optimized::Distribution1D_Optimized(
 -------------------------------------------------
 */
 Distribution1D_Optimized::Distribution1D_Optimized(
-    const std::initializer_list<float> &values)
+    const std::initializer_list<float>& values)
 {
     construct(values);
 }
@@ -35,7 +35,7 @@ Distribution1D_Optimized::Distribution1D_Optimized(
 -------------------------------------------------
 -------------------------------------------------
 */
-Distribution1D_Optimized::Distribution1D_Optimized(const float *values,
+Distribution1D_Optimized::Distribution1D_Optimized(const float* values,
                                                    int32_t num)
 {
     construct(std::vector<float>(values, values + num));
@@ -79,7 +79,7 @@ static uint32_t roundupPowerOf2(uint32_t v)
 -------------------------------------------------
 -------------------------------------------------
 */
-void Distribution1D_Optimized::construct(const std::vector<float> &values)
+void Distribution1D_Optimized::construct(const std::vector<float>& values)
 {
     // CDFを2^n-1の形にしておくと、後段のオフセット計算が簡単になる
     const uint32_t cdfSize = roundupPowerOf2((uint32_t)(values.size() + 1));
@@ -105,7 +105,7 @@ void Distribution1D_Optimized::construct(const std::vector<float> &values)
         cdf.back() = 1.0f;
     }
     const float scale = 1.0f / cdf.back();
-    for (auto &v : cdf)
+    for (auto& v : cdf)
     {
         v *= scale;
     }
@@ -119,7 +119,7 @@ void Distribution1D_Optimized::construct(const std::vector<float> &values)
         static void insert(size_t i,
                            size_t n,
                            std::vector<float>::const_iterator first,
-                           std::vector<float> &cdfBreadthFirst)
+                           std::vector<float>& cdfBreadthFirst)
         {
             auto root = [](size_t n) -> size_t {
                 if (n <= 1)
@@ -153,8 +153,8 @@ void Distribution1D_Optimized::construct(const std::vector<float> &values)
 -------------------------------------------------
 */
 float Distribution1D_Optimized::sample(float u,
-                                       float *pdf,
-                                       int32_t *aOffset) const
+                                       float* pdf,
+                                       int32_t* aOffset) const
 {
     //
     uint32_t n = (uint32_t)cdfBreadthFirst_.size() - 1;

@@ -15,12 +15,12 @@ class File AL_FINAL
 public:
     File() : file_(NULL) {}
     ~File() { fclose(file_); }
-    void openRead(const char *filename) { file_ = fopen(filename, "rt"); }
+    void openRead(const char* filename) { file_ = fopen(filename, "rt"); }
     //
-    FILE *file() { return file_; }
+    FILE* file() { return file_; }
 
 private:
-    FILE *file_;
+    FILE* file_;
 };
 
 /*
@@ -36,7 +36,7 @@ public:
         size2_ = size_ * size_;
         vs.resize(size * size * size);
     }
-    Vec3 &pixel(int32_t x, int32_t y, int32_t z)
+    Vec3& pixel(int32_t x, int32_t y, int32_t z)
     {
         return vs[x + y * size_ + z * size2_];
     }
@@ -97,8 +97,8 @@ Dotcube
 class Dotcube AL_FINAL : public Tonemapper
 {
 public:
-    Dotcube(const ObjectProp &objectProp);
-    bool process(const Image &src, ImageLDR &dst) const override;
+    Dotcube(const ObjectProp& objectProp);
+    bool process(const Image& src, ImageLDR& dst) const override;
 
 private:
     Cube cube_;
@@ -111,7 +111,7 @@ REGISTER_OBJECT(Tonemapper, Dotcube);
 -------------------------------------------------
 -------------------------------------------------
 */
-Dotcube::Dotcube(const ObjectProp &objectProp) : Tonemapper(objectProp)
+Dotcube::Dotcube(const ObjectProp& objectProp) : Tonemapper(objectProp)
 {
     //
     const float gamma = objectProp.findChildBy("name", "gamma").asFloat(2.2f);
@@ -142,7 +142,7 @@ Dotcube::Dotcube(const ObjectProp &objectProp) : Tonemapper(objectProp)
         {
             for (int32_t x = 0; x < dimSize; ++x)
             {
-                Vec3 &v = cube_.pixel(x, y, z);
+                Vec3& v = cube_.pixel(x, y, z);
                 float fx, fy, fz;
                 fscanf(file.file(), "%f %f %f", &fx, &fy, &fz);
                 v = Vec3(fx, fy, fz);
@@ -155,7 +155,7 @@ Dotcube::Dotcube(const ObjectProp &objectProp) : Tonemapper(objectProp)
 -------------------------------------------------
 -------------------------------------------------
 */
-bool Dotcube::process(const Image &src, ImageLDR &dst) const
+bool Dotcube::process(const Image& src, ImageLDR& dst) const
 {
     //
     loggingErrorIf((src.width() != dst.width()) ||
@@ -167,7 +167,7 @@ bool Dotcube::process(const Image &src, ImageLDR &dst) const
         for (int32_t x = 0, w = src.width(); x < w; ++x)
         {
             const int32_t index = src.index(x, y);
-            const Spectrum &sp = src.pixel(index);
+            const Spectrum& sp = src.pixel(index);
             Spectrum nsp = sp;
             SpectrumRGB rgb;
             nsp.toRGB(rgb);
@@ -187,7 +187,7 @@ bool Dotcube::process(const Image &src, ImageLDR &dst) const
                 (uint8_t)alClamp((int32_t)(ifg), (int32_t)0, (int32_t)255);
             const uint8_t ig =
                 (uint8_t)alClamp((int32_t)(ifb), (int32_t)0, (int32_t)255);
-            PixelLDR &dp = dst.pixel(index);
+            PixelLDR& dp = dst.pixel(index);
             dp.r = ir;
             dp.g = ib;
             dp.b = ig;

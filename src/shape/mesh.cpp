@@ -9,16 +9,16 @@ readFFormat1()
 f v1 v2 v3 ....のフォーマット
 -------------------------------------------------
 */
-static bool readFFormat1(const char *str,
-                         int32_t *vi0,
-                         int32_t *vi1,
-                         int32_t *vi2,
-                         int32_t *ti0,
-                         int32_t *ti1,
-                         int32_t *ti2,
-                         int32_t *ni0,
-                         int32_t *ni1,
-                         int32_t *ni2)
+static bool readFFormat1(const char* str,
+                         int32_t* vi0,
+                         int32_t* vi1,
+                         int32_t* vi2,
+                         int32_t* ti0,
+                         int32_t* ti1,
+                         int32_t* ti2,
+                         int32_t* ni0,
+                         int32_t* ni1,
+                         int32_t* ni2)
 {
     //
     static_cast<void>(ti0);
@@ -41,16 +41,16 @@ readFFormat2()
 f v1/t1/n1 v2/t2/n2 v3/t3/n3 のフォーマット
 -------------------------------------------------
 */
-static bool readFFormat2(const char *str,
-                         int32_t *vi0,
-                         int32_t *vi1,
-                         int32_t *vi2,
-                         int32_t *ti0,
-                         int32_t *ti1,
-                         int32_t *ti2,
-                         int32_t *ni0,
-                         int32_t *ni1,
-                         int32_t *ni2)
+static bool readFFormat2(const char* str,
+                         int32_t* vi0,
+                         int32_t* vi1,
+                         int32_t* vi2,
+                         int32_t* ti0,
+                         int32_t* ti1,
+                         int32_t* ti2,
+                         int32_t* ni0,
+                         int32_t* ni1,
+                         int32_t* ni2)
 {
     // "f 272/1/1 204/2/2 205/3/3"
     if (sscanf(str,
@@ -76,16 +76,16 @@ readFFormat2()
 f v1//n1 v2//n2 v3//n3 のフォーマット
 -------------------------------------------------
 */
-static bool readFFormat3(const char *str,
-                         int32_t *vi0,
-                         int32_t *vi1,
-                         int32_t *vi2,
-                         int32_t *ti0,
-                         int32_t *ti1,
-                         int32_t *ti2,
-                         int32_t *ni0,
-                         int32_t *ni1,
-                         int32_t *ni2)
+static bool readFFormat3(const char* str,
+                         int32_t* vi0,
+                         int32_t* vi1,
+                         int32_t* vi2,
+                         int32_t* ti0,
+                         int32_t* ti1,
+                         int32_t* ti2,
+                         int32_t* ni0,
+                         int32_t* ni1,
+                         int32_t* ni2)
 {
     static_cast<void>(ti0);
     static_cast<void>(ti1);
@@ -106,16 +106,16 @@ readFFormat4()
 f v1/t1 v2/t2 v3/t3 v4/t4 のフォーマット
 -------------------------------------------------
 */
-static bool readFFormat4(const char *str,
-                         int32_t *vi0,
-                         int32_t *vi1,
-                         int32_t *vi2,
-                         int32_t *ti0,
-                         int32_t *ti1,
-                         int32_t *ti2,
-                         int32_t *ni0,
-                         int32_t *ni1,
-                         int32_t *ni2)
+static bool readFFormat4(const char* str,
+                         int32_t* vi0,
+                         int32_t* vi1,
+                         int32_t* vi2,
+                         int32_t* ti0,
+                         int32_t* ti1,
+                         int32_t* ti2,
+                         int32_t* ni0,
+                         int32_t* ni1,
+                         int32_t* ni2)
 {
     static_cast<void>(ni0);
     static_cast<void>(ni1);
@@ -133,10 +133,10 @@ static bool readFFormat4(const char *str,
 -------------------------------------------------
 -------------------------------------------------
 */
-bool checkAsVert(Mesh &this_,
-                 int32_t &currentMaterialId,
-                 MaterialIds &materialIds,
-                 const char *readBuffer)
+bool checkAsVert(Mesh& this_,
+                 int32_t& currentMaterialId,
+                 MaterialIds& materialIds,
+                 const char* readBuffer)
 {
     static_cast<void>(currentMaterialId);
     static_cast<void>(materialIds);
@@ -160,10 +160,10 @@ bool checkAsVert(Mesh &this_,
 -------------------------------------------------
 -------------------------------------------------
 */
-bool checkAsFace(Mesh &this_,
-                 int32_t &currentMaterialId,
-                 MaterialIds &materialIds,
-                 const char *readBuffer)
+bool checkAsFace(Mesh& this_,
+                 int32_t& currentMaterialId,
+                 MaterialIds& materialIds,
+                 const char* readBuffer)
 {
     static_cast<void>(materialIds);
     //
@@ -176,16 +176,16 @@ bool checkAsFace(Mesh &this_,
     int32_t normalIndex[3] = {0, 0, 0};
     int32_t uvIndex[3] = {0, 0, 0};
     //
-    typedef std::function<bool(const char *,
-                               int32_t *,
-                               int32_t *,
-                               int32_t *,
-                               int32_t *,
-                               int32_t *,
-                               int32_t *,
-                               int32_t *,
-                               int32_t *,
-                               int32_t *)>
+    typedef std::function<bool(const char*,
+                               int32_t*,
+                               int32_t*,
+                               int32_t*,
+                               int32_t*,
+                               int32_t*,
+                               int32_t*,
+                               int32_t*,
+                               int32_t*,
+                               int32_t*)>
         ReadFFormatFunc;
     static int32_t prevIndex = 0;
     const ReadFFormatFunc readFaceFuncs[4] = {
@@ -268,10 +268,10 @@ bool checkAsFace(Mesh &this_,
 -------------------------------------------------
 -------------------------------------------------
 */
-bool checkAsEmptyLine(Mesh &this_,
-                      int32_t &currentMaterialId,
-                      MaterialIds &materialIds,
-                      const char *readBuffer)
+bool checkAsEmptyLine(Mesh& this_,
+                      int32_t& currentMaterialId,
+                      MaterialIds& materialIds,
+                      const char* readBuffer)
 {
     static_cast<void>(currentMaterialId);
     static_cast<void>(materialIds);
@@ -287,10 +287,10 @@ bool checkAsEmptyLine(Mesh &this_,
 -------------------------------------------------
 -------------------------------------------------
 */
-bool checkAsComment(Mesh &this_,
-                    int32_t &currentMaterialId,
-                    MaterialIds &materialIds,
-                    const char *readBuffer)
+bool checkAsComment(Mesh& this_,
+                    int32_t& currentMaterialId,
+                    MaterialIds& materialIds,
+                    const char* readBuffer)
 {
     static_cast<void>(currentMaterialId);
     static_cast<void>(materialIds);
@@ -306,10 +306,10 @@ bool checkAsComment(Mesh &this_,
 -------------------------------------------------
 -------------------------------------------------
 */
-bool checkAsVertexNormal(Mesh &this_,
-                         int32_t &currentMaterialId,
-                         MaterialIds &materialIds,
-                         const char *readBuffer)
+bool checkAsVertexNormal(Mesh& this_,
+                         int32_t& currentMaterialId,
+                         MaterialIds& materialIds,
+                         const char* readBuffer)
 {
     // 頂点法線は計算するのでメッシュデータのものは無視する
     static_cast<void>(currentMaterialId);
@@ -334,10 +334,10 @@ bool checkAsVertexNormal(Mesh &this_,
 -------------------------------------------------
 -------------------------------------------------
 */
-bool checkAsUV(Mesh &this_,
-               int32_t &currentMaterialId,
-               MaterialIds &materialIds,
-               const char *readBuffer)
+bool checkAsUV(Mesh& this_,
+               int32_t& currentMaterialId,
+               MaterialIds& materialIds,
+               const char* readBuffer)
 {
     static_cast<void>(currentMaterialId);
     // static_cast<void>(materialMgr);
@@ -382,10 +382,10 @@ bool checkAsUV(Mesh &this_,
 -------------------------------------------------
 -------------------------------------------------
 */
-bool checkAsGroup(Mesh &this_,
-                  int32_t &currentMaterialId,
-                  MaterialIds &materialIds,
-                  const char *readBuffer)
+bool checkAsGroup(Mesh& this_,
+                  int32_t& currentMaterialId,
+                  MaterialIds& materialIds,
+                  const char* readBuffer)
 {
     static_cast<void>(currentMaterialId);
     static_cast<void>(materialIds);
@@ -397,10 +397,10 @@ bool checkAsGroup(Mesh &this_,
 -------------------------------------------------
 -------------------------------------------------
 */
-bool checkAsSmoothing(Mesh &this_,
-                      int32_t &currentMaterialId,
-                      MaterialIds &materialIds,
-                      const char *readBuffer)
+bool checkAsSmoothing(Mesh& this_,
+                      int32_t& currentMaterialId,
+                      MaterialIds& materialIds,
+                      const char* readBuffer)
 {
     static_cast<void>(currentMaterialId);
     static_cast<void>(materialIds);
@@ -412,10 +412,10 @@ bool checkAsSmoothing(Mesh &this_,
 -------------------------------------------------
 -------------------------------------------------
 */
-bool checkAsMtlLib(Mesh &this_,
-                   int32_t &currentMaterialId,
-                   MaterialIds &materialIds,
-                   const char *readBuffer)
+bool checkAsMtlLib(Mesh& this_,
+                   int32_t& currentMaterialId,
+                   MaterialIds& materialIds,
+                   const char* readBuffer)
 {
     static_cast<void>(currentMaterialId);
     static_cast<void>(materialIds);
@@ -427,10 +427,10 @@ bool checkAsMtlLib(Mesh &this_,
 -------------------------------------------------
 -------------------------------------------------
 */
-bool checkAsUseMTL(Mesh &this_,
-                   int32_t &currentMaterialId,
-                   MaterialIds &materialIds,
-                   const char *readBuffer)
+bool checkAsUseMTL(Mesh& this_,
+                   int32_t& currentMaterialId,
+                   MaterialIds& materialIds,
+                   const char* readBuffer)
 {
     static_cast<void>(currentMaterialId);
     //
@@ -461,10 +461,10 @@ bool checkAsUseMTL(Mesh &this_,
 -------------------------------------------------
 -------------------------------------------------
 */
-bool checkAsO(Mesh &this_,
-              int32_t &currentMaterialId,
-              MaterialIds &materialIds,
-              const char *readBuffer)
+bool checkAsO(Mesh& this_,
+              int32_t& currentMaterialId,
+              MaterialIds& materialIds,
+              const char* readBuffer)
 {
     static_cast<void>(this_);
     static_cast<void>(currentMaterialId);
@@ -481,10 +481,10 @@ bool checkAsO(Mesh &this_,
 -------------------------------------------------
 -------------------------------------------------
 */
-bool Mesh::loadFromoObj(const std::string &fileName)
+bool Mesh::loadFromoObj(const std::string& fileName)
 {
     logging("OBJ: start loading. [%s]", fileName.c_str());
-    FILE *file = fopen(fileName.c_str(), "rt");
+    FILE* file = fopen(fileName.c_str(), "rt");
     if (!file)
     {
         loggingError("OBJ: can't load obj file [%s]\n", fileName.c_str());
@@ -496,8 +496,7 @@ bool Mesh::loadFromoObj(const std::string &fileName)
     char readBuffer[readBufferSize];
     while (fgets(readBuffer, readBufferSize, file))
     {
-        typedef std::function<bool(
-            Mesh &, int32_t &, MaterialIds &, const char *)>
+        typedef std::function<bool(Mesh&, int32_t&, MaterialIds&, const char*)>
             CheckLineFunc;
         const CheckLineFunc checkLineFuncs[] = {
             checkAsVert,
@@ -561,9 +560,9 @@ bool Mesh::loadFromoObj(const std::string &fileName)
 -------------------------------------------------
 -------------------------------------------------
 */
-void Mesh::applyTransform(const Transform &transform)
+void Mesh::applyTransform(const Transform& transform)
 {
-    for (auto &v : vs)
+    for (auto& v : vs)
     {
         v = transform.toWorld(v);
     }
@@ -578,12 +577,12 @@ cf. http://iquilezles.org/www/articles/normals/normals.htm
 void Mesh::recalcNormal()
 {
     ns.resize(vs.size());
-    for (auto &n : ns)
+    for (auto& n : ns)
     {
         n.zero();
     }
     // 各面の法線を足してく
-    for (const auto &f : faces)
+    for (const auto& f : faces)
     {
         const int32_t i0 = f.vi[0];
         const int32_t i1 = f.vi[1];
@@ -599,7 +598,7 @@ void Mesh::recalcNormal()
         ns[i2] += n;
     }
     // 正規化
-    for (auto &n : ns)
+    for (auto& n : ns)
     {
         n.normalize();
     }
@@ -613,7 +612,7 @@ void Mesh::recalcBound()
 {
     aabb.clear();
     // 全頂点を追加していく
-    for (const auto &v : vs)
+    for (const auto& v : vs)
     {
         aabb.addPoint(v);
     }
@@ -633,4 +632,4 @@ void Mesh::recalcBound()
 -------------------------------------------------
 -------------------------------------------------
 */
-const MaterialIds &Mesh::materialIds() const { return materialIds_; }
+const MaterialIds& Mesh::materialIds() const { return materialIds_; }

@@ -170,7 +170,7 @@ Hemisphere(xyz_)
 自動的にcosine weightになる
 -------------------------------------------------
 */
-Vec3 Sampler::getHemisphereCosineWeighted(float *pdf)
+Vec3 Sampler::getHemisphereCosineWeighted(float* pdf)
 {
     //
     const Vec2 uv = getDiscConcentric();
@@ -243,7 +243,7 @@ REGISTER_OBJECT(Sampler, SamplerIndepent);
 -------------------------------------------------
 -------------------------------------------------
 */
-SamplerIndepent::SamplerIndepent(const ObjectProp &prop)
+SamplerIndepent::SamplerIndepent(const ObjectProp& prop)
 {
     //
 }
@@ -284,7 +284,7 @@ REGISTER_OBJECT(Sampler, SamplerHalton);
 -------------------------------------------------
 -------------------------------------------------
 */
-SamplerHalton::SamplerHalton(const ObjectProp &prop)
+SamplerHalton::SamplerHalton(const ObjectProp& prop)
 {
     //
 }
@@ -312,7 +312,7 @@ void SamplerHalton::onStartSample(uint32_t sampleNo)
     (void)sampleNo;
     XorShift128 rng((int32_t)hash_);
     offsets_.resize(512);
-    for (auto &offset : offsets_)
+    for (auto& offset : offsets_)
     {
         offset = rng.nextFloat();
     }
@@ -369,7 +369,7 @@ SphericalFibonacci::SphericalFibonacci(uint32_t seed) { rng_.setSeed(seed); }
 -------------------------------------------------
 -------------------------------------------------
 */
-SphericalFibonacci::SphericalFibonacci(const ObjectProp &objectProp)
+SphericalFibonacci::SphericalFibonacci(const ObjectProp& objectProp)
 {
     // カテゴリー名が"SamplerHemisphere"かチェック
     // AL_ASSERT_DEBUG(objectProp.tag() == "SamplerHemisphere");

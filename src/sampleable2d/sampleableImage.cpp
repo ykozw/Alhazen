@@ -10,7 +10,7 @@
 class SampleableImage AL_FINAL : public Sampleable2d
 {
 public:
-    SampleableImage(const ObjectProp &prop);
+    SampleableImage(const ObjectProp& prop);
     virtual Spectrum sample(float u, float v) override;
 
 private:
@@ -22,7 +22,7 @@ REGISTER_OBJECT(Sampleable2d, SampleableImage);
 -------------------------------------------------
 -------------------------------------------------
 */
-SampleableImage::SampleableImage(const ObjectProp &prop)
+SampleableImage::SampleableImage(const ObjectProp& prop)
 {
     const std::string fileName =
         prop.findChildBy("name", "fileName").asString("none");

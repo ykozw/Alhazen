@@ -9,8 +9,8 @@
 class Degamma AL_FINAL : public Tonemapper
 {
 public:
-    Degamma(const ObjectProp &objectProp);
-    bool process(const Image &src, ImageLDR &dst) const override;
+    Degamma(const ObjectProp& objectProp);
+    bool process(const Image& src, ImageLDR& dst) const override;
 
 private:
     float invGamma_;
@@ -22,7 +22,7 @@ REGISTER_OBJECT(Tonemapper, Degamma);
 -------------------------------------------------
 -------------------------------------------------
 */
-Degamma::Degamma(const ObjectProp &objectProp) : Tonemapper(objectProp)
+Degamma::Degamma(const ObjectProp& objectProp) : Tonemapper(objectProp)
 {
     const float gamma = objectProp.findChildBy("name", "gamma").asFloat(2.2f);
     invGamma_ = 1.0f / gamma;
@@ -32,7 +32,7 @@ Degamma::Degamma(const ObjectProp &objectProp) : Tonemapper(objectProp)
 -------------------------------------------------
 -------------------------------------------------
 */
-bool Degamma::process(const Image &src, ImageLDR &dst) const
+bool Degamma::process(const Image& src, ImageLDR& dst) const
 {
     loggingErrorIf((src.width() != dst.width()) ||
                        (src.height() != dst.height()),
@@ -43,7 +43,7 @@ bool Degamma::process(const Image &src, ImageLDR &dst) const
         for (int32_t x = 0, w = src.width(); x < w; ++x)
         {
             const int32_t index = src.index(x, y);
-            const Spectrum &sp = src.pixel(index);
+            const Spectrum& sp = src.pixel(index);
 #if 0
             float weight = src.weight(index);
             weight = alMax(weight, 1.0f);
@@ -52,11 +52,11 @@ bool Degamma::process(const Image &src, ImageLDR &dst) const
             Spectrum nsp = sp;
 #endif
 
-            PixelLDR &dsp = dst.pixel(index);
+            PixelLDR& dsp = dst.pixel(index);
             SpectrumRGB rgbf;
             nsp.toRGB(rgbf);
             //
-            const float &invGamma = invGamma_;
+            const float& invGamma = invGamma_;
             const auto f2u = [&invGamma](float v) {
                 float fv =
                     alClamp(powf(v, invGamma) * 255.0f + 0.5f, 0.0f, 255.0f);

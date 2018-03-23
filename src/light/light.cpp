@@ -16,7 +16,7 @@ REGISTER_OBJECT(Light, EnviromentLight);
 Light
 -------------------------------------------------
 */
-Light::Light(const ObjectProp &objectProp)
+Light::Light(const ObjectProp& objectProp)
 {
     sampleNum_ = objectProp.findChildBy("name", "samplenum").asInt(1);
 }
@@ -38,7 +38,7 @@ ConstantLight::ConstantLight() : Light(ObjectProp()) {}
 -------------------------------------------------
 -------------------------------------------------
 */
-ConstantLight::ConstantLight(const ObjectProp &objectProp) : Light(objectProp)
+ConstantLight::ConstantLight(const ObjectProp& objectProp) : Light(objectProp)
 {
     const Spectrum spectrum = evalAsSpectrum(
         objectProp.findChildBy("name", "radiance").asString("0.5"), true);
@@ -49,7 +49,7 @@ ConstantLight::ConstantLight(const ObjectProp &objectProp) : Light(objectProp)
 -------------------------------------------------
 -------------------------------------------------
 */
-void ConstantLight::init(const Spectrum &spectrum)
+void ConstantLight::init(const Spectrum& spectrum)
 {
     spectrum_ = spectrum;
     // HACK: シーンサイズから見て十分な遠方は決め打ち
@@ -88,10 +88,10 @@ float ConstantLight::pdf(Vec3 targetPos, Vec3 dir) const
 -------------------------------------------------
 -------------------------------------------------
 */
-Spectrum ConstantLight::sampleLe(Sampler *sampler,
+Spectrum ConstantLight::sampleLe(Sampler* sampler,
                                  Vec3 targetPos,
-                                 Vec3 *samplePos,
-                                 float *pdf) const
+                                 Vec3* samplePos,
+                                 float* pdf) const
 {
     // 常に一定
     *pdf = this->pdf(Vec3(), Vec3());
@@ -107,7 +107,7 @@ Spectrum ConstantLight::sampleLe(Sampler *sampler,
 -------------------------------------------------
 -------------------------------------------------
 */
-bool ConstantLight::intersect(const Ray &ray, Intersect *isect) const
+bool ConstantLight::intersect(const Ray& ray, Intersect* isect) const
 {
     const float lightFar = std::numeric_limits<float>::infinity();
     if (isect->t < lightFar)
@@ -229,7 +229,7 @@ RectangleLight::RectangleLight() : Light(ObjectProp()) {}
 -------------------------------------------------
 -------------------------------------------------
 */
-RectangleLight::RectangleLight(const ObjectProp &objectProp) : Light(objectProp)
+RectangleLight::RectangleLight(const ObjectProp& objectProp) : Light(objectProp)
 {
     const Spectrum spectrum = evalAsSpectrum(
         objectProp.findChildBy("name", "radiance").asString("0.5"), true);
@@ -246,7 +246,7 @@ RectangleLight::RectangleLight(const ObjectProp &objectProp) : Light(objectProp)
 -------------------------------------------------
 -------------------------------------------------
 */
-void RectangleLight::init(const Spectrum &spectrum,
+void RectangleLight::init(const Spectrum& spectrum,
                           Vec3 center,
                           Vec3 xaxis,
                           Vec3 yaxis)
@@ -325,10 +325,10 @@ float RectangleLight::pdf(Vec3 targetPos, Vec3 dir) const
 -------------------------------------------------
 -------------------------------------------------
 */
-Spectrum RectangleLight::sampleLe(Sampler *sampler,
+Spectrum RectangleLight::sampleLe(Sampler* sampler,
                                   Vec3 targetPos,
-                                  Vec3 *samplePos,
-                                  float *pdf) const
+                                  Vec3* samplePos,
+                                  float* pdf) const
 {
     // 位置を一様にサンプルする
     const Vec2 uv = sampler->get2d();
@@ -346,7 +346,7 @@ Spectrum RectangleLight::sampleLe(Sampler *sampler,
 -------------------------------------------------
 -------------------------------------------------
 */
-bool RectangleLight::intersect(const Ray &ray, Intersect *isect) const
+bool RectangleLight::intersect(const Ray& ray, Intersect* isect) const
 {
     bool isHit = false;
     isHit |= intersectTriangle(ray,
@@ -383,7 +383,7 @@ bool RectangleLight::intersect(const Ray &ray, Intersect *isect) const
 -------------------------------------------------
 -------------------------------------------------
 */
-bool RectangleLight::intersectCheck(const Ray &ray) const
+bool RectangleLight::intersectCheck(const Ray& ray) const
 {
     return intersectTriangleCheck(ray, verts_[0], verts_[1], verts_[2]) ||
            intersectTriangleCheck(ray, verts_[2], verts_[1], verts_[3]);
@@ -507,7 +507,7 @@ SphereLight::SphereLight() : Light(ObjectProp()) {}
 -------------------------------------------------
 -------------------------------------------------
 */
-SphereLight::SphereLight(const ObjectProp &objectProp) : Light(objectProp)
+SphereLight::SphereLight(const ObjectProp& objectProp) : Light(objectProp)
 {
     const Spectrum spectrum = evalAsSpectrum(
         objectProp.findChildBy("name", "radiance").asString("0.5"), true);
@@ -521,7 +521,7 @@ SphereLight::SphereLight(const ObjectProp &objectProp) : Light(objectProp)
 -------------------------------------------------
 -------------------------------------------------
 */
-void SphereLight::init(Vec3 center, float radius, const Spectrum &emission)
+void SphereLight::init(Vec3 center, float radius, const Spectrum& emission)
 {
     //
     AL_ASSERT_ALWAYS(!center.hasNan());
@@ -597,10 +597,10 @@ float SphereLight::pdf(Vec3 targetPos, Vec3 dir) const
 -------------------------------------------------
 -------------------------------------------------
 */
-Spectrum SphereLight::sampleLe(Sampler *sampler,
+Spectrum SphereLight::sampleLe(Sampler* sampler,
                                Vec3 targetPos,
-                               Vec3 *samplePos,
-                               float *pdf) const
+                               Vec3* samplePos,
+                               float* pdf) const
 {
 #if 0 // 単純な方法
     // 球の表面を選択
@@ -665,7 +665,7 @@ Spectrum SphereLight::sampleLe(Sampler *sampler,
 -------------------------------------------------
 -------------------------------------------------
 */
-bool SphereLight::intersect(const Ray &ray, Intersect *isect) const
+bool SphereLight::intersect(const Ray& ray, Intersect* isect) const
 {
     const bool hit = intersectSphere(ray, center_, radius2_, isect);
     if (hit)
@@ -804,7 +804,7 @@ struct MedianCutBoxInfo
 dir2tex()
 -------------------------------------------------
 */
-static void dir2tex(const Vec3 &dir, Vec2 *uv)
+static void dir2tex(const Vec3& dir, Vec2* uv)
 {
     const float invPI = 1.0f / PI;
     const float x = (atan2f(dir.x(), -dir.y()) * invPI + 1.0f) * 0.5f;
@@ -817,7 +817,7 @@ static void dir2tex(const Vec3 &dir, Vec2 *uv)
 tex2dir()
 -------------------------------------------------
 */
-static void tex2dir(const Vec2 &uv, Vec3 *dir)
+static void tex2dir(const Vec2& uv, Vec3* dir)
 {
     const float u = 2.0f * uv.x();
     const float v = uv.y();
@@ -833,7 +833,7 @@ static void tex2dir(const Vec2 &uv, Vec3 *dir)
 EnviromentLight()
 -------------------------------------------------
 */
-EnviromentLight::EnviromentLight(const ObjectProp &objectProp)
+EnviromentLight::EnviromentLight(const ObjectProp& objectProp)
     : Light(objectProp)
 {
     logging("Start initialize EnviromentMap.");
@@ -908,10 +908,10 @@ Spectrum EnviromentLight::emission(Vec3 pos, Vec3 dir) const
 -------------------------------------------------
 -------------------------------------------------
 */
-Spectrum EnviromentLight::sampleLe(Sampler *sampler,
+Spectrum EnviromentLight::sampleLe(Sampler* sampler,
                                    Vec3 targetPos,
-                                   Vec3 *samplePos,
-                                   float *pdf) const
+                                   Vec3* samplePos,
+                                   float* pdf) const
 {
     //
     const float u1 = sampler->get1d();
@@ -931,7 +931,7 @@ Spectrum EnviromentLight::sampleLe(Sampler *sampler,
 -------------------------------------------------
 -------------------------------------------------
 */
-const Image &EnviromentLight::image() { return image_; }
+const Image& EnviromentLight::image() { return image_; }
 
 /*
 -------------------------------------------------
@@ -951,7 +951,7 @@ void EnviromentLight::prepareImportSampling()
         std::vector<float> rowValue;
         for (int32_t x = 0; x < w; ++x)
         {
-            const Spectrum &spectrum = image_.pixel(x, y);
+            const Spectrum& spectrum = image_.pixel(x, y);
             const float lum = spectrum.luminance();
             rowValue.push_back(lum * scale);
         }

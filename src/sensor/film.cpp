@@ -11,7 +11,7 @@ SubFilm::SubFilm() {}
 -------------------------------------------------
 -------------------------------------------------
 */
-void SubFilm::initialize(const Region2D &region, Film *film)
+void SubFilm::initialize(const Region2D& region, Film* film)
 {
     region_ = region;
     image_.resize(region.width(), region.height());
@@ -23,13 +23,13 @@ void SubFilm::initialize(const Region2D &region, Film *film)
 -------------------------------------------------
 -------------------------------------------------
 */
-const Region2D &SubFilm::region() const { return region_; }
+const Region2D& SubFilm::region() const { return region_; }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-Image &SubFilm::image() { return image_; }
+Image& SubFilm::image() { return image_; }
 
 /*
 -------------------------------------------------
@@ -49,8 +49,8 @@ int32_t SubFilm::getAddNum() const { return addNum_; }
 */
 void SubFilm::transferAddFilm()
 {
-    const auto &src = image_;
-    Image &dst = film_->image_;
+    const auto& src = image_;
+    Image& dst = film_->image_;
     const int32_t w = region_.width();
     const int32_t h = region_.height();
     // const int32_t dw = dst.width();
@@ -63,8 +63,8 @@ void SubFilm::transferAddFilm()
             const int32_t px = x + region_.left;
             const int32_t py = y + region_.top;
             //
-            const Spectrum &sp = src.pixel(x, y);
-            Image::SpectrumType &dp = dst.pixel(px, py);
+            const Spectrum& sp = src.pixel(x, y);
+            Image::SpectrumType& dp = dst.pixel(px, py);
             dp = sp * inv;
             //
             // const int32_t si = x + y * w;
@@ -77,7 +77,7 @@ void SubFilm::transferAddFilm()
 -------------------------------------------------
 -------------------------------------------------
 */
-Film::Film(const ObjectProp &objectProp)
+Film::Film(const ObjectProp& objectProp)
 {
     const std::string type =
         objectProp.findChildBy("name", "type").asString("hdrfilm");
@@ -122,7 +122,7 @@ Film::Film(const ObjectProp &objectProp)
         const int32_t x = tileX * tileSize;
         const int32_t y = tileY * tileSize;
         const Region2D region(x, y, x + tileSize, y + tileSize);
-        auto &subFilm = subFilms_[tileNo];
+        auto& subFilm = subFilms_[tileNo];
         subFilm.initialize(region, this);
     }
 }
@@ -143,13 +143,13 @@ int32_t Film::subFilmNum() const { return (int32_t)subFilms_.size(); }
 -------------------------------------------------
 -------------------------------------------------
 */
-SubFilm &Film::subFilm(int32_t regionNo) { return subFilms_[regionNo]; }
+SubFilm& Film::subFilm(int32_t regionNo) { return subFilms_[regionNo]; }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-const Image &Film::image() const { return image_; }
+const Image& Film::image() const { return image_; }
 
 /*
 -------------------------------------------------

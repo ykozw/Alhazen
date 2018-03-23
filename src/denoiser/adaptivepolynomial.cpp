@@ -8,8 +8,8 @@
 class AdaptivePolynomial AL_FINAL : public Denoiser
 {
 public:
-    AdaptivePolynomial(const ObjectProp &prop);
-    void denoise(const Image &src, Image &dst) override;
+    AdaptivePolynomial(const ObjectProp& prop);
+    void denoise(const Image& src, Image& dst) override;
 
 private:
 };
@@ -19,13 +19,13 @@ REGISTER_OBJECT(Denoiser, AdaptivePolynomial);
 -------------------------------------------------
 -------------------------------------------------
 */
-AdaptivePolynomial::AdaptivePolynomial(const ObjectProp &objectProp) {}
+AdaptivePolynomial::AdaptivePolynomial(const ObjectProp& objectProp) {}
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-void AdaptivePolynomial::denoise(const Image &src, Image &dst)
+void AdaptivePolynomial::denoise(const Image& src, Image& dst)
 {
     dst = src;
     logging("Start denoising(AdaptivePolynomial)");
@@ -42,7 +42,7 @@ void AdaptivePolynomial::denoise(const Image &src, Image &dst)
                 // ウィンドウサイズの半分
                 const int32_t HW = WS / 2;
                 float tile[WS * WS];
-                float *tp = tile;
+                float* tp = tile;
                 // ギャザーをする
                 for (int32_t tx = -HW; tx <= HW; ++tx)
                 {

@@ -15,7 +15,7 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-int32_t Alhazen::runApp(const ArgConfig &config)
+int32_t Alhazen::runApp(const ArgConfig& config)
 {
     // シーンの構築
     ObjectProp sceneProp;

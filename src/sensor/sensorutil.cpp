@@ -5,11 +5,11 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-void getGlassSpec(const std::string &glassName, float &nd, float &vd)
+void getGlassSpec(const std::string& glassName, float& nd, float& vd)
 {
     struct
     {
-        const char *glassName;
+        const char* glassName;
         const float nd;
         const float vd;
     } glasses[] = {
@@ -145,7 +145,7 @@ void getGlassSpec(const std::string &glassName, float &nd, float &vd)
         {"N-FK58", 1.45600f, 90.90f},
     };
     // 全ガラスから検索
-    for (const auto &glass : glasses)
+    for (const auto& glass : glasses)
     {
         if (glass.glassName == glassName)
         {

@@ -7,7 +7,7 @@ FileSystem g_fileSystem;
 -------------------------------------------------
 -------------------------------------------------
 */
-void FileSystem::init(const char *sceneFilePath, const char *exeFilePath)
+void FileSystem::init(const char* sceneFilePath, const char* exeFilePath)
 {
     // 出力フォルダを作成する
     std::string sceneFileDir;
@@ -53,9 +53,9 @@ std::string FileSystem::getOutputFolderPath() const
 
 -------------------------------------------------
 */
-const char *FileSystem::getExt(const char *fileName)
+const char* FileSystem::getExt(const char* fileName)
 {
-    const char *lastDot = strrchr(fileName, '.');
+    const char* lastDot = strrchr(fileName, '.');
     if (lastDot == NULL)
     {
         return "";
@@ -72,9 +72,9 @@ TODO:
 ポータビリティ、特殊なケースに対応していないので、C++0zでfilesystemが入ったら改築する
 -------------------------------------------------
 */
-void FileSystem::getDirPath(const std::string &fullPath,
-                            std::string &aDirPath,
-                            std::string &aFileName)
+void FileSystem::getDirPath(const std::string& fullPath,
+                            std::string& aDirPath,
+                            std::string& aFileName)
 {
 #if defined(WINDOWS)
     const char split = '\\';
@@ -90,10 +90,10 @@ void FileSystem::getDirPath(const std::string &fullPath,
 -------------------------------------------------
 -------------------------------------------------
 */
-std::string FileSystem::readTextFileAll(const std::string &filePath)
+std::string FileSystem::readTextFileAll(const std::string& filePath)
 {
     // TODO: 実装
-    FILE *file = fopen(filePath.c_str(), "rt");
+    FILE* file = fopen(filePath.c_str(), "rt");
     if (file == nullptr)
     {
         return "";
@@ -105,7 +105,7 @@ std::string FileSystem::readTextFileAll(const std::string &filePath)
     //　ファイルの内容を全てロードする
     std::string ret;
     ret.resize(fileSize);
-    fread((void *)ret.data(), ret.size(), 1, file);
+    fread((void*)ret.data(), ret.size(), 1, file);
     //
     fclose(file);
     //

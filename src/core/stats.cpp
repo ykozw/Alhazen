@@ -23,7 +23,7 @@ struct CounterInfo
 {
     std::string title;
     std::string unitName;
-    std::atomic<int64_t> *counter;
+    std::atomic<int64_t>* counter;
     CounterStats::PreFun preFun;
     CounterStats::PostFun postFun;
 };
@@ -32,7 +32,7 @@ struct CounterInfo
 -------------------------------------------------
 -------------------------------------------------
 */
-std::vector<CounterInfo> &getCounterInfo()
+std::vector<CounterInfo>& getCounterInfo()
 {
     static std::vector<CounterInfo> counterInfo;
     return counterInfo;
@@ -44,7 +44,7 @@ std::vector<CounterInfo> &getCounterInfo()
 */
 void CounterStats::preParallel()
 {
-    for (auto &ci : getCounterInfo())
+    for (auto& ci : getCounterInfo())
     {
         ci.preFun();
     }
@@ -56,7 +56,7 @@ void CounterStats::preParallel()
 */
 void CounterStats::postParallel()
 {
-    for (auto &ci : getCounterInfo())
+    for (auto& ci : getCounterInfo())
     {
         ci.postFun();
     }
@@ -66,9 +66,9 @@ void CounterStats::postParallel()
 -------------------------------------------------
 -------------------------------------------------
 */
-void CounterStats::addCounter(const std::string &title,
-                              const std::string &unitName,
-                              std::atomic<int64_t> *counter,
+void CounterStats::addCounter(const std::string& title,
+                              const std::string& unitName,
+                              std::atomic<int64_t>* counter,
                               PreFun preFun,
                               PostFun postFun)
 {
@@ -79,12 +79,12 @@ void CounterStats::addCounter(const std::string &title,
     newCI.preFun = preFun;
     newCI.postFun = postFun;
     // タイトル順でソート
-    auto &vec = getCounterInfo();
+    auto& vec = getCounterInfo();
     auto ite =
         std::lower_bound(vec.begin(),
                          vec.end(),
                          title,
-                         [](const CounterInfo &ci, const std::string &title) {
+                         [](const CounterInfo& ci, const std::string& title) {
                              return ci.title < title;
                          });
     vec.insert(ite, newCI);
@@ -101,7 +101,7 @@ void CounterStats::printStats(bool clearStats)
         std::chrono::duration_cast<std::chrono::milliseconds>(elapased).count();
     //
     logging("Counters");
-    for (auto &ci : getCounterInfo())
+    for (auto& ci : getCounterInfo())
     {
         // そのまま表示する場合
         const int64_t count = ci.counter->load();
@@ -134,7 +134,7 @@ void CounterStats::printStats(bool clearStats)
 
     if (clearStats)
     {
-        for (auto &ci : getCounterInfo())
+        for (auto& ci : getCounterInfo())
         {
             *ci.counter = 0;
         }

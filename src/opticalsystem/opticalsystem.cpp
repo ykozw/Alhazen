@@ -11,7 +11,7 @@ class OpticalSystem::Impl
 public:
     Impl() = default;
     ~Impl() = default;
-    bool setupFromOtx(const char *fileName);
+    bool setupFromOtx(const char* fileName);
 
 private:
     /*
@@ -51,11 +51,11 @@ private:
 -------------------------------------------------
 -------------------------------------------------
 */
-bool OpticalSystem::setupFromOtx(const char *fileName)
+bool OpticalSystem::setupFromOtx(const char* fileName)
 {
     return pimpl_->setupFromOtx(fileName);
 }
-bool OpticalSystem::Impl::setupFromOtx(const char *fileName)
+bool OpticalSystem::Impl::setupFromOtx(const char* fileName)
 {
     lensSet_.clear();
     std::ifstream file;
@@ -63,7 +63,7 @@ bool OpticalSystem::Impl::setupFromOtx(const char *fileName)
     AL_ASSERT_DEBUG(file);
     std::string buffer;
     // int32_t surfNo = 0;
-    LensSurface *curLensSurface = NULL;
+    LensSurface* curLensSurface = NULL;
     //
     while (std::getline(file, buffer))
     {
@@ -80,7 +80,7 @@ bool OpticalSystem::Impl::setupFromOtx(const char *fileName)
         -------------------------------------------------
         */
         // 無視するタグ一覧
-        const char *ignoreTags =
+        const char* ignoreTags =
             "!|VERS|FILE|NRD|RAIM|RAIC|PIM|PSFPATH|FNO|WL|WTW|REF|OSPF|"
             "FTYP|NFLD|FLD|MFR|MFRF|MTFAVG|AFR|DEF|KLDR|"
             "PLSC|PLSC2|AF|TRPLANE|TRXLAM|REM";
@@ -204,13 +204,13 @@ bool OpticalSystem::Impl::setupFromOtx(const char *fileName)
     float z = 0.0f;
     for (int32_t i = static_cast<int32_t>(lensSet_.size()) - 1; i >= 0; --i)
     {
-        auto &lens = lensSet_[i];
+        auto& lens = lensSet_[i];
         z += lens.distance;
         lens.z = z;
         // IORデータをずらす
         if (i > 0)
         {
-            auto &lensNext = lensSet_[i - 1];
+            auto& lensNext = lensSet_[i - 1];
             lens.ior_ = lensNext.ior_;
         }
         // 前玉前面は常に空気

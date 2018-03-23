@@ -15,7 +15,7 @@ Distribution1D_Naive::Distribution1D_Naive() { construct({{}}); }
 -------------------------------------------------
 -------------------------------------------------
 */
-Distribution1D_Naive::Distribution1D_Naive(const std::vector<float> &values)
+Distribution1D_Naive::Distribution1D_Naive(const std::vector<float>& values)
 {
     construct(values);
 }
@@ -25,7 +25,7 @@ Distribution1D_Naive::Distribution1D_Naive(const std::vector<float> &values)
 -------------------------------------------------
 */
 Distribution1D_Naive::Distribution1D_Naive(
-    const std::initializer_list<float> &values)
+    const std::initializer_list<float>& values)
 {
     construct(values);
 }
@@ -34,7 +34,7 @@ Distribution1D_Naive::Distribution1D_Naive(
 -------------------------------------------------
 -------------------------------------------------
 */
-Distribution1D_Naive::Distribution1D_Naive(const float *values, int32_t num)
+Distribution1D_Naive::Distribution1D_Naive(const float* values, int32_t num)
 {
     construct(std::vector<float>(values, values + num));
 }
@@ -61,7 +61,7 @@ Distribution1D_Naive::Distribution1D_Naive(std::function<float(float)> genFunc,
 -------------------------------------------------
 -------------------------------------------------
 */
-void Distribution1D_Naive::construct(const std::vector<float> &values)
+void Distribution1D_Naive::construct(const std::vector<float>& values)
 {
 #if 0
     uint32_t cdfSize = (uint32_t)values.size();
@@ -86,7 +86,7 @@ void Distribution1D_Naive::construct(const std::vector<float> &values)
         cdf_.back() = 1.0f;
     }
     const float scale = 1.0f / cdf_.back();
-    for (auto &v : cdf_)
+    for (auto& v : cdf_)
     {
         v *= scale;
     }
@@ -98,7 +98,7 @@ void Distribution1D_Naive::construct(const std::vector<float> &values)
 -------------------------------------------------
 -------------------------------------------------
 */
-float Distribution1D_Naive::sample(float u, float *pdf, int32_t *offset) const
+float Distribution1D_Naive::sample(float u, float* pdf, int32_t* offset) const
 {
     const auto upperIte = std::lower_bound(cdf_.begin(), cdf_.end(), u);
     const int32_t index = alMax((int32_t)(upperIte - cdf_.begin() - 1), 0);

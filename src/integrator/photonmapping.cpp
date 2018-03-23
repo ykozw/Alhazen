@@ -14,13 +14,13 @@ class PMIntegrator AL_FINAL : public LTEIntegrator
 {
 public:
     PMIntegrator() {}
-    PMIntegrator(const ObjectProp &objectProp);
-    bool preRendering(const SceneGeometory &scene,
-                      AllBSDFList &bsdfList) override;
+    PMIntegrator(const ObjectProp& objectProp);
+    bool preRendering(const SceneGeometory& scene,
+                      AllBSDFList& bsdfList) override;
     bool postRendering() override { return true; }
-    Spectrum radiance(const Ray &ray,
-                      const SceneGeometory &scene,
-                      Sampler *sampler) const override;
+    Spectrum radiance(const Ray& ray,
+                      const SceneGeometory& scene,
+                      Sampler* sampler) const override;
 
 private:
     int32_t numPhoton_ = 0;
@@ -34,7 +34,7 @@ private:
         Vec3 position() const { return pos; }
     };
     KdTree<Photon> photonMap_;
-    std::vector<const Photon *> photons_;
+    std::vector<const Photon*> photons_;
     std::vector<Photon> photonsSrc_;
 };
 REGISTER_OBJECT(LTEIntegrator, PMIntegrator);
@@ -43,7 +43,7 @@ REGISTER_OBJECT(LTEIntegrator, PMIntegrator);
 -------------------------------------------------
 -------------------------------------------------
 */
-PMIntegrator::PMIntegrator(const ObjectProp &objectProp)
+PMIntegrator::PMIntegrator(const ObjectProp& objectProp)
 {
     numPhoton_ = 1024 * 16;
 }
@@ -52,11 +52,11 @@ PMIntegrator::PMIntegrator(const ObjectProp &objectProp)
 -------------------------------------------------
 -------------------------------------------------
 */
-bool PMIntegrator::preRendering(const SceneGeometory &scene,
-                                AllBSDFList &bsdfList)
+bool PMIntegrator::preRendering(const SceneGeometory& scene,
+                                AllBSDFList& bsdfList)
 {
     //
-    const auto &lights = scene.lights();
+    const auto& lights = scene.lights();
     // 光源がなければ終了
     if (lights.empty())
     {
@@ -134,9 +134,9 @@ bool PMIntegrator::preRendering(const SceneGeometory &scene,
 -------------------------------------------------
 -------------------------------------------------
 */
-Spectrum PMIntegrator::radiance(const Ray &screenRay,
-                                const SceneGeometory &scene,
-                                Sampler *sampler) const
+Spectrum PMIntegrator::radiance(const Ray& screenRay,
+                                const SceneGeometory& scene,
+                                Sampler* sampler) const
 {
 #if 0
     // 適当に近いところにあるフォトンの数をそのまま輝度にする

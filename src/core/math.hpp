@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "pch.hpp"
 
 // VectorMathでSIMDを使うか否か。AVX2まで仮定する。
@@ -157,7 +157,7 @@ alFmod(float x, float y)
 Size2D
 -------------------------------------------------
 */
-struct Size2D AL_FINAL
+struct ALIGN16 Size2D AL_FINAL
 {
 public:
     int32_t width = 0;
@@ -194,7 +194,7 @@ operator*=(Size2D& v, int32_t f);
 Region2D
 -------------------------------------------------
 */
-struct Region2D AL_FINAL
+struct ALIGN16 Region2D AL_FINAL
 {
 public:
     int32_t left = 0;
@@ -215,32 +215,11 @@ public:
 
 /*
  -------------------------------------------------
- Bool8
- 0xFFFFFFFFか0x00000000が各レーンに入っている
- -------------------------------------------------
- */
-struct ALIGN32 Bool8 AL_FINAL
-{
-public:
-    union
-    {
-        __m256 v;
-        bool b[8];
-    };
-    INLINE Bool8() = default;
-    INLINE Bool8(const Bool8& other) = default;
-    INLINE Bool8(Bool8&& other) = default;
-    INLINE Bool8(__m256 other);
-    INLINE bool at(int32_t index) const;
-};
-
-/*
- -------------------------------------------------
  BoolInVec
  0レーンにデータが入っていることのみを保証したデータ
  -------------------------------------------------
  */
-struct ALIGN32 BoolInVec AL_FINAL
+struct ALIGN16 BoolInVec AL_FINAL
 {
 public:
 #if defined(AL_MATH_USE_NO_SIMD)
@@ -252,9 +231,13 @@ public:
     INLINE BoolInVec() = default;
     INLINE BoolInVec(const BoolInVec& other) = default;
     INLINE BoolInVec(BoolInVec&& other) = default;
+#if !defined(AL_MATH_USE_NO_SIMD)
     INLINE BoolInVec(__m128i v);
+#endif
     INLINE BoolInVec(bool v);
+#if !defined(AL_MATH_USE_NO_SIMD)
     INLINE operator __m128i() const;
+#endif
     INLINE operator bool() const;
     INLINE bool value() const;
 };
@@ -265,7 +248,7 @@ public:
  0レーンにデータが入っていることのみを保証したデータ
  -------------------------------------------------
  */
-struct ALIGN32 FloatInVec AL_FINAL
+struct ALIGN16 FloatInVec AL_FINAL
 {
 public:
 #if defined(AL_MATH_USE_NO_SIMD)
@@ -288,26 +271,6 @@ public:
 };
 INLINE bool
 operator<(FloatInVec lhs, FloatInVec rhs);
-
-/*
- -------------------------------------------------
- Float8
- -------------------------------------------------
- */
-struct ALIGN32 Float8 AL_FINAL
-{
-public:
-    union
-    {
-        __m256 v;
-        float e[8];
-    };
-    INLINE Float8() = default;
-    INLINE Float8(const Float8& other) = default;
-    INLINE Float8(Float8&& other) = default;
-    INLINE Float8(__m256 other);
-    operator __m256() const;
-};
 
 /*
 -------------------------------------------------
@@ -680,7 +643,7 @@ operator+(const Matrix4x4& lhs, const Matrix4x4& rhs);
 クオータニオン
 -------------------------------------------------
 */
-class Quat
+class ALIGN16 Quat
 {
 public:
     Quat() = default;

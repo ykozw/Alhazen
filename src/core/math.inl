@@ -322,61 +322,12 @@ INLINE bool operator < (FloatInVec lhs, FloatInVec rhs)
  -------------------------------------------------
  -------------------------------------------------
  */
-INLINE Float8::Float8(__m256 other)
-:v(other)
-{}
-
-/*
- -------------------------------------------------
- -------------------------------------------------
- */
-INLINE Float8::operator __m256()const
-{
-    return v;
-}
-
-/*
- -------------------------------------------------
- -------------------------------------------------
- */
-INLINE Bool8::Bool8(__m256 other)
-{
-#if defined(AL_MATH_USE_NO_SIMD)
-    AL_ASSERT_ALWAYS(false);
-#else
-    v = other;
-#endif
-}
-
-/*
- -------------------------------------------------
- -------------------------------------------------
- */
-INLINE bool Bool8::at(int32_t index) const
-{
-#if defined(AL_MATH_USE_NO_SIMD)
-    AL_ASSERT_ALWAYS(false);
-    return false;
-#else
-    // TODO: SIMD化
-    AL_ASSERT_ALWAYS(false);
-    //return v[index];
-    return 0.0f;
-#endif
-}
-
-/*
- -------------------------------------------------
- -------------------------------------------------
- */
+#if !defined(AL_MATH_USE_NO_SIMD)
 INLINE BoolInVec::BoolInVec(__m128i av)
 {
-#if defined(AL_MATH_USE_NO_SIMD)
-    v = (_mm_cvtsi128_si32(av) != 0);
-#else
     v = av;
-#endif
 }
+#endif
 
 /*
  -------------------------------------------------
@@ -395,14 +346,12 @@ INLINE BoolInVec::BoolInVec(bool av)
  -------------------------------------------------
  -------------------------------------------------
  */
+#if !defined(AL_MATH_USE_NO_SIMD)
 INLINE BoolInVec::operator __m128i () const
 {
-#if defined(AL_MATH_USE_NO_SIMD)
-    return _mm_set1_epi32(v);
-#else
     return v;
-#endif
 }
+#endif
 
 /*
  -------------------------------------------------

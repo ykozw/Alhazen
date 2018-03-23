@@ -299,6 +299,8 @@ public:
     //
     INLINE float x() const;
     INLINE float y() const;
+    INLINE FloatInVec vx() const;
+    INLINE FloatInVec vy() const;
     //
     INLINE void setX(float x);
     INLINE void setY(float y);
@@ -483,6 +485,10 @@ public:
     INLINE float y() const;
     INLINE float z() const;
     INLINE float w() const;
+    INLINE FloatInVec vx() const;
+    INLINE FloatInVec vy() const;
+    INLINE FloatInVec vz() const;
+    INLINE FloatInVec vw() const;
     //
     INLINE void zero();
     INLINE bool isZero() const;

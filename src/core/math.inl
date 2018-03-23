@@ -502,6 +502,32 @@ INLINE float Vec2::y() const
 }
 
 /*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE FloatInVec Vec2::vx() const
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    return FloatInVec(x_);
+#else
+    return FloatInVec(_mm_extract_ps_fast<0>(xy_));
+#endif
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE FloatInVec Vec2::vy() const
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    return FloatInVec(y_);
+#else
+    return FloatInVec(_mm_extract_ps_fast<1>(xy_));
+#endif
+}
+
+/*
  -------------------------------------------------
  -------------------------------------------------
  */
@@ -2008,15 +2034,67 @@ INLINE float Vec4::z()const
 }
 
 /*
- -------------------------------------------------
- -------------------------------------------------
- */
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE float Vec4::w()const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     return w_;
 #else
     return _mm_extract_ps_fast<3>(xyzw_);
+#endif
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE FloatInVec Vec4::vx() const
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    return FloatInVec(x_);
+#else
+    return FloatInVec(_mm_extract_ps_fast<0>(xyzw_));
+#endif
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE FloatInVec Vec4::vy() const
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    return FloatInVec(y_);
+#else
+    return FloatInVec(_mm_extract_ps_fast<1>(xyzw_));
+#endif
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE FloatInVec Vec4::vz() const
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    return FloatInVec(z_);
+#else
+    return FloatInVec(_mm_extract_ps_fast<2>(xyzw_));
+#endif
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE FloatInVec Vec4::vw() const
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    return FloatInVec(w_);
+#else
+    return FloatInVec(_mm_extract_ps_fast<3>(xyzw_));
 #endif
 }
 

@@ -62,6 +62,11 @@ INLINE float _mm_extract_ps_fast(__m128 v)
 {
     return _mm_cvtss_f32(_mm_shuffle_ps(v, v, _MM_SHUFFLE(0, 0, 0, index)));
 }
+template<0>
+INLINE float _mm_extract_ps_fast(__m128 v)
+{
+    return _mm_cvtss_f32(v);
+}
 
 /*
 -------------------------------------------------
@@ -255,7 +260,6 @@ INLINE FloatInVec::operator __m128 () const
 #else
     return v;
 #endif
-    
 }
 
 /*
@@ -278,7 +282,7 @@ INLINE FloatInVec FloatInVec::operator -() const
     return FloatInVec(-v);
 #else
     const __m128 neg = _mm_set_ss(-1.0f);
-    const __m128 negv = _mm_mul_ps(neg,v);
+    const __m128 negv = _mm_mul_ss(neg,v);
     return negv;
 #endif
 }
@@ -492,7 +496,7 @@ INLINE float Vec2::x() const
 #if defined(AL_MATH_USE_NO_SIMD)
     return x_;
 #else
-    return _mm_cvtss_f32(_mm_shuffle_ps(xy_, xy_, _MM_SHUFFLE(0, 0, 0, 0)));
+    return _mm_extract_ps_fast<0>(xy_);
 #endif
 }
 
@@ -505,7 +509,7 @@ INLINE float Vec2::y() const
 #if defined(AL_MATH_USE_NO_SIMD)
     return y_;
 #else
-    return _mm_cvtss_f32(_mm_shuffle_ps(xy_, xy_, _MM_SHUFFLE(1, 1, 1, 1)));
+    return _mm_extract_ps_fast<1>(xy_);
 #endif
 }
 
@@ -636,9 +640,38 @@ INLINE Vec2& Vec2::normalize()
     y_ *= invLen;
     return *this;
 #else
+    // デフォルト実装はfast
+    return normalizeFast();
+#endif
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE Vec2& Vec2::normalizeFast()
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    return normalize();
+#else
+    // 0x33は上側2つを使い、上側2つに格納することを意味する (1,1,0,0) -> (1,1,0,0)
     const __m128 dp = _mm_dp_ps(xy_, xy_, 0x33);
-    const __m128 idp = _mm_rsqrt_ps_accurate(dp);
+    const __m128 idp = _mm_rsqrt_ps(dp);
     xy_ = _mm_mul_ps(xy_, idp);
+    return *this;
+#endif
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE Vec2& Vec2::normalizeAccurate()
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    return normalize();
+#else
+    xy_ = _mm_div_ps(xy_, _mm_sqrt_ps(_mm_dp_ps(xy_, xy_, 0x33)));
     return *this;
 #endif
 }
@@ -649,8 +682,29 @@ INLINE Vec2& Vec2::normalize()
  */
 INLINE Vec2 Vec2::normalized() const
 {
+    // デフォルト実装はfast
+    return normalizedFast();
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE Vec2 Vec2::normalizedFast() const
+{
     Vec2 tmp = *this;
-    tmp.normalize();
+    tmp.normalizeFast();
+    return tmp;
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE Vec2 Vec2::normalizedAccurate() const
+{
+    Vec2 tmp = *this;
+    tmp.normalizeAccurate();
     return tmp;
 }
 
@@ -673,7 +727,7 @@ INLINE bool Vec2::isNormalized(float eps) const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     return fabsf(lengthSq() - 1.0f) < eps;
-#elif defined(AL_MATH_USE_AVX2)
+#else
     // TODO: SIMDにしてboolinvecを返すようにする
     return (std::fabsf(lengthSq() - 1.0f) < eps);
 #endif
@@ -721,15 +775,15 @@ INLINE float Vec2::operator[](int32_t index) const
 }
 
 /*
- -------------------------------------------------
- -------------------------------------------------
- */
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE FloatInVec Vec2::length(Vec2 v)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     AL_ASSERT_ALWAYS(false);
-#elif defined(AL_MATH_USE_AVX2)
-    return _mm_sqrt_ps(lengthSq(v));
+#else
+    return _mm_sqrt_ss(lengthSq(v));
 #endif
 }
 
@@ -754,10 +808,11 @@ INLINE FloatInVec Vec2::dot(Vec2 lhs, Vec2 rhs)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     return
-    lhs.x_ * rhs.x_ +
-    lhs.y_ * rhs.y_;
-#elif defined(AL_MATH_USE_AVX2)
-    return _mm_dp_ps(lhs.xy_, rhs.xy_, 0x3F);
+        lhs.x_ * rhs.x_ +
+        lhs.y_ * rhs.y_;
+#else
+    // 0x31は上側2つを使い、上側1つに格納することを意味する (1,1,0,0) -> (1,0,0,0)
+    return _mm_dp_ps(lhs.xy_, rhs.xy_, 0x31);
 #endif
 }
 
@@ -928,7 +983,7 @@ INLINE static Vec2 operator / (Vec2 v, float f)
 #if defined(AL_MATH_USE_NO_SIMD)
     const float inv = 1.0f / f;
     return Vec2(v.x() * inv, v.y() * inv);
-#elif defined(AL_MATH_USE_AVX2)
+#else
     const __m128 s = _mm_rcp_ps_accurate(_mm_set1_ps(f));
     return _mm_mul_ps(v, s);
 #endif
@@ -944,7 +999,7 @@ INLINE Vec3::Vec3(const float* es)
     x_ = es[0];
     y_ = es[1];
     z_ = es[2];
-#elif defined(AL_MATH_USE_AVX2)
+#else
     // NOTE: 16byteアライメントでないといけない
     xyz_ = _mm_load_ps(es);
 #endif
@@ -960,7 +1015,7 @@ INLINE Vec3::Vec3(float ax, float ay, float az)
     x_ = ax;
     y_ = ay;
     z_ = az;
-#elif defined(AL_MATH_USE_AVX2)
+#else
     xyz_ = _mm_set_ps(0.0f, az, ay, ax);
 #endif
 }
@@ -975,7 +1030,7 @@ INLINE Vec3::Vec3(float e)
     x_ = e;
     y_ = e;
     z_ = e;
-#elif defined(AL_MATH_USE_AVX2)
+#else
     xyz_ = _mm_set_ps1(e);
 #endif
 }
@@ -990,7 +1045,7 @@ INLINE Vec3::Vec3(__m128 other)
     x_ = _mm_cvtss_f32(_mm_shuffle_ps(other, other, _MM_SHUFFLE(0, 0, 0, 0)));
     y_ = _mm_cvtss_f32(_mm_shuffle_ps(other, other, _MM_SHUFFLE(0, 0, 0, 1)));
     z_ = _mm_cvtss_f32(_mm_shuffle_ps(other, other, _MM_SHUFFLE(0, 0, 0, 2)));
-#elif defined(AL_MATH_USE_AVX2)
+#else
     xyz_ = other;
 #endif
 }
@@ -1005,7 +1060,7 @@ INLINE Vec3::Vec3(const std::array<float, 3>& arr)
     x_ = arr[0];
     y_ = arr[1];
     z_ = arr[2];
-#elif defined(AL_MATH_USE_AVX2)
+#else
     xyz_ = _mm_set_ps(0.0f, arr[2], arr[1], arr[0]);
 #endif
 }
@@ -1020,7 +1075,7 @@ INLINE Vec3::Vec3(Vec4 arr)
     x_ = arr[0];
     y_ = arr[1];
     z_ = arr[2];
-#elif defined(AL_MATH_USE_AVX2)
+#else
     xyz_ = arr;
 #endif
 }
@@ -1035,7 +1090,7 @@ INLINE void Vec3::zero()
     x_ = 0.0f;
     y_ = 0.0f;
     z_ = 0.0f;
-#elif defined(AL_MATH_USE_AVX2)
+#else
     xyz_ = _mm_set_ps1(0.0f);
 #endif
 }
@@ -1052,7 +1107,7 @@ INLINE bool Vec3::isZero() const
         fabsf(x_) < d &&
         fabsf(y_) < d &&
         fabsf(z_) < d;
-#elif defined(AL_MATH_USE_AVX2)
+#else
     const __m128 zero = _mm_setzero_ps();
     const __m128 mask = _mm_cmpeq_ps(zero, xyz_);
     return (_mm_movemask_ps(mask) & 0x07) == 0x07;
@@ -1070,7 +1125,7 @@ INLINE bool Vec3::hasNan() const
         isnan(x_) ||
         isnan(y_) ||
         isnan(z_);
-#elif defined(AL_MATH_USE_AVX2)
+#else
     const __m128 mask = _mm_cmpeq_ps(xyz_, xyz_);
     return (_mm_movemask_ps(mask) & 0x07) != 0x07;
 #endif
@@ -1119,12 +1174,50 @@ INLINE Vec3& Vec3::normalize()
     x_ *= invLen;
     y_ *= invLen;
     z_ *= invLen;
+
+#else
+    // デフォルト実装はfast
+    return normalizeFast();
+#endif
+}
+
+/*
+-------------------------------------------------
+若干精度が落ちるがnormalizeAccurate()よりも2倍近く高速な正規化
+-------------------------------------------------
+*/
+INLINE Vec3& Vec3::normalizeFast()
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    return normalize();
+#else
+    // 0x77は上側3つを使い、上側3つに格納することを意味する (1,1,1,0) -> (1,1,1,0)
+    const __m128 dp = _mm_dp_ps(xyz_, xyz_, 0x77);
+    const __m128 idp = _mm_rsqrt_ps(dp);
+    xyz_ = _mm_mul_ps(xyz_, idp);
     return *this;
-#elif defined(AL_MATH_USE_AVX2)
+#endif
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE Vec3& Vec3::normalizeAccurate()
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    return normalize();
+#else
     // NOTE: 長さ0のケアはしていない
-    const __m128 dp = _mm_dp_ps(xyz_, xyz_, 0x7F); // TODO: これは0x7Fではないのか？
+#if 0 // 方法1. _mm_rsqrt_ps_accurate()を使う
+    // 0x77は上側3つを使い、上側3つに格納することを意味する (1,1,1,0) -> (1,1,1,0)
+    const __m128 dp = _mm_dp_ps(xyz_, xyz_, 0x77);
     const __m128 idp = _mm_rsqrt_ps_accurate(dp);
     xyz_ = _mm_mul_ps(xyz_, idp);
+#else // 方法2. _mm_div_ps()を使う。こちらのほうが若干早く、精度も高い。
+    // 0x77は上側3つを使い、上側3つに格納することを意味する (1,1,1,0) -> (1,1,1,0)
+    xyz_ = _mm_div_ps(xyz_, _mm_sqrt_ps(_mm_dp_ps(xyz_, xyz_, 0x77)));
+#endif
     return *this;
 #endif
 }
@@ -1135,8 +1228,29 @@ INLINE Vec3& Vec3::normalize()
 */
 INLINE Vec3 Vec3::normalized() const
 {
+    // デフォルト実装はfast
+    return normalizedFast();
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE Vec3 Vec3::normalizedFast() const
+{
     Vec3 v = *this;
-    v.normalize();
+    v.normalizeFast();
+    return v;
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE Vec3 Vec3::normalizedAccurate() const
+{
+    Vec3 v = *this;
+    v.normalizeAccurate();
     return v;
 }
 
@@ -1159,7 +1273,7 @@ INLINE bool Vec3::isNormalized(float eps) const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     return fabsf(lengthSq() - 1.0f) < eps;
-#elif defined(AL_MATH_USE_AVX2)
+#else
     // TODO: SIMDにしてboolinvecを返すようにする
     return (std::fabsf(lengthSq() - 1.0f) < eps);
 #endif
@@ -1175,7 +1289,7 @@ INLINE void Vec3::scale(float scale)
     x_ *= scale;
     y_ *= scale;
     z_ *= scale;
-#elif defined(AL_MATH_USE_AVX2)
+#else
     const __m128 s = _mm_set1_ps(scale);
     xyz_ = _mm_mul_ps(xyz_, s);
 #endif
@@ -1189,7 +1303,7 @@ INLINE FloatInVec Vec3::length() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     return sqrtf(lengthSq());
-#elif defined(AL_MATH_USE_AVX2)
+#else
     return length(xyz_);
 #endif
 }
@@ -1202,7 +1316,7 @@ INLINE FloatInVec Vec3::lengthSq() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     return x_*x_ + y_*y_ + z_*z_;
-#elif defined(AL_MATH_USE_AVX2)
+#else
     return lengthSq(xyz_);
 #endif
 }
@@ -1227,7 +1341,7 @@ INLINE Vec3 Vec3::inverted() const
 #if defined(AL_MATH_USE_NO_SIMD)
     return Vec3(1.0f / x_, 1.0f / y_, 1.0f / z_);
     assert(false);
-#elif defined(AL_MATH_USE_AVX2)
+#else
     return _mm_rsqrt_ps_accurate(xyz_);
 #endif
 }
@@ -1249,7 +1363,7 @@ INLINE Vec3 Vec3::invertedSafe(const float defaultValue) const
         return 1.0f / v;
     };
     return Vec3(inv(x_), inv(y_), inv(z_));
-#elif defined(AL_MATH_USE_AVX2)
+#else
     //const __m128 dv = _mm_set_ps1(defaultValue);
     const __m128 zero = _mm_setzero_ps();
     const __m128 mask = _mm_cmpeq_ps(zero, xyz_);
@@ -1267,7 +1381,7 @@ INLINE Vec3 Vec3::reflect(Vec3 v) const
 #if defined(AL_MATH_USE_NO_SIMD)
     const float factor = -2.0f * dot(*this, v);
     return v + factor * (*this);
-#elif defined(AL_MATH_USE_AVX2)
+#else
     // TODO: SIMDnize
     const float factor = dot(*this, v) * -2.0f;
     return v + factor * (*this);
@@ -1310,7 +1424,7 @@ INLINE FloatInVec Vec3::vx() const
 #if defined(AL_MATH_USE_NO_SIMD)
     return FloatInVec(x_);
 #else
-    return FloatInVec(_mm_shuffle_ps(xyz_, xyz_, _MM_SHUFFLE(0, 0, 0, 0)));
+    return _mm_extract_ps_fast<0>(xyz_);
 #endif
 }
 
@@ -1323,7 +1437,7 @@ INLINE FloatInVec Vec3::vy() const
 #if defined(AL_MATH_USE_NO_SIMD)
     return FloatInVec(y_);
 #else
-    return FloatInVec(_mm_shuffle_ps(xyz_, xyz_, _MM_SHUFFLE(0, 0, 0, 1)));
+    return _mm_extract_ps_fast<1>(xyz_);
 #endif
 }
 
@@ -1336,7 +1450,7 @@ INLINE FloatInVec Vec3::vz() const
 #if defined(AL_MATH_USE_NO_SIMD)
     return FloatInVec(z_);
 #else
-    return FloatInVec(_mm_shuffle_ps(xyz_, xyz_, _MM_SHUFFLE(0, 0, 0, 2)));
+    return _mm_extract_ps_fast<3>(xyz_);
 #endif
 }
 
@@ -1462,8 +1576,8 @@ INLINE FloatInVec Vec3::length(Vec3 v)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     return std::sqrtf(Vec3::lengthSq(v));
-#elif defined(AL_MATH_USE_AVX2)
-    return _mm_sqrt_ps(lengthSq(v));
+#else
+    return _mm_sqrt_ss(lengthSq(v));
 #endif
 }
 
@@ -1475,7 +1589,7 @@ INLINE FloatInVec Vec3::lengthSq(Vec3 v)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     assert(false);
-    return v.x_ * v.x_ + v.y_ * v.y_  + v.z_ *  v.z_;
+    return v.x_ * v.x_ + v.y_ * v.y_ + v.z_ *  v.z_;
 #else
     return Vec3::dot(v, v);
 #endif
@@ -1556,7 +1670,7 @@ INLINE FloatInVec Vec3::distance(Vec3 lhs, Vec3 rhs)
 #if defined(AL_MATH_USE_NO_SIMD)
     const Vec3 tmp = lhs - rhs;
     return tmp.length();
-#elif defined(AL_MATH_USE_AVX2)
+#else
     const __m128 dif = _mm_sub_ps(lhs.xyz_, rhs.xyz_);
     return length(dif);
 #endif
@@ -1571,7 +1685,7 @@ INLINE FloatInVec Vec3::distanceSq(Vec3 lhs, Vec3 rhs)
 #if defined(AL_MATH_USE_NO_SIMD)
     const Vec3 tmp = lhs - rhs;
     return tmp.lengthSq();
-#elif defined(AL_MATH_USE_AVX2)
+#else
     const __m128 dif = _mm_sub_ps(lhs.xyz_, rhs.xyz_);
     return lengthSq(dif);
 #endif
@@ -1588,8 +1702,9 @@ INLINE FloatInVec Vec3::dot(Vec3 lhs, Vec3 rhs)
         lhs.x_ * rhs.x_ +
         lhs.y_ * rhs.y_ +
         lhs.z_ * rhs.z_;
-#elif defined(AL_MATH_USE_AVX2)
-    return _mm_dp_ps(lhs.xyz_, rhs.xyz_, 0x7F);
+#else
+    // 0x71は上側3つを使い、上側1つに格納することを意味する (1,1,1,0) -> (1,0,0,0)
+    return _mm_dp_ps(lhs.xyz_, rhs.xyz_, 0x71);
 #endif
 }
 
@@ -1605,7 +1720,7 @@ INLINE Vec3 Vec3::cross(Vec3 xyz_, Vec3 abc)
             xyz_.y_ * abc.z_ - xyz_.z_ * abc.y_,
             xyz_.z_ * abc.x_ - xyz_.x_ * abc.z_,
             xyz_.x_ * abc.y_ - xyz_.y_ * abc.x_);
-#elif defined(AL_MATH_USE_AVX2)
+#else
     const __m128 tmp0 = _mm_shuffle_ps(xyz_.xyz_, xyz_.xyz_, _MM_SHUFFLE(3, 0, 2, 1));
     const __m128 tmp1 = _mm_shuffle_ps(abc.xyz_, abc.xyz_, _MM_SHUFFLE(3, 1, 0, 2));
     const __m128 tmp2 = _mm_shuffle_ps(xyz_.xyz_, xyz_.xyz_, _MM_SHUFFLE(3, 1, 0, 2));
@@ -1626,7 +1741,7 @@ INLINE Vec3 Vec3::mul(Vec3 lhs, Vec3 rhs)
             lhs.x_ * rhs.x_,
             lhs.y_ * rhs.y_,
             lhs.z_ * rhs.z_);
-#elif defined(AL_MATH_USE_AVX2)
+#else
     return _mm_mul_ps(lhs.xyz_, rhs.xyz_);
 #endif
 }
@@ -1643,7 +1758,7 @@ INLINE static Vec3 operator + (Vec3 lhs, Vec3 rhs)
             lhs.x() + rhs.x(),
             lhs.y() + rhs.y(),
             lhs.z() + rhs.z());
-#elif defined(AL_MATH_USE_AVX2)
+#else
     return _mm_add_ps(lhs, rhs);
 #endif
 }
@@ -1660,7 +1775,7 @@ INLINE static Vec3 operator - (Vec3 lhs, Vec3 rhs)
             lhs.x() - rhs.x(),
             lhs.y() - rhs.y(),
             lhs.z() - rhs.z());
-#elif defined(AL_MATH_USE_AVX2)
+#else
     return _mm_sub_ps(lhs, rhs);
 #endif
 }
@@ -1673,7 +1788,7 @@ INLINE static Vec3 operator - (Vec3 v)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     return  Vec3(-v.x(), -v.y(), -v.z());
-#elif defined(AL_MATH_USE_AVX2)
+#else
     return _mm_sub_ps(_mm_setzero_ps(), v);
 #endif
 }
@@ -1686,7 +1801,7 @@ INLINE static Vec3& operator += (Vec3& lhs, Vec3 rhs)
 #if defined(AL_MATH_USE_NO_SIMD)
     lhs = lhs + rhs;
     return lhs;
-#elif defined(AL_MATH_USE_AVX2)
+#else
     lhs = _mm_add_ps(lhs, rhs);
     return lhs;
 #endif
@@ -1701,7 +1816,7 @@ INLINE static Vec3& operator -= (Vec3& lhs, Vec3 rhs)
 #if defined(AL_MATH_USE_NO_SIMD)
     lhs = lhs - rhs;
     return lhs;
-#elif defined(AL_MATH_USE_AVX2)
+#else
     lhs = _mm_sub_ps(lhs, rhs);
     return lhs;
 #endif
@@ -1717,7 +1832,7 @@ INLINE static BoolInVec operator == (Vec3 lhs, Vec3 rhs)
         (lhs.x() == rhs.x()) &&
         (lhs.y() == rhs.y()) &&
         (lhs.z() == rhs.z());
-#elif defined(AL_MATH_USE_AVX2)
+#else
     const __m128 mask = _mm_cmpeq_ps(lhs, rhs);
     const int32_t maskPacked = _mm_movemask_ps(mask);
     return (maskPacked & 0x07) == 0x07;
@@ -1745,7 +1860,7 @@ INLINE static Vec3 operator * (float f, Vec3 v)
             f * v.x(),
             f * v.y(),
             f * v.z());
-#elif defined(AL_MATH_USE_AVX2)
+#else
     const __m128 s = _mm_set1_ps(f);
     return _mm_mul_ps(s, v);
 #endif
@@ -1759,7 +1874,7 @@ INLINE static Vec3 operator * (Vec3 v, float f)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     return f*v;
-#elif defined(AL_MATH_USE_AVX2)
+#else
     const __m128 s = _mm_set1_ps(f);
     return _mm_mul_ps(v, s);
 #endif
@@ -1774,7 +1889,7 @@ INLINE static Vec3& operator *= (Vec3& v, float f)
 #if defined(AL_MATH_USE_NO_SIMD)
     v = v * f;
     return v;
-#elif defined(AL_MATH_USE_AVX2)
+#else
     const __m128 s = _mm_set1_ps(f);
     v = _mm_mul_ps(s, v);
     return v;
@@ -1790,7 +1905,7 @@ INLINE static Vec3 operator / (Vec3 v, float f)
 #if defined(AL_MATH_USE_NO_SIMD)
     const float inv = 1.0f / f;
     return Vec3(v.x() * inv, v.y() * inv, v.z() * inv);
-#elif defined(AL_MATH_USE_AVX2)
+#else
     const __m128 s = _mm_rcp_ps_accurate(_mm_set1_ps(f));
     return _mm_mul_ps(v, s);
 #endif
@@ -1826,7 +1941,7 @@ INLINE Vec4::Vec4(float ax, float ay, float az, float aw)
     y_ = ay;
     z_ = az;
     w_ = aw;
-#elif defined(AL_MATH_USE_AVX2)
+#else
     xyzw_ = _mm_set_ps(aw, az, ay, ax);
 #endif
 }
@@ -1842,7 +1957,7 @@ INLINE Vec4::Vec4(float e)
     y_ = e;
     z_ = e;
     w_ = e;
-#elif defined(AL_MATH_USE_AVX2)
+#else
     xyzw_ = _mm_set_ps1(e);
 #endif
 }
@@ -1858,7 +1973,7 @@ INLINE Vec4::Vec4(__m128 other)
     y_ = _mm_cvtss_f32(_mm_shuffle_ps(other, other, _MM_SHUFFLE(0, 0, 0, 1)));
     z_ = _mm_cvtss_f32(_mm_shuffle_ps(other, other, _MM_SHUFFLE(0, 0, 0, 2)));
     w_ = _mm_cvtss_f32(_mm_shuffle_ps(other, other, _MM_SHUFFLE(0, 0, 0, 3)));
-#elif defined(AL_MATH_USE_AVX2)
+#else
     xyzw_ = other;
 #endif
 }
@@ -1872,7 +1987,7 @@ INLINE float Vec4::x()const
 #if defined(AL_MATH_USE_NO_SIMD)
     return x_;
 #else
-    return _mm_cvtss_f32(_mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(0, 0, 0, 0)));
+    return _mm_extract_ps_fast<0>(xyzw_);
 #endif
 }
 
@@ -1885,7 +2000,7 @@ INLINE float Vec4::y()const
 #if defined(AL_MATH_USE_NO_SIMD)
     return y_;
 #else
-    return _mm_cvtss_f32(_mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(1, 1, 1, 1)));
+    return _mm_extract_ps_fast<1>(xyzw_);
 #endif
 }
 
@@ -1898,7 +2013,7 @@ INLINE float Vec4::z()const
 #if defined(AL_MATH_USE_NO_SIMD)
     return z_;
 #else
-    return _mm_cvtss_f32(_mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(2, 2, 2, 2)));
+    return _mm_extract_ps_fast<2>(xyzw_);
 #endif
 }
 
@@ -1911,7 +2026,7 @@ INLINE float Vec4::w()const
 #if defined(AL_MATH_USE_NO_SIMD)
     return w_;
 #else
-    return _mm_cvtss_f32(_mm_shuffle_ps(xyzw_, xyzw_, _MM_SHUFFLE(3, 3, 3, 3)));
+    return _mm_extract_ps_fast<3>(xyzw_);
 #endif
 }
 
@@ -2028,22 +2143,74 @@ INLINE Vec4& Vec4::normalize()
     y_ *= invLen;
     z_ *= invLen;
     w_ *= invLen;
-#elif defined(AL_MATH_USE_AVX2)
-    const __m128 dp = _mm_dp_ps(xyzw_, xyzw_, 0xFF);
-    const __m128 idp = _mm_rsqrt_ps_accurate(dp);
-    xyzw_ = _mm_mul_ps(xyzw_, idp);
-#endif
     return *this;
+#else
+    // デフォルト実装はfast
+    return normalizeFast();
+#endif
+    
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE Vec4& Vec4::normalizeFast()
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    return normalize();
+#else
+    // 0xFFは上側4つを使い、上側4つに格納することを意味する (1,1,1,1) -> (1,1,1,1)
+    const __m128 dp = _mm_dp_ps(xyzw_, xyzw_, 0xFF);
+    const __m128 idp = _mm_rsqrt_ps(dp);
+    xyzw_ = _mm_mul_ps(xyzw_, idp);
+    return *this;
+#endif
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE Vec4& Vec4::normalizeAccurate()
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    return normalize();
+#else
+    // 0xFFは上側4つを使い、上側4つに格納することを意味する (1,1,1,1) -> (1,1,1,1)
+    xyzw_ = _mm_div_ps(xyzw_, _mm_sqrt_ps(_mm_dp_ps(xyzw_, xyzw_, 0xFF)));
+#endif
 }
 
 /*
  -------------------------------------------------
  -------------------------------------------------
  */
-Vec4 Vec4::normalized() const
+INLINE Vec4 Vec4::normalized() const
+{
+    // デフォルト実装はfast
+    return normalizedFast();
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE Vec4 Vec4::normalizedFast() const
 {
     Vec4 ret = *this;
-    ret.normalize();
+    ret.normalizeFast();
+    return ret;
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE Vec4 Vec4::normalizedAccurate() const
+{
+    Vec4 ret = *this;
+    ret.normalizeAccurate();
     return ret;
 }
 
@@ -2077,7 +2244,8 @@ INLINE FloatInVec Vec4::dot(Vec4 lhs, Vec4 rhs)
         lhs.z_ * rhs.z_ +
         lhs.w_ * rhs.w_;
 #else
-    return _mm_dp_ps(lhs.xyzw_, rhs.xyzw_, 0xFF);
+    // 0xF1は上側4つを使い、上側1つに格納することを意味する (1,1,1,1) -> (1,0,0,0)
+    return _mm_dp_ps(lhs.xyzw_, rhs.xyzw_, 0xF1);
 #endif
 }
 
@@ -2089,8 +2257,8 @@ INLINE FloatInVec Vec4::length(Vec4 v)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     return std::sqrtf(v.lengthSq());
-#elif defined(AL_MATH_USE_AVX2)
-    return _mm_sqrt_ps(lengthSq(v));
+#else
+    return _mm_sqrt_ss(lengthSq(v));
 #endif
 }
 
@@ -2100,7 +2268,7 @@ INLINE FloatInVec Vec4::length(Vec4 v)
 */
 INLINE FloatInVec Vec4::lengthSq(Vec4 v)
 {
-    return dot(v, v);
+    return Vec4::dot(v, v);
 }
 
 /*

@@ -3,7 +3,6 @@
 
 // VectorMathでSIMDを使うか否か。AVX2まで仮定する。
 //#define AL_MATH_USE_NO_SIMD
-#define AL_MATH_USE_AVX2
 
 /*
 -------------------------------------------------
@@ -338,7 +337,11 @@ public:
     BoolInVec any() const;
     BoolInVec all() const;
     Vec2& normalize();
+    Vec2& normalizeFast();
+    Vec2& normalizeAccurate();
     Vec2 normalized() const;
+    Vec2 normalizedFast() const;
+    Vec2 normalizedAccurate() const;
     bool isNormalized() const;
     bool isNormalized(float eps) const;
     FloatInVec length() const;
@@ -408,7 +411,11 @@ public:
     INLINE bool any() const;
     INLINE bool all() const;
     INLINE Vec3& normalize();
+    INLINE Vec3& normalizeFast();
+    INLINE Vec3& normalizeAccurate();
     INLINE Vec3 normalized() const;
+    INLINE Vec3 normalizedFast() const;
+    INLINE Vec3 normalizedAccurate() const;
     INLINE bool isNormalized() const;
     INLINE bool isNormalized(float eps) const;
     INLINE void scale(float scale);
@@ -516,7 +523,11 @@ public:
     INLINE FloatInVec length() const;
     INLINE FloatInVec lengthSq() const;
     INLINE Vec4& normalize();
+    INLINE Vec4& normalizeFast();
+    INLINE Vec4& normalizeAccurate();
     INLINE Vec4 normalized() const;
+    INLINE Vec4 normalizedFast() const;
+    INLINE Vec4 normalizedAccurate() const;
     //
     INLINE float operator[](int32_t index) const;
     INLINE Vec4& operator=(const Vec4& other) = default;

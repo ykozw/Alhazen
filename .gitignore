@@ -16,3 +16,4 @@
 bin/*
 generated/*
 thirdparty/tbb/*
+thirdparty/sde/*

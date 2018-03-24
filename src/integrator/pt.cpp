@@ -1,4 +1,4 @@
-﻿#include "pch.hpp"
+#include "pch.hpp"
 #include "integrator.hpp"
 #include "core/orthonormalbasis.hpp"
 #include "bsdf/bsdf.hpp"
@@ -312,7 +312,7 @@ Spectrum PTSurfaceIntegrator::estimateOneLight(const SceneGeometory& scene,
                                   const Light* light,
                                   BSDF* bsdf,
                                   Vec3 isectPos,
-                                  const OrthonormalBasis<>& local,
+                                  const OrthonormalBasis<>& onb,
                                   const Vec3 localWo,
                                   const SceneGeometory& scene,
                                   bool isUseMIS) {
@@ -338,7 +338,7 @@ Spectrum PTSurfaceIntegrator::estimateOneLight(const SceneGeometory& scene,
         // reflectanceの算出
         const Vec3 toLight = lightSamplePos - isectPos;
         const Vec3 worldWi = toLight.normalized();
-        const Vec3 localWi = local.world2local(worldWi);
+        const Vec3 localWi = onb.world2local(worldWi);
         const Spectrum reflectance = bsdf->bsdf(localWo, localWi);
         float weight = 1.0f;
         if (isUseMIS)

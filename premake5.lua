@@ -33,6 +33,7 @@ project "Alhazen"
   -- "cppdialect"は現在壊れているので直接buildoptionsを指定する
   -- cppdialect "C++14"
   buildoptions {"-std=c++14"}
+  vectorextensions "AVX2"
 
   filter "action:not vs*"
      pchheader "../src/pch.hpp"

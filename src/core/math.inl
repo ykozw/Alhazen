@@ -755,7 +755,7 @@ INLINE bool Vec2::isNormalized(float eps) const
 INLINE FloatInVec Vec2::length() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return std::sqrtf(lengthSq());
+    return FloatInVec(std::sqrtf(lengthSq()));
 #else
     return FloatInVec(_mm_sqrt_ps(lengthSq(*this)));
 #endif
@@ -768,7 +768,7 @@ INLINE FloatInVec Vec2::length() const
 INLINE FloatInVec Vec2::lengthSq() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return x_ * x_ + y_ * y_;
+    return FloatInVec(x_ * x_ + y_ * y_);
 #else
     return Vec2::dot(xy_, xy_);
 #endif
@@ -823,8 +823,9 @@ INLINE FloatInVec Vec2::dot(Vec2 lhs, Vec2 rhs)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     return
+    FloatInVec(
         lhs.x_ * rhs.x_ +
-        lhs.y_ * rhs.y_;
+        lhs.y_ * rhs.y_);
 #else
     // 0x31は上側2つを使い、上側1つに格納することを意味する (1,1,0,0) -> (1,0,0,0)
     return FloatInVec(_mm_dp_ps(lhs.xy_, rhs.xy_, 0x31));
@@ -1189,7 +1190,7 @@ INLINE Vec3& Vec3::normalize()
     x_ *= invLen;
     y_ *= invLen;
     z_ *= invLen;
-
+    return *this;
 #else
     // デフォルト実装はAccurate
     return normalizeAccurate();
@@ -1318,7 +1319,7 @@ INLINE void Vec3::scale(float scale)
 INLINE FloatInVec Vec3::length() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return sqrtf(lengthSq());
+    return FloatInVec(sqrtf(lengthSq()));
 #else
     return length(xyz_);
 #endif
@@ -1331,7 +1332,7 @@ INLINE FloatInVec Vec3::length() const
 INLINE FloatInVec Vec3::lengthSq() const
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return x_*x_ + y_*y_ + z_*z_;
+    return FloatInVec(x_*x_ + y_*y_ + z_*z_);
 #else
     return lengthSq(xyz_);
 #endif
@@ -1591,7 +1592,7 @@ INLINE float Vec3::operator[](int32_t index) const
 INLINE FloatInVec Vec3::length(Vec3 v)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return std::sqrtf(Vec3::lengthSq(v));
+    return FloatInVec(std::sqrtf(Vec3::lengthSq(v)));
 #else
     return FloatInVec(_mm_sqrt_ss(lengthSq(v)));
 #endif
@@ -1604,8 +1605,7 @@ INLINE FloatInVec Vec3::length(Vec3 v)
 INLINE FloatInVec Vec3::lengthSq(Vec3 v)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    assert(false);
-    return v.x_ * v.x_ + v.y_ * v.y_ + v.z_ *  v.z_;
+    return FloatInVec(v.x_ * v.x_ + v.y_ * v.y_ + v.z_ *  v.z_);
 #else
     return Vec3::dot(v, v);
 #endif
@@ -1715,9 +1715,10 @@ INLINE FloatInVec Vec3::dot(Vec3 lhs, Vec3 rhs)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     return
+    FloatInVec(
         lhs.x_ * rhs.x_ +
         lhs.y_ * rhs.y_ +
-        lhs.z_ * rhs.z_;
+        lhs.z_ * rhs.z_);
 #else
     // 0x71は上側3つを使い、上側1つに格納することを意味する (1,1,1,0) -> (1,0,0,0)
     return FloatInVec(_mm_dp_ps(lhs.xyz_, rhs.xyz_, 0x71));
@@ -2309,10 +2310,11 @@ INLINE FloatInVec Vec4::dot(Vec4 lhs, Vec4 rhs)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     return
+    FloatInVec(
         lhs.x_ * rhs.x_ +
         lhs.y_ * rhs.y_ +
         lhs.z_ * rhs.z_ +
-        lhs.w_ * rhs.w_;
+        lhs.w_ * rhs.w_);
 #else
     // 0xF1は上側4つを使い、上側1つに格納することを意味する (1,1,1,1) -> (1,0,0,0)
     return FloatInVec(_mm_dp_ps(lhs.xyzw_, rhs.xyzw_, 0xF1));
@@ -2326,7 +2328,7 @@ INLINE FloatInVec Vec4::dot(Vec4 lhs, Vec4 rhs)
 INLINE FloatInVec Vec4::length(Vec4 v)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
-    return std::sqrtf(v.lengthSq());
+    return FloatInVec(std::sqrtf(v.lengthSq()));
 #else
     return FloatInVec(_mm_sqrt_ss(lengthSq(v)));
 #endif
@@ -2517,9 +2519,16 @@ INLINE bool Matrix3x3::all() const
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE float Matrix3x3::det() const
+INLINE FloatInVec Matrix3x3::det() const
 {
+#if defined(AL_MATH_USE_NO_SIMD)
+    const float d =
+    (e11 * e22 * e33 + e21 * e32 * e13 + e31 * e12 * e23) -
+    (e11 * e32 * e23 + e31 * e22 * e13 + e21 * e12 * e33);
+    return FloatInVec(d);
+#else
     return Vec3::dot(Vec3::cross(row0,row1),row2);
+#endif
 }
 
 /*

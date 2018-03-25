@@ -557,8 +557,7 @@ public:
     bool hasNan() const;
     bool any() const;
     bool all() const;
-
-    float det() const;
+    FloatInVec det() const;
     void inverse();
     void transpose();
     Vec3 transform(Vec3 v) const;

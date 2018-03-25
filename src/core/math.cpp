@@ -60,17 +60,23 @@ AL_TEST(Math, BoolInVec)
     }
     // 非ゼロのtrueがちゃんと判定されるかを入れる
     {
+#if !defined(AL_MATH_USE_NO_SIMD)
         BoolInVec v(_mm_set1_epi32(2));
         AL_ASSERT_ALWAYS((bool)v);
+#endif
     }
     // 他のレーンを汚した状態での真偽チェック
     {
+#if !defined(AL_MATH_USE_NO_SIMD)
         BoolInVec v(_mm_set_epi32(3, 2, 1, 0));
         AL_ASSERT_ALWAYS(!(bool)v);
+#endif
     }
     {
+#if !defined(AL_MATH_USE_NO_SIMD)
         BoolInVec v(_mm_set_epi32(3, 2, 1, 1));
         AL_ASSERT_ALWAYS((bool)v);
+#endif
     }
 }
 

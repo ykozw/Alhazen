@@ -52,7 +52,7 @@ int32_t Alhazen::runApp(const ArgConfig& config)
         //
         const auto startRenderTime = g_timeUtil.elapseTimeInMs();
         // レンダリング
-        const int32_t TASK_NUM_UNTILL_BY_JOIN = 512;
+        const int32_t TASK_NUM_UNTILL_BY_JOIN = 4096;
         parallelFor(
             TASK_NUM_UNTILL_BY_JOIN,
             [&](int32_t taskNoOffsetBegin, int32_t taskNoOffsetEnd) {

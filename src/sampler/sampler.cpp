@@ -1,4 +1,4 @@
-﻿#include "pch.hpp"
+#include "pch.hpp"
 #include "sampler/sampler.hpp"
 #include "core/floatutil.hpp"
 #include "core/unittest.hpp"
@@ -562,3 +562,33 @@ AL_TEST(Sampler, SphericalFibonacci)
 -------------------------------------------------
 */
 AL_TEST(Sampler, RadicalInverse2) {}
+
+
+#if 0
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+template <typename SamplerType> void perfSampler()
+{
+    SamplerType sampler;
+    sampler.setHash(0x123);
+    Vec2 dummy(0.0f);
+    const auto start = g_timeUtil.elapseTimeInMs();
+    for (int32_t sn = 0; sn < 1024 * 32; ++sn)
+    {
+        sampler.startSample(sn);
+        for (int32_t dim = 0; dim < 512; ++dim)
+        {
+            dummy += sampler.get2d();
+        }
+    }
+    const auto elapse = g_timeUtil.elapseTimeInMs() - start;
+    printf("Done %d ms\n", elapse);
+}
+AL_TEST(Sampler, perf)
+{
+    perfSampler<SamplerIndepent>();
+    perfSampler<SamplerHalton>();
+}
+#endif

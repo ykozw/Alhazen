@@ -284,10 +284,7 @@ REGISTER_OBJECT(Sampler, SamplerHalton);
 -------------------------------------------------
 -------------------------------------------------
 */
-SamplerHalton::SamplerHalton(const ObjectProp& prop)
-{
-    //
-}
+SamplerHalton::SamplerHalton(const ObjectProp& prop) {}
 
 /*
 -------------------------------------------------
@@ -296,9 +293,15 @@ SamplerHalton::SamplerHalton(const ObjectProp& prop)
 float SamplerHalton::get1d()
 {
     const float offset = offsets_[dimention_ % offsets_.size()];
-    const float v =
-        std::fmodf(radicalInverseFast(dimention_, sampleNo_) + offset, 1.0f);
+    const float tmp = radicalInverseFast(dimention_, sampleNo_) + offset;
+    // NOTE: tmpは[0,2]が確定しているのでfmodf()を使わないで高速に計算できる
+#if 0
+    const float v = std::fmodf(tmp, 1.0f);
     const float sv = std::min(v, ONE_MINUS_EPS);
+#else
+    const float v = (tmp >= 1.0f) ? (tmp - 1.0f) : tmp;
+    const float sv = (v > ONE_MINUS_EPS) ? ONE_MINUS_EPS : v;
+#endif
     ++dimention_;
     return sv;
 }

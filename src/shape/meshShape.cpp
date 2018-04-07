@@ -3,6 +3,7 @@
 #include "core/transform.hpp"
 #include "shape/shape.hpp"
 #include "accelerator/bvh.hpp"
+#include "core/util.hpp"
 
 /*
 -------------------------------------------------
@@ -35,12 +36,12 @@ REGISTER_OBJECT(Shape, ObjShape);
 ObjShape::ObjShape(const ObjectProp& objectProp) : Shape(objectProp)
 {
     const std::string fileName =
-        objectProp.findChildBy("name", "filename").asString("test.obj");
+        objectProp.findChildByTag("filename").asString("test.obj");
     const Transform transform(objectProp.findChildByTag("transform"));
     twosided_ = objectProp.findChildBy("name", "twosided").asBool(false);
     // meshのロード
     Mesh mesh;
-    mesh.loadFromoObj(fileName);
+    mesh.loadFromoObj(g_fileSystem.getSceneFileFolderPath() + fileName);
     mesh.applyTransform(transform);
     // mesh.recalcNormal();
     // mesh.recalcBound();

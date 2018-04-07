@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "pch.hpp"
 
@@ -11,6 +11,7 @@ class FileSystem AL_FINAL
 public:
     void init(const char* sceneFilePath, const char* exeFilePath);
     std::string getOutputFolderPath() const;
+    std::string getSceneFileFolderPath() const;
     //
     static const char* getExt(const char* fileName);
     static void getDirPath(const std::string& fullPath,
@@ -19,6 +20,7 @@ public:
     static std::string readTextFileAll(const std::string& filePath);
 
 private:
+    std::string sceneFileDir_;
     std::string outputDir_;
     std::string exeDir_;
 };

@@ -8,7 +8,7 @@
   <boolean name="progressive" value="true" />
   
   <!--スナップショット出力秒数設定-->
-  <integer name="snapshotinterval" value="6" />
+  <integer name="snapshotinterval" value="3" />
   
   <!--スナップショット毎にデノイズ-->
   <boolean name="snapshotdenoise" value="false"/>
@@ -26,9 +26,9 @@
   <!--<denoiser type="ap"/>-->
   
   <!--インテグレーター-->
-  <!--<LTEIntegrator type="DebugSurfaceIntegrator">-->
-  <!--<LTEIntegrator type="AOSurfaceIntegrator">-->
-  <LTEIntegrator type="PTSurfaceIntegrator">
+  <LTEIntegrator type="DebugSurfaceIntegrator">
+<!--  <LTEIntegrator type="AOSurfaceIntegrator">-->
+<!--  <LTEIntegrator type="PTSurfaceIntegrator">-->
   <!--<LTEIntegrator type="BruteForceIntegrator">-->
   <!--<LTEIntegrator type="PMSurfaceIntegrator">-->
   </LTEIntegrator>
@@ -44,7 +44,8 @@
         <string name="fovAxis" value="x"/>
 		<float name="nearClip" value="0.1"/>
 		<transform name="toWorld">
-			<lookat target="0.0, 0.5, 0" origin="0.0, 0.5, 7.0" up="0.0, 1.0, 0.0"/>
+			<lookat target="0.0, 0.0, 0.0" origin="0.0, 0.0, -12.0" up="0.0, 1.0, 0.0"/>
+<!--             (-9.38,-0.50,-3.75) (9.38,12.19,10.57)-->
 		</transform>
     <film type="hdrfilm">
       <integer name="pixelWidth" value="320"/>
@@ -65,12 +66,12 @@
     <rgb name="radiance" value="1.0 1.0 1.0"/>
   </Light>-->
   
-  <Light type="SphereLight">
-    <float3 name="center" x="0.0" y="0.8" z="0.0"/>
-    <float name="radius" value="0.12"/>
-    <rgb name="radiance" value="15.0 15.0 15.0"/>
-  </Light>
-  
+<!--  <Light type="SphereLight">-->
+<!--    <float3 name="center" x="0.0" y="0.8" z="0.0"/>-->
+<!--    <float name="radius" value="0.12"/>-->
+<!--    <rgb name="radiance" value="15.0 15.0 15.0"/>-->
+<!--  </Light>-->
+
   <!--マテリアル設定-->
   <BSDF type="Lambertian" id="matWhite">
     <rgb name="reflectance" value="1.0 1.0 1.0"/>

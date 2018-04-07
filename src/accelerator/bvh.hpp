@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "pch.hpp"
 #include "core/math.hpp"
@@ -270,7 +270,8 @@ private:
 
 //
 // typedef BruteForceBVH BVH;
-typedef QBVH BVH;
+typedef SimpleBVH BVH;
+//typedef QBVH BVH;
 
 /*
 -------------------------------------------------

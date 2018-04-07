@@ -81,7 +81,7 @@ int32_t ObjShape::maxDepth() const { return bvh_.maxDepth(); }
 bool ObjShape::intersect(const Ray& ray, Intersect* isect) const
 {
     int8_t materialId = 0;
-    if (bvh_.intersect(ray, isect, &materialId))
+    if (bvh_.intersect(ray, isect))
     {
         isect->bsdf = bsdfs_[materialId].get();
         return true;

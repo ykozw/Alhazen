@@ -8,13 +8,13 @@
   <boolean name="progressive" value="true" />
   
   <!--スナップショット出力秒数設定-->
-  <integer name="snapshotinterval" value="3" />
+  <integer name="snapshotinterval" value="5" />
   
   <!--スナップショット毎にデノイズ-->
   <boolean name="snapshotdenoise" value="false"/>
   
   <!--一回のインターバルでのspp-->
-  <integer name="sppinterval" value="32" />
+  <integer name="sppinterval" value="4" />
   
   <!--サブサンプル指定をここに-->
   <Sampler type="SamplerIndepent">
@@ -26,8 +26,8 @@
   <!--<denoiser type="ap"/>-->
   
   <!--インテグレーター-->
-  <LTEIntegrator type="DebugSurfaceIntegrator">
-<!--  <LTEIntegrator type="AOSurfaceIntegrator">-->
+<!--  <LTEIntegrator type="DebugSurfaceIntegrator">-->
+  <LTEIntegrator type="AOSurfaceIntegrator">
 <!--  <LTEIntegrator type="PTSurfaceIntegrator">-->
   <!--<LTEIntegrator type="BruteForceIntegrator">-->
   <!--<LTEIntegrator type="PMSurfaceIntegrator">-->
@@ -44,12 +44,13 @@
         <string name="fovAxis" value="x"/>
 		<float name="nearClip" value="0.1"/>
 		<transform name="toWorld">
-			<lookat target="0.0, 0.0, 0.0" origin="0.0, 0.0, -12.0" up="0.0, 1.0, 0.0"/>
-<!--             (-9.38,-0.50,-3.75) (9.38,12.19,10.57)-->
+			<lookat target="0.0, 0.0, 0.0" origin="0.0, 0.0, -5.0" up="0.0, 1.0, 0.0"/>
 		</transform>
     <film type="hdrfilm">
-      <integer name="pixelWidth" value="320"/>
-      <integer name="pixelHeight" value="200"/>
+      <integer name="pixelWidth" value="640"/>
+      <integer name="pixelHeight" value="480"/>
+<!--      <integer name="pixelWidth" value="1920"/>-->
+<!--      <integer name="pixelHeight" value="1200"/>-->
       <float name="filmWidthMM" value="90"/>
       <float name="filmHeightMM" value="60"/>
     </film>

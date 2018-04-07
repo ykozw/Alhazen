@@ -56,15 +56,16 @@ bool SimpleBVH::construct(const std::vector<Vec3>& vs,
                           const std::vector<Vec2>& ts,
                           const std::vector<MeshFace>& fs)
 {
-    AL_ASSERT_DEBUG(vs.size() == ns.size());
     AL_ASSERT_DEBUG(fs.size() != 0);
+    AL_ASSERT_DEBUG(vs.size() != 0);
+    AL_ASSERT_DEBUG(ns.size() != 0);
     //
     vs_ = vs;
     fs_ = fs;
     // 全三角形のデータをまとめたものを作成する
     const int32_t faceNum = (int32_t)fs_.size();
     triangles.reserve(faceNum);
-    for(auto faceNo : step(faceNum))
+    for (auto faceNo : step(faceNum))
     {
         //
         const MeshFace& mf = fs_[faceNo];
@@ -73,10 +74,9 @@ bool SimpleBVH::construct(const std::vector<Vec3>& vs,
         tri.v[0] = vs[mf.vi[0]];
         tri.v[1] = vs[mf.vi[1]];
         tri.v[2] = vs[mf.vi[2]];
-        // 法線と頂点位置のインデックスは同じ
-        tri.n[0] = ns[mf.vi[0]];
-        tri.n[1] = ns[mf.vi[1]];
-        tri.n[2] = ns[mf.vi[2]];
+        tri.n[0] = ns[mf.ni[0]];
+        tri.n[1] = ns[mf.ni[1]];
+        tri.n[2] = ns[mf.ni[2]];
         tri.t[0] = ts[mf.ti[0]];
         tri.t[1] = ts[mf.ti[1]];
         tri.t[2] = ts[mf.ti[2]];
@@ -399,7 +399,7 @@ void QBVH::constructNodeMedian(int32_t nodeIndex,
     maxysF.fill(-inf);
     maxzsF.fill(-inf);
     // それぞれのmin/maxを得る
-    for(auto areaNo : step(4))
+    for (auto areaNo : step(4))
     {
         const auto& targetTris = trisPerArea[areaNo];
         for (const auto& tri : targetTris)
@@ -429,7 +429,7 @@ void QBVH::constructNodeMedian(int32_t nodeIndex,
     node.axisLeft = axisLR;
     node.axisRight = axisLR;
     // 子供の作成
-    for( auto chNo : step(4))
+    for (auto chNo : step(4))
     {
         // 葉の場合
         const bool isLeaf = trisPerArea[chNo].size() <= 4;

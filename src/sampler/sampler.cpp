@@ -1,4 +1,4 @@
-#include "pch.hpp"
+﻿#include "pch.hpp"
 #include "sampler/sampler.hpp"
 #include "core/floatutil.hpp"
 #include "core/unittest.hpp"
@@ -562,7 +562,6 @@ AL_TEST(Sampler, SphericalFibonacci)
 -------------------------------------------------
 */
 AL_TEST(Sampler, RadicalInverse2) {}
-
 
 #if 0
 /*

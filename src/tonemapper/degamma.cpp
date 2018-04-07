@@ -24,7 +24,7 @@ REGISTER_OBJECT(Tonemapper, Degamma);
 */
 Degamma::Degamma(const ObjectProp& objectProp) : Tonemapper(objectProp)
 {
-    const float gamma = objectProp.findChildBy("name", "gamma").asFloat(2.2f);
+    const float gamma = objectProp.findChildByTag("gamma").asFloat(2.2f);
     invGamma_ = 1.0f / gamma;
 }
 

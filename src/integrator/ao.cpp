@@ -31,7 +31,7 @@ REGISTER_OBJECT(LTEIntegrator, AOSurfaceIntegrator);
 */
 AOSurfaceIntegrator::AOSurfaceIntegrator(const ObjectProp& objectProp)
 {
-    sampleNum_ = objectProp.findChildBy("name", "sampleNum").asInt(64);
+    sampleNum_ = objectProp.findChildBy("name", "sampleNum").asInt(16);
 }
 
 /*

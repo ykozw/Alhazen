@@ -496,9 +496,22 @@ bool Mesh::loadFromoObj(const std::string& fileName)
     char readBuffer[readBufferSize];
     while (fgets(readBuffer, readBufferSize, file))
     {
+        // 改行を削除
+        const auto chopNewLine = [](char* str) {
+            if (char* ptr = strstr(str, "\r\n"))
+            {
+                *ptr = '\0';
+            }
+            if (char* ptr = strstr(str, "\n"))
+            {
+                *ptr = '\0';
+            }
+        };
+        chopNewLine(readBuffer);
+        //
         typedef std::function<bool(Mesh&, int32_t&, MaterialIds&, const char*)>
             CheckLineFunc;
-        const CheckLineFunc checkLineFuncs[] = {
+        const std::array<CheckLineFunc, 11> checkLineFuncs = {
             checkAsVert,
             checkAsFace,
             checkAsEmptyLine,
@@ -513,8 +526,6 @@ bool Mesh::loadFromoObj(const std::string& fileName)
         };
         static int32_t prevCheckFuncNo = 0;
         int32_t funcNo = 0;
-        const int32_t NUM_FUNC =
-            sizeof(checkLineFuncs) / sizeof(*checkLineFuncs);
         // 前回と同じフォーマットである可能性が高いのでまず同じフォーマットでチェック
         if (checkLineFuncs[prevCheckFuncNo](
                 *this, currentMaterialId, materialIds_, readBuffer))
@@ -523,7 +534,7 @@ bool Mesh::loadFromoObj(const std::string& fileName)
         // フォーマットが変わっている場合は全ての場合について再度チェック
         else
         {
-            for (funcNo = 0; funcNo < NUM_FUNC; ++funcNo)
+            for (funcNo = 0; funcNo < checkLineFuncs.size(); ++funcNo)
             {
                 if (checkLineFuncs[funcNo](
                         *this, currentMaterialId, materialIds_, readBuffer))
@@ -534,7 +545,7 @@ bool Mesh::loadFromoObj(const std::string& fileName)
                     break;
                 }
             }
-            if (funcNo == NUM_FUNC)
+            if (funcNo == checkLineFuncs.size())
             {
                 loggingError("OBJ: invalid line [%s]\n", readBuffer);
                 return false;

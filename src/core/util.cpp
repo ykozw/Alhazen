@@ -10,11 +10,10 @@ FileSystem g_fileSystem;
 void FileSystem::init(const char* sceneFilePath, const char* exeFilePath)
 {
     // 出力フォルダを作成する
-    std::string sceneFileDir;
     std::string fileName;
-    getDirPath(sceneFilePath, sceneFileDir, fileName);
+    getDirPath(sceneFilePath, sceneFileDir_, fileName);
     // ディレクトリ作成作成
-    outputDir_ = sceneFileDir + "/output/";
+    outputDir_ = sceneFileDir_ + "/output/";
 #if defined(WINDOWS)
     _mkdir(outputDir_.c_str());
 #else
@@ -32,7 +31,6 @@ void FileSystem::init(const char* sceneFilePath, const char* exeFilePath)
 
 /*
 -------------------------------------------------
-
 -------------------------------------------------
 */
 std::string FileSystem::getOutputFolderPath() const
@@ -47,6 +45,12 @@ std::string FileSystem::getOutputFolderPath() const
         return exeDir_;
     }
 }
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+std::string FileSystem::getSceneFileFolderPath() const { return sceneFileDir_; }
 
 /*
 -------------------------------------------------

@@ -3,6 +3,7 @@
 #include "shape/shape.hpp"
 #include "core/logging.hpp"
 #include "core/refarray.hpp"
+#include "core/iterator.hpp"
 
 /*
 -------------------------------------------------
@@ -63,7 +64,7 @@ bool SimpleBVH::construct(const std::vector<Vec3>& vs,
     // 全三角形のデータをまとめたものを作成する
     const int32_t faceNum = (int32_t)fs_.size();
     triangles.reserve(faceNum);
-    for (int32_t faceNo = 0; faceNo < faceNum; ++faceNo)
+    for(auto faceNo : step(faceNum))
     {
         //
         const MeshFace& mf = fs_[faceNo];
@@ -112,7 +113,7 @@ void SimpleBVH::constructNode(int32_t nodeIndex,
     curNode.childlen[1] = -1;
     curNode.aabb.clear();
     // TODO: 毎回全ての三角を見る必要はなく、子のAABBを合わせていけばよい
-    for (int32_t triNo = 0; triNo < numTriangle; ++triNo)
+    for (auto triNo : step(numTriangle))
     {
         curNode.aabb.addAABB(triangles[triNo].aabb);
     }
@@ -227,7 +228,7 @@ bool QBVH::construct(const std::vector<Vec3>& vs,
     const int32_t faceNum = (int32_t)fs_.size();
     triangles.reserve(faceNum);
     aabb_.clear();
-    for (int32_t faceNo = 0; faceNo < faceNum; ++faceNo)
+    for (auto faceNo : step(faceNum))
     {
         //
         const MeshFace& mf = fs_[faceNo];
@@ -398,7 +399,7 @@ void QBVH::constructNodeMedian(int32_t nodeIndex,
     maxysF.fill(-inf);
     maxzsF.fill(-inf);
     // それぞれのmin/maxを得る
-    for (int32_t areaNo = 0; areaNo < 4; ++areaNo)
+    for(auto areaNo : step(4))
     {
         const auto& targetTris = trisPerArea[areaNo];
         for (const auto& tri : targetTris)
@@ -428,7 +429,7 @@ void QBVH::constructNodeMedian(int32_t nodeIndex,
     node.axisLeft = axisLR;
     node.axisRight = axisLR;
     // 子供の作成
-    for (int32_t chNo = 0; chNo < 4; ++chNo)
+    for( auto chNo : step(4))
     {
         // 葉の場合
         const bool isLeaf = trisPerArea[chNo].size() <= 4;
@@ -471,7 +472,7 @@ void QBVH::constructNodeMedian(int32_t nodeIndex,
             leaf.z[1] = _mm_load_ps(z1s);
             leaf.z[2] = _mm_load_ps(z2s);
             //
-            for (int32_t ti = 0; ti < targetTri.size(); ++ti)
+            for (auto ti : step(targetTri.size()))
             {
                 leaf.v[ti] = targetTri[ti].v;
                 leaf.n[ti] = targetTri[ti].n;

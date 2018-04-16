@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "core/rng.hpp"
 
@@ -31,31 +31,28 @@ protected:
 
 /*
 -------------------------------------------------
+ https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Online
 -------------------------------------------------
 */
 class FloatStreamStats2 AL_FINAL
 {
 public:
-    struct float2
-    {
-        float x;
-        float y;
-    };
-
-public:
     FloatStreamStats2() = default;
-    void add(float v0, float v1);
-    int32_t size() const;
-    float2 mean() const;
-    float2 variance() const;
-    float2 sigma() const;
-    float cov() const;
-
+    void add(float x, float y);
+    int32_t size() const { return n_; }
+    float varX() const { return mx_ / (n_ - 1.0f); }
+    float varY() const { return my_ / (n_ - 1.0f); }
+    float sigmaX() const { return std::sqrtf(varX()); }
+    float sigmaY() const { return std::sqrtf(varY()); }
+    float cov() const { return C_ / float(n_ - 1); }
+    float R2() const { return cov()/(sigmaX()*sigmaY()); }
 protected:
-    float means_[2] = { 0.0f, 0.0f };
-    float Ms_[2] = { 0.0f, 0.0f };
-    float cov_ = 0.0f;
-    float n_ = 0.0f;
+    float mux_ = 0.0f;
+    float muy_ = 0.0f;
+    float mx_ = 0.0f;
+    float my_ = 0.0f;
+    float C_ = 0.0f;
+    int32_t n_ = 0;
 };
 
 /*

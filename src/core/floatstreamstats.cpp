@@ -97,64 +97,21 @@ bool FloatStreamStats::maybeSameMean(const FloatStreamStats& lhs,
 -------------------------------------------------
 -------------------------------------------------
 */
-void FloatStreamStats2::add(float v0, float v1)
+void FloatStreamStats2::add(float x, float y)
 {
-    //　TODO: 検算とコードの整理
-    const float nm0 = (v0 - means_[0]) / float(n_ + 1.0f) + means_[0];
-    const float nm1 = (v1 - means_[1]) / float(n_ + 1.0f) + means_[1];
-    const float covDif =
-        ((v0 - nm0) * (v1 - nm1) +
-         ((nm0 * nm1 - means_[0] * means_[1]) + (means_[1] - nm1) * means_[0] +
-          (means_[0] - nm0) * means_[1]) *
-             n_) /
-            float(n_ + 1.0f) +
-        cov_ * float(n_) / float(n_ + 1.0f);
-    cov_ = (int32_t(n_) >= 1) ? covDif : 0;
-    means_[0] = nm0;
-    means_[1] = nm1;
-
-    // TODO: varianceを計算する
+    n_ += 1;
+    const float invn = 1.0f / float(n_);
+    const float dx = x - mux_;
+    //
+    const float oldmux = mux_;
+    const float oldmuy = muy_;
+    mux_ += dx * invn;
+    muy_ += (y - muy_) * invn;
+    C_ += dx * (y - muy_);
+    //
+    mx_ = (x - oldmux) * (x - mux_) + mx_;
+    my_ = (y - oldmuy) * (y - muy_) + my_;
 }
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-int32_t FloatStreamStats2::size() const { return int32_t(n_); }
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-FloatStreamStats2::float2 FloatStreamStats2::mean() const
-{
-    return {means_[0], means_[1]};
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-FloatStreamStats2::float2 FloatStreamStats2::variance() const
-{
-    return {Ms_[0] / n_, Ms_[1] / n_};
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-FloatStreamStats2::float2 FloatStreamStats2::sigma() const
-{
-    // TODO: 実装
-    return {0.0f, 0.0f};
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-float FloatStreamStats2::cov() const { return cov_; }
 
 /*
 -------------------------------------------------

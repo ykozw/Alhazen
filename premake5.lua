@@ -30,9 +30,13 @@ project "Alhazen"
    }
 
   characterset "MBCS"
+
   -- "cppdialect"は現在壊れているので直接buildoptionsを指定する
-  -- cppdialect "C++14"
-  buildoptions {"-std=c++14"}
+  configuration "windows"
+    cppdialect "C++14"
+  configuration "macosx"
+    buildoptions {"-std=c++14"}
+
   vectorextensions "AVX2"
 
   filter "action:not vs*"

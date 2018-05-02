@@ -565,13 +565,13 @@ INLINE void Vec2::setY(float y)
  -------------------------------------------------
  -------------------------------------------------
  */
-INLINE void Vec2::zero()
+INLINE void Vec2::setZero()
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     x_ = 0.0f;
     y_ = 0.0f;
 #else
-    xy_ = _mm_set1_ps(0.0f);
+    xy_ = _mm_setzero_ps();
 #endif
 }
 
@@ -793,6 +793,32 @@ INLINE float Vec2::operator[](int32_t index) const
 -------------------------------------------------
 -------------------------------------------------
 */
+INLINE Vec2 Vec2::zero()
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    return Vec2(0.0f, 0.0f);
+#elif defined(AL_MATH_USE_AVX2)
+    return _mm_setzero_ps();
+#endif
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE Vec2 Vec2::one()
+{
+#if defined(AL_MATH_USE_NO_SIMD)
+    return Vec2(1.0f, 1.0f);
+#elif defined(AL_MATH_USE_AVX2)
+    return _mm_set_ps(1.0f, 1.0f, 1.0f, 1.0f);
+#endif
+}
+
+/*
+ -------------------------------------------------
+ -------------------------------------------------
+ */
 INLINE FloatInVec Vec2::length(Vec2 v)
 {
 #if defined(AL_MATH_USE_NO_SIMD)
@@ -1100,7 +1126,7 @@ INLINE Vec3::Vec3(Vec4 arr)
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE void Vec3::zero()
+INLINE void Vec3::setZero()
 {
 #if defined(AL_MATH_USE_NO_SIMD)
     x_ = 0.0f;
@@ -2441,9 +2467,9 @@ INLINE void Matrix3x3::zero()
 #if defined(AL_MATH_USE_NO_SIMD)
     AL_ASSERT_ALWAYS(false);
 #else
-    row0.zero();
-    row1.zero();
-    row2.zero();
+    row0.setZero();
+    row1.setZero();
+    row2.setZero();
 #endif
 }
 
@@ -3726,7 +3752,7 @@ INLINE float Quat::qs() const
 */
 INLINE void Quat::identity()
 {
-    qv_.zero();
+    qv_.setZero();
     qs_ = 1.0f;
 }
 

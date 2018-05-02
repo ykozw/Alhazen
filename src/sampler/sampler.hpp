@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "pch.hpp"
 #include "core/object.hpp"
@@ -100,6 +100,9 @@ public:
 
     // Cone(xyz_でz軸が中心)
     Vec3 getCone(float cosTheta);
+
+    // Triangleの重心座標
+    Vec2 getTriangle();
 
     /*
     -------------------------------------------------

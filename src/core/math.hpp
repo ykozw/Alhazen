@@ -305,7 +305,7 @@ public:
     INLINE void setX(float x);
     INLINE void setY(float y);
     //
-    void zero();
+    void setZero();
     BoolInVec isZero() const;
     BoolInVec hasNaN() const;
     BoolInVec any() const;
@@ -326,6 +326,8 @@ public:
     INLINE operator __m128() const { return xy_; }
 #endif
     // static
+    static Vec2 zero();
+    static Vec2 one();
     static FloatInVec length(Vec2 v);
     static FloatInVec lengthSq(Vec2 v);
     static FloatInVec dot(Vec2 lhs, Vec2 rhs);
@@ -379,7 +381,7 @@ public:
     INLINE Vec3(__m128 other);
     INLINE Vec3(const std::array<float, 3>& arr);
     INLINE Vec3(Vec4 arr);
-    INLINE void zero();
+    INLINE void setZero();
     INLINE bool isZero() const; // TODO: boolinvecにする
     INLINE bool hasNan() const;
     INLINE bool any() const;

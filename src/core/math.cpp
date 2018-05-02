@@ -281,7 +281,7 @@ AL_TEST(Math, Vec3)
     // zero
     {
         Vec3 v;
-        v.zero();
+        v.setZero();
         AL_ASSERT_ALWAYS(v.x() == 0.0f);
         AL_ASSERT_ALWAYS(v.y() == 0.0f);
         AL_ASSERT_ALWAYS(v.z() == 0.0f);
@@ -443,7 +443,7 @@ AL_TEST(Math, V4)
         const Vec4 v(1.0f);
         AL_ASSERT_ALWAYS(v.x() == 1.0f);
         AL_ASSERT_ALWAYS(v.y() == 1.0f);
-        AL_ASSERT_ALWAYS(v.z() == 1.0f);
+        AL_ASSERT_ALWAYS(v.z() == 1.0f);    
         AL_ASSERT_ALWAYS(v.w() == 1.0f);
     }
     {

@@ -226,6 +226,26 @@ Vec3 Sampler::getCone(float cosThetaMax)
 -------------------------------------------------
 -------------------------------------------------
 */
+Vec2 Sampler::getTriangle()
+{
+#if 1 // こちらの方が2割早い
+    const Vec2 xy = get2d();
+    const float tmp = std::sqrtf(xy.x());
+    return{ 1.0f - tmp, xy.y() * tmp };
+#else
+    Vec2 xy = get2d();
+    if (xy.x() + xy.y() >= 1.0f)
+    {
+        xy = Vec2::one() - xy;
+    }
+    return xy;
+#endif
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 uint32_t Sampler::getSize(uint32_t size)
 {
     const int32_t v = int32_t(get1d() * float(size));

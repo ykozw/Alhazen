@@ -590,7 +590,7 @@ void Mesh::recalcNormal()
     ns.resize(vs.size());
     for (auto& n : ns)
     {
-        n.zero();
+        n.setZero();
     }
     // 各面の法線を足してく
     for (const auto& f : faces)

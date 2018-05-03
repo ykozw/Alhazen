@@ -8,10 +8,7 @@ class DebugSurfaceIntegrator : public LTEIntegrator
 {
 public:
     DebugSurfaceIntegrator(const ObjectProp& objectProp);
-    bool preRendering(const SceneGeometory& scene) override
-    {
-        return true;
-    }
+    bool preRendering(const SceneGeometory& scene) override { return true; }
     bool postRendering() override { return true; }
     Spectrum radiance(const Ray& ray,
                       const SceneGeometory& scene,

@@ -1,6 +1,6 @@
 ﻿#include "integrator.hpp"
-#include "core/orthonormalbasis.hpp"
 #include "bsdf/bsdf.hpp"
+#include "core/orthonormalbasis.hpp"
 
 //
 #include "core/object.hpp"
@@ -97,7 +97,7 @@ Spectrum BruteForceIntegrator::radiance(const Ray& screenRay,
         Vec3 localWi;
         const OrthonormalBasis<> local(isect.normal);
         const Vec3 localWo = local.world2local(-ray.d);
-        //
+//
 #define USE_COSINE_IS
 #if defined(USE_COSINE_IS)
         float pdfHS;

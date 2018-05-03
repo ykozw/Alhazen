@@ -1,6 +1,6 @@
 ﻿#include "core/rng.hpp"
-#include "core/math.hpp"
 #include "accelerator/kdtree.hpp"
+#include "core/math.hpp"
 
 /*
 -------------------------------------------------
@@ -140,9 +140,8 @@ float minimumDisptance(const std::vector<Vec2>& samples)
     for (const Vec2& s : samples)
     {
         float minDist = 0.0;
-        AL_ASSERT_DEBUG(
-            false); // TODO:
-                    // 現在の方法だとサンプル点自身が返されてしまう。どうにかする。
+        AL_ASSERT_DEBUG(false); // TODO:
+                                // 現在の方法だとサンプル点自身が返されてしまう。どうにかする。
         kdtree.findNearest(Vec3(s.x(), s.y(), 0.0f), &minDist);
         minMinDist = std::min(minMinDist, minDist);
     }

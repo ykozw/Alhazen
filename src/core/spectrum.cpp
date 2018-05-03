@@ -1,7 +1,7 @@
 ﻿#include "core/spectrum.hpp"
-#include "core/unittest.hpp"
 #include "core/image.hpp"
 #include "core/object.hpp"
+#include "core/unittest.hpp"
 #include "tonemapper/tonemapper.hpp"
 
 /*

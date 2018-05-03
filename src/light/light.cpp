@@ -1,9 +1,9 @@
 ﻿#include "core/logging.hpp"
-#include "core/unittest.hpp"
-#include "core/floatstreamstats.hpp"
 #include "light/light.hpp"
-#include "sampler/sampler.hpp"
 #include "shape/shape.hpp"
+#include "core/floatstreamstats.hpp"
+#include "core/unittest.hpp"
+#include "sampler/sampler.hpp"
 
 REGISTER_OBJECT(Light, ConstantLight);
 REGISTER_OBJECT(Light, RectangleLight);

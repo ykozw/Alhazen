@@ -1,9 +1,9 @@
 ﻿#include "core/object.hpp"
-#include "core/unittest.hpp"
-#include "core/floatstreamstats.hpp"
-#include "sampler/sampler.hpp"
 #include "bsdf/bsdf.hpp"
+#include "core/floatstreamstats.hpp"
 #include "core/stats.hpp"
+#include "core/unittest.hpp"
+#include "sampler/sampler.hpp"
 
 REGISTER_OBJECT(BSDF, Lambertian);
 REGISTER_OBJECT(BSDF, Glass);
@@ -1240,8 +1240,8 @@ static float GGX(float NdotH, float alphaG)
 */
 static float smithG_GGX(float Ndotv, float alphaG)
 {
-    return 2.0f /
-           (1.0f + sqrtf(1.0f + alphaG * alphaG * (1.0f - Ndotv * Ndotv) /
+    return 2.0f / (1.0f + sqrtf(1.0f +
+                                alphaG * alphaG * (1.0f - Ndotv * Ndotv) /
                                     (Ndotv * Ndotv)));
 }
 
@@ -1273,10 +1273,12 @@ Spectrum Walter::bsdf(Vec3 localWo, Vec3 localWi) const
     // fresnel
     const float c = VdotH;
     const float g = sqrt(ior_ * ior_ + c * c - 1);
-    const float F = useFresnel_ ? 0.5f * powf(g - c, 2.0f) / powf(g + c, 2.0f) *
-                                      (1.0f + powf(c * (g + c) - 1.0f, 2.0f) /
-                                                  pow(c * (g - c) + 1.0f, 2.0f))
-                                : 1.0f;
+    const float F = useFresnel_
+                        ? 0.5f * powf(g - c, 2.0f) / powf(g + c, 2.0f) *
+                              (1.0f +
+                               powf(c * (g + c) - 1.0f, 2.0f) /
+                                   pow(c * (g - c) + 1.0f, 2.0f))
+                        : 1.0f;
     const float val = Kd_ / PI + Ks_ * D * G * F / (4 * NdotL * NdotV);
     return Spectrum::createFromRGB({{val, val, val}}, false);
 }
@@ -1486,9 +1488,8 @@ float DisneyBRDF::D_GTR2Aniso(Vec3 m, float MdotN2) const
     float HdotU = Vec3::dot(m, Vec3(1.0f, 0.0f, 0.0f));
     float HdotV = Vec3::dot(m, Vec3(0.0f, 1.0f, 0.0f));
 
-    float denominator =
-        alphaX_ * alphaY_ *
-        sqr(sqr(HdotU / alphaX_) + sqr(HdotV / alphaY_) + MdotN2);
+    float denominator = alphaX_ * alphaY_ * sqr(sqr(HdotU / alphaX_) +
+                                                sqr(HdotV / alphaY_) + MdotN2);
     return INV_PI / denominator;
 }
 
@@ -1707,9 +1708,9 @@ Spectrum DisneyBRDF::bsdfSample(Vec3 localWo,
     *pdf = this->pdf(localWo, *localWi);
     return bsdf(localWo, *localWi);
 #else
-    // TODO
-    // http://renderloop.blogspot.jp/2015/07/implementing-disney-principled-brdf-in.html
-    // あたりを参考にちゃんとISする
+// TODO
+// http://renderloop.blogspot.jp/2015/07/implementing-disney-principled-brdf-in.html
+// あたりを参考にちゃんとISする
 #endif
 }
 

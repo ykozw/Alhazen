@@ -442,7 +442,7 @@ AL_TEST(Math, V4)
         const Vec4 v(1.0f);
         AL_ASSERT_ALWAYS(v.x() == 1.0f);
         AL_ASSERT_ALWAYS(v.y() == 1.0f);
-        AL_ASSERT_ALWAYS(v.z() == 1.0f);    
+        AL_ASSERT_ALWAYS(v.z() == 1.0f);
         AL_ASSERT_ALWAYS(v.w() == 1.0f);
     }
     {
@@ -471,7 +471,7 @@ AL_TEST(Math, V4)
         const float z = 3.0f;
         const float w = 4.0f;
         const Vec4 v(x, y, z, w);
-        //
+//
 #if 0
         AL_ASSERT_ALWAYS(v.xxxx() == Vec4(x, x, x, x));
         AL_ASSERT_ALWAYS(v.yxxx() == Vec4(y, x, x, x));

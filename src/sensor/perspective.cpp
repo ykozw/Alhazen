@@ -1,6 +1,6 @@
 ﻿#include "sensor/sensor.hpp"
-#include "sensor/sensorutil.hpp"
 #include "core/transform.hpp"
+#include "sensor/sensorutil.hpp"
 
 /*
 -------------------------------------------------
@@ -68,9 +68,9 @@ Perspective::Perspective(const ObjectProp& objectProp)
     const float tfAspect = tf * screenAspect_;
     rightDir_ *= tfAspect;
     upDir_ *= tf;
-    // TODO: fovAxis
-    // TODO: shutterOpen
-    // TODO: shutterClose
+// TODO: fovAxis
+// TODO: shutterOpen
+// TODO: shutterClose
 #if 0
     const float nearClip = objectProp.findChildBy("name", "nearClip").asFloat(1e-2f * 0.0001f);
     const float farClip = objectProp.findChildBy("name", "farClip").asFloat(1e4f * 0.0001f);

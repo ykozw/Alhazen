@@ -3,9 +3,47 @@ BreakBeforeBraces: Allman
 AllowShortIfStatementsOnASingleLine: false
 AlignAfterOpenBracket: Align
 IndentCaseLabels: false
-SortIncludes: false
+SortIncludes: true
 BinPackArguments: false
 BinPackParameters: false
 IndentWidth: 4
 AccessModifierOffset: -4
 PointerAlignment: Left
+
+IncludeCategories:
+  - Regex:           '^<.*\.h>'
+    Priority:        2
+  - Regex:           '^<.*'
+    Priority:        3
+  - Regex:           '^"app/'
+    Priority:        5
+  - Regex:           '^"denoiser/'
+    Priority:        5
+  - Regex:           '^"tonemapper/'
+    Priority:        5
+  - Regex:           '^"integrator/'
+    Priority:        5
+  - Regex:           '^"sensor/'
+    Priority:        5
+  - Regex:           '^"opticalsystem/'
+    Priority:        5
+  - Regex:           '^"light/'
+    Priority:        5
+  - Regex:           '^"material/'
+    Priority:        5
+  - Regex:           '^"bsdf/'
+    Priority:        5
+  - Regex:           '^"accelerator/'
+    Priority:        5
+  - Regex:           '^"shape/'
+    Priority:        4
+  - Regex:           '^"sampleable2d/'
+    Priority:        5
+  - Regex:           '^"sampler/'
+    Priority:        5
+  - Regex:           '^"util/'
+    Priority:        5
+  - Regex:           '^"core/'
+    Priority:        5
+  - Regex:           '.*'
+    Priority:        6

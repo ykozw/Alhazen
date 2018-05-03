@@ -34,7 +34,6 @@ private:
         Vec3 position() const { return pos; }
     };
     KdTree<Photon> photonMap_;
-    std::vector<const Photon*> photons_;
     std::vector<Photon> photonsSrc_;
 };
 REGISTER_OBJECT(LTEIntegrator, PMIntegrator);
@@ -76,15 +75,16 @@ bool PMIntegrator::preRendering(const SceneGeometory& scene,
         // const uint32_t lightIndex =
         // sampler->getSize(uint32_t(lights.size())); const LightPtr& light =
         // lights[lightIndex]; 光源からのサンプル
-        Vec3 samplePos = Vec3(0.0f, 0.0f, 0.0f);
-        Spectrum emission;
+        Vec3 samplePos = Vec3(0.0f, 2.0f, 0.0f);
+        Spectrum emission = Spectrum::createFromRGB({ 1.0f,1.0f,1.0f }, true);
         // float pdf = 0.0f;
-        OrthonormalBasis<> lightLocalCoord;
+        //OrthonormalBasis<> lightLocalCoord;
+        //lightLocalCoord.set()
         // TODO: emission方向によらない光源を仮定しているのを直す
         // light->sample(sampler, &samplePos, &emission, &pdf,
         // &lightLocalCoord); light->sampleLe(sampler,) 射出方向の選択
-        const Vec3 launchDirLocal = sampler->getHemisphere();
-        const Vec3 launchDirWorld = lightLocalCoord.local2world(launchDirLocal);
+        const Vec3 launchDirWorld = sampler->getSphere();
+        //const Vec3 launchDirWorld = lightLocalCoord.local2world(launchDirLocal);
         //
         Ray ray(samplePos, launchDirWorld);
         for (int32_t pathNo = 0; pathNo < 8; ++pathNo)
@@ -138,7 +138,6 @@ Spectrum PMIntegrator::radiance(const Ray& screenRay,
                                 const SceneGeometory& scene,
                                 Sampler* sampler) const
 {
-#if 0
     // 適当に近いところにあるフォトンの数をそのまま輝度にする
     Intersect isect;
     const bool skipLight = true;
@@ -146,7 +145,10 @@ Spectrum PMIntegrator::radiance(const Ray& screenRay,
         return Spectrum(0.0f);
     }
     const int32_t numSerch = 32;
-    photonMap_.findKNN(isect.position, numSerch, photons_);
+    // TODO: std::function<>呼び出しとかに変更する
+    std::vector<const Photon*> photons;
+    photons.resize(32);
+    photonMap_.findKNN(isect.position, numSerch, photons);
     //
 #if 0
     int32_t okayCount = 0;
@@ -164,14 +166,12 @@ Spectrum PMIntegrator::radiance(const Ray& screenRay,
     const OrthonormalBasis<> lc(isect.normal);
     const Vec3 woLocal = lc.world2local(screenRay.d);
     Spectrum spectrum(0.0f);
-    for (const auto& photon : photons_) {
+    for (const auto& photon : photons) {
         const Vec3 wiLocal = lc.world2local(photon->wiWorld);
         const Spectrum reflectance = isect.bsdf->bsdf(woLocal, wiLocal);
         spectrum += photon->spectrum * reflectance;
     }
-    spectrum /= float(photons_.size());
+    spectrum /= float(photons.size());
 
     return spectrum;
-#endif
-    return Spectrum(0.0f);
 }

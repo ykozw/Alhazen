@@ -53,25 +53,6 @@ protected:
 
 /*
 -------------------------------------------------
-AllBSDFList
-シーンにBSDFを渡すために使われている。
-TODO: 廃止する
--------------------------------------------------
-*/
-class AllBSDFList
-{
-public:
-    AllBSDFList();
-    void add(const ObjectProp& objectProp);
-    const BSDFPtr find(const std::string& materialName) const;
-    const BSDFPtr defaultBSDF() const;
-
-private:
-    std::unordered_map<std::string, BSDFPtr> bsdfs_;
-};
-
-/*
--------------------------------------------------
 BSDFs
 複数のBSDFが合わさったBSDF
 -------------------------------------------------

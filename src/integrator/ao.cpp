@@ -13,8 +13,7 @@ class AOSurfaceIntegrator AL_FINAL : public LTEIntegrator
 public:
     AOSurfaceIntegrator() {}
     AOSurfaceIntegrator(const ObjectProp& objectProp);
-    bool preRendering(const SceneGeometory& scene,
-                      AllBSDFList& bsdfList) override;
+    bool preRendering(const SceneGeometory& scene) override;
     bool postRendering() override { return true; }
     Spectrum radiance(const Ray& ray,
                       const SceneGeometory& scene,
@@ -38,8 +37,7 @@ AOSurfaceIntegrator::AOSurfaceIntegrator(const ObjectProp& objectProp)
 -------------------------------------------------
 -------------------------------------------------
 */
-bool AOSurfaceIntegrator::preRendering(const SceneGeometory& scene,
-                                       AllBSDFList& bsdfList)
+bool AOSurfaceIntegrator::preRendering(const SceneGeometory& scene)
 {
     return true;
 }

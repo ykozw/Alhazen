@@ -15,8 +15,7 @@ class PMIntegrator AL_FINAL : public LTEIntegrator
 public:
     PMIntegrator() {}
     PMIntegrator(const ObjectProp& objectProp);
-    bool preRendering(const SceneGeometory& scene,
-                      AllBSDFList& bsdfList) override;
+    bool preRendering(const SceneGeometory& scene) override;
     bool postRendering() override { return true; }
     Spectrum radiance(const Ray& ray,
                       const SceneGeometory& scene,
@@ -51,8 +50,7 @@ PMIntegrator::PMIntegrator(const ObjectProp& objectProp)
 -------------------------------------------------
 -------------------------------------------------
 */
-bool PMIntegrator::preRendering(const SceneGeometory& scene,
-                                AllBSDFList& bsdfList)
+bool PMIntegrator::preRendering(const SceneGeometory& scene)
 {
     //
     const auto& lights = scene.lights();

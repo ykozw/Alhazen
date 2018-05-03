@@ -1,12 +1,32 @@
 ﻿#pragma once
 
+//
 #include "pch.hpp"
+//
+#include "shape/shape.hpp"
+//
 #include "core/math.hpp"
 #include "core/ray.hpp"
 #include "core/bounding.hpp"
 #include "core/refarray.hpp"
-#include "shape/mesh.hpp"
-#include "shape/shape.hpp"
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+struct MeshFace
+{
+    // 位置
+    std::array<int32_t, 3> vi;
+    // 法線
+    std::array<int32_t, 3> ni;
+    // 接線
+    std::array<int32_t, 3> ti;
+    // マテリアル
+    int32_t mi = -1;
+    //
+    MeshFace() = default;
+};
 
 /*
 -------------------------------------------------
@@ -89,7 +109,7 @@ private:
         // AABB
         AABB aabb;
         // マテリアルID
-        // MaterialId materialId;
+        int32_t materialId;
     };
     // TODO:
     // 節であっても全てにv,n,tのデータがありフットプリントを逼迫しているので直す
@@ -106,7 +126,7 @@ private:
         // 葉であった場合のUV座標。枝の場合は無効な値。
         std::array<Vec2, 3> t;
         // 葉であった場合のマテリアルID。枝の場合は無効な値。
-        // MaterialId m;
+        int32_t materialId;
     };
 
 private:

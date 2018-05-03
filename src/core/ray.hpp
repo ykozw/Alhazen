@@ -114,6 +114,8 @@ public:
     Spectrum emission = Spectrum::Black;
     // 交差したオブジェクト
     const SceneObject* sceneObject = nullptr;
+    //
+    int32_t materialId = 0;
 
 public:
     Intersect();

@@ -15,8 +15,7 @@ class BruteForceIntegrator AL_FINAL : public LTEIntegrator
 public:
     BruteForceIntegrator() = default;
     BruteForceIntegrator(const ObjectProp& objectProp);
-    bool preRendering(const SceneGeometory& scene,
-                      AllBSDFList& bsdfList) override;
+    bool preRendering(const SceneGeometory& scene) override;
     bool postRendering() override { return true; }
     Spectrum radiance(const Ray& ray,
                       const SceneGeometory& scene,
@@ -40,8 +39,7 @@ BruteForceIntegrator::BruteForceIntegrator(const ObjectProp& objectProp)
 -------------------------------------------------
 -------------------------------------------------
 */
-bool BruteForceIntegrator::preRendering(const SceneGeometory& scene,
-                                        AllBSDFList& bsdfList)
+bool BruteForceIntegrator::preRendering(const SceneGeometory& scene)
 {
     return true;
 }

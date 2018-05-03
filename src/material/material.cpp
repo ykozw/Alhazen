@@ -1,5 +1,4 @@
-﻿#include "pch.hpp"
-#include "material/material.hpp"
+﻿#include "material/material.hpp"
 
 /*
 -------------------------------------------------

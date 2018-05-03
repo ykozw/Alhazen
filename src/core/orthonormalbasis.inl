@@ -1,5 +1,4 @@
-﻿#include "pch.hpp"
-#include "core/orthonormalbasis.hpp"
+﻿#include "core/orthonormalbasis.hpp"
 
 /*
 -------------------------------------------------

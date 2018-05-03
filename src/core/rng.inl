@@ -1,5 +1,4 @@
-﻿#include "pch.hpp"
-#include "rng.hpp"
+﻿#include "rng.hpp"
 
 /*
 -------------------------------------------------

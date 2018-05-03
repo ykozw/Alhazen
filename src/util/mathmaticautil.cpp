@@ -1,5 +1,4 @@
-﻿#include "pch.hpp"
-#include "core/util.hpp"
+﻿#include "core/util.hpp"
 #include "util/mathmaticautil.hpp"
 
 /*

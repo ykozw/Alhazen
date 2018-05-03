@@ -1,5 +1,4 @@
 ﻿
-#include "pch.hpp"
 #include "shape/shape.hpp"
 #include "core/transform.hpp"
 

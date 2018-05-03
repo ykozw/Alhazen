@@ -1,5 +1,4 @@
-﻿#include "pch.hpp"
-#include "sh.hpp"
+﻿#include "sh.hpp"
 
 // routine generated programmatically for evaluating SH basis for degree 1
 // inputs (x,y,z) are a point on the sphere (i.e., must be unit length)

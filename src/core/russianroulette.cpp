@@ -1,5 +1,4 @@
-﻿#include "pch.hpp"
-#include "core/russianroulette.hpp"
+﻿#include "core/russianroulette.hpp"
 
 /*
 -------------------------------------------------

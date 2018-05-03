@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include "pch.hpp"
 #include "math.hpp"
 
 // 可視光の範囲

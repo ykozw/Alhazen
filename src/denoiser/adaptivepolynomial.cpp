@@ -1,5 +1,4 @@
-﻿#include "pch.hpp"
-#include "denoiser/denoiser.hpp"
+﻿#include "denoiser/denoiser.hpp"
 
 /*
 -------------------------------------------------

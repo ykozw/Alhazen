@@ -3,7 +3,6 @@ TODO list
 - このファイルの内容の大半をlensフォルダに移動させる
 */
 
-#include "pch.hpp"
 #include "core/transform.hpp"
 #include "core/object.hpp"
 #include "core/util.hpp"

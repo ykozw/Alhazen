@@ -1,5 +1,4 @@
-﻿#include "pch.hpp"
-#include "ray.hpp"
+﻿#include "ray.hpp"
 
 /*
 -------------------------------------------------

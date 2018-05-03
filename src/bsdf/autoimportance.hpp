@@ -1,6 +1,5 @@
 ﻿#pragma once
 
-#include "pch.hpp"
 #include "bsdf.hpp"
 #include "core/distribution2d.hpp"
 

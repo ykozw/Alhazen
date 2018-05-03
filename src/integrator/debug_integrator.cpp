@@ -1,5 +1,4 @@
-﻿#include "pch.hpp"
-#include "integrator.hpp"
+﻿#include "integrator.hpp"
 
 /*
 -------------------------------------------------

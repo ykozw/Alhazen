@@ -1,5 +1,4 @@
-﻿#include "pch.hpp"
-#include "core/object.hpp"
+﻿#include "core/object.hpp"
 #include "core/unittest.hpp"
 #include "core/floatstreamstats.hpp"
 #include "sampler/sampler.hpp"

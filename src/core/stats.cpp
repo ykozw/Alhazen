@@ -1,5 +1,4 @@
-﻿#include "pch.hpp"
-#include "core/stats.hpp"
+﻿#include "core/stats.hpp"
 #include "core/logging.hpp"
 
 //

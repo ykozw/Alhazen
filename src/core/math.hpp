@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include "pch.hpp"
 
 // VectorMathでSIMDを使うか否か。AVX2まで仮定する。
 //#define AL_MATH_USE_NO_SIMD

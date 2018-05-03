@@ -1,6 +1,5 @@
 ﻿#pragma once
 
-#include "pch.hpp"
 #include "core/ray.hpp"
 #include "core/intersect.hpp"
 #include "core/bounding.hpp"

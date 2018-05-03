@@ -14,6 +14,8 @@ project "Alhazen"
    
    pchsource "src/pch.cpp"
    pchheader "pch.hpp"
+   forceincludes  { "pch.hpp" }
+
    includedirs {
      "src",
      "thirdparty/tinyxml2",

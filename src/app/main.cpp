@@ -1,5 +1,4 @@
-﻿#include "pch.hpp"
-#include "app/alhazen.hpp"
+﻿#include "app/alhazen.hpp"
 
 /*
 -------------------------------------------------

@@ -1,6 +1,5 @@
 ﻿#pragma once
 
-#include "pch.hpp"
 #include "core/spectrum.hpp"
 #include "core/ray.hpp"
 #include "core/ray.hpp"

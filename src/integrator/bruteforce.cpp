@@ -1,5 +1,4 @@
-﻿#include "pch.hpp"
-#include "integrator.hpp"
+﻿#include "integrator.hpp"
 #include "core/orthonormalbasis.hpp"
 #include "bsdf/bsdf.hpp"
 

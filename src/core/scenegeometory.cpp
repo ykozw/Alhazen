@@ -1,5 +1,4 @@
-﻿#include "pch.hpp"
-#include "core/scenegeometory.hpp"
+﻿#include "core/scenegeometory.hpp"
 #include "core/stats.hpp"
 
 //

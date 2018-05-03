@@ -1,5 +1,4 @@
-﻿#include "pch.hpp"
-#include "core/logging.hpp"
+﻿#include "core/logging.hpp"
 #include "core/unittest.hpp"
 
 /*

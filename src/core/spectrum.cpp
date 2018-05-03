@@ -1,5 +1,4 @@
-﻿#include "pch.hpp"
-#include "core/spectrum.hpp"
+﻿#include "core/spectrum.hpp"
 #include "core/unittest.hpp"
 #include "core/image.hpp"
 #include "core/object.hpp"

@@ -1,5 +1,4 @@
-﻿#include "pch.hpp"
-#include "tonemapper/tonemapper.hpp"
+﻿#include "tonemapper/tonemapper.hpp"
 #include "core/logging.hpp"
 
 /*

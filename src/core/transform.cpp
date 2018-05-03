@@ -1,5 +1,4 @@
-﻿#include "pch.hpp"
-#include "core/transform.hpp"
+﻿#include "core/transform.hpp"
 
 /*
 -------------------------------------------------

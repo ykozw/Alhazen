@@ -1,5 +1,4 @@
-﻿#include "pch.hpp"
-#include "logging.hpp"
+﻿#include "logging.hpp"
 #include "util.hpp"
 
 /*

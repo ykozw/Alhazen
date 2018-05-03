@@ -1,5 +1,4 @@
-﻿#include "pch.hpp"
-#include "core/vdbmt.hpp"
+﻿#include "core/vdbmt.hpp"
 #include "core/math.hpp"
 #include "core/util.hpp"
 

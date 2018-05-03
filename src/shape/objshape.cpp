@@ -126,6 +126,10 @@ ObjShape::ObjShape(const ObjectProp& objectProp) : Shape(objectProp)
     // マテリアルのロード
     for (auto& material : materials)
     {
+        // HACK: 決め打ち
+        material.diffuse[0] = 0.25f;
+        material.diffuse[1] = 0.25f;
+        material.diffuse[2] = 0.25f;
         // HACK: とりあえずDiffuseだけ対応しておく
         const Spectrum spectrum =
             Spectrum::createFromRGB(std::array<float, 3>({material.diffuse[0],

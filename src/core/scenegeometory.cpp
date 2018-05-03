@@ -27,6 +27,13 @@ void SceneGeometory::buildScene()
 {
     // BVHの作成
     shapeBvh_.construct(shapes_);
+    // ライトがなかったら全天球ライトを配置する
+    if (lights_.empty())
+    {
+        auto light = std::make_shared<ConstantLight>();
+        light->init(Spectrum::White);
+        lights_.push_back(light);
+    }
 }
 
 /*

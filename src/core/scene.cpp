@@ -52,7 +52,7 @@ Scene::Scene(const ObjectProp& objectProp)
         }
     }
 
-    // TODO: Lightの追加
+    // Lightの追加
     for (const ObjectProp& child : objectProp.childProps())
     {
         if (child.tag() != "Light")

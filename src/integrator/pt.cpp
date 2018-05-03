@@ -1,6 +1,6 @@
 ﻿#include "integrator.hpp"
-#include "core/orthonormalbasis.hpp"
 #include "bsdf/bsdf.hpp"
+#include "core/orthonormalbasis.hpp"
 #include "core/stats.hpp"
 //
 #include "core/object.hpp"
@@ -38,7 +38,6 @@ private:
                               Sampler* samler) const;
 
 private:
-
     // 直接光のライトの選択の戦略
     enum class DirectLighitingSelectStrategy
     {
@@ -147,10 +146,9 @@ Spectrum PTSurfaceIntegrator::radiance(const Ray& screenRay,
             break;
         }
         const Vec3 worldWi = local.local2world(localWi);
-        throughput =
-            throughput * reflectance * fabsf(localWi.z()) / pdfBSDF *
-            INV_PI; // TODO:
-                    // invpiはどうやって取り除くのか？pdf()の単位を変えればいいのか？
+        throughput = throughput * reflectance * fabsf(localWi.z()) / pdfBSDF *
+                     INV_PI; // TODO:
+                             // invpiはどうやって取り除くのか？pdf()の単位を変えればいいのか？
         AL_ASSERT_DEBUG(!throughput.hasNaN());
         // 次のrayを作成する
         const Vec3 rayOrig = (localWi.z() >= 0.0f) ? isect.uppserSideOrigin()
@@ -176,7 +174,7 @@ PTSurfaceIntegrator::estimateDirectLight(const SceneGeometory& scene,
 {
     switch (directLighitingLightSelectStrategy_)
     {
-        // 全てのライトを評価
+    // 全てのライトを評価
     case DirectLighitingSelectStrategy::All:
     {
         const auto& lights = scene.lights();
@@ -189,7 +187,7 @@ PTSurfaceIntegrator::estimateDirectLight(const SceneGeometory& scene,
         return estimated;
     }
     break;
-        // ライトを一つだけ選択
+    // ライトを一つだけ選択
     case DirectLighitingSelectStrategy::UniformOne:
     {
         const auto& lights = scene.lights();

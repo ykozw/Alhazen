@@ -1,6 +1,6 @@
 ﻿#include "core/distribution1d.hpp"
-#include "core/math.hpp"
 #include "core/logging.hpp"
+#include "core/math.hpp"
 #include "core/rng.hpp"
 #include "core/unittest.hpp"
 

@@ -1,7 +1,7 @@
 ﻿#include "shape.hpp"
-#include "core/orthonormalbasis.hpp"
 #include "bsdf/bsdf.hpp"
 #include "core/object.hpp"
+#include "core/orthonormalbasis.hpp"
 #include "core/transform.hpp"
 
 /*
@@ -323,7 +323,7 @@ bool Sphere::intersect(const Ray& ray, Intersect* isect) const
     if (intersectSphere(ray, pos_, r2_, isect))
     {
         // HACK: 暫定的に固定マテリアル
-        isect->bsdf = Lambertian::gray18.get();;
+        isect->bsdf = Lambertian::gray18.get();
         return true;
     }
     return false;

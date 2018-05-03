@@ -1,8 +1,8 @@
 ﻿#include "core/unittest.hpp"
 #include "core/orthonormalbasis.hpp"
-#include "core/rng.hpp"
 #include "core/floatstreamstats.hpp"
 #include "core/logging.hpp"
+#include "core/rng.hpp"
 
 /*
 -------------------------------------------------

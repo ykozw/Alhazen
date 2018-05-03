@@ -1,7 +1,7 @@
 ﻿#include "sampler/sampler.hpp"
+#include "core/floatstreamstats.hpp"
 #include "core/floatutil.hpp"
 #include "core/unittest.hpp"
-#include "core/floatstreamstats.hpp"
 #include "util/mathmaticautil.hpp"
 
 /*
@@ -230,7 +230,7 @@ Vec2 Sampler::getTriangle()
 #if 1 // こちらの方が2割早い
     const Vec2 xy = get2d();
     const float tmp = std::sqrtf(xy.x());
-    return{ 1.0f - tmp, xy.y() * tmp };
+    return {1.0f - tmp, xy.y() * tmp};
 #else
     Vec2 xy = get2d();
     if (xy.x() + xy.y() >= 1.0f)
@@ -313,7 +313,7 @@ float SamplerHalton::get1d()
 {
     const float offset = offsets_[dimention_ % offsets_.size()];
     const float tmp = radicalInverseFast(dimention_, sampleNo_) + offset;
-    // NOTE: tmpは[0,2]が確定しているのでfmodf()を使わないで高速に計算できる
+// NOTE: tmpは[0,2]が確定しているのでfmodf()を使わないで高速に計算できる
 #if 0
     const float v = std::fmodf(tmp, 1.0f);
     const float sv = std::min(v, ONE_MINUS_EPS);

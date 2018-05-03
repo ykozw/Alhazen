@@ -1,8 +1,8 @@
 ﻿#include "core/math.hpp"
 #include "core/image.hpp"
 #include "core/logging.hpp"
-#include "core/util.hpp"
 #include "core/unittest.hpp"
+#include "core/util.hpp"
 
 // stbimageはここでしか使わないのでここでのみincludeする
 #define STB_IMAGE_IMPLEMENTATION

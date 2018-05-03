@@ -1,14 +1,14 @@
 ﻿#include "app/app.hpp"
 #include "app/alhazen.hpp"
-#include "integrator/integrator.hpp"
-#include "sensor/sensor.hpp"
+#include "core/floatstreamstats.hpp"
 #include "core/image.hpp"
 #include "core/math.hpp"
-#include "core/scene.hpp"
-#include "core/util.hpp"
 #include "core/parallelfor.hpp"
+#include "core/scene.hpp"
 #include "core/stats.hpp"
-#include "core/floatstreamstats.hpp"
+#include "core/util.hpp"
+#include "integrator/integrator.hpp"
+#include "sensor/sensor.hpp"
 
 /*
 -------------------------------------------------
@@ -52,32 +52,30 @@ int32_t Alhazen::runApp(const ArgConfig& config)
         const auto startRenderTime = g_timeUtil.elapseTimeInMs();
         // レンダリング
         const int32_t TASK_NUM_UNTILL_BY_JOIN = 4096;
-        parallelFor(
-            TASK_NUM_UNTILL_BY_JOIN,
-            [&](int32_t taskNoOffsetBegin, int32_t taskNoOffsetEnd) {
-                CounterStats::preParallel();
-                //
-                if (g_timeUtil.elapseTimeInMs() >= timeOutInMs)
-                {
-                    return;
-                }
-                //
-                for (int32_t taskNoOffset = taskNoOffsetBegin;
-                     taskNoOffset < taskNoOffsetEnd;
-                     ++taskNoOffset)
-                {
-                    const int32_t taskNoLocal = taskNo + taskNoOffset;
-                    if (taskNoLocal >= totalTaskNum)
-                    {
-                        return;
-                    }
-                    scene.render(taskNoLocal);
-                    // 現像
-                    if (nextDevelopTime < g_timeUtil.elapseTimeInMs())
-                    {
-                        nextDevelopTime +=
-                            developIntervalInMs; // TODO:
-                                                 // 複数回来ることがあり得る
+        parallelFor(TASK_NUM_UNTILL_BY_JOIN,
+                    [&](int32_t taskNoOffsetBegin, int32_t taskNoOffsetEnd) {
+                        CounterStats::preParallel();
+                        //
+                        if (g_timeUtil.elapseTimeInMs() >= timeOutInMs)
+                        {
+                            return;
+                        }
+                        //
+                        for (int32_t taskNoOffset = taskNoOffsetBegin;
+                             taskNoOffset < taskNoOffsetEnd;
+                             ++taskNoOffset)
+                        {
+                            const int32_t taskNoLocal = taskNo + taskNoOffset;
+                            if (taskNoLocal >= totalTaskNum)
+                            {
+                                return;
+                            }
+                            scene.render(taskNoLocal);
+                            // 現像
+                            if (nextDevelopTime < g_timeUtil.elapseTimeInMs())
+                            {
+                                nextDevelopTime += developIntervalInMs; // TODO:
+// 複数回来ることがあり得る
 #if 0 // 連番で出す場合
                                 filmNo++;
                                 // 最終ショット以外はdenoiseは走らせない
@@ -86,20 +84,21 @@ int32_t Alhazen::runApp(const ArgConfig& config)
                                 scene.developLDR(ss.str() + ".png", false);
                                 scene.dumpHDR(ss.str() + ".bhdr");
 #else // 同じイメージで出し続ける場合
-                        scene.developLDR("out.png", false);
+                                scene.developLDR("out.png", false);
 #endif
-                    }
+                            }
 
-                    //
-                    // if (nextStatPrintTime < g_timeUtil.elapseTimeInMs()) {
-                    //    nextStatPrintTime +=
-                    //      1000; // TODO: 複数回来ることがあり得る
-                    //    CounterStats::printStats(true);
-                    //}
-                }
-                //
-                CounterStats::postParallel();
-            });
+                            //
+                            // if (nextStatPrintTime <
+                            // g_timeUtil.elapseTimeInMs()) {
+                            //    nextStatPrintTime +=
+                            //      1000; // TODO: 複数回来ることがあり得る
+                            //    CounterStats::printStats(true);
+                            //}
+                        }
+                        //
+                        CounterStats::postParallel();
+                    });
         taskTimeStats.add(float(g_timeUtil.elapseTimeInMs() - startRenderTime));
         logging("Render Task pushed (%08d->%08d) %d ms",
                 taskNo,

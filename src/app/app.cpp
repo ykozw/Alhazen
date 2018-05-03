@@ -1,7 +1,7 @@
 ﻿#include "app/app.hpp"
-#include "core/util.hpp"
 #include "core/logging.hpp"
 #include "core/unittest.hpp"
+#include "core/util.hpp"
 
 /*
 -------------------------------------------------

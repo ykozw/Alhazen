@@ -1,8 +1,8 @@
 ﻿#include "accelerator/bvh.hpp"
 #include "shape/shape.hpp"
+#include "core/iterator.hpp"
 #include "core/logging.hpp"
 #include "core/refarray.hpp"
-#include "core/iterator.hpp"
 
 /*
 -------------------------------------------------
@@ -145,7 +145,7 @@ void SimpleBVH::constructNode(int32_t nodeIndex,
         Vec3 rhsc = rhs.aabb.center();
         return lhsc[axis] < rhsc[axis];
     };
-    // TODO: SAHをするか否かをフラグで指定するようにする
+// TODO: SAHをするか否かをフラグで指定するようにする
 #if 0
     //
     for (axis = 0; axis < 3; ++axis)
@@ -186,7 +186,7 @@ void SimpleBVH::constructNode(int32_t nodeIndex,
     static int32_t axisNext = 0;
     bestAxis = (axisNext++) % 3;
     bestTriIndex = numTriangle / 2;
-    // bestSAH = 0.0f;
+// bestSAH = 0.0f;
 #endif
     // 再度ソート
     axis = bestAxis;

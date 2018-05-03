@@ -1,6 +1,6 @@
 ﻿#include "accelerator/kdtree.hpp"
-#include "sampler/sampler.hpp"
 #include "core/unittest.hpp"
+#include "sampler/sampler.hpp"
 
 /*
 -------------------------------------------------

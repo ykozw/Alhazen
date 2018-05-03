@@ -1,9 +1,9 @@
 ﻿#include "core/scene.hpp"
-#include "core/object.hpp"
 #include "core/image.hpp"
+#include "core/object.hpp"
+#include "core/stats.hpp"
 #include "core/util.hpp"
 #include "sensor/sensor.hpp"
-#include "core/stats.hpp"
 //
 STATS_COUNTER("NumSample", g_numSample, "Samples");
 

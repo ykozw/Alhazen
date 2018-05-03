@@ -3,15 +3,15 @@ TODO list
 - このファイルの内容の大半をlensフォルダに移動させる
 */
 
-#include "core/transform.hpp"
-#include "core/object.hpp"
-#include "core/util.hpp"
-#include "core/intersect.hpp"
-#include "core/orthonormalbasis.hpp"
 #include "core/bounding.hpp"
+#include "core/intersect.hpp"
+#include "core/object.hpp"
+#include "core/orthonormalbasis.hpp"
+#include "core/transform.hpp"
+#include "core/util.hpp"
+#include "sampler/sampler.hpp"
 #include "sensor/sensor.hpp"
 #include "sensor/sensorutil.hpp"
-#include "sampler/sampler.hpp"
 
 /*
 -------------------------------------------------
@@ -397,8 +397,8 @@ RealSensor::RealSensor(const ObjectProp& objectProp)
 
     //
     lcoal_.set(forwardDir_, upDir_);
-    // TODO: kc
-    // const auto& focalLengthProp = objectProp.findChildByTag("focalLength");
+// TODO: kc
+// const auto& focalLengthProp = objectProp.findChildByTag("focalLength");
 #if 0
     const float focalLength = focalLengthProp.findChildBy("name", "fov").asFloat(50.0f * 0.0001f); // [0,1]
 #endif

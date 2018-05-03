@@ -93,7 +93,7 @@ bool SceneGeometory::intersectCheck(const Ray& ray, bool skipLight) const
     //
     ++g_numIsectTotal;
     ++g_numIsectCheck;
-    // Shapeを巡回する
+// Shapeを巡回する
 #if 0 // 総当たり
     for (auto& shape : shapes_) {
         if (shape->intersectCheck(ray)) {

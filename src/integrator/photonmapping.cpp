@@ -1,9 +1,9 @@
 ﻿#include "core/rng.hpp"
+#include "accelerator/kdtree.hpp"
 #include "core/orthonormalbasis.hpp"
 #include "core/unittest.hpp"
 #include "integrator/integrator.hpp"
 #include "sampler/sampler.hpp"
-#include "accelerator/kdtree.hpp"
 
 /*
 -------------------------------------------------
@@ -73,15 +73,16 @@ bool PMIntegrator::preRendering(const SceneGeometory& scene)
         // sampler->getSize(uint32_t(lights.size())); const LightPtr& light =
         // lights[lightIndex]; 光源からのサンプル
         Vec3 samplePos = Vec3(0.0f, 2.0f, 0.0f);
-        Spectrum emission = Spectrum::createFromRGB({ 1.0f,1.0f,1.0f }, true);
+        Spectrum emission = Spectrum::createFromRGB({1.0f, 1.0f, 1.0f}, true);
         // float pdf = 0.0f;
-        //OrthonormalBasis<> lightLocalCoord;
-        //lightLocalCoord.set()
+        // OrthonormalBasis<> lightLocalCoord;
+        // lightLocalCoord.set()
         // TODO: emission方向によらない光源を仮定しているのを直す
         // light->sample(sampler, &samplePos, &emission, &pdf,
         // &lightLocalCoord); light->sampleLe(sampler,) 射出方向の選択
         const Vec3 launchDirWorld = sampler->getSphere();
-        //const Vec3 launchDirWorld = lightLocalCoord.local2world(launchDirLocal);
+        // const Vec3 launchDirWorld =
+        // lightLocalCoord.local2world(launchDirLocal);
         //
         Ray ray(samplePos, launchDirWorld);
         for (int32_t pathNo = 0; pathNo < 8; ++pathNo)
@@ -138,7 +139,8 @@ Spectrum PMIntegrator::radiance(const Ray& screenRay,
     // 適当に近いところにあるフォトンの数をそのまま輝度にする
     Intersect isect;
     const bool skipLight = true;
-    if (!scene.intersect(screenRay, skipLight, &isect)) {
+    if (!scene.intersect(screenRay, skipLight, &isect))
+    {
         return Spectrum(0.0f);
     }
     const int32_t numSerch = 32;
@@ -146,7 +148,7 @@ Spectrum PMIntegrator::radiance(const Ray& screenRay,
     std::vector<const Photon*> photons;
     photons.resize(32);
     photonMap_.findKNN(isect.position, numSerch, photons);
-    //
+//
 #if 0
     int32_t okayCount = 0;
     for (auto& photon : photons_)
@@ -163,7 +165,8 @@ Spectrum PMIntegrator::radiance(const Ray& screenRay,
     const OrthonormalBasis<> lc(isect.normal);
     const Vec3 woLocal = lc.world2local(screenRay.d);
     Spectrum spectrum(0.0f);
-    for (const auto& photon : photons) {
+    for (const auto& photon : photons)
+    {
         const Vec3 wiLocal = lc.world2local(photon->wiWorld);
         const Spectrum reflectance = isect.bsdf->bsdf(woLocal, wiLocal);
         spectrum += photon->spectrum * reflectance;

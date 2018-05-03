@@ -1,7 +1,7 @@
 ﻿#include "bsdf/autoimportance.hpp"
-#include "core/unittest.hpp"
-#include "core/logging.hpp"
 #include "core/image.hpp"
+#include "core/logging.hpp"
+#include "core/unittest.hpp"
 /*
 TODOs
 - "An importance sampling method for arbitrary BRDFs(2009)"をちゃんと実装する

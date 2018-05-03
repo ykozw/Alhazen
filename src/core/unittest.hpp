@@ -1,5 +1,4 @@
-﻿#include "pch.hpp"
-
+﻿
 /*
 テストに関して
 - テストのOKか否かは全てassert()でよい。

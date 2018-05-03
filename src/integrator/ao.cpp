@@ -1,5 +1,4 @@
-﻿#include "pch.hpp"
-#include "core/rng.hpp"
+﻿#include "core/rng.hpp"
 #include "core/orthonormalbasis.hpp"
 #include "integrator/integrator.hpp"
 #include "sampler/sampler.hpp"

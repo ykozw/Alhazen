@@ -1,6 +1,5 @@
 ﻿#pragma once
 
-#include "pch.hpp"
 #include "core/object.hpp"
 #include "core/rng.hpp"
 #include "sampler/samplerutil.inl"

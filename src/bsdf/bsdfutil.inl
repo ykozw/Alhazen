@@ -1,6 +1,5 @@
 ﻿#pragma once
 
-#include "pch.hpp"
 #include "bsdfutil.hpp"
 #include "core/image.hpp"
 #include "core/math.hpp"

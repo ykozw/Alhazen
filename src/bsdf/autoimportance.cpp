@@ -1,5 +1,4 @@
-﻿#include "pch.hpp"
-#include "bsdf/autoimportance.hpp"
+﻿#include "bsdf/autoimportance.hpp"
 #include "core/unittest.hpp"
 #include "core/logging.hpp"
 #include "core/image.hpp"

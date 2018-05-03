@@ -1,5 +1,4 @@
-﻿#include "pch.hpp"
-#include "core/rng.hpp"
+﻿#include "core/rng.hpp"
 #include "core/floatstreamstats.hpp"
 #include "core/unittest.hpp"
 

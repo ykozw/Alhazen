@@ -1,5 +1,4 @@
-﻿#include "pch.hpp"
-#include "opticalsystem.hpp"
+﻿#include "opticalsystem.hpp"
 #include "ior.hpp"
 
 /*

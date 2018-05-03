@@ -1,5 +1,4 @@
-﻿#include "pch.hpp"
-#include "core/bounding.hpp"
+﻿#include "core/bounding.hpp"
 
 /*
 -------------------------------------------------

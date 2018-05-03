@@ -1,5 +1,4 @@
-﻿#include "pch.hpp"
-#include "ior.hpp"
+﻿#include "ior.hpp"
 
 /*
 -------------------------------------------------

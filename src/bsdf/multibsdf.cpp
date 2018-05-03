@@ -1,5 +1,4 @@
-﻿#include "pch.hpp"
-#include "bsdf/bsdf.hpp"
+﻿#include "bsdf/bsdf.hpp"
 
 REGISTER_OBJECT(BSDF, BSDFs);
 

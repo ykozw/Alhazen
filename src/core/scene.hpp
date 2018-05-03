@@ -1,6 +1,5 @@
 ﻿#pragma once
 
-#include "pch.hpp"
 #include "core/object.hpp"
 #include "core/image.hpp"
 #include "core/math.hpp"

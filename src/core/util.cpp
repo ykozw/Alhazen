@@ -1,5 +1,4 @@
-﻿#include "pch.hpp"
-#include "util.hpp"
+﻿#include "util.hpp"
 
 FileSystem g_fileSystem;
 

@@ -1,6 +1,5 @@
 ﻿#pragma once
 
-#include "pch.hpp"
 #include "core/ray.hpp"
 
 // レイの浮かしを決める定数(pbrt ch4参照)

@@ -1,5 +1,4 @@
-﻿#include "pch.hpp"
-#include "app/app.hpp"
+﻿#include "app/app.hpp"
 #include "app/alhazen.hpp"
 #include "integrator/integrator.hpp"
 #include "sensor/sensor.hpp"

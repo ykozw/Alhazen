@@ -1,5 +1,4 @@
-﻿#include "pch.hpp"
-#include "core/distribution2d.hpp"
+﻿#include "core/distribution2d.hpp"
 #include "core/logging.hpp"
 #include "core/rng.hpp"
 #include "core/unittest.hpp"

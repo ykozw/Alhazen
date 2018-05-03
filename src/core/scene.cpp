@@ -1,5 +1,4 @@
-﻿#include "pch.hpp"
-#include "core/scene.hpp"
+﻿#include "core/scene.hpp"
 #include "core/object.hpp"
 #include "core/image.hpp"
 #include "core/util.hpp"

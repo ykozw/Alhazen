@@ -2,22 +2,23 @@
 <scene version="0.4.0">
   
   <!--タイムアウト。300秒-->
-  <integer name="timeout" value="30000000" />
+  <integer name="timeout" value="1500" />
   
   <!--プログレッシブ動作-->
-  <boolean name="progressive" value="false" />
+  <boolean name="progressive" value="true" />
   
   <!--スナップショット出力秒数設定-->
-  <integer name="snapshotinterval" value="3" />
+  <integer name="snapshotinterval" value="5" />
   
   <!--スナップショット毎にデノイズ-->
   <boolean name="snapshotdenoise" value="false"/>
   
+  <!--一回のインターバルでのspp-->
+  <integer name="sppinterval" value="16" />
+  
   <!--サブサンプル指定をここに-->
-  <SubpixelSampler type="SubpixelSampleIndependent">
-    <integer name="spp" value="64"/>
-    <integer name="seed" value="123456789"/>
-  </SubpixelSampler>
+  <Sampler type="SamplerIndepent">
+  </Sampler>
   
   <!--デノイザー指定-->
   <!--<denoiser type="medianfilter"/>-->
@@ -25,16 +26,14 @@
   <!--<denoiser type="ap"/>-->
   
   <!--インテグレーター-->
-  <!--<LTEIntegrator type="debug_depth">-->
-  <!--<LTEIntegrator type="debug_id">-->
-  <!--<LTEIntegrator type="debug_normal">-->
-  <!--<LTEIntegrator type="pt">-->
+  <!--<LTEIntegrator type="DebugSurfaceIntegrator">-->
   <!--<LTEIntegrator type="AOSurfaceIntegrator">-->
-  <LTEIntegrator type="PMIntegrator">
-    <int name ="sampleNum" value="64"/>
+  <LTEIntegrator type="PTSurfaceIntegrator">
+  <!--<LTEIntegrator type="BruteForceIntegrator">-->
+  <!--<LTEIntegrator type="PMIntegrator">-->
   </LTEIntegrator>
-
-    <Tonemapper type="Degamma">
+  
+  <Tonemapper type="Degamma">
   </Tonemapper>
 
   <!--センサー-->
@@ -45,35 +44,37 @@
     <string name="fovAxis" value="x"/>
 		<float name="nearClip" value="0.1"/>
 		<transform name="toWorld">
-			<lookat target="0, 0.8, 0" origin="0.0, 1.5, 5.0" up="0.0, 1.0, 0.0"/>
+			<lookat target="0, 0.3, 0" origin="0.0, 0.3, -5.0" up="0.0, 1.0, 0.0"/>
 		</transform>
 
     <film type="hdrfilm">
-      <integer name="pixelWidth" value="512"/>
+      <integer name="pixelWidth" value="1024"/>
       <integer name="pixelHeight" value="512"/>
       <float name="filmWidthMM" value="90"/>
       <float name="filmHeightMM" value="60"/>
     </film>
   </Sensor>
 
-
+  <!--ライト設定-->
+  <!--<Light type="ConstantLight">
+  </Light>-->
+  
+  <!--<Light type="RectangleLight">
+    <float3 name="center" x="0.0" y="0.2" z="0.0"/>
+    <float3 name="axisx" x="0.2" y="0.0" z="0.0"/>
+    <float3 name="axisy" x="0.0" y="0.0" z="0.2"/>
+    <rgb name="radiance" value="1.0 1.0 1.0"/>
+  </Light>-->
+  
   <Light type="SphereLight">
-    <float3 name="center" x="0.0" y="1.6" z="0.0"/>
-    <float name="radius" value="0.03"/>
-    <rgb name="radiance" value="30.0 4.0 4.0"/>
+    <float3 name="center" x="0.0" y="20.0" z="0.0"/>
+    <float name="radius" value="10.0"/>
+    <rgb name="radiance" value="10.0 10.0 10.0"/>
   </Light>
   
-  <!--球1-->
-  <Shape type="Sphere">
-    <!--TODO: 移動変形はtransformで扱った方が綺麗かもしれない-->
-    <Point name="center" x="+0.2" y="0.3" z="0"/>
-    <Point name="radius" value="0.3"/>
-    <!--<ref name="bsdf" value="glass"/>-->
-    <ref name="bsdf" value="matWhite"/>
-  </Shape>
-  
-  <!--地面-->
-  <Shape type="PlaneShape">
+  <!--オブジェクト-->
+  <Shape type="ObjShape">
+    <filename value="mori_knob\testObj.obj"/>
   </Shape>
   
 </scene>

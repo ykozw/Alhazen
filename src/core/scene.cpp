@@ -44,26 +44,12 @@ Scene::Scene(const ObjectProp& objectProp)
         objectProp.findChildBy("name", "snapshotdenoise").asBool(false);
     sppPerInterval_ = objectProp.findChildBy("name", "sppinterval").asInt(4);
 
-    // BSDFの構築
-    AllBSDFList bsdfs;
-    for (const ObjectProp& child : objectProp.childProps())
-    {
-        if (child.tag() == "BSDF")
-        {
-            bsdfs.add(child);
-        }
-    }
     // SceneGeometoryの構築
     for (const ObjectProp& child : objectProp.childProps())
     {
         if (child.tag() == "Shape")
         {
-            // Shapeのロード
-            ShapePtr newShape = createObject<Shape>(child);
-            // BSDFの設定
-            newShape->setBSDF(bsdfs);
-            // 追加
-            geometory_.addShape(newShape);
+            geometory_.addShape(createObject<Shape>(child));
         }
     }
 
@@ -97,7 +83,7 @@ Scene::Scene(const ObjectProp& objectProp)
     // HACK: とりあえず一周分だけにしておく
     totalTaskNum_ = sensor_->film()->subFilmNum();
     // Integratorの事前準備
-    integrator_->preRendering(geometory_, bsdfs);
+    integrator_->preRendering(geometory_);
 }
 
 /*

@@ -122,7 +122,7 @@ INLINE bool SimpleBVH::intersectSub(int32_t nodeIndex, const Ray& ray, Intersect
             t[0], t[1], t[2],
             isect ))
         {
-            //isect.materialId = node.m;
+            isect->materialId = node.materialId;
             return true;
         }
         return false;

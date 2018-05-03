@@ -250,7 +250,8 @@ INLINE bool RectangleShape::intersect(const Ray& ray, Intersect* isect) const
     {
         return false;
     }
-    isect->bsdf = bsdf_.get();
+    // HACK: 暫定的に固定BSDF
+    isect->bsdf = Lambertian::gray18.get();
     return true;
 }
 
@@ -322,7 +323,8 @@ bool Sphere::intersect(const Ray& ray, Intersect* isect) const
 {
     if (intersectSphere(ray, pos_, r2_, isect))
     {
-        isect->bsdf = bsdf_.get();
+        // HACK: 暫定的に固定マテリアル
+        isect->bsdf = Lambertian::gray18.get();;
         return true;
     }
     return false;

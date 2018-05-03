@@ -77,10 +77,10 @@ bool SimpleBVH::construct(const std::vector<Vec3>& vs,
         tri.n[0] = ns[mf.ni[0]];
         tri.n[1] = ns[mf.ni[1]];
         tri.n[2] = ns[mf.ni[2]];
-        tri.t[0] = ts[mf.ti[0]];
-        tri.t[1] = ts[mf.ti[1]];
-        tri.t[2] = ts[mf.ti[2]];
-        // tri.materialId = mf.mi;
+        tri.t[0] = (mf.ti[0] != -1) ? ts[mf.ti[0]] : Vec2(0.0f);
+        tri.t[1] = (mf.ti[1] != -1) ? ts[mf.ti[1]] : Vec2(0.0f);
+        tri.t[2] = (mf.ti[2] != -1) ? ts[mf.ti[2]] : Vec2(0.0f);
+        tri.materialId = mf.mi;
         tri.aabb.clear();
         tri.aabb.addPoints(tri.v.data(), 3);
         triangles.emplace_back(tri);
@@ -132,7 +132,7 @@ void SimpleBVH::constructNode(int32_t nodeIndex,
         curNode.t[0] = t[0];
         curNode.t[1] = t[1];
         curNode.t[2] = t[2];
-        // curNode.m = triangles[0].materialId;
+        curNode.materialId = triangles[0].materialId;
         return;
     }
     // 三軸それぞれのSAHを求め最も小さいものを採用する

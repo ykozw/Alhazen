@@ -9,8 +9,7 @@ class DebugSurfaceIntegrator : public LTEIntegrator
 {
 public:
     DebugSurfaceIntegrator(const ObjectProp& objectProp);
-    bool preRendering(const SceneGeometory& scene,
-                      AllBSDFList& bsdfList) override
+    bool preRendering(const SceneGeometory& scene) override
     {
         return true;
     }
@@ -50,7 +49,7 @@ Spectrum DebugSurfaceIntegrator::radiance(const Ray& screenRay,
     }
     const Vec2& uv = isect.uv;
     return Spectrum::createFromRGB({ { uv.x, uv.y, 0.0f } }, false);
-#elif 1 // 深度デバッグ
+#elif 0 // 深度デバッグ
     // 何もない場合は0を返す
     Intersect isect;
     bool skipLight = false;
@@ -61,7 +60,7 @@ Spectrum DebugSurfaceIntegrator::radiance(const Ray& screenRay,
     float c = isect.t / 100.0f;
     c = alClamp(c, 0.0f, 1.0f);
     return Spectrum::createFromRGB({{c, c, c}}, false);
-#elif 0 // Normalデバッグ
+#elif 1 // Normalデバッグ
     Intersect isect;
     // 何もない場合は0を返す
     const bool skipLight = true;

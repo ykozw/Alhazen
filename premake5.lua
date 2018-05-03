@@ -19,6 +19,7 @@ project "Alhazen"
      "thirdparty/tinyxml2",
      "thirdparty/stb",
      "thirdparty/vdb",
+     "thirdparty/tinyobjloader",
    }
 
    files {

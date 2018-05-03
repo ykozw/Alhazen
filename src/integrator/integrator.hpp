@@ -20,8 +20,7 @@ class LTEIntegrator : public Object
 {
 public:
     virtual ~LTEIntegrator() {}
-    virtual bool preRendering(const SceneGeometory& scene,
-                              AllBSDFList& bsdfList) = 0;
+    virtual bool preRendering(const SceneGeometory& scene) = 0;
     virtual bool postRendering() = 0;
     virtual Spectrum radiance(const Ray& ray,
                               const SceneGeometory& scene,

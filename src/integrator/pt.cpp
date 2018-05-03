@@ -18,8 +18,7 @@ class PTSurfaceIntegrator AL_FINAL : public LTEIntegrator
 public:
     PTSurfaceIntegrator() = default;
     PTSurfaceIntegrator(const ObjectProp& objectProp);
-    bool preRendering(const SceneGeometory& scene,
-                      AllBSDFList& bsdfList) override;
+    bool preRendering(const SceneGeometory& scene) override;
     bool postRendering() override { return true; }
     //
     Spectrum radiance(const Ray& ray,
@@ -40,7 +39,6 @@ private:
                               Sampler* samler) const;
 
 private:
-    BSDFPtr defaultBSDF_;
 
     // 直接光のライトの選択の戦略
     enum class DirectLighitingSelectStrategy
@@ -68,10 +66,8 @@ PTSurfaceIntegrator::PTSurfaceIntegrator(const ObjectProp& objectProp) {}
 -------------------------------------------------
 -------------------------------------------------
 */
-bool PTSurfaceIntegrator::preRendering(const SceneGeometory& scene,
-                                       AllBSDFList& bsdfList)
+bool PTSurfaceIntegrator::preRendering(const SceneGeometory& scene)
 {
-    defaultBSDF_ = bsdfList.find("default");
     return true;
 }
 

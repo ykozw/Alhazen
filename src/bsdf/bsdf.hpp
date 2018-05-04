@@ -59,9 +59,8 @@ BSDFs
 class BSDFs : public BSDF
 {
 public:
+    BSDFs() = default;
     BSDFs(const ObjectProp& objectProp);
-    void setName(const std::string& name);
-    const std::string& getName() const;
     void add(BSDFPtr bsdf);
     float pdf(Vec3 localWo, Vec3 localWi) const;
     Spectrum bsdf(Vec3 localWo, Vec3 localWi) const;
@@ -72,7 +71,6 @@ public:
 
 private:
     std::vector<BSDFPtr> bsdfs_;
-    std::string name_;
 };
 
 /*
@@ -102,6 +100,7 @@ BlinnNDF
 class BlinnNDF : public MicrofacetDistribution
 {
 public:
+    BlinnNDF() = default;
     BlinnNDF(float e);
     float eval(Vec3 wh) override;
     float pdf(Vec3 wo, Vec3 wi) override;
@@ -111,7 +110,7 @@ public:
                 float* pdf) const override;
 
 private:
-    float e_;
+    float e_ = 0.0f;
 };
 
 /*
@@ -206,6 +205,7 @@ private:
 class Lambertian : public BSDF
 {
 public:
+    Lambertian() = default;
     Lambertian(const ObjectProp& objectProp);
     Lambertian(const Spectrum& spectrum);
     Spectrum bsdf(Vec3 localWo, Vec3 localWi) const override;
@@ -475,4 +475,34 @@ public:
 
 private:
     std::vector<float> brdf;
+};
+
+/*
+-------------------------------------------------
+MTLBSDF
+.mtlファイルのBSDF
+テクスチャを導入するとマテリアルクラスを作らないといけなくなるが
+テクスチャなしであればBSDFのままいけるのでテストとしてつくる
+-------------------------------------------------
+*/
+class MTLBSDF : public BSDF
+{
+public:
+    MTLBSDF(
+        const Spectrum& diffuse,
+        const Spectrum& specular,
+        const Spectrum& transmittance,
+        const Spectrum& emission,
+        float shiniess,
+        float ior,
+        float dissolve,
+        int32_t illum );
+    float pdf(Vec3 localWo, Vec3 localWi) const override;
+    Spectrum bsdf(Vec3 localWo, Vec3 localWi) const override;
+    Spectrum bsdfSample(Vec3 localWo,
+        Sampler* sampler,
+        Vec3* localWi,
+        float* pdf) const override;
+private:
+    BSDFs bsdfs_;
 };

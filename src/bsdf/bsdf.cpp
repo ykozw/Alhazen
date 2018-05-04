@@ -1790,3 +1790,58 @@ Spectrum MeasuredBSDF::bsdfSample(Vec3 localWo,
     assert(!"needs impliment");
     return Spectrum(0.0f);
 }
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+MTLBSDF::MTLBSDF(
+        const Spectrum& diffuse,
+        const Spectrum& specular,
+        const Spectrum& transmittance,
+        const Spectrum& emission,
+        float shiniess,
+        float ior,
+        float dissolve,
+        int32_t illum)
+{
+    // diffuse
+    bsdfs_.add(std::make_shared<Lambertian>(diffuse));
+    // specular
+    bsdfs_.add(
+        std::make_shared<MicrofacetBSDF>(
+            specular,
+            //std::make_shared<FresnelDielectric>(10.0f, 1.0f),
+            std::make_shared<FresnelNone>(),
+            std::make_shared<BlinnNDF>(shiniess)));
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+float MTLBSDF::pdf(Vec3 localWo, Vec3 localWi) const
+{
+    return bsdfs_.pdf(localWo, localWi);
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+Spectrum MTLBSDF::bsdf(Vec3 localWo, Vec3 localWi) const
+{
+    return bsdfs_.bsdf(localWo, localWi);
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+Spectrum MTLBSDF::bsdfSample(Vec3 localWo,
+    Sampler* sampler,
+    Vec3* localWi,
+    float* pdf) const
+{
+    return bsdfs_.bsdfSample(localWo, sampler, localWi, pdf);
+}

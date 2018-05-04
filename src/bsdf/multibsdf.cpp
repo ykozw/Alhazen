@@ -6,21 +6,8 @@ REGISTER_OBJECT(BSDF, BSDFs);
 -------------------------------------------------
 -------------------------------------------------
 */
-BSDFs::BSDFs(const ObjectProp& objectProp) : BSDF(objectProp), name_("default")
-{
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-void BSDFs::setName(const std::string& name) { name_ = name; }
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-const std::string& BSDFs::getName() const { return name_; }
+BSDFs::BSDFs(const ObjectProp& objectProp) : BSDF(objectProp)
+{}
 
 /*
 -------------------------------------------------

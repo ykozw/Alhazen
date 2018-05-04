@@ -24,6 +24,7 @@ INLINE ErrFloat::ErrFloat(float v, float err)
     }
     else
     {
+        v_ = v;
         low_ = nextFloatUp(v - err);
         high_ = nextFloatDown(v + err);
     }
@@ -114,8 +115,9 @@ INLINE ErrFloat ErrFloat::operator*(ErrFloat other) const
     const float p1 = low_ * other.high_;
     const float p2 = high_ * other.low_;
     const float p3 = high_ * other.high_;
-    ret.low_ = std::min({ p0, p1, p2, p3 });
-    ret.high_ = std::max({ p0, p1, p2, p3 });
+    // NOTE: initializer listで全体を囲ってしまうと最適化されなくなるので手動
+    ret.low_ = std::min(std::min(p0, p1), std::min(p2, p3));
+    ret.high_ = std::max(std::max(p0, p1), std::max(p2, p3));
     return ret;
 }
 
@@ -140,8 +142,8 @@ INLINE ErrFloat ErrFloat::operator/(ErrFloat other) const
         const float p1 = low_ / other.high_;
         const float p2 = high_ / other.low_;
         const float p3 = high_ / other.high_;
-        ret.low_ = std::min({ p0, p1, p2, p3 });
-        ret.high_ = std::max({ p0, p1, p2, p3 });
+        ret.low_ = std::min(std::min(p0, p1), std::min(p2, p3));
+        ret.high_ = std::max(std::max(p0, p1), std::max(p2, p3));
     }
     return ret;
 }
@@ -169,8 +171,8 @@ INLINE ErrFloat ErrFloat::operator-() const
 {
     ErrFloat ret;
     ret.v_ = -v_;
-    ret.high_ = -high_;
-    ret.low_ = -low_;
+    ret.low_ = -high_;
+    ret.high_ = -low_;
     return ret;
 }
 

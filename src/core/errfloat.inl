@@ -143,6 +143,7 @@ INLINE ErrFloat ErrFloat::operator/(ErrFloat other) const
         ret.low_ = std::min({ p0, p1, p2, p3 });
         ret.high_ = std::max({ p0, p1, p2, p3 });
     }
+    return ret;
 }
 
 /*

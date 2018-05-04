@@ -15,7 +15,7 @@ AL_TEST(ErrFloat, 0)
         };
         const auto check = [](ErrFloat& ef, long double ref) -> bool
         {
-            return (long double(ef.low()) < ref) && (ref < long double(ef.low()));
+            return (long double(ef.low()) <= ref) && (ref <= long double(ef.low()));
         };
         ErrFloat e0 = genEF();
         ErrFloat e1 = genEF();

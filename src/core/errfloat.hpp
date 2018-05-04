@@ -35,7 +35,7 @@ INLINE float
 nextFloatUp(float v)
 {
     // inf -> inf
-    if (std::isinf(v) && v > 0.0f
+    if (std::isinf(v) && v > 0.0f)
     {
         return v;
     }

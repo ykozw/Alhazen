@@ -1,6 +1,5 @@
 ﻿#include "sampler/sampler.hpp"
 #include "core/floatstreamstats.hpp"
-#include "core/floatutil.hpp"
 #include "core/unittest.hpp"
 #include "util/mathmaticautil.hpp"
 

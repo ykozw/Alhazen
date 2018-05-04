@@ -44,7 +44,7 @@
     <string name="fovAxis" value="x"/>
 		<float name="nearClip" value="0.1"/>
 		<transform name="toWorld">
-			<lookat target="0, 0.3, 0" origin="0.0, 0.3, -5.0" up="0.0, 1.0, 0.0"/>
+			<lookat target="0.0, 0.3, 0.0" origin="3.0, 2.0, 3.0" up="0.0, 1.0, 0.0"/>
 		</transform>
 
     <film type="hdrfilm">
@@ -66,15 +66,23 @@
     <rgb name="radiance" value="1.0 1.0 1.0"/>
   </Light>-->
   
-  <Light type="SphereLight">
+  <!--<Light type="SphereLight">
     <float3 name="center" x="0.0" y="20.0" z="0.0"/>
     <float name="radius" value="10.0"/>
     <rgb name="radiance" value="10.0 10.0 10.0"/>
-  </Light>
+  </Light>-->
   
   <!--オブジェクト-->
   <Shape type="ObjShape">
-    <filename value="mori_knob\testObj.obj"/>
+    <filename value="sportsCar\sportsCar.obj"/>
+  </Shape>
+
+  <Shape type="RectangleShape">
+    <transform name="toWorld">
+      <scale x = "5.0" y = "5.0" z = "5.0"/>
+      <rotate x = "1.0" y = "0.0" z = "0.0" angle = "90" />
+    </transform>
+    <ref name="bsdf" value="metal0"/>
   </Shape>
   
 </scene>

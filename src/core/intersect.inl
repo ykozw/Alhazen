@@ -1,6 +1,58 @@
 ﻿#pragma once
 
-#include "intersect.hpp"
+#include "core/intersect.hpp"
+#include "core/errfloat.hpp"
+
+/*
+-------------------------------------------------
+"Numerically Stable Method for Solving Quadratic Equations"
+https://people.csail.mit.edu/bkph/articles/Quadratics.pdf
+-------------------------------------------------
+*/
+INLINE bool solveQuadratic(ErrFloat a, ErrFloat b, ErrFloat c, ErrFloat* t0, ErrFloat* t1)
+{
+#if 1
+    /*
+    解の判定のみdoubleで計算する
+    ErrFloatのみで判定すると抜けが非常に多くなってしまう
+    pbrtのsqrt(D)の誤差を適当に決める方式も抜けがひどくなる
+    */
+    const ErrFloat D = b * b - 4.0f * a * c;
+    const double Dhigh = double(float(b)) * double(float(b)) - 4.0 * (double)float(a) * double(float(c));
+    // 解なし
+    if (Dhigh < 0.0)
+    {
+        return false;
+    }
+    const ErrFloat Dsqrt = D.sqrt();
+#else
+    // pbrt方式
+    const double D = double(float(b)) * double(float(b)) - 4.0 * (double)float(a) * double(float(c));
+    if (D < 0.0)
+    {
+        return false;
+    }
+    const double tmp = std::sqrt(D);
+#define MachineEpsilon (std::numeric_limits<float>::epsilon() * 100.0)
+    const ErrFloat Dsqrt(float(tmp), float(MachineEpsilon * tmp));
+#endif
+    ErrFloat q;
+    if (float(b) < 0.0f)
+    {
+        q = -0.5f * (b - Dsqrt);
+    }
+    else
+    {
+        q = -0.5f * (b + Dsqrt);
+    }
+    *t0 = q / a;
+    *t1 = c / q;
+    if (float(*t1) < float(*t0))
+    {
+        std::swap(*t0, *t1);
+    }
+    return true;
+}
 
 /*
 -------------------------------------------------
@@ -9,44 +61,47 @@
 INLINE bool intersectSphereShapeCore(
     const Ray& ray,
     Vec3 o,
-    float r2,
-    float* t,
-    bool* intersectBackside)
+    ErrFloat r2,
+    float* t)
 {
+    const Vec3 dif = ray.o - o;
+    const ErrFloat ox(dif.x()); // rs
+    const ErrFloat oy(dif.y());
+    const ErrFloat oz(dif.z());
+    const ErrFloat dx(ray.d.x());
+    const ErrFloat dy(ray.d.y());
+    const ErrFloat dz(ray.d.z());
+    const ErrFloat a = dx * dx + dy * dy + dz * dz;
+    const ErrFloat b = 2 * (dx * ox + dy * oy + dz * oz);
+    const ErrFloat c = ox * ox + oy * oy + oz * oz - r2;
     //
-    const Vec3 rs = ray.o - o;
-    // 球中心からレイ原点までの距離二乗
-    const float rs2 = Vec3::dot(rs, rs);
-    // 半径二乗
-    const float lhs = Vec3::dot(ray.d, rs);
-    const float D = lhs * lhs - rs2 + r2;
-    if (D <= 0.0f)
+    ErrFloat t0, t1;
+    if (!solveQuadratic(a, b, c, &t0, &t1))
     {
         return false;
     }
     //
-    const float sqrtD = std::sqrtf(D);
-    const float t0 = -lhs - sqrtD;
-    const float t1 = -lhs + sqrtD;
-    if (t0 < 0.0f && t1 < 0.0f)
+    if ((t0.high() > ray.maxt) || (t1.low() <= 0.0f))
     {
         return false;
     }
-    else if (t0 >= 0.0f)
+    //
+    ErrFloat rayt;
+    if (t0.low() <= 0.0f)
     {
-        *intersectBackside = false;
-        *t = t0;
+        rayt = t1;
+        if (t1.high() > ray.maxt)
+        {
+            return false;
+        }
     }
     else
     {
-        *intersectBackside = true;
-        *t = t1;
+        rayt = t0;
     }
-    // 範囲チェック
-    if (*t < ray.mint || ray.maxt < *t)
-    {
-        return false;
-    }
+    //
+    *t = float(rayt.low());
+    //
     return true;
 }
 
@@ -57,12 +112,11 @@ INLINE bool intersectSphereShapeCore(
 INLINE bool intersectSphere(
     const Ray& ray,
     Vec3 o,
-    float r2,
+    ErrFloat r2,
     Intersect* isect)
 {
     float t;
-    bool intersectBackside = false;
-    if (!intersectSphereShapeCore(ray, o, r2, &t, &intersectBackside))
+    if (!intersectSphereShapeCore(ray, o, r2, &t))
     {
         return false;
     }
@@ -74,10 +128,6 @@ INLINE bool intersectSphere(
     isect->position = ray.o + ray.d * t;
     isect->normal = (isect->position - o);
     isect->normal.normalize();
-    if (intersectBackside)
-    {
-        //isect.normal = -isect.normal;
-    }
     isect->t = t;
     isect->rayEpsilon = t * RAYEPSILON_SCALE_QUADRIC_SURFACE;
     return true;
@@ -90,11 +140,10 @@ INLINE bool intersectSphere(
 INLINE bool intersectSphereCheck(
     const Ray& ray,
     Vec3 pos,
-    float r2)
+    ErrFloat r2)
 {
     float t;
-    bool intersectBackside = false;
-    return intersectSphereShapeCore(ray, pos, r2, &t, &intersectBackside);
+    return intersectSphereShapeCore(ray, pos, r2, &t);
 }
 
 /*

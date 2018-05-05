@@ -527,11 +527,11 @@ void SphereLight::init(Vec3 center, float radius, const Spectrum& emission)
     AL_ASSERT_ALWAYS(0.0f < radius);
     //
     center_ = center;
-    radius_ = radius;
-    radius2_ = radius * radius;
+    radius_ = ErrFloat(radius);
+    radius2_ = radius_ * radius_;
     emission_ = emission;
     //
-    area_ = 4.0f * PI * radius_ * radius_;
+    area_ = 4.0f * PI * float(radius2_);
     invArea_ = 1.0f / area_;
 }
 
@@ -567,11 +567,10 @@ Spectrum SphereLight::emission(Vec3 targetPos, Vec3 dir) const
 */
 float SphereLight::pdf(Vec3 targetPos, Vec3 dir) const
 {
-    const float radius2 = radius_ * radius_;
     const Vec3 toLight = center_ - targetPos;
     const float dist2 = Vec3::dot(toLight, toLight);
     // 内側だった場合は、球を一様にサンプル
-    if (dist2 < radius2)
+    if (dist2 < float(radius2_))
     {
         // TODO: これは本当に正しいのか？1/(4Pi)では？
         return invArea_;
@@ -581,7 +580,7 @@ float SphereLight::pdf(Vec3 targetPos, Vec3 dir) const
     {
         // const float dist = std::sqrtf(dist2);
         // コーンの内側の角度を求める
-        const float sinTheta2 = radius2 / dist2;
+        const float sinTheta2 = float(radius2_) / dist2;
         const float cosTheta = std::sqrtf(std::max(0.0f, 1.0f - sinTheta2));
         // 球冠の面積からpdfを出す
         const float sphericalCapArea = 2.0f * PI * (1.0f - cosTheta);
@@ -616,14 +615,13 @@ Spectrum SphereLight::sampleLe(Sampler* sampler,
     *pdf = distSqr * invArea_ / a;
     return emission_;
 #else // コーンを使った方法
-    const float radius2 = radius_ * radius_;
     const Vec3 toLight = center_ - targetPos;
     const float dist2 = Vec3::dot(toLight, toLight);
     // 内側だった場合は、球を一様にサンプル
-    if (dist2 < radius2)
+    if (dist2 < float(radius2_))
     {
         const Vec3 samplePosNormal = sampler->getSphere();
-        *samplePos = center_ + samplePosNormal * radius_;
+        *samplePos = center_ + samplePosNormal * float(radius_);
         *pdf = invArea_;
         return emission_;
     }
@@ -632,7 +630,7 @@ Spectrum SphereLight::sampleLe(Sampler* sampler,
     {
         const float dist = std::sqrtf(dist2);
         // コーンの内側の角度を求める
-        const float sinTheta2 = radius2 / dist2;
+        const float sinTheta2 = float(radius2_) / dist2;
         const float cosTheta = std::sqrtf(std::max(0.0f, 1.0f - sinTheta2));
         // サンプル
         const Vec3 posOnSphericalCapLocal = sampler->getCone(cosTheta) * dist;
@@ -643,7 +641,7 @@ Spectrum SphereLight::sampleLe(Sampler* sampler,
         // 球の上での位置を交差から算出
         const Vec3 rayDir = (posOnSphericalCapWorld - targetPos).normalized();
         const float lhs = Vec3::dot(rayDir, -toLight);
-        const float D = lhs * lhs - dist2 + radius2;
+        const float D = lhs * lhs - dist2 + float(radius2_);
         const float DD = std::max(0.0f, D);
         //
         const float t = std::max((-lhs - sqrtf(DD)), 0.0f);

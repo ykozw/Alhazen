@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "core/ray.hpp"
+#include "core/errfloat.hpp"
 
 // レイの浮かしを決める定数(pbrt ch4参照)
 #define RAYEPSILON_SCALE_QUADRIC_SURFACE 5e-4f
@@ -12,9 +13,9 @@ Sphere vs Ray
 -------------------------------------------------
 */
 bool
-intersectSphere(const Ray& ray, Vec3 o, float r2, Intersect* isect);
+intersectSphere(const Ray& ray, Vec3 o, ErrFloat r2, Intersect* isect);
 bool
-intersectSphereCheck(const Ray& ray, Vec3 pos, float r2);
+intersectSphereCheck(const Ray& ray, Vec3 pos, ErrFloat r2);
 
 /*
 -------------------------------------------------

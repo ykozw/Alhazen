@@ -100,7 +100,7 @@ class ErrFloat
 {
 public:
     ErrFloat() = default;
-    ErrFloat(float v);
+    explicit ErrFloat(float v);
     ErrFloat(float v, float err);
     ErrFloat(const ErrFloat& other);
     float low() const;

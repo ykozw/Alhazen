@@ -281,8 +281,8 @@ public:
 
 private:
     Vec3 pos_;
-    float r_;
-    float r2_;
+    ErrFloat r_;
+    ErrFloat r2_;
     AABB aabb_;
 };
 REGISTER_OBJECT(Shape, Sphere);
@@ -295,11 +295,11 @@ Sphere::Sphere(const ObjectProp& prop) : Shape(prop)
 {
     // 幾何情報を取得
     pos_ = prop.findChildBy("name", "center").asXYZ(Vec3(0.0f));
-    r_ = prop.findChildBy("name", "radius").asFloat(1.0f);
+    r_ = ErrFloat(prop.findChildBy("name", "radius").asFloat(1.0f));
     r2_ = r_ * r_;
-    const Vec3 xdir = Vec3(r_, 0.0f, 0.0f);
-    const Vec3 ydir = Vec3(0.0f, r_, 0.0f);
-    const Vec3 zdir = Vec3(0.0f, 0.0f, r_);
+    const Vec3 xdir = Vec3(float(r_), 0.0f, 0.0f);
+    const Vec3 ydir = Vec3(0.0f, float(r_), 0.0f);
+    const Vec3 zdir = Vec3(0.0f, 0.0f, float(r_));
     aabb_.addPoint(pos_ + xdir);
     aabb_.addPoint(pos_ - xdir);
     aabb_.addPoint(pos_ + ydir);

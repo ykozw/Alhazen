@@ -6,6 +6,7 @@
 #include "core/rng.hpp"
 #include "core/distribution2d.hpp"
 #include "core/orthonormalbasis.hpp"
+#include "core/errfloat.hpp"
 #include "sampler/sampler.hpp"
 
 /*
@@ -144,8 +145,8 @@ public:
 
 private:
     Vec3 center_ = Vec3(0.0f, 0.0f, 0.0f);
-    float radius_ = 0.0f;
-    float radius2_ = 0.0f;
+    ErrFloat radius_ = ErrFloat(0.0f);
+    ErrFloat radius2_ = ErrFloat(0.0f);
     Spectrum emission_;
     float area_ = 0.0f;
     float invArea_ = 0.0f;

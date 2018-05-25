@@ -11,8 +11,8 @@
 template <typename Type> void testLocalCoord(Type localCoord)
 {
     XorShift128 rng;
-    FloatStreamStats dotErrorStats;
-    FloatStreamStats lengthErrorStats;
+    FloatStreamStats<float, FSS_MomentLevel::MuVar, true> dotErrorStats;
+    FloatStreamStats<float, FSS_MomentLevel::MuVar, true> lengthErrorStats;
     //
     std::vector<Vec3> ns;
 #if 0
@@ -50,10 +50,10 @@ template <typename Type> void testLocalCoord(Type localCoord)
     // printf("Elapsed: %d\n", elapsed);
     logging("dot error    max:%g mean:%g",
             dotErrorStats.max(),
-            dotErrorStats.mean());
+            dotErrorStats.mu());
     logging("length error max:%g mean:%g",
             lengthErrorStats.max(),
-            lengthErrorStats.mean());
+            lengthErrorStats.mu());
 }
 
 /*

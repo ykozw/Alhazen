@@ -1,63 +1,7 @@
 ﻿#include "core/floatstreamstats.hpp"
 #include "core/unittest.hpp"
 
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-void FloatStreamStats::add(float v)
-{
-    //
-    n_ += 1.0f;
-    //
-    const float newMean = (v - mean_) / n_ + mean_;
-    const float newM = (v - mean_) * (v - newMean) + M_;
-    //
-    M_ = newM;
-    mean_ = newMean;
-    //
-    min_ = std::min(v, min_);
-    max_ = std::max(v, max_);
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-int32_t FloatStreamStats::size() const { return int32_t(n_); }
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-float FloatStreamStats::mean() const { return mean_; }
-
-/*
--------------------------------------------------
-標本不偏分散
--------------------------------------------------
-*/
-float FloatStreamStats::variance() const { return M_ / (n_ - 1.0f); }
-
-/*
--------------------------------------------------
-標本不偏標準偏差
--------------------------------------------------
-*/
-float FloatStreamStats::sigma() const { return sqrtf(variance()); }
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-float FloatStreamStats::max() const { return max_; }
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-float FloatStreamStats::min() const { return min_; }
-
+#if 0 // TODO: 以下を移植する
 /*
 -------------------------------------------------
 自由度無限(サンプル数が十分)、信頼係数0.95のときの平均値の信頼区間
@@ -91,6 +35,7 @@ bool FloatStreamStats::maybeSameMean(const FloatStreamStats& lhs,
     // 領域が重ならない場合は真値は違う判定
     return !((i0h < i1l) || (i1h < i0l));
 }
+#endif
 
 /*
 -------------------------------------------------
@@ -111,7 +56,7 @@ void FloatStreamStats2::add(float x, float y)
     mx_ = (x - oldmux) * (x - mux_) + mx_;
     my_ = (y - oldmuy) * (y - muy_) + my_;
 }
-
+#if 0
 /*
 -------------------------------------------------
 -------------------------------------------------
@@ -144,6 +89,7 @@ void FloatStreamStatsEx::add(float v)
         }
     }
 }
+#endif
 
 /*
 -------------------------------------------------
@@ -152,14 +98,14 @@ void FloatStreamStatsEx::add(float v)
 AL_TEST(testFloatStreamStats, 0)
 {
     {
-        FloatStreamStats stats;
+        FloatStreamStats<> stats;
         stats.add(13.0f);
         stats.add(23.0f);
         stats.add(12.0f);
         stats.add(44.0f);
         stats.add(55.0f);
-        AL_ASSERT_ALWAYS(fabsf(stats.mean() / 29.4f - 1.0f) < 0.1f);
-        AL_ASSERT_ALWAYS(fabsf(stats.variance() / 370.3f - 1.0f) < 0.1f);
+        AL_ASSERT_ALWAYS(fabsf(stats.mu() / 29.4f - 1.0f) < 0.1f);
+        AL_ASSERT_ALWAYS(fabsf(stats.var() / 370.3f - 1.0f) < 0.1f);
         AL_ASSERT_ALWAYS(fabsf(stats.sigma() / 19.2f - 1.0f) < 0.1f);
     }
 }

@@ -37,10 +37,10 @@ static void testBSDFcore(BSDFPtr bsdf)
     for (int32_t i = 0; i < 128; ++i)
     {
         //
-        FloatStreamStats statsEnergyConservation;
-        FloatStreamStats statsPdfTotal;
-        FloatStreamStats statsRhd0;
-        FloatStreamStats statsRhd1;
+        FloatStreamStats<> statsEnergyConservation;
+        FloatStreamStats<> statsPdfTotal;
+        FloatStreamStats<> statsRhd0;
+        FloatStreamStats<> statsRhd1;
         //
         samplerWo.startSample(i);
         const Vec3 wo = samplerWo.getHemisphere();
@@ -82,10 +82,10 @@ static void testBSDFcore(BSDFPtr bsdf)
                 statsRhd1.add(refIS.r * std::fabsf(wiIS.z()) / pdfIS);
             }
         }
-        AL_ASSERT_ALWAYS(statsEnergyConservation.mean() <= 1.0f);
-        AL_ASSERT_ALWAYS(std::fabsf(statsPdfTotal.mean() - 1.0f) < 0.01f);
+        AL_ASSERT_ALWAYS(statsEnergyConservation.mu() <= 1.0f);
+        AL_ASSERT_ALWAYS(std::fabsf(statsPdfTotal.mu() - 1.0f) < 0.01f);
         AL_ASSERT_ALWAYS(
-            std::fabsf(statsRhd0.mean() / statsRhd1.mean() - 1.0f) < 0.01f);
+            std::fabsf(statsRhd0.mu() / statsRhd1.mu() - 1.0f) < 0.01f);
     }
 }
 
@@ -318,10 +318,10 @@ AL_TEST(BlinnNDF, 0)
     for (int32_t i = 0; i < 128; ++i)
     {
         //
-        FloatStreamStats statsEnergyConservation;
-        FloatStreamStats statsPdfTotal;
-        FloatStreamStats statsRhd0;
-        FloatStreamStats statsRhd1;
+        FloatStreamStats<> statsEnergyConservation;
+        FloatStreamStats<> statsPdfTotal;
+        FloatStreamStats<> statsRhd0;
+        FloatStreamStats<> statsRhd1;
         //
         samplerWo.startSample(i);
         const Vec3 wo = samplerWo.getSphere();
@@ -350,10 +350,10 @@ AL_TEST(BlinnNDF, 0)
             nd->sample(wo, &samplerWi, &wiIS, &pdfIS);
             // statsRhd1.add(refIS.r * std::fabsf(wiIS.z) / pdfIS);
         }
-        AL_ASSERT_ALWAYS(statsEnergyConservation.mean() <= 1.0f);
-        AL_ASSERT_ALWAYS(std::fabsf(statsPdfTotal.mean() - 1.0f) < 0.01f);
+        AL_ASSERT_ALWAYS(statsEnergyConservation.mu() <= 1.0f);
+        AL_ASSERT_ALWAYS(std::fabsf(statsPdfTotal.mu() - 1.0f) < 0.01f);
         AL_ASSERT_ALWAYS(
-            std::fabsf(statsRhd0.mean() / statsRhd1.mean() - 1.0f) < 0.01f);
+            std::fabsf(statsRhd0.mu() / statsRhd1.mu() - 1.0f) < 0.01f);
     }
 }
 

@@ -6,27 +6,166 @@
 -------------------------------------------------
 -------------------------------------------------
 */
-class FloatStreamStats /*AL_FINAL*/
+enum class FSS_MomentLevel
+{
+    // 平均
+    Mu,
+    // 平均+分散
+    MuVar,
+    // 平均+分散+歪度
+    MuVarSkew,
+    // 平均+分散+歪度+尖度
+    MuVarSkewKurt
+};
+
+/*
+-------------------------------------------------
+FloatStreamStats
+-------------------------------------------------
+*/
+template<typename Float = float, FSS_MomentLevel ML = FSS_MomentLevel::MuVar, bool ENABLE_MINMAX = false>
+class FloatStreamStats
 {
 public:
-    FloatStreamStats() = default;
-    virtual void add(float v);
-    int32_t size() const;
-    float mean() const;
-    float variance() const;
-    float sigma() const;
-    float max() const;
-    float min() const;
-    std::tuple<float, float> meanConfidenceInterval() const;
-    static bool maybeSameMean(const FloatStreamStats& lhs,
-                              const FloatStreamStats& rhs);
+    void add(Float v)
+    {
+        //
+        ++n_;
+        // モーメントの更新
+        updateMoment<ML>(v);
+        // 最大最高の更新
+        updateMinMax<ENABLE_MINMAX>(v);
+        // 
+    }
+    // 相加平均
+    Float mu() const
+    {
+        return mb_.m0;
+    }
+    // 不偏分散
+    Float var() const
+    {
+        return mb_.m1 / Float(n_ - 1);
+    }
+    // 不偏標準偏差
+    Float sigma() const
+    {
+        return std::sqrt(var());
+    }
+    Float skew() const
+    {
+        return std::sqrt(Float(n_)) * mb_.m3 / std::pow(mb_.m2, 1.5f);
+    }
+    Float kurt() const
+    {
+        return (float(n_) * m4_) / (m2_ * m2_);
+    }
+    Float min() const
+    {
+        return mmb_.mn;
+    }
+    Float max() const
+    {
+        return mmb_.mx;
+    }
 
-protected:
-    float mean_ = 0.0f;
-    float M_ = 0.0f;
-    float n_ = 0.0f;
-    float min_ = std::numeric_limits<float>::max();
-    float max_ = std::numeric_limits<float>::min();
+private:
+    // 最大最高の更新
+    template<bool ENABLE_MINMAX>
+    typename std::enable_if<ENABLE_MINMAX>::type updateMinMax(Float v)
+    {
+        mmb_.mn = std::min(v, mmb_.mn);
+        mmb_.mx = std::max(v, mmb_.mx);
+    }
+    template<bool ENABLE_MINMAX>
+    typename std::enable_if<!ENABLE_MINMAX>::type updateMinMax(Float v)
+    {}
+    /*
+    モーメントの更新
+    Simpler Online Updates for Arbitrary-Order Central Moments
+    https://arxiv.org/pdf/1510.04923.pdf
+    */
+    template<FSS_MomentLevel ML>
+    typename std::enable_if<ML == FSS_MomentLevel::Mu>::type updateMoment(Float v)
+    {
+        mb_.m0 = (v - mb_.m0) / Float(n_) + mb_.m0;
+    }
+    template<FSS_MomentLevel ML>
+    typename std::enable_if<ML == FSS_MomentLevel::MuVar>::type updateMoment(Float v)
+    {
+        const float nmu = (v - mb_.m0) / Float(n_) + mb_.m0;
+        const float newM = (v - mb_.m0) * (v - nmu) + mb_.m1;
+        mb_.m1 = newM;
+        mb_.m0 = nmu;
+    }
+    template<FSS_MomentLevel ML>
+    typename std::enable_if<ML == FSS_MomentLevel::MuVarSkew>::type updateMoment(Float v)
+    {
+        const Float delta = v - mb_.m0;
+        const Float delta_n = delta / Float(n_);
+        mb_.m0 += delta_n;
+        mb_.m1 += delta * (delta - delta_n);
+        const Float delta_2 = delta * delta;
+        const Float delta_n_2 = delta_n * delta_n;
+        mb_.m2 += Float(-3.0) * delta_n * mb_.m2 + delta * (delta_2 - delta_n_2);
+    }
+    template<FSS_MomentLevel ML>
+    typename std::enable_if<ML == FSS_MomentLevel::MuVarSkewKurt>::type updateMoment(Float v)
+    {
+        const Float delta = v - mb_.m0;
+        const Float delta_n = delta / Float(n_);
+        mb_.m0 += delta_n;
+        mb_.m1 += delta * (delta - delta_n);
+        const Float delta_2 = delta * delta;
+        const Float delta_n_2 = delta_n * delta_n;
+        mb_.m2 += Float(-3.0) * delta_n * mb_.m2 + delta * (delta_2 - delta_n_2);
+        mb_.m3 += Float(-4.0) * delta_n * mb_.m3 - Float(6.0) * delta_n_2 * mb_.m2 + delta * (delta * delta_2 - delta_n * delta_n_2);
+    }
+private:
+    //
+    int32_t n_ = 0;
+
+    // モーメント用のバッファ
+    template<FSS_MomentLevel T>
+    struct MomentBuffer {};
+    template<>
+    struct MomentBuffer<FSS_MomentLevel::Mu>
+    {
+        Float m0 = 0.0f;
+    };
+    template<>
+    struct MomentBuffer<FSS_MomentLevel::MuVar>
+    {
+        Float m0 = 0.0f;
+        Float m1 = 0.0f;
+    };
+    template<>
+    struct MomentBuffer<FSS_MomentLevel::MuVarSkew>
+    {
+        Float m0 = 0.0f;
+        Float m1 = 0.0f;
+        Float m2 = 0.0f;
+    };
+    template<>
+    struct MomentBuffer<FSS_MomentLevel::MuVarSkewKurt>
+    {
+        Float m0 = 0.0f;
+        Float m1 = 0.0f;
+        Float m2 = 0.0f;
+        Float m3 = 0.0f;
+    };
+    MomentBuffer<ML> mb_;
+
+    // 最大最小用のバッファ
+    template<bool T>
+    struct MinMaxBuffer {};
+    template<>
+    struct MinMaxBuffer<true>
+    {
+        Float mn = std::numeric_limits<Float>::max();
+        Float mx = std::numeric_limits<Float>::lowest();
+    };
+    MinMaxBuffer<ENABLE_MINMAX> mmb_;
 };
 
 /*
@@ -55,6 +194,7 @@ protected:
     int32_t n_ = 0;
 };
 
+#if 0
 /*
 -------------------------------------------------
 TODO: Reservoir Samplingも行う。P2も行うようにする。
@@ -70,3 +210,4 @@ private:
     std::vector<float> samples_;
     RNG rng_;
 };
+#endif

@@ -38,7 +38,7 @@ int32_t Alhazen::runApp(const ArgConfig& config)
     uint32_t nextDevelopTime =
         g_timeUtil.elapseTimeInMs() + developIntervalInMs;
     //
-    FloatStreamStats taskTimeStats;
+    FloatStreamStats<float,FSS_MomentLevel::Mu> taskTimeStats;
 
     for (;;)
     {
@@ -103,7 +103,7 @@ int32_t Alhazen::runApp(const ArgConfig& config)
         logging("Render Task pushed (%08d->%08d) %d ms",
                 taskNo,
                 taskNo + TASK_NUM_UNTILL_BY_JOIN,
-                int32_t(taskTimeStats.mean()));
+                int32_t(taskTimeStats.mu()));
         //
         CounterStats::printStats(true);
         //

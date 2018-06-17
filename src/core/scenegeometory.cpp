@@ -11,19 +11,54 @@ STATS_COUNTER("IsectVisib", g_numIsectVisible, "Rays");
 -------------------------------------------------
 -------------------------------------------------
 */
-void SceneGeometory::addShape(ShapePtr shape) { shapes_.push_back(shape); }
+class IntersectSceneOriginal :public IsectScene
+{
+public:
+    void addShape(ShapePtr shape) override;
+    void addLight(LightPtr light) override;
+    void buildScene() override;
+    const std::vector<LightPtr>& lights() const override;
+    bool intersect(const Ray& ray,
+        bool skipLight,
+        Intersect* isect) const override;
+    bool intersectCheck(const Ray& ray, bool skipLight) const override;
+    bool isVisible(const Vec3& p0, const Vec3& p1, bool skipLight) const override;
+    AABB aabb() const override;
+
+private:
+    // Shape
+    std::vector<ShapePtr> shapes_;
+    ShapeBVH shapeBvh_;
+    // Light
+    std::vector<LightPtr> lights_;
+};
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-void SceneGeometory::addLight(LightPtr light) { lights_.push_back(light); }
+std::unique_ptr<IsectScene> createIsectScene()
+{
+    return std::make_unique<IntersectSceneOriginal>();
+}
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-void SceneGeometory::buildScene()
+void IntersectSceneOriginal::addShape(ShapePtr shape) { shapes_.push_back(shape); }
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+void IntersectSceneOriginal::addLight(LightPtr light) { lights_.push_back(light); }
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+void IntersectSceneOriginal::buildScene()
 {
     // BVHの作成
     shapeBvh_.construct(shapes_);
@@ -40,13 +75,13 @@ void SceneGeometory::buildScene()
 -------------------------------------------------
 -------------------------------------------------
 */
-const std::vector<LightPtr>& SceneGeometory::lights() const { return lights_; }
+const std::vector<LightPtr>& IntersectSceneOriginal::lights() const { return lights_; }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-bool SceneGeometory::intersect(const Ray& ray,
+bool IntersectSceneOriginal::intersect(const Ray& ray,
                                bool skipLight,
                                Intersect* isect) const
 {
@@ -95,7 +130,7 @@ bool SceneGeometory::intersect(const Ray& ray,
 交差がある場合はtrueが返る
 -------------------------------------------------
 */
-bool SceneGeometory::intersectCheck(const Ray& ray, bool skipLight) const
+bool IntersectSceneOriginal::intersectCheck(const Ray& ray, bool skipLight) const
 {
     //
     ++g_numIsectTotal;
@@ -134,7 +169,7 @@ bool SceneGeometory::intersectCheck(const Ray& ray, bool skipLight) const
 可視の場合はtrueが返る(isect系と意味が逆になっている)事に注意
 -------------------------------------------------
 */
-bool SceneGeometory::isVisible(const Vec3& p0,
+bool IntersectSceneOriginal::isVisible(const Vec3& p0,
                                const Vec3& p1,
                                bool skipLight) const
 {
@@ -152,7 +187,7 @@ bool SceneGeometory::isVisible(const Vec3& p0,
 -------------------------------------------------
 -------------------------------------------------
 */
-AABB SceneGeometory::aabb() const
+AABB IntersectSceneOriginal::aabb() const
 {
     AABB aabb;
     //

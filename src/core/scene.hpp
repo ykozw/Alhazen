@@ -34,7 +34,7 @@ public:
     void dumpHDR(const std::string& fileName);
 
 private:
-    SceneGeometory geometory_;
+    std::unique_ptr<IsectScene> geometory_;
     SensorPtr sensor_ = nullptr;
     TonemapperPtr tonemapper_ = nullptr;
     DenoiserPtr denoiser_ = nullptr;

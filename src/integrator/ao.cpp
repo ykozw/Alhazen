@@ -12,10 +12,10 @@ class AOSurfaceIntegrator AL_FINAL : public LTEIntegrator
 public:
     AOSurfaceIntegrator() {}
     AOSurfaceIntegrator(const ObjectProp& objectProp);
-    bool preRendering(const SceneGeometory& scene) override;
+    bool preRendering(const IsectScene* scene) override;
     bool postRendering() override { return true; }
     Spectrum radiance(const Ray& ray,
-                      const SceneGeometory& scene,
+                      const IsectScene* scene,
                       Sampler* sampler) const override;
 
 private:
@@ -36,7 +36,7 @@ AOSurfaceIntegrator::AOSurfaceIntegrator(const ObjectProp& objectProp)
 -------------------------------------------------
 -------------------------------------------------
 */
-bool AOSurfaceIntegrator::preRendering(const SceneGeometory& scene)
+bool AOSurfaceIntegrator::preRendering(const IsectScene* scene)
 {
     return true;
 }
@@ -46,13 +46,13 @@ bool AOSurfaceIntegrator::preRendering(const SceneGeometory& scene)
 -------------------------------------------------
 */
 Spectrum AOSurfaceIntegrator::radiance(const Ray& screenRay,
-                                       const SceneGeometory& scene,
+                                       const IsectScene* scene,
                                        Sampler* sampler) const
 {
     // 何もない場合は0を返す
     Intersect isect;
     const bool skipLight = true;
-    if (!scene.intersect(screenRay, skipLight, &isect))
+    if (!scene->intersect(screenRay, skipLight, &isect))
     {
         return Spectrum(0.0f);
     }
@@ -69,7 +69,7 @@ Spectrum AOSurfaceIntegrator::radiance(const Ray& screenRay,
         const Vec3 pos = isect.uppserSideOrigin();
         Ray newRay(pos, worldDir, isect.rayEpsilon);
         const bool skipLight = true;
-        const bool isHit = scene.intersectCheck(newRay, skipLight);
+        const bool isHit = scene->intersectCheck(newRay, skipLight);
         const float cosWeight = Vec3::dot(worldDir, isect.normal);
         const float contribution = !isHit ? cosWeight * 2.0f / pdf : 0.0f;
         visibility += contribution;

@@ -22,6 +22,8 @@ project "Alhazen"
      "thirdparty/stb",
      "thirdparty/vdb",
      "thirdparty/tinyobjloader",
+     "%EMBREE_ROOT%/include/",
+     "$(EMBREE_ROOT)/include/",
    }
 
    files {
@@ -87,13 +89,16 @@ project "Alhazen"
 
   configuration "windows"
     sysincludedirs {
-      "thirdparty/tbb/include"
+      "thirdparty/tbb/include",
+      "$(EMBREE_ROOT)include/",
     }
     libdirs {
-      "thirdparty/tbb/lib/intel64/vc14"
+      "thirdparty/tbb/lib/intel64/vc14",
+      "$(EMBREE_ROOT)lib/",
     }
     links {
       "tbb.lib",
       "tbbmalloc_proxy.lib",
-      "tbbmalloc.lib"
+      "tbbmalloc.lib",
+      "embree3.lib",
     }

@@ -20,14 +20,12 @@ INLINE Ray::Ray()
 INLINE Ray::Ray(
     Vec3 pos,
     Vec3 dir,
-    float awaveLength,
     float amint,
     float amaxt)
     :o(pos),
     d(dir),
     mint(amint),
-    maxt(amaxt),
-    waveLength(awaveLength)
+    maxt(amaxt)
 {
     d.normalize();
     dinv = d.invertedSafe(std::numeric_limits <float>::max());
@@ -46,7 +44,6 @@ INLINE Ray::Ray(const Ray& other)
     dinv(other.dinv),
     mint(other.mint),
     maxt(other.maxt),
-    waveLength(other.waveLength),
     sign(other.sign)
 {
 }

@@ -14,10 +14,10 @@ class BruteForceIntegrator AL_FINAL : public LTEIntegrator
 public:
     BruteForceIntegrator() = default;
     BruteForceIntegrator(const ObjectProp& objectProp);
-    bool preRendering(const SceneGeometory& scene) override;
+    bool preRendering(const IsectScene* scene) override;
     bool postRendering() override { return true; }
     Spectrum radiance(const Ray& ray,
-                      const SceneGeometory& scene,
+                      const IsectScene* scene,
                       Sampler* sampler) const override;
 
 private:
@@ -38,7 +38,7 @@ BruteForceIntegrator::BruteForceIntegrator(const ObjectProp& objectProp)
 -------------------------------------------------
 -------------------------------------------------
 */
-bool BruteForceIntegrator::preRendering(const SceneGeometory& scene)
+bool BruteForceIntegrator::preRendering(const IsectScene* scene)
 {
     return true;
 }
@@ -48,7 +48,7 @@ bool BruteForceIntegrator::preRendering(const SceneGeometory& scene)
 -------------------------------------------------
 */
 Spectrum BruteForceIntegrator::radiance(const Ray& screenRay,
-                                        const SceneGeometory& scene,
+                                        const IsectScene* scene,
                                         Sampler* sampler) const
 {
     //
@@ -82,7 +82,7 @@ Spectrum BruteForceIntegrator::radiance(const Ray& screenRay,
         // 何も衝突しなかったらContributionが0で終了
         // ライトを直接サンプルするわけではないのでライトと交差する必要がある
         bool skipLight = false;
-        if (!scene.intersect(ray, skipLight, &isect))
+        if (!scene->intersect(ray, skipLight, &isect))
         {
             break;
         }

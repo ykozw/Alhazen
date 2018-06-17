@@ -32,7 +32,7 @@ class ImageLDR;
 
 // core/scene.hpp
 class Scene;
-class SceneGeometory;
+class IntersectSceneOriginal;
 
 // core/spectrum.hpp
 class SpectrumRGB;

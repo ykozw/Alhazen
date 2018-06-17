@@ -14,10 +14,10 @@ class PMIntegrator AL_FINAL : public LTEIntegrator
 public:
     PMIntegrator() {}
     PMIntegrator(const ObjectProp& objectProp);
-    bool preRendering(const SceneGeometory& scene) override;
+    bool preRendering(const IsectScene* scene) override;
     bool postRendering() override { return true; }
     Spectrum radiance(const Ray& ray,
-                      const SceneGeometory& scene,
+                      const IsectScene* scene,
                       Sampler* sampler) const override;
 
 private:
@@ -49,10 +49,10 @@ PMIntegrator::PMIntegrator(const ObjectProp& objectProp)
 -------------------------------------------------
 -------------------------------------------------
 */
-bool PMIntegrator::preRendering(const SceneGeometory& scene)
+bool PMIntegrator::preRendering(const IsectScene* scene)
 {
     //
-    const auto& lights = scene.lights();
+    const auto& lights = scene->lights();
     // 光源がなければ終了
     if (lights.empty())
     {
@@ -90,7 +90,7 @@ bool PMIntegrator::preRendering(const SceneGeometory& scene)
             //
             Intersect isect;
             const bool skipLight = true;
-            if (!scene.intersect(ray, skipLight, &isect))
+            if (!scene->intersect(ray, skipLight, &isect))
             {
                 continue;
             }
@@ -133,13 +133,13 @@ bool PMIntegrator::preRendering(const SceneGeometory& scene)
 -------------------------------------------------
 */
 Spectrum PMIntegrator::radiance(const Ray& screenRay,
-                                const SceneGeometory& scene,
+                                const IsectScene* scene,
                                 Sampler* sampler) const
 {
     // 適当に近いところにあるフォトンの数をそのまま輝度にする
     Intersect isect;
     const bool skipLight = true;
-    if (!scene.intersect(screenRay, skipLight, &isect))
+    if (!scene->intersect(screenRay, skipLight, &isect))
     {
         return Spectrum(0.0f);
     }

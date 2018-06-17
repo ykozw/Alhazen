@@ -43,12 +43,12 @@ Scene::Scene(const ObjectProp& objectProp)
         objectProp.findChildBy("name", "snapshotdenoise").asBool(false);
     sppPerInterval_ = objectProp.findChildBy("name", "sppinterval").asInt(4);
 
-    // SceneGeometoryの構築
+    // IntersectSceneOriginalの構築
     for (const ObjectProp& child : objectProp.childProps())
     {
         if (child.tag() == "Shape")
         {
-            geometory_.addShape(createObject<Shape>(child));
+            geometory_->addShape(createObject<Shape>(child));
         }
     }
 
@@ -61,13 +61,13 @@ Scene::Scene(const ObjectProp& objectProp)
         }
         // const auto& type = child.attribute("type");
         LightPtr newLight = createObject<Light>(child);
-        geometory_.addLight(newLight);
+        geometory_->addLight(newLight);
     }
     //
-    geometory_.buildScene();
+    geometory_->buildScene();
 
     //
-    const AABB aabb = geometory_.aabb();
+    const AABB aabb = geometory_->aabb();
     const Vec3 mn = aabb.min();
     const Vec3 mx = aabb.max();
     logging("Scene Bounding (%2.2f,%2.2f,%2.2f) (%2.2f,%2.2f,%2.2f)",
@@ -82,7 +82,7 @@ Scene::Scene(const ObjectProp& objectProp)
     // HACK: とりあえず一周分だけにしておく
     totalTaskNum_ = sensor_->film()->subFilmNum();
     // Integratorの事前準備
-    integrator_->preRendering(geometory_);
+    integrator_->preRendering(geometory_.get());
 }
 
 /*
@@ -184,7 +184,7 @@ SubFilm& Scene::render(int32_t taskNo)
                 {
                     Spectrum spectrum = Spectrum::Black;
                     spectrum =
-                        integrator_->radiance(screenRay, geometory_, &sampler);
+                        integrator_->radiance(screenRay, geometory_.get(), &sampler);
                     AL_ASSERT_DEBUG(!spectrum.hasNaN());
                     // TODO: pdfをちゃんと扱うようにする
                     spectrumTotal += spectrum * spWeight;
@@ -222,7 +222,7 @@ Spectrum Scene::renderPixel(int32_t x, int32_t y)
     // HACK: 暫定的に直接サンプラーを宣言しておく
     SamplerIndepent sampler;
     sampler.setHash(calcPixelHash(x, y, image.width()));
-    spectrum = integrator_->radiance(screenRay, geometory_, &sampler);
+    spectrum = integrator_->radiance(screenRay, geometory_.get(), &sampler);
     AL_ASSERT_DEBUG(!spectrum.hasNaN());
     return spectrum;
 }

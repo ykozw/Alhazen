@@ -74,10 +74,6 @@ public:
     virtual ~Sensor() {}
     // TOOD: これは(x,y)の[-0.5,0.5]に修正する
     virtual Ray generateRay(float imageX, float imageY, float& pdf) const = 0;
-    virtual Ray4 generateRay4(float imageX, float imageY, float pdf[4]) const
-    {
-        return Ray4();
-    }
     virtual FilmPtr film() const = 0;
 
 protected:

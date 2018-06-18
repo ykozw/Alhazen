@@ -50,6 +50,9 @@ class Transform;
 class FileSystem;
 class TimeUtil;
 
+// core/scenegeometory
+class IsectScene;
+
 // bsdf/bsdf.hpp
 class BSDF;
 class BSDFs;

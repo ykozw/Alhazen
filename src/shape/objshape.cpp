@@ -7,6 +7,7 @@
 #include "core/bounding.hpp"
 #include "core/transform.hpp"
 #include "core/util.hpp"
+#include "core/scenegeometory.hpp"
 
 //
 /*
@@ -17,11 +18,13 @@ class ObjShape AL_FINAL : public Shape
 {
 public:
     ObjShape(const ObjectProp& objectProp);
+    void mapToIntersectEngine(IsectScene* isectScene) override;
     AABB aabb() const override;
     bool intersect(const Ray& ray, Intersect* isect) const override;
     bool intersectCheck(const Ray& ray) const override;
 
 private:
+    //
     BVH bvh_;
     std::vector<BSDFPtr> bsdfs_;
     bool twosided_;
@@ -140,6 +143,15 @@ ObjShape::ObjShape(const ObjectProp& objectProp) : Shape(objectProp)
             material.dissolve,
             material.illum));
     }
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+void ObjShape::mapToIntersectEngine(IsectScene* isectScene)
+{
+    isectScene->mapTriangle();
 }
 
 /*

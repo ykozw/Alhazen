@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include "fwd.hpp"
 #include "core/ray.hpp"
 #include "core/intersect.hpp"
 #include "core/bounding.hpp"
@@ -19,6 +20,9 @@ class Shape : public SceneObject
 public:
     Shape(const ObjectProp& prop) {}
     virtual ~Shape() {}
+    virtual void mapToIntersectEngine(IsectScene* isectScene) {};
+
+    // TODO: これらは廃止する
     virtual AABB aabb() const = 0;
     virtual bool intersect(const Ray& ray, Intersect* isect) const = 0;
     virtual bool intersectCheck(const Ray& ray) const = 0;

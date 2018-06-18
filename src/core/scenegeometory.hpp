@@ -10,11 +10,32 @@
 -------------------------------------------------
 -------------------------------------------------
 */
+struct IsectGeomID
+{
+public:
+    IsectGeomID(int32_t id) : id_(id) {}
+    int32_t id() const { return id_; }
+public:
+    int32_t id_;
+};
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 class IsectScene
 {
 public:
     virtual void addShape(ShapePtr shape) = 0;
     virtual void addLight(LightPtr light) = 0;
+    //
+    virtual IsectGeomID addMesh(
+        int32_t numVtx,
+        int32_t numFace,
+        const std::function<Vec3(int32_t idx)>& getVtx,
+        const std::function<std::array<int32_t, 3>(int32_t faceNo)>& getFace)
+    {}
+    //
     virtual void buildScene() = 0;
     virtual const std::vector<LightPtr>& lights() const  = 0;
     virtual bool intersect(const Ray& ray,

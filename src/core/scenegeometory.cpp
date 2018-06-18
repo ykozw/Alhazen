@@ -15,6 +15,11 @@ class IntersectSceneOriginal :public IsectScene
 {
 public:
     void addShape(ShapePtr shape) override;
+    IsectGeomID addMesh(
+        int32_t numVtx,
+        int32_t numFace,
+        const std::function<Vec3(int32_t idx)>& getVtx,
+        const std::function<std::array<int32_t, 3>(int32_t faceNo)>& getFace) override;
     void addLight(LightPtr light) override;
     void buildScene() override;
     const std::vector<LightPtr>& lights() const override;
@@ -26,6 +31,8 @@ public:
     AABB aabb() const override;
 
 private:
+
+    std::vector<BVH> bvhs_;
     // Shape
     std::vector<ShapePtr> shapes_;
     ShapeBVH shapeBvh_;
@@ -47,6 +54,44 @@ std::unique_ptr<IsectScene> createIsectScene()
 -------------------------------------------------
 */
 void IntersectSceneOriginal::addShape(ShapePtr shape) { shapes_.push_back(shape); }
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+IsectGeomID IntersectSceneOriginal::addMesh(
+    int32_t numVtx,
+    int32_t numFace,
+    const std::function<Vec3(int32_t idx)>& getVtx,
+    const std::function<std::array<int32_t, 3>(int32_t faceNo)>& getFace)
+{
+    /*
+    TODOs
+    - 頂点法線などはEmbreeに渡す必要はないがどこに管理するべきなのか？
+    */
+    つぎはここから。
+    // 全ての頂点情報を集める
+    std::vector<Vec3> vs(numVtx);
+    std::vector<Vec3> ns(numVtx);
+    std::vector<Vec2> ts(numVtx);
+    for (int32_t vi=0;vi<numVtx;++vi)
+    {
+        vs[vi] = getVtx(vi);
+    }
+    std::vector<MeshFace> fs(numFace);
+    for (int32_t fi=0;fi<numFace;++fi)
+    {
+        auto f = getFace(fi);
+        MeshFace& face = fs[fi];
+        face.vi[0] = f[0];
+        face.vi[1] = f[1];
+        face.vi[2] = f[2];
+    }
+    //
+    BVH bvh;
+    bvh.construct(vs, ns, ts, fs);
+    bvhs_.push_back(bvh);
+}
 
 /*
 -------------------------------------------------

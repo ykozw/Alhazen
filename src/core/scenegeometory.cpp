@@ -11,24 +11,24 @@ STATS_COUNTER("IsectVisib", g_numIsectVisible, "Rays");
 -------------------------------------------------
 -------------------------------------------------
 */
-class IntersectSceneOriginal :public IsectScene
+class IntersectSceneOriginal /*:public IsectScene*/
 {
 public:
-    void addShape(ShapePtr shape) override;
+    void addShape(ShapePtr shape);
     IsectGeomID addMesh(
         int32_t numVtx,
         int32_t numFace,
-        const std::function<Vec3(int32_t idx)>& getVtx,
-        const std::function<std::array<int32_t, 3>(int32_t faceNo)>& getFace) override;
-    void addLight(LightPtr light) override;
-    void buildScene() override;
-    const std::vector<LightPtr>& lights() const override;
+        const std::function<Vec3(int32_t vi)>& getVtx,
+        const std::function<std::array<int32_t, 3>(int32_t faceNo)>& getFace);
+    void addLight(LightPtr light);
+    void buildScene();
+    const std::vector<LightPtr>& lights() const;
     bool intersect(const Ray& ray,
         bool skipLight,
-        Intersect* isect) const override;
-    bool intersectCheck(const Ray& ray, bool skipLight) const override;
-    bool isVisible(const Vec3& p0, const Vec3& p1, bool skipLight) const override;
-    AABB aabb() const override;
+        Intersect* isect) const;
+    bool intersectCheck(const Ray& ray, bool skipLight) const;
+    bool isVisible(const Vec3& p0, const Vec3& p1, bool skipLight) const;
+    AABB aabb() const;
 
 private:
 
@@ -46,7 +46,8 @@ private:
 */
 std::unique_ptr<IsectScene> createIsectScene()
 {
-    return std::make_unique<IntersectSceneOriginal>();
+    return nullptr;
+    //return std::make_unique<IntersectSceneOriginal>();
 }
 
 /*
@@ -62,14 +63,13 @@ void IntersectSceneOriginal::addShape(ShapePtr shape) { shapes_.push_back(shape)
 IsectGeomID IntersectSceneOriginal::addMesh(
     int32_t numVtx,
     int32_t numFace,
-    const std::function<Vec3(int32_t idx)>& getVtx,
+    const std::function<Vec3(int32_t vi)>& getVtx,
     const std::function<std::array<int32_t, 3>(int32_t faceNo)>& getFace)
 {
     /*
     TODOs
     - 頂点法線などはEmbreeに渡す必要はないがどこに管理するべきなのか？
     */
-    つぎはここから。
     // 全ての頂点情報を集める
     std::vector<Vec3> vs(numVtx);
     std::vector<Vec3> ns(numVtx);
@@ -86,11 +86,16 @@ IsectGeomID IntersectSceneOriginal::addMesh(
         face.vi[0] = f[0];
         face.vi[1] = f[1];
         face.vi[2] = f[2];
+        face.ni[0];
+        face.ti;
+        face.ti;
     }
     //
     BVH bvh;
     bvh.construct(vs, ns, ts, fs);
     bvhs_.push_back(bvh);
+
+    return true;
 }
 
 /*

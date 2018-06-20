@@ -34,7 +34,9 @@ public:
         int32_t numFace,
         const std::function<Vec3(int32_t idx)>& getVtx,
         const std::function<std::array<int32_t, 3>(int32_t faceNo)>& getFace)
-    {}
+    {
+        return 0;
+    }
     //
     virtual void buildScene() = 0;
     virtual const std::vector<LightPtr>& lights() const  = 0;

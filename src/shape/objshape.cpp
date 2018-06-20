@@ -7,6 +7,7 @@
 #include "core/bounding.hpp"
 #include "core/transform.hpp"
 #include "core/util.hpp"
+#include "core/scenegeometory.hpp"
 
 //
 /*
@@ -17,14 +18,22 @@ class ObjShape AL_FINAL : public Shape
 {
 public:
     ObjShape(const ObjectProp& objectProp);
+    void mapToIntersectEngine(IsectScene* isectScene) override;
     AABB aabb() const override;
     bool intersect(const Ray& ray, Intersect* isect) const override;
     bool intersectCheck(const Ray& ray) const override;
 
 private:
+    //
     BVH bvh_;
     std::vector<BSDFPtr> bsdfs_;
     bool twosided_;
+
+    // TODO: 一時的なデータをメンバとして持つのはとてもよくない。
+    std::vector<Vec3> vs_;
+    std::vector<Vec3> ns_;
+    std::vector<Vec2> ts_;
+    std::vector<MeshFace> fs_;
 };
 REGISTER_OBJECT(Shape, ObjShape);
 
@@ -64,11 +73,7 @@ ObjShape::ObjShape(const ObjectProp& objectProp) : Shape(objectProp)
         loggingError(err.c_str());
         return;
     }
-    //
-    std::vector<Vec3> vs;
-    std::vector<Vec3> ns;
-    std::vector<Vec2> ts;
-    std::vector<MeshFace> fs;
+    
     // Position情報の作成
     for (size_t i = 0, e = attrib.vertices.size() / 3; i < e; ++i)
     {
@@ -76,7 +81,7 @@ ObjShape::ObjShape(const ObjectProp& objectProp) : Shape(objectProp)
         const tinyobj::real_t vx = attrib.vertices[3 * i + 0];
         const tinyobj::real_t vy = attrib.vertices[3 * i + 1];
         const tinyobj::real_t vz = attrib.vertices[3 * i + 2];
-        vs.push_back(Vec3(float(vx), float(vy), float(vz)));
+        vs_.push_back(Vec3(float(vx), float(vy), float(vz)));
     }
     // Normal情報の作成
     for (size_t i = 0, e = attrib.normals.size() / 3; i < e; ++i)
@@ -84,14 +89,14 @@ ObjShape::ObjShape(const ObjectProp& objectProp) : Shape(objectProp)
         const tinyobj::real_t nx = attrib.normals[3 * i + 0];
         const tinyobj::real_t ny = attrib.normals[3 * i + 1];
         const tinyobj::real_t nz = attrib.normals[3 * i + 2];
-        ns.push_back(Vec3(float(nx), float(ny), float(nz)));
+        ns_.push_back(Vec3(float(nx), float(ny), float(nz)));
     }
     // UV情報の作成
     for (size_t i = 0, e = attrib.texcoords.size() / 2; i < e; ++i)
     {
         const tinyobj::real_t tx = attrib.texcoords[2 * i + 0];
         const tinyobj::real_t ty = attrib.texcoords[2 * i + 1];
-        ts.push_back(Vec2(float(tx), float(ty)));
+        ts_.push_back(Vec2(float(tx), float(ty)));
     }
     // face情報の作成
     for (auto& shape : shapes)
@@ -115,13 +120,13 @@ ObjShape::ObjShape(const ObjectProp& objectProp) : Shape(objectProp)
                                             idx1.texcoord_index,
                                             idx2.texcoord_index}};
             mf.mi = shape.mesh.material_ids[f];
-            fs.push_back(mf);
+            fs_.push_back(mf);
             //
             index_offset += fv;
         }
     }
     //
-    bvh_.construct(vs, ns, ts, fs);
+    bvh_.construct(vs_, ns_, ts_, fs_);
 
     // マテリアルのロード
     for (auto& material : materials)
@@ -140,6 +145,23 @@ ObjShape::ObjShape(const ObjectProp& objectProp) : Shape(objectProp)
             material.dissolve,
             material.illum));
     }
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+void ObjShape::mapToIntersectEngine(IsectScene* isectScene)
+{
+    //
+    isectScene->addMesh(vs_.size(), fs_.size(), [this](int32_t vi)
+    {
+        return vs_[vi];
+    }, [this](int32_t fi)
+    {
+        auto& f = fs_[fi];
+        return std::array<int32_t, 3>{ {f.vi[0], f.vi[1], f.vi[2]}};
+    });
 }
 
 /*

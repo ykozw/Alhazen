@@ -163,4 +163,4 @@
 #define AL_FINAL final
 
 // 全てのclassのリスト
-#include "core/fwd.hpp"
+#include "fwd.hpp"

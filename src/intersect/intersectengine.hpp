@@ -15,20 +15,6 @@ TODOs
 -------------------------------------------------
 -------------------------------------------------
 */
-struct IsectGeomID
-{
-public:
-    IsectGeomID(int32_t id) : id_(id) {}
-    int32_t id() const { return id_; }
-
-public:
-    int32_t id_;
-};
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
 struct IsectSceneEmbree : public IsectScene
 {
 public:

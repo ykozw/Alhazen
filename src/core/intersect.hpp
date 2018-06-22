@@ -27,12 +27,6 @@ intersectTriangle(const Ray& ray,
                   Vec3 v0,
                   Vec3 v1,
                   Vec3 v2,
-                  Vec3 n0,
-                  Vec3 n1,
-                  Vec3 n2,
-                  Vec2 t0,
-                  Vec2 t1,
-                  Vec2 t2,
                   Intersect* isect);
 bool
 intersectTriangleCheck(const Ray& ray, Vec3 v0, Vec3 v1, Vec3 v2);

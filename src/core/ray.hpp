@@ -47,6 +47,9 @@ public:
     float rayEpsilon = 0.0f;
     Vec3 normal = Vec3(1.0f, 0.0f, 0.0);
     Vec3 position = Vec3(0.0f);
+    // 重心座標系のUV
+    Vec2 uvBicentric = Vec2(0.0f, 0.0f);
+    //
     Vec2 uv = Vec2(0.0f, 0.0f);
     BSDF* bsdf = nullptr;
     // 交差点でのEmission

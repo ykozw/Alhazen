@@ -133,13 +133,11 @@ INLINE bool SubDShape::intersect(const Ray& ray, Intersect* isect) const
     const auto intersectFace =
         [](const Ray& ray, const Face& face, Intersect* isect) {
             const auto& vs = face.vs;
-            const Vec3 n = face.n;
             // HACK: UVは適当
-            const Vec2 uv(0.0f);
             return intersectTriangle(
-                       ray, vs[0], vs[1], vs[2], n, n, n, uv, uv, uv, isect) ||
+                       ray, vs[0], vs[1], vs[2], isect) ||
                    intersectTriangle(
-                       ray, vs[2], vs[1], vs[3], n, n, n, uv, uv, uv, isect);
+                       ray, vs[2], vs[1], vs[3], isect);
         };
     bool isHit = false;
     isHit |= intersectFace(ray, faces_[0], isect);

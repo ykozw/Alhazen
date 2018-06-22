@@ -135,6 +135,7 @@ private:
                        int32_t depth);
     bool intersectSub(int32_t nodeIndex,
                       const Ray& ray,
+                      int32_t* hitNodeIndex,
                       Intersect* isect) const;
 
 private:

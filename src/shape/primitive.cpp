@@ -133,13 +133,10 @@ INLINE bool BoxShape::intersect(const Ray& ray, Intersect* isect) const
     const auto intersectFace =
         [](const Ray& ray, const Face& face, Intersect* isect) {
             const auto& vs = face.vs;
-            const Vec3 n = face.n;
-            // HACK: UVは適当
-            const Vec2 uv(0.0f);
             return intersectTriangle(
-                       ray, vs[0], vs[1], vs[2], n, n, n, uv, uv, uv, isect) ||
+                       ray, vs[0], vs[1], vs[2], isect) ||
                    intersectTriangle(
-                       ray, vs[2], vs[1], vs[3], n, n, n, uv, uv, uv, isect);
+                       ray, vs[2], vs[1], vs[3], isect);
         };
     bool isHit = false;
     isHit |= intersectFace(ray, faces_[0], isect);
@@ -223,29 +220,59 @@ INLINE AABB RectangleShape::aabb() const { return aabb_; }
 */
 INLINE bool RectangleShape::intersect(const Ray& ray, Intersect* isect) const
 {
-    const bool hit0 = intersectTriangle(ray,
-                                        verts_[0],
-                                        verts_[1],
-                                        verts_[2],
-                                        n_,
-                                        n_,
-                                        n_,
-                                        uvs_[0],
-                                        uvs_[1],
-                                        uvs_[2],
-                                        isect);
-    const bool hit1 = intersectTriangle(ray,
-                                        verts_[2],
-                                        verts_[1],
-                                        verts_[3],
-                                        n_,
-                                        n_,
-                                        n_,
-                                        uvs_[1],
-                                        uvs_[2],
-                                        uvs_[3],
-                                        isect);
-    if (!hit0 && !hit1)
+    const auto interpolate = [](
+        Intersect* isect,
+        Vec3 n, Vec3 v0, Vec3 v1, Vec3 v2,
+        Vec2 uv0, Vec2 uv1, Vec2 uv2)
+    {
+        const Vec2 uv = isect->uvBicentric;
+        const float u = uv.x();
+        const float v = uv.y();
+        isect->normal = n;
+        isect->position =
+            v0 * (1.0f - u - v) +
+            v1 * u +
+            v2 * v;
+        isect->uv =
+            uv0 * (1.0f - u - v) +
+            uv1 * u +
+            uv2 * v;
+    };
+    //
+    bool isHit = false;
+    if (intersectTriangle(ray,
+        verts_[0],
+        verts_[1],
+        verts_[2],
+        isect))
+    {
+        interpolate(isect,
+                    n_,
+                    verts_[0],
+                    verts_[1],
+                    verts_[2],
+                    uvs_[0],
+                    uvs_[1],
+                    uvs_[2]);
+        isHit = true;
+    }
+    if (intersectTriangle(ray,
+        verts_[2],
+        verts_[1],
+        verts_[3],
+        isect))
+    {
+        interpolate(isect,
+            n_,
+            verts_[2],
+            verts_[1],
+            verts_[3],
+            uvs_[2],
+            uvs_[1],
+            uvs_[3]);
+        isHit = true;
+    }
+    if (!isHit)
     {
         return false;
     }

@@ -43,6 +43,7 @@ Scene::Scene(const ObjectProp& objectProp)
         objectProp.findChildBy("name", "snapshotdenoise").asBool(false);
     sppPerInterval_ = objectProp.findChildBy("name", "sppinterval").asInt(4);
 
+    geometory_ = createIsectScene();
     // IntersectSceneOriginalの構築
     for (const ObjectProp& child : objectProp.childProps())
     {

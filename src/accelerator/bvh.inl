@@ -62,9 +62,25 @@ public:
 INLINE bool BruteForceBVH::intersect(const Ray& ray, Intersect* isect) const
 {
     bool isHit = false;
+    MeshFace hitFace;
     // 全ての三角形を見ていく
     for (auto& f : fs_)
     {
+        const Vec3 v0 = vs_[f.vi[0]];
+        const Vec3 v1 = vs_[f.vi[1]];
+        const Vec3 v2 = vs_[f.vi[2]];
+        //
+        if (intersectTriangle(ray, v0, v1, v2, isect))
+        {
+            hitFace = f;
+            isHit = true;
+        }
+    }
+
+    // 補間
+    if (isHit)
+    {
+        const auto& f = hitFace;
         const Vec3 v0 = vs_[f.vi[0]];
         const Vec3 v1 = vs_[f.vi[1]];
         const Vec3 v2 = vs_[f.vi[2]];
@@ -75,11 +91,24 @@ INLINE bool BruteForceBVH::intersect(const Ray& ray, Intersect* isect) const
         const Vec2 t1 = ts_[f.ti[1]];
         const Vec2 t2 = ts_[f.ti[2]];
         //
-        if (intersectTriangle(ray, v0, v1, v2, n0, n1, n2, t0, t1, t2, isect))
-        {
-            isHit = true;
-        }
+        const Vec2 uv = isect->uvBicentric;
+        const float u = uv.x();
+        const float v = uv.y();
+        //
+        isect->normal =
+            n0 * (1.0f - u - v) +
+            n1 * u +
+            n2 * v;
+        isect->position =
+            v0 * (1.0f - u - v) +
+            v1 * u +
+            v2 * v;
+        isect->uv =
+            t0 * (1.0f - u - v) +
+            t1 * u +
+            t2 * v;
     }
+
     return isHit;
 }
 
@@ -130,7 +159,28 @@ INLINE int32_t SimpleBVH::maxDepth() const
 */
 INLINE bool SimpleBVH::intersect(const Ray& ray, Intersect* isect) const
 {
-    return intersectSub(0, ray, isect);
+    int32_t hitNodeIdx = 0;
+    const bool isHit = intersectSub(0, ray, &hitNodeIdx, isect);
+    if (isHit)
+    {
+        auto& node = nodes_[hitNodeIdx];
+        const Vec2 uv = isect->uvBicentric;
+        const float u = uv.x();
+        const float v = uv.y();
+        isect->position =
+            node.v[0] * (1.0f - u - v) +
+            node.v[1] * u +
+            node.v[2] * v;
+        isect->normal =
+            node.n[0] * (1.0f - u - v) +
+            node.n[1] * u +
+            node.n[2] * v;
+        isect->uv =
+            node.t[0] * (1.0f - u - v) +
+            node.t[1] * u +
+            node.t[2] * v;
+    }
+    return isHit;
 }
 
 /*
@@ -141,14 +191,15 @@ INLINE bool SimpleBVH::intersectCheck(const Ray& ray) const
 {
     // TODO: もう少しちゃんと計算を省いたものを入れる
     Intersect isect;
-    return intersectSub(0, ray, &isect);
+    int32_t hitNodeIdx = 0;
+    return intersectSub(0, ray, &hitNodeIdx, &isect);
 }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-INLINE bool SimpleBVH::intersectSub(int32_t nodeIndex, const Ray& ray, Intersect* isect) const
+INLINE bool SimpleBVH::intersectSub(int32_t nodeIndex, const Ray& ray, int32_t* hitNodeIndex, Intersect* isect) const
 {
     /*
     スタックレス版の方が2割ほど低速であったため再帰版を採用する
@@ -165,16 +216,13 @@ INLINE bool SimpleBVH::intersectSub(int32_t nodeIndex, const Ray& ray, Intersect
     else if (node.childlen[0] == -1)
     {
         auto& v = node.v;
-        auto& n = node.n;
-        auto& t = node.t;
         if (intersectTriangle(
             ray,
             v[0], v[1], v[2],
-            n[0], n[1], n[2],
-            t[0], t[1], t[2],
             isect ))
         {
             isect->materialId = node.materialId;
+            *hitNodeIndex = nodeIndex;
             return true;
         }
         return false;
@@ -182,8 +230,8 @@ INLINE bool SimpleBVH::intersectSub(int32_t nodeIndex, const Ray& ray, Intersect
     // 枝の場合は、子を見に行く
     else
     {
-        const bool h0 = intersectSub(node.childlen[0], ray, isect);
-        const bool h1 = intersectSub(node.childlen[1], ray, isect);
+        const bool h0 = intersectSub(node.childlen[0], ray, hitNodeIndex, isect);
+        const bool h1 = intersectSub(node.childlen[1], ray, hitNodeIndex, isect);
         return h0 || h1;
     }
 #else
@@ -316,7 +364,7 @@ AL_FORCEINLINE __m128 select(__m128 v0, __m128 v1, __m128 mask)
 */
 INLINE bool QBVH::intersect(
     const Ray& ray,
-    Intersect* isect,
+    Intersect* isect,    
     int8_t* materialId ) const
 {
     // SIMD用レイ
@@ -331,6 +379,10 @@ INLINE bool QBVH::intersect(
     const __m128 minusone = _mm_set_ps1(-1.0f);
     //
     bool isHit = false;
+    int32_t hitLeafIdx = -1;
+    int32_t hitTriangleIndex = -1;
+    float hitFlipF = 0.0f;
+    Vec2 hitUVOnTri;
     //
     std::array<int32_t, 64> nodeStack;
     int32_t nodeStackSize = 0;
@@ -448,14 +500,14 @@ INLINE bool QBVH::intersect(
                 ALIGN32 float isFlipF[4];
                 _mm_store_ps(isFlipF, isFlip);
                 //
-                int32_t hitTriangleIndex = -1;
-                Vec2 hitUVOnTri;
                 for (int i = 0; i < 4; ++i)
                 {
                     if ((nohitmask & (1 << i)) == 0 && isect->t > t_f[i])
                     {
                         //
                         hitTriangleIndex = i;
+                        hitLeafIdx = leafIndex;
+                        hitFlipF = isFlipF[i];
                         isect->t = t_f[i];
                         intersectRecordSIMD.upadte(isect->t);
                         //
@@ -467,36 +519,6 @@ INLINE bool QBVH::intersect(
                         hitUVOnTri.setY(b2f[i]);
                     }
                 }
-                // 衝突していたらそれにを衝突情報に記録
-                if (hitTriangleIndex != -1)
-                {
-                    const auto& vs = leaf.v[hitTriangleIndex];
-                    const auto& ns = leaf.n[hitTriangleIndex];
-                    const auto& ts = leaf.t[hitTriangleIndex];
-                    *materialId = leaf.m[hitTriangleIndex];
-                    const float u = hitUVOnTri.x();
-                    const float v = hitUVOnTri.y();
-                    isect->normal =
-                        ns[0] * (1.0f - u - v) +
-                        ns[1] * u +
-                        ns[2] * v;
-                    //
-                    isect->normal *= isFlipF[hitTriangleIndex];
-                    //
-                    isect->normal.normalize();
-                    isect->position =
-                        vs[0] * (1.0f - u - v) +
-                        vs[1] * u +
-                        vs[2] * v;
-                    isect->uv =
-                        ts[0] * (1.0f - u - v) +
-                        ts[1] * u +
-                        ts[2] * v;
-                    //
-                    
-                    isect->uv.setX( alClamp(isect->uv.x(), 0.0f, 1.0f) );
-                    isect->uv.setY( alClamp(isect->uv.y(), 0.0f, 1.0f) );
-                }
 #endif
             }
             // 節であった場合はスタックに積む
@@ -507,6 +529,38 @@ INLINE bool QBVH::intersect(
             }
         }
     }
+
+    // 交差があったら補間処理
+    if (isHit)
+    {
+        auto& leaf = leafs_[hitLeafIdx];
+        const auto& vs = leaf.v[hitTriangleIndex];
+        const auto& ns = leaf.n[hitTriangleIndex];
+        const auto& ts = leaf.t[hitTriangleIndex];
+        *materialId = leaf.m[hitTriangleIndex];
+        const float u = hitUVOnTri.x();
+        const float v = hitUVOnTri.y();
+        isect->normal =
+            ns[0] * (1.0f - u - v) +
+            ns[1] * u +
+            ns[2] * v;
+        //
+        isect->normal *= hitFlipF;
+        //
+        isect->normal.normalize();
+        isect->position =
+            vs[0] * (1.0f - u - v) +
+            vs[1] * u +
+            vs[2] * v;
+        isect->uv =
+            ts[0] * (1.0f - u - v) +
+            ts[1] * u +
+            ts[2] * v;
+        //
+        isect->uv.setX(alClamp(isect->uv.x(), 0.0f, 1.0f));
+        isect->uv.setY(alClamp(isect->uv.y(), 0.0f, 1.0f));
+    }
+
     return isHit;
 }
 

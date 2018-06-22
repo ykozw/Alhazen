@@ -11,7 +11,7 @@ STATS_COUNTER("IsectVisib", g_numIsectVisible, "Rays");
 -------------------------------------------------
 -------------------------------------------------
 */
-class IntersectSceneOriginal /*:public IsectScene*/
+class IntersectSceneOriginal :public IsectScene
 {
 public:
     void addShape(ShapePtr shape);
@@ -46,8 +46,8 @@ private:
 */
 std::unique_ptr<IsectScene> createIsectScene()
 {
-    return nullptr;
-    //return std::make_unique<IntersectSceneOriginal>();
+    //return nullptr;
+    return std::make_unique<IntersectSceneOriginal>();
 }
 
 /*

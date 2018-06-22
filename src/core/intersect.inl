@@ -211,12 +211,6 @@ INLINE bool intersectTriangle(
    Vec3 v0,
    Vec3 v1,
    Vec3 v2,
-   Vec3 n0,
-   Vec3 n1,
-   Vec3 n2,
-   Vec2 t0,
-   Vec2 t1,
-   Vec2 t2,
    Intersect* isect)
 {
     //
@@ -233,27 +227,7 @@ INLINE bool intersectTriangle(
     // レイの交差の更新
     isect->t = t;
     isect->rayEpsilon = t * RAYEPSILON_SCALE_PLANE_SURFACE;
-    isect->normal =
-        n0 * (1.0f - u - v) +
-        n1 * u +
-        n2 * v;
-    if (isFlip)
-    {
-        isect->normal = -isect->normal;
-    }
-    // FIXME: なぜか法線(Y,Z)が逆向きになっている
-    /*std::swap(isect.normal.y, isect.normal.z);
-    isect.normal.x = -isect.normal.x;*/
-    //isect.normal = -isect.normal;
-    isect->normal.normalize();
-    isect->position =
-        v0 * (1.0f - u - v) +
-        v1 * u +
-        v2 * v;
-    isect->uv =
-        t0 * (1.0f - u - v) +
-        t1 * u +
-        t2 * v;
+    isect->uvBicentric = Vec2(u,v);
     return true;
 }
 

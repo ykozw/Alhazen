@@ -347,29 +347,46 @@ Spectrum RectangleLight::sampleLe(Sampler* sampler,
 */
 bool RectangleLight::intersect(const Ray& ray, Intersect* isect) const
 {
+    const auto interpolate = [](
+        Intersect* isect, 
+        Vec3 n, Vec3 v0, Vec3 v1, Vec3 v2,
+        Vec2 uv0, Vec2 uv1, Vec2 uv2)
+    {
+        const Vec2 uv = isect->uvBicentric;
+        const float u = uv.x();
+        const float v = uv.y();
+        isect->normal = n;
+        isect->position =
+            v0 * (1.0f - u - v) +
+            v1 * u +
+            v2 * v;
+        isect->uv =
+            uv0 * (1.0f - u - v) +
+            uv1 * u +
+            uv2 * v;
+    };
+    //
     bool isHit = false;
-    isHit |= intersectTriangle(ray,
-                               verts_[0],
-                               verts_[1],
-                               verts_[2],
-                               n_,
-                               n_,
-                               n_,
-                               uvs_[0],
-                               uvs_[1],
-                               uvs_[2],
-                               isect);
-    isHit |= intersectTriangle(ray,
-                               verts_[2],
-                               verts_[1],
-                               verts_[3],
-                               n_,
-                               n_,
-                               n_,
-                               uvs_[1],
-                               uvs_[2],
-                               uvs_[3],
-                               isect);
+    if (intersectTriangle(ray,
+        verts_[0],
+        verts_[1],
+        verts_[2],
+        isect))
+    {
+        interpolate(
+            isect, n_, verts_[0], verts_[1], verts_[2], uvs_[0], uvs_[1], uvs_[2]);
+        //
+        isHit = true;
+    }
+    if (intersectTriangle(ray,
+        verts_[2],
+        verts_[1],
+        verts_[3],
+        isect))
+    {
+        interpolate(
+            isect, n_, verts_[2], verts_[1], verts_[3], uvs_[2], uvs_[1], uvs_[3]);
+    }
     if (isHit)
     {
         isect->bsdf = BSDF::vantaBlack.get();

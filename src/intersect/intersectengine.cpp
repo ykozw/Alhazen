@@ -23,17 +23,20 @@ public:
     Impl() = default;
     Impl(RTCDevice device);
     ~Impl();
-    IsectGeomID addMesh(
+    void addMesh(
         int32_t numVtx,
         int32_t numFace,
         const std::function<Vec3(int32_t idx)>& getVtx,
-        const std::function<std::array<int32_t, 3>(int32_t faceNo)>& getFace);
+        const std::function<std::array<int32_t, 3>(int32_t faceNo)>& getFace, 
+        const InterpolateFun& interpolate);
     void buildScene();
     bool intersect(const Ray& ray, bool skipLight, Intersect* isect) const;
     bool intersectCheck(const Ray& ray, bool skipLight) const;
 private:
     RTCDevice device_ = nullptr;
     RTCScene scene_ = nullptr;
+    // geomIdに対応する補間関数
+    std::vector<InterpolateFun> interpolateFuns_;
 };
 
 /*
@@ -72,19 +75,21 @@ IsectSceneEmbree::Impl::~Impl()
 -------------------------------------------------
 -------------------------------------------------
 */
-IsectGeomID IsectSceneEmbree::addMesh(
+void IsectSceneEmbree::addMesh(
     int32_t numVtx,
     int32_t numFace,
     const std::function<Vec3(int32_t idx)>& getVtx,
-    const std::function<std::array<int32_t, 3>(int32_t faceNo)>& getFace)
+    const std::function<std::array<int32_t, 3>(int32_t faceNo)>& getFace,
+    const InterpolateFun& interpolate)
 {
-    return impl_->addMesh(numVtx, numFace, getVtx, getFace);
+    return impl_->addMesh(numVtx, numFace, getVtx, getFace, interpolate);
 }
-IsectGeomID IsectSceneEmbree::Impl::addMesh(
+void IsectSceneEmbree::Impl::addMesh(
     int32_t numVtx,
     int32_t numFace,
     const std::function<Vec3(int32_t idx)>& getVtx,
-    const std::function<std::array<int32_t, 3>(int32_t faceNo)>& getFace)
+    const std::function<std::array<int32_t, 3>(int32_t faceNo)>& getFace, 
+    const InterpolateFun& interpolate)
 {
     RTCGeometry mesh = rtcNewGeometry(device_, RTC_GEOMETRY_TYPE_TRIANGLE);
 
@@ -123,8 +128,12 @@ IsectGeomID IsectSceneEmbree::Impl::addMesh(
     rtcCommitGeometry(mesh);
     const uint32_t geomID = rtcAttachGeometry(scene_, mesh);
     rtcReleaseGeometry(mesh);
-    //
-    return IsectGeomID(geomID);
+    // 交差関数を登録
+    if (interpolateFuns_.size() <= geomID)
+    {
+        interpolateFuns_.resize(geomID + 1);
+    }
+    interpolateFuns_[geomID] = interpolate;
 }
 
 /*
@@ -174,11 +183,20 @@ bool IsectSceneEmbree::Impl::intersect(const Ray& ray, bool skipLight, Intersect
     rayHit.hit = {};
     rayHit.hit.geomID = RTC_INVALID_GEOMETRY_ID;
     rtcIntersect1(scene_, &context, &rayHit);
-
-    // TODO: 結果を返す
+    //
+    const bool isHit = (rayHit.hit.geomID != RTC_INVALID_GEOMETRY_ID);
+    if (isHit)
+    {
+        const auto& interpolate = interpolateFuns_[rayHit.hit.geomID];
+        const Interpolated interpolated = interpolate(rayHit.hit.primID, Vec2(rayHit.hit.u, rayHit.hit.v));
+        isect->position = interpolated.position;
+        isect->normal = interpolated.ng;
+        // TODO: nsも入れられるようにする
+        //isect->normal = Interpolated.ns;
+    }
 
     //
-    return (rayHit.hit.geomID != RTC_INVALID_GEOMETRY_ID);
+    return isHit;
 }
 
 /*
@@ -331,6 +349,11 @@ void test()
         case 1: return { 1,3,2 };
         default: return {};
         }
+    }, [](int32_t primId, Vec2 biuv)
+    {
+        IsectScene::Interpolated ret;
+        //Interpolated(int32_t primId, Vec2 biuv) > ;
+        return ret;
     });
     //
     scene->buildScene();

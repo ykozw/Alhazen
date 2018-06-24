@@ -3,7 +3,7 @@
 #include "core/spectrum.hpp"
 #include "core/ray.hpp"
 #include "core/ray.hpp"
-#include "core/scenegeometory.hpp"
+#include "intersect/intersectengine.hpp"
 #include "sampler/sampler.hpp"
 
 class LTEIntegrator;

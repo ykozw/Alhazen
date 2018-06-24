@@ -3,7 +3,7 @@
 #include "core/object.hpp"
 #include "core/image.hpp"
 #include "core/math.hpp"
-#include "core/scenegeometory.hpp"
+#include "intersect/intersectengine.hpp"
 #include "shape/shape.hpp"
 #include "bsdf/bsdf.hpp"
 #include "sensor/sensor.hpp"

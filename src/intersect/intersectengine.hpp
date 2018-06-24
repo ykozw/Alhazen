@@ -49,9 +49,6 @@ private:
 
 std::unique_ptr<IsectScene> createIsectScene();
 
-
-// TODO: 安定したらこのヘッダはちゃんと下の層に隠して消す
-#include <embree3/rtcore.h>
 /*
 -------------------------------------------------
 -------------------------------------------------
@@ -59,8 +56,7 @@ std::unique_ptr<IsectScene> createIsectScene();
 struct IsectSceneEmbree : public IsectScene
 {
 public:
-    IsectSceneEmbree() = default;
-    IsectSceneEmbree(RTCDevice device);
+    IsectSceneEmbree();
     ~IsectSceneEmbree();
     void addMesh(
         int32_t numVtx,

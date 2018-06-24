@@ -21,8 +21,9 @@ class IsectSceneEmbree::Impl : public IsectSceneEmbree
 {
 public:
     Impl() = default;
-    Impl(RTCDevice device);
+    //Impl(RTCDevice device);
     ~Impl();
+    void init(RTCDevice device);
     void addMesh(
         int32_t numVtx,
         int32_t numFace,
@@ -43,14 +44,18 @@ private:
 -------------------------------------------------
 -------------------------------------------------
 */
-IsectSceneEmbree::IsectSceneEmbree(RTCDevice device)
-    :impl_(std::make_unique<Impl>(device))
+IsectSceneEmbree::IsectSceneEmbree()
+    :impl_(std::make_unique<Impl>())
 {
 }
 
-IsectSceneEmbree::Impl::Impl(RTCDevice device)
-    : device_(device)
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+void IsectSceneEmbree::Impl::init(RTCDevice device)
 {
+    device_ = device;
     scene_ = rtcNewScene(device_);
     // TODO: rtcSetSceneProgressMonitorFunction()を設定してcommit()?の時間を計る
     rtcSetSceneFlags(scene_, RTC_SCENE_FLAG_COMPACT | RTC_SCENE_FLAG_ROBUST);
@@ -318,7 +323,9 @@ std::unique_ptr<IsectSceneEmbree> IsectEmbree2::createScene()
 }
 std::unique_ptr<IsectSceneEmbree> IsectEmbree2::Impl::createScene()
 {
-    return std::make_unique<IsectSceneEmbree>(device_);
+    IsectSceneEmbree::Impl* impl = new IsectSceneEmbree::Impl;
+    impl->init(device_);
+    return std::unique_ptr<IsectSceneEmbree>(impl);
 }
 
 /*

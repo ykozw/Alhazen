@@ -1,4 +1,4 @@
-﻿#include "core/scenegeometory.hpp"
+﻿#include "intersect/intersectengine.hpp"
 #include "core/stats.hpp"
 
 //
@@ -8,6 +8,14 @@ STATS_COUNTER("IsectCheck", g_numIsectCheck, "Rays");
 STATS_COUNTER("IsectVisib", g_numIsectVisible, "Rays");
 
 /*
+Embree化のためのTODOs
+- #include <embree3/rtcore.h>がヘッダに出てるのを直す
+- bvh専用のIntersectにしてprimIdxを返すようにする
+- そもそも交差のShapeを直接返す必要があるのか？
+- ライトなどは交差エンジンの知るものではないのでその上の層でなんとかする
+*/
+
+/*
 -------------------------------------------------
 -------------------------------------------------
 */
@@ -15,24 +23,32 @@ class IntersectSceneOriginal :public IsectScene
 {
 public:
     void addShape(ShapePtr shape);
-    IsectGeomID addMesh(
+    void addMesh(
         int32_t numVtx,
         int32_t numFace,
         const std::function<Vec3(int32_t vi)>& getVtx,
-        const std::function<std::array<int32_t, 3>(int32_t faceNo)>& getFace);
+        const std::function<std::array<int32_t, 3>(int32_t faceNo)>& getFace,
+        const InterpolateFun& interpolateFun);
     void addLight(LightPtr light);
     void buildScene();
     const std::vector<LightPtr>& lights() const;
     bool intersect(const Ray& ray,
         bool skipLight,
         Intersect* isect) const;
+
+    bool intersect2(const Ray& ray, Intersect* isect) const;
+
     bool intersectCheck(const Ray& ray, bool skipLight) const;
     bool isVisible(const Vec3& p0, const Vec3& p1, bool skipLight) const;
     AABB aabb() const;
 
 private:
-
-    std::vector<BVH> bvhs_;
+    struct MeshInfo
+    {
+        BVH bvh_;
+        InterpolateFun interpolateFun;
+    };
+    std::vector<MeshInfo> meshInfos_;;
     // Shape
     std::vector<ShapePtr> shapes_;
     ShapeBVH shapeBvh_;
@@ -60,11 +76,12 @@ void IntersectSceneOriginal::addShape(ShapePtr shape) { shapes_.push_back(shape)
 -------------------------------------------------
 -------------------------------------------------
 */
-IsectGeomID IntersectSceneOriginal::addMesh(
+void IntersectSceneOriginal::addMesh(
     int32_t numVtx,
     int32_t numFace,
     const std::function<Vec3(int32_t vi)>& getVtx,
-    const std::function<std::array<int32_t, 3>(int32_t faceNo)>& getFace)
+    const std::function<std::array<int32_t, 3>(int32_t faceNo)>& getFace,
+    const InterpolateFun& interpolateFun)
 {
     /*
     TODOs
@@ -91,11 +108,10 @@ IsectGeomID IntersectSceneOriginal::addMesh(
         face.ti;
     }
     //
-    BVH bvh;
-    bvh.construct(vs, ns, ts, fs);
-    bvhs_.push_back(bvh);
-
-    return true;
+    MeshInfo meshInfo;
+    meshInfo.bvh_.construct(vs, ns, ts, fs);
+    meshInfo.interpolateFun = interpolateFun;
+    meshInfos_.push_back(meshInfo);
 }
 
 /*
@@ -171,6 +187,29 @@ bool IntersectSceneOriginal::intersect(const Ray& ray,
     //
     isect->setHit(isHit);
     //
+    return isHit;
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+bool IntersectSceneOriginal::intersect2(const Ray& ray,
+                                        Intersect* isect) const
+{
+    bool isHit = false;
+    for (auto& mi : meshInfos_)
+    {
+        // TODO: bvh専用のIntersectにしてprimを返すようにする
+        if (mi.bvh_.intersect(ray, isect))
+        {
+            AL_ASSERT_ALWAYS(false);
+            //isect->sceneObject = mi.shape_.get();
+            //isect->uvBicentric;
+            //mi.interpolateFun(isect->uvBicentric, )
+            isHit = true;
+        }
+    }
     return isHit;
 }
 

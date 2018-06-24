@@ -7,7 +7,7 @@
 #include "core/bounding.hpp"
 #include "core/transform.hpp"
 #include "core/util.hpp"
-#include "core/scenegeometory.hpp"
+#include "intersect/intersectengine.hpp"
 
 //
 /*
@@ -154,14 +154,20 @@ ObjShape::ObjShape(const ObjectProp& objectProp) : Shape(objectProp)
 void ObjShape::mapToIntersectEngine(IsectScene* isectScene)
 {
     //
-    isectScene->addMesh(vs_.size(), fs_.size(), [this](int32_t vi)
-    {
-        return vs_[vi];
-    }, [this](int32_t fi)
-    {
-        auto& f = fs_[fi];
-        return std::array<int32_t, 3>{ {f.vi[0], f.vi[1], f.vi[2]}};
-    });
+    isectScene->addMesh(
+        vs_.size(),
+        fs_.size(),
+        [this](int32_t vi) { return vs_[vi]; },
+        [this](int32_t fi) {
+            auto& f = fs_[fi];
+            return std::array<int32_t, 3>{{f.vi[0], f.vi[1], f.vi[2]}};
+        },
+        // 補間
+        [this](int32_t primId, Vec2 biuv) {
+            IsectScene::Interpolated ret;
+            // TODO: 実装
+            return ret;
+        });
 }
 
 /*

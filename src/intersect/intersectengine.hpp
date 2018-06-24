@@ -91,11 +91,11 @@ public:
 -------------------------------------------------
 -------------------------------------------------
 */
-class IsectEmbree2
+class IsectEmbreeV3
 {
 public:
-    IsectEmbree2();
-    ~IsectEmbree2();
+    IsectEmbreeV3();
+    ~IsectEmbreeV3();
     std::unique_ptr<IsectSceneEmbree> createScene();
 
 public:

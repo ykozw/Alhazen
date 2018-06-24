@@ -4,15 +4,6 @@
 #include "intersect/intersectengine.hpp"
 #include "core/math.hpp"
 
-
-/*
-TODOs
-- rtcGetGeometry()で得たgeomはどうやって元の幾何情報を得られるのか？
-- 意図しないコピーが発生しないようにする
-- https://embree.github.io/api.html
-  rtcSetGeometryBuildQuality()から先のドキュメントを読む
-*/
-
 /*
 -------------------------------------------------
 -------------------------------------------------
@@ -267,7 +258,7 @@ AABB IsectSceneEmbree::aabb() const
 -------------------------------------------------
 -------------------------------------------------
 */
-class IsectEmbree2::Impl
+class IsectEmbreeV3::Impl
 {
 public:
     Impl();
@@ -281,10 +272,10 @@ public:
 -------------------------------------------------
 -------------------------------------------------
 */
-IsectEmbree2::IsectEmbree2()
+IsectEmbreeV3::IsectEmbreeV3()
     :impl_(std::make_unique<Impl>())
 {}
-IsectEmbree2::Impl::Impl()
+IsectEmbreeV3::Impl::Impl()
 {
     device_ = rtcNewDevice(nullptr);
     //
@@ -298,13 +289,13 @@ IsectEmbree2::Impl::Impl()
 -------------------------------------------------
 -------------------------------------------------
 */
-IsectEmbree2::~IsectEmbree2() = default;
+IsectEmbreeV3::~IsectEmbreeV3() = default;
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-IsectEmbree2::Impl::~Impl()
+IsectEmbreeV3::Impl::~Impl()
 {
     if (device_ != nullptr)
     {
@@ -317,11 +308,11 @@ IsectEmbree2::Impl::~Impl()
 -------------------------------------------------
 -------------------------------------------------
 */
-std::unique_ptr<IsectSceneEmbree> IsectEmbree2::createScene()
+std::unique_ptr<IsectSceneEmbree> IsectEmbreeV3::createScene()
 {
     return impl_->createScene();
 }
-std::unique_ptr<IsectSceneEmbree> IsectEmbree2::Impl::createScene()
+std::unique_ptr<IsectSceneEmbree> IsectEmbreeV3::Impl::createScene()
 {
     IsectSceneEmbree::Impl* impl = new IsectSceneEmbree::Impl;
     impl->init(device_);
@@ -335,7 +326,7 @@ std::unique_ptr<IsectSceneEmbree> IsectEmbree2::Impl::createScene()
 void test()
 {
     // https://github.com/embree/embree/blob/master/tutorials/triangle_geometry/triangle_geometry_device.cpp
-    IsectEmbree2 embree;
+    IsectEmbreeV3 embree;
     auto scene = embree.createScene();
     scene->addMesh(4, 2,
         [](int32_t vi)

@@ -23,64 +23,22 @@ rtcSetGeometryBuildQuality()から先のドキュメントを読む
 -------------------------------------------------
 -------------------------------------------------
 */
-class IntersectSceneOriginal :public IsectScene
+std::unique_ptr<IsectScene> IsectEngineBasic::createScene()
 {
-public:
-    void addShape(ShapePtr shape);
-    void addMesh(
-        int32_t numVtx,
-        int32_t numFace,
-        const std::function<Vec3(int32_t vi)>& getVtx,
-        const std::function<std::array<int32_t, 3>(int32_t faceNo)>& getFace,
-        const InterpolateFun& interpolateFun);
-    void addLight(LightPtr light);
-    void buildScene();
-    const std::vector<LightPtr>& lights() const;
-    bool intersect(const Ray& ray,
-        bool skipLight,
-        Intersect* isect) const;
-
-    bool intersect2(const Ray& ray, Intersect* isect) const;
-
-    bool intersectCheck(const Ray& ray, bool skipLight) const;
-    bool isVisible(const Vec3& p0, const Vec3& p1, bool skipLight) const;
-    AABB aabb() const;
-
-private:
-    struct MeshInfo
-    {
-        BVH bvh_;
-        InterpolateFun interpolateFun;
-    };
-    std::vector<MeshInfo> meshInfos_;;
-    // Shape
-    std::vector<ShapePtr> shapes_;
-    ShapeBVH shapeBvh_;
-    // Light
-    std::vector<LightPtr> lights_;
-};
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-std::unique_ptr<IsectScene> createIsectScene()
-{
-    //return nullptr;
-    return std::make_unique<IntersectSceneOriginal>();
+    return std::make_unique<IntersectSceneBasic>();
 }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-void IntersectSceneOriginal::addShape(ShapePtr shape) { shapes_.push_back(shape); }
+void IntersectSceneBasic::addShape(ShapePtr shape) { shapes_.push_back(shape); }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-void IntersectSceneOriginal::addMesh(
+void IntersectSceneBasic::addMesh(
     int32_t numVtx,
     int32_t numFace,
     const std::function<Vec3(int32_t vi)>& getVtx,
@@ -122,13 +80,13 @@ void IntersectSceneOriginal::addMesh(
 -------------------------------------------------
 -------------------------------------------------
 */
-void IntersectSceneOriginal::addLight(LightPtr light) { lights_.push_back(light); }
+void IntersectSceneBasic::addLight(LightPtr light) { lights_.push_back(light); }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-void IntersectSceneOriginal::buildScene()
+void IntersectSceneBasic::buildScene()
 {
     // BVHの作成
     shapeBvh_.construct(shapes_);
@@ -145,13 +103,13 @@ void IntersectSceneOriginal::buildScene()
 -------------------------------------------------
 -------------------------------------------------
 */
-const std::vector<LightPtr>& IntersectSceneOriginal::lights() const { return lights_; }
+const std::vector<LightPtr>& IntersectSceneBasic::lights() const { return lights_; }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-bool IntersectSceneOriginal::intersect(const Ray& ray,
+bool IntersectSceneBasic::intersect(const Ray& ray,
                                bool skipLight,
                                Intersect* isect) const
 {
@@ -198,7 +156,7 @@ bool IntersectSceneOriginal::intersect(const Ray& ray,
 -------------------------------------------------
 -------------------------------------------------
 */
-bool IntersectSceneOriginal::intersect2(const Ray& ray,
+bool IntersectSceneBasic::intersect2(const Ray& ray,
                                         Intersect* isect) const
 {
     bool isHit = false;
@@ -223,7 +181,7 @@ bool IntersectSceneOriginal::intersect2(const Ray& ray,
 交差がある場合はtrueが返る
 -------------------------------------------------
 */
-bool IntersectSceneOriginal::intersectCheck(const Ray& ray, bool skipLight) const
+bool IntersectSceneBasic::intersectCheck(const Ray& ray, bool skipLight) const
 {
     //
     ++g_numIsectTotal;
@@ -262,7 +220,7 @@ bool IntersectSceneOriginal::intersectCheck(const Ray& ray, bool skipLight) cons
 可視の場合はtrueが返る(isect系と意味が逆になっている)事に注意
 -------------------------------------------------
 */
-bool IntersectSceneOriginal::isVisible(const Vec3& p0,
+bool IntersectSceneBasic::isVisible(const Vec3& p0,
                                const Vec3& p1,
                                bool skipLight) const
 {
@@ -280,7 +238,7 @@ bool IntersectSceneOriginal::isVisible(const Vec3& p0,
 -------------------------------------------------
 -------------------------------------------------
 */
-AABB IntersectSceneOriginal::aabb() const
+AABB IntersectSceneBasic::aabb() const
 {
     AABB aabb;
     //

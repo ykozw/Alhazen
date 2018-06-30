@@ -12,6 +12,19 @@
 -------------------------------------------------
 -------------------------------------------------
 */
+class IsectEngine
+{
+public:
+    IsectEngine() = default;
+    virtual ~IsectEngine() = default;
+    virtual std::unique_ptr<IsectScene> createScene() = 0;
+public:
+};
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 class IsectScene
 {
 public:
@@ -47,7 +60,76 @@ public:
 private:
 };
 
-std::unique_ptr<IsectScene> createIsectScene();
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+class IsectEngineBasic
+    :public IsectEngine
+{
+public:
+    IsectEngineBasic() = default;
+    virtual ~IsectEngineBasic() = default;
+    std::unique_ptr<IsectScene> createScene() override;
+public:
+};
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+class IntersectSceneBasic :public IsectScene
+{
+public:
+    void addShape(ShapePtr shape);
+    void addMesh(
+        int32_t numVtx,
+        int32_t numFace,
+        const std::function<Vec3(int32_t vi)>& getVtx,
+        const std::function<std::array<int32_t, 3>(int32_t faceNo)>& getFace,
+        const InterpolateFun& interpolateFun);
+    void addLight(LightPtr light);
+    void buildScene();
+    const std::vector<LightPtr>& lights() const;
+    bool intersect(const Ray& ray,
+        bool skipLight,
+        Intersect* isect) const;
+
+    bool intersect2(const Ray& ray, Intersect* isect) const;
+
+    bool intersectCheck(const Ray& ray, bool skipLight) const;
+    bool isVisible(const Vec3& p0, const Vec3& p1, bool skipLight) const;
+    AABB aabb() const;
+
+private:
+    struct MeshInfo
+    {
+        BVH bvh_;
+        InterpolateFun interpolateFun;
+    };
+    std::vector<MeshInfo> meshInfos_;;
+    // Shape
+    std::vector<ShapePtr> shapes_;
+    ShapeBVH shapeBvh_;
+    // Light
+    std::vector<LightPtr> lights_;
+};
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+class IsectEngineEmbreeV3 : public IsectEngine
+{
+public:
+    IsectEngineEmbreeV3();
+    ~IsectEngineEmbreeV3();
+    std::unique_ptr<IsectScene> createScene() override;
+
+public:
+    class Impl;
+    std::unique_ptr<Impl> impl_;
+};
 
 /*
 -------------------------------------------------
@@ -81,22 +163,6 @@ public:
     bool
     isVisible(const Vec3& p0, const Vec3& p1, bool skipLight) const override;
     AABB aabb() const override;
-
-public:
-    class Impl;
-    std::unique_ptr<Impl> impl_;
-};
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-class IsectEmbreeV3
-{
-public:
-    IsectEmbreeV3();
-    ~IsectEmbreeV3();
-    std::unique_ptr<IsectSceneEmbree> createScene();
 
 public:
     class Impl;

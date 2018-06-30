@@ -451,7 +451,7 @@ Spectrum PTSurfaceIntegrator::estimateOneLight(const IsectScene* scene,
 
         // ライトサンプルのみ
         // const int32_t numLightSample = light->sampleNum();
-        const int32_t numLightSample = 16; // HACK: 固定
+        const int32_t numLightSample = 1; // HACK: 固定
         Spectrum weightResult(0.0f);
         for (int32_t sampleNo = 0; sampleNo < numLightSample; ++sampleNo)
         {

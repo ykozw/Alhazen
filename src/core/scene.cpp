@@ -43,8 +43,14 @@ Scene::Scene(const ObjectProp& objectProp)
         objectProp.findChildBy("name", "snapshotdenoise").asBool(false);
     sppPerInterval_ = objectProp.findChildBy("name", "sppinterval").asInt(4);
 
-    geometory_ = createIsectScene();
-    // IntersectSceneOriginalの構築
+#if 1
+    IsectEngineBasic isectEngine;
+#else
+    IsectEngineEmbreeV3 isectEngine;
+#endif
+
+    geometory_ = isectEngine.createScene();
+    // IntersectSceneBasicの構築
     for (const ObjectProp& child : objectProp.childProps())
     {
         if (child.tag() == "Shape")
@@ -162,7 +168,7 @@ SubFilm& Scene::render(int32_t taskNo)
             //
             Spectrum spectrumTotal(0.0f);
             // TODO: ちゃんとシーンファイルから取ってくるようにする
-            const int32_t sppPerLoop = 4;
+            const int32_t sppPerLoop = 1;
             const int32_t sampleBegin = (loopNo + 0) * sppPerLoop;
             const int32_t sampleEnd = (loopNo + 1) * sppPerLoop;
             // SubPixel巡回

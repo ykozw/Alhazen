@@ -258,12 +258,12 @@ AABB IsectSceneEmbree::aabb() const
 -------------------------------------------------
 -------------------------------------------------
 */
-class IsectEmbreeV3::Impl
+class IsectEngineEmbreeV3::Impl
 {
 public:
     Impl();
     ~Impl();
-    std::unique_ptr<IsectSceneEmbree> createScene();
+    std::unique_ptr<IsectScene> createScene();
 public:
     RTCDevice device_ = nullptr;
 };
@@ -272,10 +272,10 @@ public:
 -------------------------------------------------
 -------------------------------------------------
 */
-IsectEmbreeV3::IsectEmbreeV3()
+IsectEngineEmbreeV3::IsectEngineEmbreeV3()
     :impl_(std::make_unique<Impl>())
 {}
-IsectEmbreeV3::Impl::Impl()
+IsectEngineEmbreeV3::Impl::Impl()
 {
     device_ = rtcNewDevice(nullptr);
     //
@@ -289,13 +289,13 @@ IsectEmbreeV3::Impl::Impl()
 -------------------------------------------------
 -------------------------------------------------
 */
-IsectEmbreeV3::~IsectEmbreeV3() = default;
+IsectEngineEmbreeV3::~IsectEngineEmbreeV3() = default;
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-IsectEmbreeV3::Impl::~Impl()
+IsectEngineEmbreeV3::Impl::~Impl()
 {
     if (device_ != nullptr)
     {
@@ -308,11 +308,11 @@ IsectEmbreeV3::Impl::~Impl()
 -------------------------------------------------
 -------------------------------------------------
 */
-std::unique_ptr<IsectSceneEmbree> IsectEmbreeV3::createScene()
+std::unique_ptr<IsectScene> IsectEngineEmbreeV3::createScene()
 {
     return impl_->createScene();
 }
-std::unique_ptr<IsectSceneEmbree> IsectEmbreeV3::Impl::createScene()
+std::unique_ptr<IsectScene> IsectEngineEmbreeV3::Impl::createScene()
 {
     IsectSceneEmbree::Impl* impl = new IsectSceneEmbree::Impl;
     impl->init(device_);
@@ -326,7 +326,7 @@ std::unique_ptr<IsectSceneEmbree> IsectEmbreeV3::Impl::createScene()
 void test()
 {
     // https://github.com/embree/embree/blob/master/tutorials/triangle_geometry/triangle_geometry_device.cpp
-    IsectEmbreeV3 embree;
+    IsectEngineEmbreeV3 embree;
     auto scene = embree.createScene();
     scene->addMesh(4, 2,
         [](int32_t vi)

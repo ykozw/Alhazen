@@ -32,7 +32,7 @@ class ImageLDR;
 
 // core/scene.hpp
 class Scene;
-class IntersectSceneOriginal;
+class IntersectSceneBasic;
 
 // core/spectrum.hpp
 class SpectrumRGB;
@@ -51,6 +51,7 @@ class FileSystem;
 class TimeUtil;
 
 // core/scenegeometory
+class IsectEngine;
 class IsectScene;
 
 // bsdf/bsdf.hpp

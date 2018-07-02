@@ -51,6 +51,8 @@ class FileSystem;
 class TimeUtil;
 
 // core/scenegeometory
+class SceneGeom;
+class Scene;
 class IsectEngine;
 class IsectScene;
 

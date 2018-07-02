@@ -12,6 +12,7 @@
 #include "tonemapper/tonemapper.hpp"
 #include "denoiser/denoiser.hpp"
 
+
 /*
 -------------------------------------------------
 Scene
@@ -34,7 +35,7 @@ public:
     void dumpHDR(const std::string& fileName);
 
 private:
-    std::unique_ptr<IsectScene> geometory_;
+    SceneGeom sceneGeom_;
     SensorPtr sensor_ = nullptr;
     TonemapperPtr tonemapper_ = nullptr;
     DenoiserPtr denoiser_ = nullptr;

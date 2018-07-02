@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include "fwd.hpp"
 #include "core/spectrum.hpp"
 #include "core/ray.hpp"
 #include "core/ray.hpp"
@@ -19,9 +20,9 @@ class LTEIntegrator : public Object
 {
 public:
     virtual ~LTEIntegrator() {}
-    virtual bool preRendering(const IsectScene*  scene) = 0;
+    virtual bool preRendering(const SceneGeom&  scene) = 0;
     virtual bool postRendering() = 0;
     virtual Spectrum radiance(const Ray& ray,
-                              const IsectScene* scene,
+                              const SceneGeom& scene,
                               Sampler* sampler) const = 0;
 };

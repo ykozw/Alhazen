@@ -8,16 +8,85 @@ STATS_COUNTER("IsectCheck", g_numIsectCheck, "Rays");
 STATS_COUNTER("IsectVisib", g_numIsectVisible, "Rays");
 
 /*
-Embree化のためのTODOs
-- #include <embree3/rtcore.h>がヘッダに出てるのを直す
-- bvh専用のIntersectにしてprimIdxを返すようにする
-- そもそも交差のShapeを直接返す必要があるのか？
-- ライトなどは交差エンジンの知るものではないのでその上の層でなんとかする
-- rtcGetGeometry()で得たgeomはどうやって元の幾何情報を得られるのか？
-- 意図しないコピーが発生しないようにする
-- https://embree.github.io/api.html
-rtcSetGeometryBuildQuality()から先のドキュメントを読む
+-------------------------------------------------
+-------------------------------------------------
 */
+SceneGeom::SceneGeom()
+{
+#if 1
+    isectEngine_ = std::make_unique<IsectEngineBasic>();
+#else
+    isectEngine_ = std::make_unique<IsectEngineEmbreeV3>();
+#endif
+    geometory_ = isectEngine_->createScene();
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+bool
+SceneGeom::intersect(const Ray& ray, bool skipLight, Intersect* isect) const
+{
+    return geometory_->intersect(ray, skipLight, isect);
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+bool SceneGeom::intersectCheck(const Ray& ray, bool skipLight) const
+{
+    return geometory_->intersectCheck(ray, skipLight);
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+const std::vector<LightPtr>& SceneGeom::lights() const
+{
+    return geometory_->lights();
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+bool SceneGeom::isVisible(const Vec3& p0, const Vec3& p1, bool skipLight) const
+{
+    return geometory_->isVisible(p0, p1, skipLight);
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+void SceneGeom::addShape(ShapePtr shape) { geometory_->addShape(shape); }
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+void SceneGeom::addLight(LightPtr light) { geometory_->addLight(light); }
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+void SceneGeom::buildScene()
+{
+    geometory_->buildScene();
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+AABB SceneGeom::aabb() const
+{
+    return geometory_->aabb();
+}
 
 /*
 -------------------------------------------------

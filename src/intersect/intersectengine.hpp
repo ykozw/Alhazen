@@ -1,5 +1,18 @@
 ﻿#pragma once
 
+/*
+Embree化のためのTODOs
+- IsectEngineのラッパーを作成する
+ -> ライトなどは交差エンジンの知るものではないのでその上の層でなんとかする
+ -> 
+- bvh専用のIntersectにしてprimIdxを返すようにする
+- そもそも交差のShapeを直接返す必要があるのか？
+- rtcGetGeometry()で得たgeomはどうやって元の幾何情報を得られるのか？
+- 意図しないコピーが発生しないようにする
+- https://embree.github.io/api.html
+rtcSetGeometryBuildQuality()から先のドキュメントを読む
+*/
+#include "fwd.hpp"
 #include "shape/shape.hpp"
 #include "accelerator/bvh.hpp"
 #include "core/math.hpp"
@@ -7,6 +20,33 @@
 #include "core/ray.hpp"
 #include "light/light.hpp"
 #include "intersect/intersectengine.hpp"
+
+/*
+-------------------------------------------------
+シーンの幾何情報
+-------------------------------------------------
+*/
+class SceneGeom
+{
+public:
+    SceneGeom();
+    bool
+        intersect(const Ray& ray, bool skipLight, Intersect* isect) const;
+    bool intersectCheck(const Ray& ray, bool skipLight) const;
+    const std::vector<LightPtr>& lights() const;
+    bool isVisible(const Vec3& p0, const Vec3& p1, bool skipLight) const;
+    void addShape(ShapePtr shape);
+    void addLight(LightPtr light);
+    void buildScene();
+    AABB aabb() const;
+
+private:
+    // 交差エンジン
+    std::unique_ptr<IsectEngine> isectEngine_;
+    // 交差世界
+    std::unique_ptr<IsectScene> geometory_;
+    // TODO: 補間のための法線などをここに持たせる
+};
 
 /*
 -------------------------------------------------

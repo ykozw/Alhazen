@@ -8,10 +8,10 @@ class DebugSurfaceIntegrator : public LTEIntegrator
 {
 public:
     DebugSurfaceIntegrator(const ObjectProp& objectProp);
-    bool preRendering(const IsectScene* scene) override { return true; }
+    bool preRendering(const SceneGeom& scene) override { return true; }
     bool postRendering() override { return true; }
     Spectrum radiance(const Ray& ray,
-                      const IsectScene* scene,
+                      const SceneGeom& scene,
                       Sampler* sampler) const override;
 
 private:
@@ -32,7 +32,7 @@ DebugSurfaceIntegrator::DebugSurfaceIntegrator(const ObjectProp& objectProp)
 -------------------------------------------------
 */
 Spectrum DebugSurfaceIntegrator::radiance(const Ray& screenRay,
-                                          const IsectScene* scene,
+                                          const SceneGeom& scene,
                                           Sampler* sampler) const
 {
 #if 0   // UVデバッグ
@@ -60,7 +60,7 @@ Spectrum DebugSurfaceIntegrator::radiance(const Ray& screenRay,
     Intersect isect;
     // 何もない場合は0を返す
     const bool skipLight = true;
-    if (!scene->intersect(screenRay, skipLight, &isect))
+    if (!scene.intersect(screenRay, skipLight, &isect))
     {
         return Spectrum(0.0f);
     }

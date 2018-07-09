@@ -164,8 +164,24 @@ void ObjShape::mapToIntersectEngine(IsectScene* isectScene)
         },
         // 補間
         [this](int32_t primId, Vec2 biuv) {
+            auto& face = fs_[primId];         
+            const auto lerp3 = [](Vec3 p0, Vec3 p1, Vec3 p2, Vec2 biuv)
+            {
+                const float x = biuv.x();
+                const float y = biuv.y();
+                return (1.0f - x - y)*p0 + x * p1 + y * p2;
+            };
+            const auto lerp2 = [](Vec2 p0, Vec2 p1, Vec2 p2, Vec2 biuv)
+            {
+                const float x = biuv.x();
+                const float y = biuv.y();
+                return (1.0f - x - y)*p0 + x * p1 + y * p2;
+            };
             IsectScene::Interpolated ret;
-            // TODO: 実装
+            ret.position = lerp3(vs_[face.vi[0]], vs_[face.vi[1]], vs_[face.vi[2]], biuv);
+            ret.ns = lerp3(ns_[face.ni[0]], ns_[face.ni[1]], ns_[face.ni[2]], biuv);
+            ret.ng = ret.ns;
+            ret.uv = lerp2(ts_[face.ti[0]], ts_[face.ti[1]], ts_[face.ti[2]], biuv);
             return ret;
         });
 }

@@ -45,7 +45,9 @@ private:
     std::unique_ptr<IsectEngine> isectEngine_;
     // 交差世界
     std::unique_ptr<IsectScene> geometory_;
-    // TODO: 補間のための法線などをここに持たせる
+    // Lightの集合
+    std::vector<LightPtr> lights_;
+    //TODO: 補間のための法線などをここに持たせる
 };
 
 /*
@@ -70,16 +72,18 @@ class IsectScene
 public:
     struct Interpolated
     {
+        // 座標
         Vec3 position;
         // シェーディング法線
         Vec3 ns;
         // ジオメトリ法線
         Vec3 ng;
+        // テクスチャUV
+        Vec2 uv;
     };
     typedef std::function<Interpolated(int32_t primId, Vec2 biuv)> InterpolateFun;
 public:
     virtual void addShape(ShapePtr shape) = 0;
-    virtual void addLight(LightPtr light) = 0;
     //
     virtual void addMesh(
         int32_t numVtx,
@@ -89,12 +93,11 @@ public:
         const InterpolateFun& intepolate) = 0;
     //
     virtual void buildScene() = 0;
-    virtual const std::vector<LightPtr>& lights() const = 0;
     virtual bool
-    intersect(const Ray& ray, bool skipLight, Intersect* isect) const = 0;
-    virtual bool intersectCheck(const Ray& ray, bool skipLight) const = 0;
+    intersect(const Ray& ray, Intersect* isect) const = 0;
+    virtual bool intersectCheck(const Ray& ray) const = 0;
     virtual bool
-    isVisible(const Vec3& p0, const Vec3& p1, bool skipLight) const = 0;
+    isVisible(const Vec3& p0, const Vec3& p1) const = 0;
     virtual AABB aabb() const = 0;
 
 private:
@@ -128,17 +131,12 @@ public:
         const std::function<Vec3(int32_t vi)>& getVtx,
         const std::function<std::array<int32_t, 3>(int32_t faceNo)>& getFace,
         const InterpolateFun& interpolateFun);
-    void addLight(LightPtr light);
     void buildScene();
-    const std::vector<LightPtr>& lights() const;
     bool intersect(const Ray& ray,
-        bool skipLight,
         Intersect* isect) const;
 
-    bool intersect2(const Ray& ray, Intersect* isect) const;
-
-    bool intersectCheck(const Ray& ray, bool skipLight) const;
-    bool isVisible(const Vec3& p0, const Vec3& p1, bool skipLight) const;
+    bool intersectCheck(const Ray& ray) const;
+    bool isVisible(const Vec3& p0, const Vec3& p1) const;
     AABB aabb() const;
 
 private:
@@ -151,8 +149,6 @@ private:
     // Shape
     std::vector<ShapePtr> shapes_;
     ShapeBVH shapeBvh_;
-    // Light
-    std::vector<LightPtr> lights_;
 };
 
 /*
@@ -186,22 +182,14 @@ public:
         const std::function<Vec3(int32_t idx)>& getVtx,
         const std::function<std::array<int32_t, 3>(int32_t faceNo)>& getFace,
         const InterpolateFun& interpolate) override;
-
     //
     void addShape(ShapePtr shape) override { AL_ASSERT_ALWAYS(false); }
-    void addLight(LightPtr light) override { AL_ASSERT_ALWAYS(false); }
     void buildScene() override;
-    const std::vector<LightPtr>& lights() const override
-    {
-        AL_ASSERT_ALWAYS(false);
-        static std::vector<LightPtr> l;
-        return l;
-    }
     bool
-    intersect(const Ray& ray, bool skipLight, Intersect* isect) const override;
-    bool intersectCheck(const Ray& ray, bool skipLight) const override;
+    intersect(const Ray& ray, Intersect* isect) const override;
+    bool intersectCheck(const Ray& ray) const override;
     bool
-    isVisible(const Vec3& p0, const Vec3& p1, bool skipLight) const override;
+    isVisible(const Vec3& p0, const Vec3& p1) const override;
     AABB aabb() const override;
 
 public:

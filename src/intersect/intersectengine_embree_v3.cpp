@@ -22,8 +22,8 @@ public:
         const std::function<std::array<int32_t, 3>(int32_t faceNo)>& getFace, 
         const InterpolateFun& interpolate);
     void buildScene();
-    bool intersect(const Ray& ray, bool skipLight, Intersect* isect) const;
-    bool intersectCheck(const Ray& ray, bool skipLight) const;
+    bool intersect(const Ray& ray, Intersect* isect) const;
+    bool intersectCheck(const Ray& ray) const;
 private:
     RTCDevice device_ = nullptr;
     RTCScene scene_ = nullptr;
@@ -155,11 +155,11 @@ void IsectSceneEmbree::Impl::buildScene()
 -------------------------------------------------
 -------------------------------------------------
 */
-bool IsectSceneEmbree::intersect(const Ray& ray, bool skipLight, Intersect* isect) const
+bool IsectSceneEmbree::intersect(const Ray& ray, Intersect* isect) const
 {
-    return impl_->intersect(ray, skipLight, isect);
+    return impl_->intersect(ray, isect);
 }
-bool IsectSceneEmbree::Impl::intersect(const Ray& ray, bool skipLight, Intersect* isect) const
+bool IsectSceneEmbree::Impl::intersect(const Ray& ray, Intersect* isect) const
 {
     //
     RTCRay rayEmbree = {};
@@ -199,11 +199,11 @@ bool IsectSceneEmbree::Impl::intersect(const Ray& ray, bool skipLight, Intersect
 -------------------------------------------------
 -------------------------------------------------
 */
-bool IsectSceneEmbree::intersectCheck(const Ray& ray, bool skipLight) const
+bool IsectSceneEmbree::intersectCheck(const Ray& ray) const
 {
-    return impl_->intersectCheck(ray, skipLight);
+    return impl_->intersectCheck(ray);
 }
-bool IsectSceneEmbree::Impl::intersectCheck(const Ray& ray, bool skipLight) const
+bool IsectSceneEmbree::Impl::intersectCheck(const Ray& ray) const
 {
     //
     RTCRay rayEmbree = {};
@@ -230,14 +230,13 @@ bool IsectSceneEmbree::Impl::intersectCheck(const Ray& ray, bool skipLight) cons
 -------------------------------------------------
 */
 bool IsectSceneEmbree::isVisible(const Vec3& p0,
-    const Vec3& p1,
-    bool skipLight) const
+    const Vec3& p1) const
 {
     //
     const Vec3 d = p1 - p0;
     Ray ray(p0, d);
     ray.maxt = d.length();
-    return !intersectCheck(ray, skipLight);
+    return !intersectCheck(ray);
 }
 
 /*
@@ -364,7 +363,7 @@ void test()
         ray.mint = 0.0f;
         ray.maxt = std::numeric_limits<float>::infinity();
         Intersect isect;
-        const bool hit = scene->intersect(ray, false, &isect);
+        const bool hit = scene->intersect(ray, &isect);
         printf("%d\n", hit);
     }
     {
@@ -374,7 +373,7 @@ void test()
         ray.d = Vec3(0.0f, -1.0f, 0.0f);
         ray.mint = 0.0f;
         ray.maxt = std::numeric_limits<float>::infinity();
-        const bool hitAny = scene->intersectCheck(ray, false);
+        const bool hitAny = scene->intersectCheck(ray);
         printf("%d\n", hitAny);
     }
 }

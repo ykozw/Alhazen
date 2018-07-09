@@ -28,7 +28,23 @@ SceneGeom::SceneGeom()
 bool
 SceneGeom::intersect(const Ray& ray, bool skipLight, Intersect* isect) const
 {
-    return geometory_->intersect(ray, skipLight, isect);
+    bool isHit = false;
+    isHit = geometory_->intersect(ray, isect);
+    // Lightを巡回する
+    // TODO: ライトを登録してそこからプリミティブIDを得るような形にする
+    if (!skipLight)
+    {
+        for (const auto& light : lights_)
+        {
+            if (light->intersect(ray, isect))
+            {
+                AL_ASSERT_DEBUG(isect->bsdf);
+                isect->sceneObject = light.get();
+                isHit = true;
+            }
+        }
+    }
+    return isHit;
 }
 
 /*
@@ -37,7 +53,24 @@ SceneGeom::intersect(const Ray& ray, bool skipLight, Intersect* isect) const
 */
 bool SceneGeom::intersectCheck(const Ray& ray, bool skipLight) const
 {
-    return geometory_->intersectCheck(ray, skipLight);
+    //
+    if (geometory_->intersectCheck(ray))
+    {
+        return true;
+    }
+    // Lightを巡回する
+    // TODO: ライトを登録してそこからプリミティブIDを得るような形にする
+    if (!skipLight)
+    {
+        for (const auto& light : lights_)
+        {
+            if (light->intersectCheck(ray))
+            {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 /*
@@ -46,7 +79,7 @@ bool SceneGeom::intersectCheck(const Ray& ray, bool skipLight) const
 */
 const std::vector<LightPtr>& SceneGeom::lights() const
 {
-    return geometory_->lights();
+    return lights_;
 }
 
 /*
@@ -55,7 +88,16 @@ const std::vector<LightPtr>& SceneGeom::lights() const
 */
 bool SceneGeom::isVisible(const Vec3& p0, const Vec3& p1, bool skipLight) const
 {
-    return geometory_->isVisible(p0, p1, skipLight);
+    if (!geometory_->isVisible(p0, p1))
+    {
+        return false;
+    }
+    // TODO: 実装
+    if (!skipLight)
+    {
+        AL_ASSERT_ALWAYS(false);
+    }
+    return true;
 }
 
 /*
@@ -68,7 +110,10 @@ void SceneGeom::addShape(ShapePtr shape) { geometory_->addShape(shape); }
 -------------------------------------------------
 -------------------------------------------------
 */
-void SceneGeom::addLight(LightPtr light) { geometory_->addLight(light); }
+void SceneGeom::addLight(LightPtr light)
+{
+    this->lights_.push_back(light);
+}
 
 /*
 -------------------------------------------------
@@ -76,6 +121,14 @@ void SceneGeom::addLight(LightPtr light) { geometory_->addLight(light); }
 */
 void SceneGeom::buildScene()
 {
+    // ライトがなかったら全天球ライトを配置する
+    if (lights_.empty())
+    {
+        auto light = std::make_shared<ConstantLight>();
+        light->init(Spectrum::White);
+        lights_.push_back(light);
+    }
+    //
     geometory_->buildScene();
 }
 
@@ -149,37 +202,17 @@ void IntersectSceneBasic::addMesh(
 -------------------------------------------------
 -------------------------------------------------
 */
-void IntersectSceneBasic::addLight(LightPtr light) { lights_.push_back(light); }
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
 void IntersectSceneBasic::buildScene()
 {
     // BVHの作成
     shapeBvh_.construct(shapes_);
-    // ライトがなかったら全天球ライトを配置する
-    if (lights_.empty())
-    {
-        auto light = std::make_shared<ConstantLight>();
-        light->init(Spectrum::White);
-        lights_.push_back(light);
-    }
 }
 
 /*
 -------------------------------------------------
 -------------------------------------------------
 */
-const std::vector<LightPtr>& IntersectSceneBasic::lights() const { return lights_; }
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
 bool IntersectSceneBasic::intersect(const Ray& ray,
-                               bool skipLight,
                                Intersect* isect) const
 {
     //
@@ -188,7 +221,7 @@ bool IntersectSceneBasic::intersect(const Ray& ray,
     //
     bool isHit = false;
 
-#if 0 // 総当たりの場合
+#if 1 // 総当たりの場合
     // Shapeを巡回する
     for (auto& shape : shapes_) {
         // 衝突のたびにRayのtminが更新されるので最も近いShapeが得られる
@@ -201,46 +234,9 @@ bool IntersectSceneBasic::intersect(const Ray& ray,
     // shapeとの交差
     isHit |= shapeBvh_.intersect(ray, isect);
 #endif
-
-    // Lightを巡回する
-    if (!skipLight)
-    {
-        for (const auto& light : lights_)
-        {
-            if (light->intersect(ray, isect))
-            {
-                AL_ASSERT_DEBUG(isect->bsdf);
-                isect->sceneObject = light.get();
-                isHit = true;
-            }
-        }
-    }
     //
     isect->setHit(isHit);
     //
-    return isHit;
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-bool IntersectSceneBasic::intersect2(const Ray& ray,
-                                        Intersect* isect) const
-{
-    bool isHit = false;
-    for (auto& mi : meshInfos_)
-    {
-        // TODO: bvh専用のIntersectにしてprimを返すようにする
-        if (mi.bvh_.intersect(ray, isect))
-        {
-            AL_ASSERT_ALWAYS(false);
-            //isect->sceneObject = mi.shape_.get();
-            //isect->uvBicentric;
-            //mi.interpolateFun(isect->uvBicentric, )
-            isHit = true;
-        }
-    }
     return isHit;
 }
 
@@ -250,7 +246,7 @@ bool IntersectSceneBasic::intersect2(const Ray& ray,
 交差がある場合はtrueが返る
 -------------------------------------------------
 */
-bool IntersectSceneBasic::intersectCheck(const Ray& ray, bool skipLight) const
+bool IntersectSceneBasic::intersectCheck(const Ray& ray) const
 {
     //
     ++g_numIsectTotal;
@@ -269,17 +265,6 @@ bool IntersectSceneBasic::intersectCheck(const Ray& ray, bool skipLight) const
     }
 #endif
 
-    // Lightを巡回する
-    if (!skipLight)
-    {
-        for (const auto& light : lights_)
-        {
-            if (light->intersectCheck(ray))
-            {
-                return true;
-            }
-        }
-    }
     return false;
 }
 
@@ -290,8 +275,7 @@ bool IntersectSceneBasic::intersectCheck(const Ray& ray, bool skipLight) const
 -------------------------------------------------
 */
 bool IntersectSceneBasic::isVisible(const Vec3& p0,
-                               const Vec3& p1,
-                               bool skipLight) const
+                               const Vec3& p1) const
 {
     // NOTE: g_numIsectTotalはダブルカウントになるのでカウントしない事
     // ++g_numIsectTotal;
@@ -300,7 +284,7 @@ bool IntersectSceneBasic::isVisible(const Vec3& p0,
     const Vec3 d = p1 - p0;
     Ray ray(p0, d);
     ray.maxt = d.length();
-    return !intersectCheck(ray, skipLight);
+    return !intersectCheck(ray);
 }
 
 /*

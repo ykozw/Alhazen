@@ -35,6 +35,16 @@ INLINE void AABB::addPoint(Vec3 point)
 -------------------------------------------------
 -------------------------------------------------
 */
+INLINE void AABB::addSphere(Vec3 center, float radius)
+{
+    mn = center - Vec3(radius);
+    mx = center + Vec3(radius);
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE void AABB::addPoints(const Vec3* points, int32_t numPoints)
 {
     for (int32_t i = 0; i < numPoints; ++i)

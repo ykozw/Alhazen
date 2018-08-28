@@ -19,7 +19,7 @@ public:
     virtual ~LTEIntegrator() {}
     virtual bool preRendering(const SceneGeom&  scene) = 0;
     virtual bool postRendering() = 0;
-    virtual void onStartFrame(const SceneGeom& scene) {}
+    virtual void onStartFrame(const SceneGeom& scene, int32_t frameNo) {}
     virtual void onEndFrame(const SceneGeom& scene) {}
     virtual Spectrum radiance(const Ray& ray,
                               const SceneGeom& scene,

@@ -7,6 +7,7 @@
 #include "core/distribution2d.hpp"
 #include "core/orthonormalbasis.hpp"
 #include "core/errfloat.hpp"
+#include "core/bounding.hpp"
 #include "sampler/sampler.hpp"
 
 /*
@@ -31,6 +32,8 @@ public:
                               Vec3 targetPos,
                               Vec3* samplePos,
                               float* pdf) const = 0;
+    // AABBを返す。方向のみのライトであったり体積を持たないライトの場合は空を返す
+    virtual AABB aabb() const { return AABB(); }
 
 protected:
     int32_t sampleNum_;
@@ -141,6 +144,13 @@ public:
     {
         AL_ASSERT_ALWAYS(false);
         return false;
+    }
+    //
+    AABB aabb() const override
+    {
+        AABB aabb;
+        aabb.addSphere(center_, float(radius_));
+        return aabb;
     }
 
 private:

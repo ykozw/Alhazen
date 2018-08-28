@@ -43,6 +43,12 @@ int32_t Alhazen::runApp(const ArgConfig& config)
     for (;;)
     {
         //
+        if (g_timeUtil.elapseTimeInMs() >= timeOutInMs)
+        {
+            logging("Time out.");
+            break;
+        }
+        //
         if (taskNo >= totalTaskNum)
         {
             logging("All tasks were consumed.");
@@ -51,8 +57,17 @@ int32_t Alhazen::runApp(const ArgConfig& config)
         //
         const auto startRenderTime = g_timeUtil.elapseTimeInMs();
         // レンダリング
-        const int32_t TASK_NUM_UNTILL_BY_JOIN = 4096;
-        parallelFor(TASK_NUM_UNTILL_BY_JOIN,
+        const bool isBeginFrame = (taskNo % scene.taskNumPerLoop() == 0);
+        const int32_t frameNo = taskNo / scene.taskNumPerLoop();
+        const int32_t taskNum = scene.taskNumPerLoop();
+        //
+        if (isBeginFrame)
+        {
+            scene.onStartFrame(frameNo);
+            logging("Frame Start [%d]", frameNo);
+        }
+        //
+        parallelFor(taskNum,
                     [&](int32_t taskNoOffsetBegin, int32_t taskNoOffsetEnd) {
                         CounterStats::preParallel();
                         //
@@ -76,13 +91,13 @@ int32_t Alhazen::runApp(const ArgConfig& config)
                             {
                                 nextDevelopTime += developIntervalInMs; // TODO:
 // 複数回来ることがあり得る
-#if 0 // 連番で出す場合
+#if 1 // 連番で出す場合
                                 filmNo++;
                                 // 最終ショット以外はdenoiseは走らせない
                                 std::ostringstream ss;
                                 ss << std::setfill('0') << std::setw(3) << filmNo;
                                 scene.developLDR(ss.str() + ".png", false);
-                                scene.dumpHDR(ss.str() + ".bhdr");
+                                //scene.dumpHDR(ss.str() + ".bhdr");
 #else // 同じイメージで出し続ける場合
                                 scene.developLDR("out.png", false);
 #endif
@@ -102,12 +117,12 @@ int32_t Alhazen::runApp(const ArgConfig& config)
         taskTimeStats.add(float(g_timeUtil.elapseTimeInMs() - startRenderTime));
         logging("Render Task pushed (%08d->%08d) %d ms",
                 taskNo,
-                taskNo + TASK_NUM_UNTILL_BY_JOIN,
+                taskNo + taskNum,
                 int32_t(taskTimeStats.mu()));
         //
         CounterStats::printStats(true);
         //
-        taskNo += TASK_NUM_UNTILL_BY_JOIN;
+        taskNo += taskNum;
     }
     // 最後まで来たら、デノイズを行い最終イメージを出力
     filmNo++;

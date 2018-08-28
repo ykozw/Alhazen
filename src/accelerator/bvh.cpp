@@ -753,11 +753,13 @@ int32_t QBVH::maxDepth() const { return maxDepth_; }
 void BVHBuilder::construct(int32_t volumeNum,
                            const std::function<AABB(int32_t)>& gen)
 {
+    //
+    nodes_.clear();
+    //
     if (volumeNum == 0)
     {
         return;
     }
-
     //
     struct VolumeInfo
     {
@@ -889,9 +891,31 @@ void BVHBuilder::construct(int32_t volumeNum,
             curNode.aabb.addAABB(nodes[curNode.childlen[0]].aabb);
             curNode.aabb.addAABB(nodes[curNode.childlen[1]].aabb);
         }
+
+        //  parentとsiblingを埋める
+        static void fillIndex(std::vector<Node>& nodes, int32_t nodeIndex)
+        {
+            auto& node = nodes[nodeIndex];
+            // 節の場合のみ見る
+            if(!node.isLeaf())
+            {
+                const int32_t c0 = node.childlen[0];
+                const int32_t c1 = node.childlen[1];
+                auto& n0 = nodes[c0];
+                auto& n1 = nodes[c1];
+                n0.sibling = c1;
+                n1.sibling = c0;
+                n0.parent = nodeIndex;
+                n1.parent = nodeIndex;
+                //
+                fillIndex(nodes, c0);
+                fillIndex(nodes, c1);
+            }
+        }
     };
     //
     Local::constructSub(volumeInfos.begin(), volumeInfos.end(), nodes_, 0);
+    Local::fillIndex(nodes_, 0);
 }
 
 /*

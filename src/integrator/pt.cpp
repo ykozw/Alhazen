@@ -9,6 +9,118 @@ STATS_COUNTER("EvDirect", g_numEstimateOneLine, "Evals");
 
 /*
 -------------------------------------------------
+ライトの影響球管理
+-------------------------------------------------
+*/
+class LightSphereBVH
+{
+public:
+    // ライトのBVHの構築
+    void construct(
+        const std::vector<LightPtr>& lights,
+        Sampler* sampler)
+    {
+        // BVHを作成する
+        bvh_.construct(int32_t(lights.size()), [&](int32_t lightIdx)
+        {
+            // HACK: このalphaは決め打ち
+            const float alpha = 2.0f;
+            const float xi = sampler->get1d();
+            const float dist0 = std::sqrtf(1.0f / alpha);
+            const float dist1 = std::sqrtf(1.0f / xi);
+            //
+            auto& light = lights[lightIdx];
+            const float radius = std::max(dist0,dist1);
+            const Vec3 lightCenter = light->aabb().center();
+            AABB aabb;
+            aabb.addSphere(lightCenter, radius);
+            return aabb;
+        });
+    }
+    //
+    int32_t selectLight(Vec3 point, const std::vector<LightPtr>& lights, Sampler* sampler, float* pdf) const
+    {
+        class Local
+        {
+        public:
+            static void enumerateVolume(const BVHBuilder& bvh, int32_t nodeIndex, Vec3 point, const std::function<void(int32_t)>& onFindVolume)
+            {
+                // その点を含む一番下のボリュームまで下りていく
+                auto& node = bvh.nodes_[nodeIndex];
+                if (!node.aabb.isInside(point))
+                {
+                    return;
+                }
+                // 葉であった場合
+                if (node.isLeaf())
+                {
+                    onFindVolume(node.index);
+                    return;
+                }
+                // 節であった場合
+                else
+                {
+                    enumerateVolume(bvh, node.childlen[0], point, onFindVolume);
+                    enumerateVolume(bvh, node.childlen[1], point, onFindVolume);
+                }
+            }
+        };
+        //
+        struct LightInfo
+        {
+            int32_t lightIdx = -1;
+            float pdf = 0.0f;
+            float cdf = 0.0f;
+        };
+        float cdfTotal = 0.0f;
+        int32_t lightInfosLen = 0;
+        std::array<LightInfo, 1024> lightInfos;
+
+        // 全てのボリュームの採用確率を計算する
+        Local::enumerateVolume(bvh_, 0, point, [&](int32_t volumeIndex)
+        {
+            // HACK: バッファが溢れたら丸々無視
+            if (lightInfos.size() <= lightInfosLen)
+            {
+                return;
+            }
+            // HACK: とりあえずボリュームに含まれていたら採用確立は全て同じに。
+            const float dist = Vec3::distance(point, lights[volumeIndex]->aabb().center());
+            const float pdf = 1.0f/ dist;
+            cdfTotal += pdf;
+            lightInfos[lightInfosLen] = { volumeIndex, pdf, cdfTotal };
+            ++lightInfosLen;
+        });
+        const float invCdfTotal = 1.0f / cdfTotal;
+        for (auto& lightInfo : lightInfos)
+        {
+            lightInfo.pdf *= invCdfTotal;
+            lightInfo.cdf *= invCdfTotal;
+        }
+
+        // 実際に採用する
+        const float cdf = sampler->get1d();
+        const auto ite =
+            std::lower_bound(lightInfos.begin(),
+                             lightInfos.begin()+lightInfosLen,
+                             cdf,
+                             [](const LightInfo& lightInfo, float value) {
+                                 return (lightInfo.cdf < value);
+                             });
+        if (ite == lightInfos.end())
+        {
+            return -1;
+        }
+        *pdf = ite->pdf;
+        return ite->lightIdx;
+    }
+
+private:
+    BVHBuilder bvh_;
+};
+
+/*
+-------------------------------------------------
 -------------------------------------------------
 */
 class PTSurfaceIntegrator AL_FINAL : public LTEIntegrator
@@ -37,7 +149,7 @@ private:
                               Sampler* samler) const;
 
     //
-    void onStartFrame(const SceneGeom& scene) override;
+    void onStartFrame(const SceneGeom& scene, int32_t frameNo) override;
 
 private:
     // 直接光のライトの選択の戦略
@@ -47,11 +159,19 @@ private:
         All,
         // 等確率で一つを選択する
         UniformOne,
-        // TODO: ライトの光量による重みづけ
-        // TODO: シェーディング点近くへの重みづけ
+        // 距離の二乗の逆数で重みづけして一つ選択する
+        SelectDistSqr,
+        // 確率的カリング
+        StocasticCulling
     };
     DirectLighitingSelectStrategy directLighitingLightSelectStrategy_ =
-        DirectLighitingSelectStrategy::UniformOne;
+        //DirectLighitingSelectStrategy::All;
+        //DirectLighitingSelectStrategy::UniformOne;
+        //DirectLighitingSelectStrategy::SelectDistSqr;
+        DirectLighitingSelectStrategy::StocasticCulling;
+        
+    //
+    LightSphereBVH lightSphereBVH_;
 };
 
 REGISTER_OBJECT(LTEIntegrator, PTSurfaceIntegrator);
@@ -75,8 +195,13 @@ bool PTSurfaceIntegrator::preRendering(const SceneGeom& scene)
 -------------------------------------------------
 -------------------------------------------------
 */
-void PTSurfaceIntegrator::onStartFrame(const SceneGeom& scene)
+void PTSurfaceIntegrator::onStartFrame(const SceneGeom& scene, int32_t frameNo)
 {
+    // lightSphereBVHの構築
+    SamplerHalton sampler;
+    sampler.setHash(0x12345);
+    sampler.startSample(frameNo);
+    lightSphereBVH_.construct(scene.lights(), &sampler);
 }
 
 /*
@@ -116,7 +241,7 @@ Spectrum PTSurfaceIntegrator::radiance(const Ray& screenRay,
 #endif
         // 交差判定。何にも交差しない場合は終了。
         Intersect isect;
-        const bool skipLight = (pathNo == 0) ? false : true;
+        const bool skipLight = false; (pathNo == 0) ? false : true;
         if (!scene.intersect(ray, skipLight, &isect))
         {
             break;
@@ -182,12 +307,17 @@ PTSurfaceIntegrator::estimateDirectLight(const SceneGeom& scene,
                                          const Vec3 localWo,
                                          Sampler* sampler) const
 {
+    const auto& lights = scene.lights();
+    if (lights.empty())
+    {
+        return Spectrum::Black;
+    }
+    //
     switch (directLighitingLightSelectStrategy_)
     {
     // 全てのライトを評価
     case DirectLighitingSelectStrategy::All:
     {
-        const auto& lights = scene.lights();
         Spectrum estimated;
         for (const auto& light : lights)
         {
@@ -200,11 +330,6 @@ PTSurfaceIntegrator::estimateDirectLight(const SceneGeom& scene,
     // ライトを一つだけ選択
     case DirectLighitingSelectStrategy::UniformOne:
     {
-        const auto& lights = scene.lights();
-        if (lights.empty())
-        {
-            return Spectrum::Black;
-        }
         // ライトを一つ選択する
         const uint32_t lightIndex = sampler->getSize(uint32_t(lights.size()));
         const auto& choochenLight = lights[lightIndex];
@@ -221,6 +346,92 @@ PTSurfaceIntegrator::estimateDirectLight(const SceneGeom& scene,
         const Spectrum oneLightEstimated = estimateOneLight(
             scene, isect, local, localWo, choochenLight.get(), sampler);
         return oneLightEstimated * (float)lights.size();
+    }
+    break;
+    // ライトを距離で重みづけ
+    case DirectLighitingSelectStrategy::SelectDistSqr:
+    {
+        //
+        struct LightInfo
+        {
+            int32_t lightIdx = 0;
+            float pdf = 0.0f;
+            float cdf = 0.0f;
+        };
+        float cdfTotal = 0.0f;
+        int32_t lightInfosLen = 0;
+        std::array<LightInfo, 1024> lightInfos;
+
+        for (int32_t lightIndex = 0; lightIndex < int32_t(lights.size()) ;++lightIndex)
+        {
+            auto& light = lights[lightIndex];
+            // HACK: バッファが溢れたら丸々無視
+            if (lightInfos.size() <= lightInfosLen)
+            {
+                break;
+            }
+            // HACK: とりあえずボリュームに含まれていたら採用確立は全て同じに。
+            const float dist = Vec3::distance(isect.position, light->aabb().center());
+            const float pdf = 1.0f / dist;
+            cdfTotal += pdf;
+            lightInfos[lightInfosLen] = { lightIndex, pdf, cdfTotal };
+            ++lightInfosLen;
+        }
+        const float invCdfTotal = 1.0f / cdfTotal;
+        for (auto& lightInfo : lightInfos)
+        {
+            lightInfo.pdf *= invCdfTotal;
+            lightInfo.cdf *= invCdfTotal;
+        }
+        //
+        const float cdf = sampler->get1d();
+        const auto ite =
+            std::lower_bound(lightInfos.begin(),
+                lightInfos.begin() + lightInfosLen,
+                cdf,
+                [](const LightInfo& lightInfo, float value) {
+            return (lightInfo.cdf < value);
+        });
+        //
+        const auto& choochenLight = lights[ite->lightIdx];
+        /*
+        交差点のSceneObjectとサンプルするLightが同一だった場合は終了
+        HACK:
+        本当はライト自体がそのライトに照らされる場合があるが、省略してしまう
+        */
+        if (isect.sceneObject == choochenLight.get())
+        {
+            return Spectrum::Black;
+        }
+        //
+        const Spectrum oneLightEstimated = estimateOneLight(
+            scene, isect, local, localWo, choochenLight.get(), sampler);
+        return oneLightEstimated / ite->pdf;
+    }
+    break;
+    case DirectLighitingSelectStrategy::StocasticCulling:
+    {
+        
+        float lightSelectPdf = 0.0f;
+        const int32_t lightIndex = lightSphereBVH_.selectLight(isect.position, lights, sampler, &lightSelectPdf);
+        if (lightIndex == -1)
+        {
+            return Spectrum::Black;
+        }
+        const auto& choochenLight = lights[lightIndex];
+        /*
+        交差点のSceneObjectとサンプルするLightが同一だった場合は終了
+        HACK:
+        本当はライト自体がそのライトに照らされる場合があるが、省略してしまう
+        */
+        if (isect.sceneObject == choochenLight.get())
+        {
+            return Spectrum::Black;
+        }
+        //
+        const Spectrum oneLightEstimated = estimateOneLight(
+            scene, isect, local, localWo, choochenLight.get(), sampler);
+        return oneLightEstimated / lightSelectPdf;
     }
     break;
     default:
@@ -376,10 +587,6 @@ Spectrum PTSurfaceIntegrator::estimateOneLight(const SceneGeom& scene,
         const Spectrum f =
             bsdf->bsdfSample(localWo, sampler, &localWi, &pdfBSDF);
         const Vec3 worldWi = local.local2world(localWi);
-
-        /*AL_ASSERT_ALWAYS(localWo.z() >= 0.0f);
-        AL_ASSERT_ALWAYS(localWi.z() >= 0.0f);*/
-
         float weight = 1.0f;
         if (isUseMIS)
         {

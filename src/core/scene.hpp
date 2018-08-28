@@ -29,6 +29,7 @@ public:
     int32_t taskNumPerLoop() const;
     uint32_t developIntervalInMs() const;
     uint32_t timeOutInMs() const;
+    void onStartFrame(int32_t frameNo);
     SubFilm& render(int32_t taskNo);
     Spectrum renderPixel(int32_t px, int32_t py);
     void developLDR(const std::string& filmName, bool isFinal);

@@ -149,6 +149,15 @@ static uint64_t calcPixelHash(int32_t x, int32_t y, int32_t width)
 -------------------------------------------------
 -------------------------------------------------
 */
+void Scene::onStartFrame(int32_t frameNo)
+{
+    integrator_->onStartFrame(sceneGeom_, frameNo);
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
 SubFilm& Scene::render(int32_t taskNo)
 {
     // task番号から描画するべきものを決定する
@@ -160,7 +169,8 @@ SubFilm& Scene::render(int32_t taskNo)
     const Image& image = film->image();
     Image& subFilmImage = subFilm.image();
     // HACK: 暫定的に直接サンプラーを宣言しておく
-    SamplerIndepent sampler;
+    //SamplerIndepent sampler;
+    SamplerHalton sampler;
     // タイルの描画
     const auto& region = subFilm.region();
     for (int32_t y = region.top; y < region.bottom; ++y)
@@ -172,7 +182,7 @@ SubFilm& Scene::render(int32_t taskNo)
             //
             Spectrum spectrumTotal(0.0f);
             // TODO: ちゃんとシーンファイルから取ってくるようにする
-            const int32_t sppPerLoop = 16;
+            const int32_t sppPerLoop = 1;
             const int32_t sampleBegin = (loopNo + 0) * sppPerLoop;
             const int32_t sampleEnd = (loopNo + 1) * sppPerLoop;
             // SubPixel巡回

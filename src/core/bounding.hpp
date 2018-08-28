@@ -13,6 +13,7 @@ public:
     AABB();
     void clear();
     void addPoint(Vec3 point);
+    void addSphere(Vec3 center, float radius);
     void addPoints(const Vec3* points, int32_t numPoints);
     Vec3 center() const;
     Vec3 min() const;

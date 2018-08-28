@@ -308,10 +308,20 @@ private:
     {
         // 枝であった場合の子のノードインデックス。葉の場合は全て-1が格納されている。
         std::array<int32_t, 2> childlen = { -1, -1 };
+        // 兄弟
+        int32_t sibling = -1;
+        // 親
+        int32_t parent = -1;
         // 元の配列の中のインデックス
         int32_t index = 0; 
         // AABB
         AABB aabb;
+    public:
+        //
+        bool isLeaf() const
+        {
+            return (childlen[0] == -1);
+        }
     };
 public:
     std::vector<Node> nodes_;

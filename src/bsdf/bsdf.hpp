@@ -32,6 +32,7 @@ public:
     BSDF(const ObjectProp& objectProp);
     virtual ~BSDF() {}
     std::string name() { return name_; }
+    std::string id() { return id_; }
     virtual bool isDeltaFunc() const { return false; }
     virtual float pdf(Vec3 localWo, Vec3 localWi) const = 0;
     virtual Spectrum bsdf(Vec3 localWo, Vec3 localWi) const = 0;
@@ -47,7 +48,9 @@ public:
       bool dontUseBsdfSample = false) const;
 
 protected:
-    std::string name_;
+    std::string name_ = "UNKNOWN";
+    std::string id_ = "UNKNOWN";
+
 };
 
 /*

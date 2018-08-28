@@ -100,7 +100,7 @@ static float sqr(float x) { return x * x; }
 BSDF
 -------------------------------------------------
 */
-BSDF::BSDF() : name_("UNKNOWN") {}
+BSDF::BSDF(){}
 
 /*
 -------------------------------------------------
@@ -110,6 +110,7 @@ BSDF
 BSDF::BSDF(const ObjectProp& objectProp)
 {
     name_ = objectProp.attribute("type").asString("unkown");
+    id_ = objectProp.attribute("id").asString("unkown");
 }
 
 /*

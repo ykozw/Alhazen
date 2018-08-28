@@ -168,6 +168,7 @@ class RectangleShape AL_FINAL : public Shape
 {
 public:
     RectangleShape(const ObjectProp& objectProp);
+    void resolveMaterial(const std::vector<BSDFPtr>& bsdfs) override;
     AABB aabb() const override;
     bool intersect(const Ray& ray, Intersect* isect) const override;
     bool intersectCheck(const Ray& ray) const override;
@@ -177,6 +178,9 @@ private:
     std::array<Vec2, 4> uvs_;
     Vec3 n_;
     AABB aabb_;
+    //
+    std::string bsdfName_ = "";
+    BSDFPtr bsdf_;
 };
 REGISTER_OBJECT(Shape, RectangleShape);
 
@@ -206,6 +210,33 @@ RectangleShape::RectangleShape(const ObjectProp& objectProp) : Shape(objectProp)
     //
     aabb_.addPoints(static_cast<Vec3*>(verts_.data()),
                     static_cast<int32_t>(verts_.size()));
+
+    //
+    auto bsdfProp = objectProp.findChildBy("name", "bsdf");
+    if (!bsdfProp.isEmpty())
+    {
+        bsdfName_ = bsdfProp.asString("");
+    }
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+void RectangleShape::resolveMaterial(const std::vector<BSDFPtr>& bsdfs)
+{
+    const auto ite = std::find_if(bsdfs.begin(), bsdfs.end(), [&](const BSDFPtr& bsdf)
+    {
+        return (bsdf->id() == bsdfName_);
+    });
+    if (ite != bsdfs.end())
+    {
+        bsdf_ = *ite;
+    }
+    else
+    {
+        bsdf_ = Lambertian::gray18;
+    }
 }
 
 /*
@@ -276,8 +307,9 @@ INLINE bool RectangleShape::intersect(const Ray& ray, Intersect* isect) const
     {
         return false;
     }
-    // HACK: 暫定的に固定BSDF
-    isect->bsdf = Lambertian::gray18.get();
+    //
+    isect->bsdf = bsdf_.get();
+    //
     return true;
 }
 

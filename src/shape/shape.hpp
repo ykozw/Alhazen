@@ -20,7 +20,8 @@ class Shape : public SceneObject
 public:
     Shape(const ObjectProp& prop) {}
     virtual ~Shape() {}
-    virtual void mapToIntersectEngine(IsectScene* isectScene) {};
+    virtual void mapToIntersectEngine(IsectScene* isectScene) {}
+    virtual void resolveMaterial(const std::vector<BSDFPtr>& bsdfs) {}
 
     // TODO: これらは廃止する
     virtual AABB aabb() const = 0;

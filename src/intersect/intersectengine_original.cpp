@@ -221,7 +221,7 @@ bool IntersectSceneBasic::intersect(const Ray& ray,
     //
     bool isHit = false;
 
-#if 1 // 総当たりの場合
+#if 0 // 総当たりの場合
     // Shapeを巡回する
     for (auto& shape : shapes_) {
         // 衝突のたびにRayのtminが更新されるので最も近いShapeが得られる

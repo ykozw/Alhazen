@@ -35,7 +35,11 @@ public:
     void dumpHDR(const std::string& fileName);
 
 private:
+    // シーンの幾何情報
     SceneGeom sceneGeom_;
+    // マテリアルのリスト
+    std::vector<BSDFPtr> bsdfs_;
+    //
     SensorPtr sensor_ = nullptr;
     TonemapperPtr tonemapper_ = nullptr;
     DenoiserPtr denoiser_ = nullptr;

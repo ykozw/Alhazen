@@ -1014,7 +1014,6 @@ Spectrum MicrofacetBSDF::bsdfSample(Vec3 localWo,
         *pdf = 0.0f;
         return Spectrum(0.0f);
     }
-    //*pdf = distribution_->pdf(localWo, *localWi);
     //
     return bsdf(localWo, *localWi);
 }

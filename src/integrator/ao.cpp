@@ -17,7 +17,6 @@ public:
     Spectrum radiance(const Ray& ray,
                       const SceneGeom& scene,
                       Sampler* sampler) const override;
-
 private:
     int32_t sampleNum_ = 0;
 };

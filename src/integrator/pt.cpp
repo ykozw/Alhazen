@@ -36,6 +36,9 @@ private:
                               const Light* light,
                               Sampler* samler) const;
 
+    //
+    void onStartFrame(const SceneGeom& scene) override;
+
 private:
     // 直接光のライトの選択の戦略
     enum class DirectLighitingSelectStrategy
@@ -66,6 +69,14 @@ PTSurfaceIntegrator::PTSurfaceIntegrator(const ObjectProp& objectProp) {}
 bool PTSurfaceIntegrator::preRendering(const SceneGeom& scene)
 {
     return true;
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+void PTSurfaceIntegrator::onStartFrame(const SceneGeom& scene)
+{
 }
 
 /*

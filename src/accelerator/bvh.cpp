@@ -750,138 +750,158 @@ int32_t QBVH::maxDepth() const { return maxDepth_; }
  -------------------------------------------------
  -------------------------------------------------
  */
-void ShapeBVH::construct(const std::vector<ShapePtr>& aShapes)
+void BVHBuilder::construct(int32_t volumeNum,
+                           const std::function<AABB(int32_t)>& gen)
 {
-    if (aShapes.empty())
+    if (volumeNum == 0)
     {
         return;
     }
+
+    //
+    struct VolumeInfo
+    {
+        // AABB
+        AABB aabb;
+        // 元のリストで何番目か
+        int32_t idx = 0;
+    };
+    typedef std::vector<VolumeInfo>::iterator VolumeInfoIte;
+    // Volumeの情報を作成
+    std::vector<VolumeInfo> volumeInfos; 
+    volumeInfos.reserve(volumeNum);
+    for (int32_t vi=0;vi<volumeNum;++vi)
+    {
+        const AABB aabb = gen(vi);
+        volumeInfos.push_back({aabb, vi});
+    }
+
     // コピー
-    std::vector<ShapePtr> shapes = aShapes;
-    nodes_.reserve(shapes.size() * 2 - 1);
+    nodes_.reserve(volumeInfos.size() * 2 - 1);
     nodes_.resize(1);
-    constructSub(shapes.begin(), shapes.end(), nodes_, 0);
+
+    //
+    class Local
+    {
+    public:
+        static void constructSub(VolumeInfoIte beginIte,
+                                 VolumeInfoIte endIte,
+                                 std::vector<Node>& nodes,
+                                 int32_t nodeIndex)
+        {
+            // 一つしかノードがない場合は子はなし
+            if (std::distance(beginIte, endIte) == 1)
+            {
+                auto& volume = *beginIte;
+                auto& curNode = nodes[nodeIndex];
+                curNode.aabb.clear();
+                curNode.aabb.addAABB(volume.aabb);
+                curNode.index = volume.idx;
+                return;
+            }
+            //
+            const auto sortShapes = [](VolumeInfoIte beginIte,
+                VolumeInfoIte endIte,
+                int32_t axis,
+                int32_t splitIndex) {
+                // ソート
+                auto sortPred = [&axis](const VolumeInfo& lhs, const VolumeInfo& rhs) {
+                    // AABBのcenter位置でソートする
+                    // TODO: もっとましな方法があるならそれにする
+                    Vec3 lhsc = lhs.aabb.center();
+                    Vec3 rhsc = rhs.aabb.center();
+                    return lhsc[axis] < rhsc[axis];
+                };
+
+                // HACK: 軸を適当に決めてしまっている。SAHでもするべき。
+                static int32_t axisNext = 0;
+                const int32_t bestAxis = (axisNext++) % 3;
+                // ソート
+                axis = bestAxis;
+                std::sort(beginIte, endIte, sortPred);
+            };
 
 #if 0
-    // テストで全てAABBの描画
-    for(auto& node : nodes_)
-    {
-        if(node.shape.get())
-        {
-            vdbmt_color_rnd();
-            vdbmt_aabb(node.aabb.min(), node.aabb.max());
-        }
-        
-    }
+            // HACK: 軸を適当に決めてしまっている。SAHでもするべき。
+            static int32_t axisNext = 0;
+            const int32_t bestAxis = (axisNext++) % 3;
+            const int32_t bestSplitIndex = int32_t(std::distance(beginIte, endIte) / 2);
+#else
+            // 軸方向を最も広がりがある方向にする
+            const auto getWideAxis = [](VolumeInfoIte beginIte, VolumeInfoIte endIte) {
+                AABB aabbAll;
+                for (auto shapeIte = beginIte; shapeIte != endIte; ++shapeIte)
+                {
+                    aabbAll.addAABB((*shapeIte).aabb);
+                }
+                //
+                const Vec3 aabbSize = aabbAll.size();
+                if (aabbSize.x() < aabbSize.y())
+                {
+                    if (aabbSize.y() < aabbSize.z())
+                    {
+                        return 2;
+                    }
+                    else
+                    {
+                        return 1;
+                    }
+                }
+                else
+                {
+                    if (aabbSize.x() < aabbSize.z())
+                    {
+                        return 2;
+                    }
+                    else
+                    {
+                        return 0;
+                    }
+                }
+            };
+            const int32_t bestAxis = getWideAxis(beginIte, endIte);
+            const int32_t bestSplitIndex = int32_t(std::distance(beginIte, endIte) / 2);
 #endif
+
+            // ソート
+            sortShapes(beginIte, endIte, bestAxis, bestSplitIndex);
+
+            //
+            auto medIte = beginIte;
+            std::advance(medIte, bestSplitIndex);
+            //
+            AL_ASSERT_DEBUG(std::distance(beginIte, medIte) != 0);
+            AL_ASSERT_DEBUG(std::distance(endIte, medIte) != 0);
+            // 前半
+            nodes.resize(nodes.size() + 1);
+            const int32_t ch0 = int32_t(nodes.size()) - 1;
+            constructSub(beginIte, medIte, nodes, ch0);
+            // 後半
+            nodes.resize(nodes.size() + 1);
+            const int32_t ch1 = int32_t(nodes.size()) - 1;
+            constructSub(medIte, endIte, nodes, ch1);
+            //
+            auto& curNode = nodes[nodeIndex];
+            curNode.childlen[0] = ch0;
+            curNode.childlen[1] = ch1;
+            // 子のAABBの和が親のAABB
+            curNode.aabb.clear();
+            curNode.aabb.addAABB(nodes[curNode.childlen[0]].aabb);
+            curNode.aabb.addAABB(nodes[curNode.childlen[1]].aabb);
+        }
+    };
+    //
+    Local::constructSub(volumeInfos.begin(), volumeInfos.end(), nodes_, 0);
 }
 
 /*
- -------------------------------------------------
- -------------------------------------------------
- */
-void ShapeBVH::constructSub(ShapeListIte beginIte,
-                            ShapeListIte endIte,
-                            std::vector<Node>& nodes,
-                            int32_t nodeIndex)
+-------------------------------------------------
+-------------------------------------------------
+*/
+void ShapeBVH::construct(const std::vector<ShapePtr>& shapes)
 {
-    // 一つしかノードがない場合は子はなし
-    if (std::distance(beginIte, endIte) == 1)
-    {
-        ShapePtr shape = *beginIte;
-        auto& curNode = nodes[nodeIndex];
-        curNode.aabb.clear();
-        curNode.aabb.addAABB(shape->aabb());
-        curNode.shape = shape;
-        return;
-    }
+    shapes_ = shapes;
     //
-    const auto sortShapes = [](ShapeListIte beginIte,
-                               ShapeListIte endIte,
-                               int32_t axis,
-                               int32_t splitIndex) {
-        // ソート
-        auto sortPred = [&axis](const ShapePtr& lhs, const ShapePtr& rhs) {
-            // AABBのcenter位置でソートする
-            // TODO: もっとましな方法があるならそれにする
-            Vec3 lhsc = lhs->aabb().center();
-            Vec3 rhsc = rhs->aabb().center();
-            return lhsc[axis] < rhsc[axis];
-        };
-
-        // HACK: 軸を適当に決めてしまっている。SAHでもするべき。
-        static int32_t axisNext = 0;
-        const int32_t bestAxis = (axisNext++) % 3;
-        // ソート
-        axis = bestAxis;
-        std::sort(beginIte, endIte, sortPred);
-    };
-
-#if 0
-    // HACK: 軸を適当に決めてしまっている。SAHでもするべき。
-    static int32_t axisNext = 0;
-    const int32_t bestAxis = (axisNext++) % 3;
-    const int32_t bestSplitIndex = int32_t(std::distance(beginIte, endIte) / 2);
-#else
-    // 軸方向を最も広がりがある方向にする
-    const auto getWideAxis = [](ShapeListIte beginIte, ShapeListIte endIte) {
-        AABB aabbAll;
-        for (auto shapeIte = beginIte; shapeIte != endIte; ++shapeIte)
-        {
-            aabbAll.addAABB((*shapeIte)->aabb());
-        }
-        //
-        const Vec3 aabbSize = aabbAll.size();
-        if (aabbSize.x() < aabbSize.y())
-        {
-            if (aabbSize.y() < aabbSize.z())
-            {
-                return 2;
-            }
-            else
-            {
-                return 1;
-            }
-        }
-        else
-        {
-            if (aabbSize.x() < aabbSize.z())
-            {
-                return 2;
-            }
-            else
-            {
-                return 0;
-            }
-        }
-    };
-    const int32_t bestAxis = getWideAxis(beginIte, endIte);
-    const int32_t bestSplitIndex = int32_t(std::distance(beginIte, endIte) / 2);
-#endif
-
-    // ソート
-    sortShapes(beginIte, endIte, bestAxis, bestSplitIndex);
-
-    //
-    auto medIte = beginIte;
-    std::advance(medIte, bestSplitIndex);
-    //
-    AL_ASSERT_DEBUG(std::distance(beginIte, medIte) != 0);
-    AL_ASSERT_DEBUG(std::distance(endIte, medIte) != 0);
-    // 前半
-    nodes.resize(nodes.size() + 1);
-    const int32_t ch0 = int32_t(nodes.size()) - 1;
-    constructSub(beginIte, medIte, nodes, ch0);
-    // 後半
-    nodes.resize(nodes.size() + 1);
-    const int32_t ch1 = int32_t(nodes.size()) - 1;
-    constructSub(medIte, endIte, nodes, ch1);
-    //
-    auto& curNode = nodes[nodeIndex];
-    curNode.childlen[0] = ch0;
-    curNode.childlen[1] = ch1;
-    // 子のAABBの和が親のAABB
-    curNode.aabb.clear();
-    curNode.aabb.addAABB(nodes[curNode.childlen[0]].aabb);
-    curNode.aabb.addAABB(nodes[curNode.childlen[1]].aabb);
+    bvh_.construct(int32_t(shapes.size()),
+                   [&](int32_t index) { return shapes[index]->aabb(); });
 }

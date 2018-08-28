@@ -577,9 +577,9 @@ INLINE bool QBVH::intersectCheck(const Ray& ray) const
 }
 
 /*
- -------------------------------------------------
- -------------------------------------------------
- */
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE bool ShapeBVH::intersect(const Ray& ray, Intersect* isect) const
 {
     return intersectSub(0, ray, isect);
@@ -595,13 +595,13 @@ INLINE bool ShapeBVH::intersectCheck(const Ray& ray) const
 }
 
 /*
- -------------------------------------------------
- -------------------------------------------------
- */
+-------------------------------------------------
+-------------------------------------------------
+*/
 INLINE bool ShapeBVH::intersectSub(int32_t nodeIndex, const Ray& ray, Intersect* isect) const
 {
     // スタック利用版
-    const auto& node = nodes_[nodeIndex];
+    const auto& node = bvh_.nodes_[nodeIndex];
     // このAABBに交差しなければ終了
     if (!node.aabb.intersectCheck(ray, isect->t))
     {
@@ -610,10 +610,12 @@ INLINE bool ShapeBVH::intersectSub(int32_t nodeIndex, const Ray& ray, Intersect*
     // 葉の場合は、ノードの三角形と交差判定
     else if (node.childlen[0] == -1)
     {
-        const bool isHit = node.shape->intersect(ray, isect);
-        if(isHit)
+        auto& shape = shapes_[node.index];
+        const bool isHit = shape->intersect(ray, isect);
+        if (isHit)
         {
-            isect->sceneObject = node.shape.get();
+            const auto& shape = shapes_[node.index];
+            isect->sceneObject = shape.get();
         }
         return isHit;
     }
@@ -634,7 +636,7 @@ INLINE bool ShapeBVH::intersectSub(int32_t nodeIndex, const Ray& ray, Intersect*
 INLINE bool ShapeBVH::intersectCheckSub(int32_t nodeIndex, const Ray& ray) const
 {
     //
-    const auto& node = nodes_[nodeIndex];
+    const auto& node = bvh_.nodes_[nodeIndex];
     // このAABBに交差しなければ終了
     if (!node.aabb.intersectCheck(ray, std::numeric_limits<float>::max()))
     {
@@ -643,7 +645,8 @@ INLINE bool ShapeBVH::intersectCheckSub(int32_t nodeIndex, const Ray& ray) const
     // 葉の場合は、ノードの三角形と交差判定
     else if (node.childlen[0] == -1)
     {
-        return node.shape->intersectCheck(ray);
+        const auto& shape = shapes_[node.index];
+        return shape->intersectCheck(ray);
     }
     // 枝の場合は、子を見に行く
     else

@@ -7,9 +7,6 @@
 #include "intersect/intersectengine.hpp"
 #include "sampler/sampler.hpp"
 
-class LTEIntegrator;
-typedef std::shared_ptr<LTEIntegrator> LTEIntegratorPtr;
-
 /*
 -------------------------------------------------
 レンダリングアルゴリズムはこれを継承して実装される
@@ -22,7 +19,10 @@ public:
     virtual ~LTEIntegrator() {}
     virtual bool preRendering(const SceneGeom&  scene) = 0;
     virtual bool postRendering() = 0;
+    virtual void onStartFrame(const SceneGeom& scene) {}
+    virtual void onEndFrame(const SceneGeom& scene) {}
     virtual Spectrum radiance(const Ray& ray,
                               const SceneGeom& scene,
                               Sampler* sampler) const = 0;
 };
+typedef std::shared_ptr<LTEIntegrator> LTEIntegratorPtr;

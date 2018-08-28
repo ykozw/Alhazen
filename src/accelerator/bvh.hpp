@@ -295,19 +295,40 @@ typedef SimpleBVH BVH;
 
 /*
 -------------------------------------------------
-AABBを返すもの専用のBVH
+-------------------------------------------------
+*/
+class BVHBuilder
+{
+public:
+    void construct(int32_t volumeNum,
+                   const std::function<AABB(int32_t)>& gen);
+
+private:
+    struct Node
+    {
+        // 枝であった場合の子のノードインデックス。葉の場合は全て-1が格納されている。
+        std::array<int32_t, 2> childlen = { -1, -1 };
+        // 元の配列の中のインデックス
+        int32_t index = 0; 
+        // AABB
+        AABB aabb;
+    };
+public:
+    std::vector<Node> nodes_;
+};
+
+/*
+-------------------------------------------------
+Shapeの二段BVH専用
 -------------------------------------------------
 */
 class ShapeBVH
 {
 public:
-    typedef std::vector<ShapePtr>::iterator ShapeListIte;
-
-public:
     void construct(const std::vector<ShapePtr>& shapes);
     bool intersect(const Ray& ray, Intersect* isect) const;
     bool intersectCheck(const Ray& ray) const;
-    
+
 private:
     bool intersectSub(int32_t nodeIndex,
         const Ray& ray,
@@ -315,24 +336,9 @@ private:
     bool intersectCheckSub(int32_t nodeIndex, const Ray& ray) const;
 
 private:
-    struct Node
-    {
-        // 枝であった場合の子のノードインデックス。葉の場合は全て-1が格納されている。
-        std::array<int32_t, 2> childlen = { -1, -1 };
-        // 葉であった場合の指し示すShape
-        ShapePtr shape;
-        // AABB
-        AABB aabb;
-    };
-
-private:
-    void constructSub(ShapeListIte begin,
-                      ShapeListIte end,
-                      std::vector<Node>& nodes,
-                      int32_t nodeIndex);
-
-private:
-    std::vector<Node> nodes_;
+    std::vector<ShapePtr> shapes_;
+    BVHBuilder bvh_;
 };
+
 
 #include "bvh.inl"

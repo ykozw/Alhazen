@@ -155,8 +155,8 @@ void ObjShape::mapToIntersectEngine(IsectScene* isectScene)
 {
     //
     isectScene->addMesh(
-        vs_.size(),
-        fs_.size(),
+        int32_t(vs_.size()),
+        int32_t(fs_.size()),
         [this](int32_t vi) { return vs_[vi]; },
         [this](int32_t fi) {
             auto& f = fs_[fi];

@@ -8,6 +8,7 @@
 #include "core/ray.hpp"
 #include "core/bounding.hpp"
 #include "core/refarray.hpp"
+#include "light/light.hpp"
 
 /*
 -------------------------------------------------
@@ -347,6 +348,29 @@ private:
 
 private:
     std::vector<ShapePtr> shapes_;
+    BVHBuilder bvh_;
+};
+
+/*
+-------------------------------------------------
+Lightの二段BVH専用(ShapeBVHと共用にする)
+-------------------------------------------------
+*/
+class LightBVH
+{
+public:
+    void construct(const std::vector<LightPtr>& shapes);
+    bool intersect(const Ray& ray, Intersect* isect) const;
+    bool intersectCheck(const Ray& ray) const;
+
+private:
+    bool intersectSub(int32_t nodeIndex,
+        const Ray& ray,
+        Intersect* isect) const;
+    bool intersectCheckSub(int32_t nodeIndex, const Ray& ray) const;
+
+private:
+    std::vector<LightPtr> lights_;
     BVHBuilder bvh_;
 };
 

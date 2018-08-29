@@ -47,6 +47,7 @@ private:
     std::unique_ptr<IsectScene> geometory_;
     // Lightの集合
     std::vector<LightPtr> lights_;
+    LightBVH lightsBVH_;
     //TODO: 補間のための法線などをここに持たせる
 };
 

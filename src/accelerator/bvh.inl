@@ -656,3 +656,88 @@ INLINE bool ShapeBVH::intersectCheckSub(int32_t nodeIndex, const Ray& ray) const
         return h0 || h1;
     }
 }
+
+
+
+
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE bool LightBVH::intersect(const Ray& ray, Intersect* isect) const
+{
+    return intersectSub(0, ray, isect);
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE bool LightBVH::intersectCheck(const Ray& ray) const
+{
+    return intersectCheckSub(0, ray);
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE bool LightBVH::intersectSub(int32_t nodeIndex, const Ray& ray, Intersect* isect) const
+{
+    // スタック利用版
+    const auto& node = bvh_.nodes_[nodeIndex];
+    // このAABBに交差しなければ終了
+    if (!node.aabb.intersectCheck(ray, isect->t))
+    {
+        return false;
+    }
+    // 葉の場合は、ノードの三角形と交差判定
+    else if (node.childlen[0] == -1)
+    {
+        auto& light = lights_[node.index];
+        const bool isHit = light->intersect(ray, isect);
+        if (isHit)
+        {
+            const auto& light = lights_[node.index];
+            isect->sceneObject = light.get();
+        }
+        return isHit;
+    }
+    // 枝の場合は、子を見に行く
+    else
+    {
+        const bool h0 = intersectSub(node.childlen[0], ray, isect);
+        const bool h1 = intersectSub(node.childlen[1], ray, isect);
+        return h0 || h1;
+    }
+}
+
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+INLINE bool LightBVH::intersectCheckSub(int32_t nodeIndex, const Ray& ray) const
+{
+    //
+    const auto& node = bvh_.nodes_[nodeIndex];
+    // このAABBに交差しなければ終了
+    if (!node.aabb.intersectCheck(ray, std::numeric_limits<float>::max()))
+    {
+        return false;
+    }
+    // 葉の場合は、ノードの三角形と交差判定
+    else if (node.childlen[0] == -1)
+    {
+        const auto& light = lights_[node.index];
+        return light->intersectCheck(ray);
+    }
+    // 枝の場合は、子を見に行く
+    else
+    {
+        const bool h0 = intersectCheckSub(node.childlen[0], ray);
+        const bool h1 = intersectCheckSub(node.childlen[1], ray);
+        return h0 || h1;
+    }
+}

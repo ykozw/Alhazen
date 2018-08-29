@@ -131,28 +131,40 @@ private:
     template<>
     struct MomentBuffer<FSS_MomentLevel::Mu>
     {
+        MomentBuffer<FSS_MomentLevel::Mu>()
+            : m0(0.0f)
+        {}
         Float m0 = 0.0f;
     };
     template<>
     struct MomentBuffer<FSS_MomentLevel::MuVar>
     {
-        Float m0 = 0.0f;
-        Float m1 = 0.0f;
+        MomentBuffer<FSS_MomentLevel::MuVar>()
+            : m0(0.0f), m1(0.0f)
+        {}
+        Float m0;
+        Float m1;
     };
     template<>
     struct MomentBuffer<FSS_MomentLevel::MuVarSkew>
     {
-        Float m0 = 0.0f;
-        Float m1 = 0.0f;
-        Float m2 = 0.0f;
+        MomentBuffer<FSS_MomentLevel::MuVarSkew>()
+            : m0(0.0f), m1(0.0f), m2(0.0f)
+        {}
+        Float m0;
+        Float m1;
+        Float m2;
     };
     template<>
     struct MomentBuffer<FSS_MomentLevel::MuVarSkewKurt>
     {
-        Float m0 = 0.0f;
-        Float m1 = 0.0f;
-        Float m2 = 0.0f;
-        Float m3 = 0.0f;
+        MomentBuffer<FSS_MomentLevel::MuVarSkewKurt>()
+            : m0(0.0f), m1(0.0f), m2(0.0f), m3(0.0f)
+        {}
+        Float m0;
+        Float m1;
+        Float m2;
+        Float m3;
     };
     MomentBuffer<ML> mb_;
 

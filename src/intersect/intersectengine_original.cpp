@@ -43,6 +43,11 @@ SceneGeom::intersect(const Ray& ray, bool skipLight, Intersect* isect) const
                 isHit = true;
             }
         }
+        //
+        if (lightsBVH_.intersect(ray, isect))
+        {
+            isHit = true;
+        }
     }
     return isHit;
 }
@@ -68,6 +73,11 @@ bool SceneGeom::intersectCheck(const Ray& ray, bool skipLight) const
             {
                 return true;
             }
+        }
+        //
+        if (lightsBVH_.intersectCheck(ray))
+        {
+            return true;
         }
     }
     return false;
@@ -127,6 +137,20 @@ void SceneGeom::buildScene()
         auto light = std::make_shared<ConstantLight>();
         light->init(Spectrum::White);
         lights_.push_back(light);
+    }
+    else
+    {
+        std::vector<LightPtr> aabbLights(lights_.size());
+        auto ite = std::copy_if(lights_.begin(), lights_.end(), aabbLights.begin(), [](const LightPtr& light) {return light->aabb().validate(); });
+        aabbLights.resize(std::distance(aabbLights.begin(), ite));
+        lightsBVH_.construct(aabbLights);
+        //
+        lights_.erase(std::remove_if(lights_.begin(),
+                                     lights_.end(),
+                                     [](const LightPtr& light) {
+                                         return light->aabb().validate();
+                                     }),
+                      lights_.end());
     }
     //
     geometory_->buildScene();

@@ -929,3 +929,15 @@ void ShapeBVH::construct(const std::vector<ShapePtr>& shapes)
     bvh_.construct(int32_t(shapes.size()),
                    [&](int32_t index) { return shapes[index]->aabb(); });
 }
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+void LightBVH::construct(const std::vector<LightPtr>& lights)
+{
+    lights_ = lights;
+    //
+    bvh_.construct(int32_t(lights_.size()),
+        [&](int32_t index) { return lights_[index]->aabb(); });
+}

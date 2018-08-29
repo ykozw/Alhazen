@@ -94,8 +94,9 @@ public:
             ++lightInfosLen;
         });
         const float invCdfTotal = 1.0f / cdfTotal;
-        for (auto& lightInfo : lightInfos)
+        for(int32_t li=0;li<lightInfosLen;++li)
         {
+            auto& lightInfo = lightInfos[li];
             lightInfo.pdf *= invCdfTotal;
             lightInfo.cdf *= invCdfTotal;
         }
@@ -414,7 +415,6 @@ PTSurfaceIntegrator::estimateDirectLight(const SceneGeom& scene,
     break;
     case DirectLighitingSelectStrategy::StocasticCulling:
     {
-        
         float lightSelectPdf = 0.0f;
         const int32_t lightIndex = lightSphereBVH_.selectLight(isect.position, lights, sampler, &lightSelectPdf);
         if (lightIndex == -1)

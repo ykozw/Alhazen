@@ -814,12 +814,6 @@ void BVHBuilder::construct(int32_t volumeNum,
                     Vec3 rhsc = rhs.aabb.center();
                     return lhsc[axis] < rhsc[axis];
                 };
-
-                // HACK: 軸を適当に決めてしまっている。SAHでもするべき。
-                static int32_t axisNext = 0;
-                const int32_t bestAxis = (axisNext++) % 3;
-                // ソート
-                axis = bestAxis;
                 std::sort(beginIte, endIte, sortPred);
             };
 

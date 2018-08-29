@@ -44,7 +44,7 @@
     <string name="fovAxis" value="x"/>
 		<float name="nearClip" value="0.1"/>
 		<transform name="toWorld">
-			<lookat target="0, 0.0, -1.5" origin="8.0, 8.0, 6.0" up="0.0, 0.0, 1.0"/>
+			<lookat target="0, 0.0, -1.5" origin="16.0, 12.0, 6.0" up="0.0, 0.0, 1.0"/>
 		</transform>
 
     <film type="hdrfilm">
@@ -87,204 +87,737 @@
   <Shape type="RectangleShape">
     <transform name="toWorld">
       <translate x = "-0.0" y = "0.0" z = "0.0"/>
-      <scale x = "20.0" y = "20.0" z = "1.0"/>
+      <scale x = "50.0" y = "50.0" z = "1.0"/>
     </transform>
     <ref name="bsdf" value="metal3"/>
   </Shape>
   
   <!--ボール-->
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="-6.500000" y="-6.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="6.80 12.70 1.80"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="-4.500000" y="-6.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="1.80 12.70 2.90"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="-2.500000" y="-6.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="1.80 12.70 7.20"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="-0.500000" y="-6.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="12.70 8.70 1.80"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="1.500000" y="-6.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="4.80 12.70 1.80"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="3.500000" y="-6.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="1.80 12.70 6.40"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="5.500000" y="-6.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="1.80 3.20 12.70"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="-5.500000" y="-5.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="4.30 12.70 1.80"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="-3.500000" y="-5.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="1.80 4.50 12.70"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="-1.500000" y="-5.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="1.80 2.70 12.70"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="0.500000" y="-5.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="1.80 7.50 12.70"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="2.500000" y="-5.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="1.80 12.70 4.40"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="4.500000" y="-5.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="12.70 1.80 10.90"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="6.500000" y="-5.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="5.20 1.80 12.70"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="-6.500000" y="-4.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="1.80 9.10 12.70"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="-4.500000" y="-4.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="10.60 12.70 1.80"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="-2.500000" y="-4.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="12.10 12.70 1.80"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="-0.500000" y="-4.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="12.70 1.80 6.30"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="1.500000" y="-4.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="9.10 12.70 1.80"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="3.500000" y="-4.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="12.70 8.40 1.80"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="5.500000" y="-4.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="1.80 7.30 12.70"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="-5.500000" y="-3.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="9.50 1.80 12.70"/>
+  </Light>
 
   <Light type = "SphereLight">
     <float3 name = "center" x ="-3.500000" y="-3.500000" z="0.0"/>
-    <float name = "radius" value = "0.45"/>
-    <rgb name = "radiance" value="0.68 1.27 0.18"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="12.70 1.80 3.20"/>
   </Light>
 
   <Light type = "SphereLight">
     <float3 name = "center" x ="-1.500000" y="-3.500000" z="0.0"/>
-    <float name = "radius" value = "0.45"/>
-    <rgb name = "radiance" value="0.18 1.27 0.29"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="12.70 4.10 1.80"/>
   </Light>
 
   <Light type = "SphereLight">
     <float3 name = "center" x ="0.500000" y="-3.500000" z="0.0"/>
-    <float name = "radius" value = "0.45"/>
-    <rgb name = "radiance" value="0.18 1.27 0.72"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="12.70 2.60 1.80"/>
   </Light>
 
   <Light type = "SphereLight">
     <float3 name = "center" x ="2.500000" y="-3.500000" z="0.0"/>
-    <float name = "radius" value = "0.45"/>
-    <rgb name = "radiance" value="1.27 0.87 0.18"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="1.80 12.70 9.20"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="4.500000" y="-3.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="1.80 7.30 12.70"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="6.500000" y="-3.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="12.70 1.80 8.10"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="-6.500000" y="-2.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="4.90 1.80 12.70"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="-4.500000" y="-2.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="12.70 2.10 1.80"/>
   </Light>
 
   <Light type = "SphereLight">
     <float3 name = "center" x ="-2.500000" y="-2.500000" z="0.0"/>
-    <float name = "radius" value = "0.45"/>
-    <rgb name = "radiance" value="0.48 1.27 0.18"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="12.70 5.70 1.80"/>
   </Light>
 
   <Light type = "SphereLight">
     <float3 name = "center" x ="-0.500000" y="-2.500000" z="0.0"/>
-    <float name = "radius" value = "0.45"/>
-    <rgb name = "radiance" value="0.18 1.27 0.64"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="12.70 12.00 1.80"/>
   </Light>
 
   <Light type = "SphereLight">
     <float3 name = "center" x ="1.500000" y="-2.500000" z="0.0"/>
-    <float name = "radius" value = "0.45"/>
-    <rgb name = "radiance" value="0.18 0.32 1.27"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="12.70 1.80 10.40"/>
   </Light>
 
   <Light type = "SphereLight">
     <float3 name = "center" x ="3.500000" y="-2.500000" z="0.0"/>
-    <float name = "radius" value = "0.45"/>
-    <rgb name = "radiance" value="0.43 1.27 0.18"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="12.30 1.80 12.70"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="5.500000" y="-2.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="12.70 1.80 5.30"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="-5.500000" y="-1.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="1.80 11.90 12.70"/>
   </Light>
 
   <Light type = "SphereLight">
     <float3 name = "center" x ="-3.500000" y="-1.500000" z="0.0"/>
-    <float name = "radius" value = "0.45"/>
-    <rgb name = "radiance" value="0.18 0.45 1.27"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="12.70 1.80 9.10"/>
   </Light>
 
   <Light type = "SphereLight">
     <float3 name = "center" x ="-1.500000" y="-1.500000" z="0.0"/>
-    <float name = "radius" value = "0.45"/>
-    <rgb name = "radiance" value="0.18 0.27 1.27"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="7.50 12.70 1.80"/>
   </Light>
 
   <Light type = "SphereLight">
     <float3 name = "center" x ="0.500000" y="-1.500000" z="0.0"/>
-    <float name = "radius" value = "0.45"/>
-    <rgb name = "radiance" value="0.18 0.75 1.27"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="1.80 12.70 12.30"/>
   </Light>
 
   <Light type = "SphereLight">
     <float3 name = "center" x ="2.500000" y="-1.500000" z="0.0"/>
-    <float name = "radius" value = "0.45"/>
-    <rgb name = "radiance" value="0.18 1.27 0.44"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="1.80 4.00 12.70"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="4.500000" y="-1.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="1.80 12.70 7.90"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="6.500000" y="-1.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="12.70 1.80 11.10"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="-6.500000" y="-0.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="12.70 7.40 1.80"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="-4.500000" y="-0.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="1.80 5.50 12.70"/>
   </Light>
 
   <Light type = "SphereLight">
     <float3 name = "center" x ="-2.500000" y="-0.500000" z="0.0"/>
-    <float name = "radius" value = "0.45"/>
-    <rgb name = "radiance" value="1.27 0.18 1.09"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="1.80 10.40 12.70"/>
   </Light>
 
   <Light type = "SphereLight">
     <float3 name = "center" x ="-0.500000" y="-0.500000" z="0.0"/>
-    <float name = "radius" value = "0.45"/>
-    <rgb name = "radiance" value="0.52 0.18 1.27"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="12.70 1.80 8.60"/>
   </Light>
 
   <Light type = "SphereLight">
     <float3 name = "center" x ="1.500000" y="-0.500000" z="0.0"/>
-    <float name = "radius" value = "0.45"/>
-    <rgb name = "radiance" value="0.18 0.91 1.27"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="10.40 12.70 1.80"/>
   </Light>
 
   <Light type = "SphereLight">
     <float3 name = "center" x ="3.500000" y="-0.500000" z="0.0"/>
-    <float name = "radius" value = "0.45"/>
-    <rgb name = "radiance" value="1.06 1.27 0.18"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="1.80 8.60 12.70"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="5.500000" y="-0.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="12.70 7.40 1.80"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="-5.500000" y="0.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="12.70 1.80 8.60"/>
   </Light>
 
   <Light type = "SphereLight">
     <float3 name = "center" x ="-3.500000" y="0.500000" z="0.0"/>
-    <float name = "radius" value = "0.45"/>
-    <rgb name = "radiance" value="1.21 1.27 0.18"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="1.80 2.70 12.70"/>
   </Light>
 
   <Light type = "SphereLight">
     <float3 name = "center" x ="-1.500000" y="0.500000" z="0.0"/>
-    <float name = "radius" value = "0.45"/>
-    <rgb name = "radiance" value="1.27 0.18 0.63"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="2.40 1.80 12.70"/>
   </Light>
 
   <Light type = "SphereLight">
     <float3 name = "center" x ="0.500000" y="0.500000" z="0.0"/>
-    <float name = "radius" value = "0.45"/>
-    <rgb name = "radiance" value="0.91 1.27 0.18"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="1.80 12.70 2.60"/>
   </Light>
 
   <Light type = "SphereLight">
     <float3 name = "center" x ="2.500000" y="0.500000" z="0.0"/>
-    <float name = "radius" value = "0.45"/>
-    <rgb name = "radiance" value="1.27 0.84 0.18"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="9.70 1.80 12.70"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="4.500000" y="0.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="1.80 12.70 2.60"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="6.500000" y="0.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="1.80 10.10 12.70"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="-6.500000" y="1.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="3.20 12.70 1.80"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="-4.500000" y="1.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="1.80 12.70 7.20"/>
   </Light>
 
   <Light type = "SphereLight">
     <float3 name = "center" x ="-2.500000" y="1.500000" z="0.0"/>
-    <float name = "radius" value = "0.45"/>
-    <rgb name = "radiance" value="0.18 0.73 1.27"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="12.70 2.40 1.80"/>
   </Light>
 
   <Light type = "SphereLight">
     <float3 name = "center" x ="-0.500000" y="1.500000" z="0.0"/>
-    <float name = "radius" value = "0.45"/>
-    <rgb name = "radiance" value="0.95 0.18 1.27"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="12.70 5.70 1.80"/>
   </Light>
 
   <Light type = "SphereLight">
     <float3 name = "center" x ="1.500000" y="1.500000" z="0.0"/>
-    <float name = "radius" value = "0.45"/>
-    <rgb name = "radiance" value="1.27 0.18 0.32"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="6.90 1.80 12.70"/>
   </Light>
 
   <Light type = "SphereLight">
     <float3 name = "center" x ="3.500000" y="1.500000" z="0.0"/>
-    <float name = "radius" value = "0.45"/>
-    <rgb name = "radiance" value="1.27 0.41 0.18"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="12.70 7.20 1.80"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="5.500000" y="1.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="10.60 12.70 1.80"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="-5.500000" y="2.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="2.60 1.80 12.70"/>
   </Light>
 
   <Light type = "SphereLight">
     <float3 name = "center" x ="-3.500000" y="2.500000" z="0.0"/>
-    <float name = "radius" value = "0.45"/>
-    <rgb name = "radiance" value="1.27 0.26 0.18"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="1.80 12.70 3.90"/>
   </Light>
 
   <Light type = "SphereLight">
     <float3 name = "center" x ="-1.500000" y="2.500000" z="0.0"/>
-    <float name = "radius" value = "0.45"/>
-    <rgb name = "radiance" value="0.18 1.27 0.92"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="6.20 1.80 12.70"/>
   </Light>
 
   <Light type = "SphereLight">
     <float3 name = "center" x ="0.500000" y="2.500000" z="0.0"/>
-    <float name = "radius" value = "0.45"/>
-    <rgb name = "radiance" value="0.18 0.73 1.27"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="12.70 9.20 1.80"/>
   </Light>
 
   <Light type = "SphereLight">
     <float3 name = "center" x ="2.500000" y="2.500000" z="0.0"/>
-    <float name = "radius" value = "0.45"/>
-    <rgb name = "radiance" value="1.27 0.18 0.81"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="12.70 11.00 1.80"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="4.500000" y="2.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="1.80 11.10 12.70"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="6.500000" y="2.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="12.70 8.20 1.80"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="-6.500000" y="3.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="11.40 12.70 1.80"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="-4.500000" y="3.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="12.70 1.80 2.70"/>
   </Light>
 
   <Light type = "SphereLight">
     <float3 name = "center" x ="-2.500000" y="3.500000" z="0.0"/>
-    <float name = "radius" value = "0.45"/>
-    <rgb name = "radiance" value="0.49 0.18 1.27"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="1.80 12.70 11.20"/>
   </Light>
 
   <Light type = "SphereLight">
     <float3 name = "center" x ="-0.500000" y="3.500000" z="0.0"/>
-    <float name = "radius" value = "0.45"/>
-    <rgb name = "radiance" value="1.27 0.21 0.18"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="10.90 12.70 1.80"/>
   </Light>
 
   <Light type = "SphereLight">
     <float3 name = "center" x ="1.500000" y="3.500000" z="0.0"/>
-    <float name = "radius" value = "0.45"/>
-    <rgb name = "radiance" value="1.27 0.57 0.18"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="1.80 7.30 12.70"/>
   </Light>
 
   <Light type = "SphereLight">
     <float3 name = "center" x ="3.500000" y="3.500000" z="0.0"/>
-    <float name = "radius" value = "0.45"/>
-    <rgb name = "radiance" value="1.27 1.20 0.18"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="3.90 1.80 12.70"/>
   </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="5.500000" y="3.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="2.00 12.70 1.80"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="-5.500000" y="4.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="12.70 1.80 3.20"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="-3.500000" y="4.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="12.70 1.80 8.10"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="-1.500000" y="4.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="12.70 1.80 2.70"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="0.500000" y="4.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="1.80 5.50 12.70"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="2.500000" y="4.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="11.90 12.70 1.80"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="4.500000" y="4.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="4.70 1.80 12.70"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="6.500000" y="4.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="7.70 1.80 12.70"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="-6.500000" y="5.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="1.80 2.00 12.70"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="-4.500000" y="5.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="8.80 12.70 1.80"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="-2.500000" y="5.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="12.70 3.10 1.80"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="-0.500000" y="5.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="1.80 12.70 8.70"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="1.500000" y="5.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="10.10 12.70 1.80"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="3.500000" y="5.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="12.70 10.00 1.80"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="5.500000" y="5.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="1.80 11.40 12.70"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="-5.500000" y="6.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="1.80 10.10 12.70"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="-3.500000" y="6.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="12.70 1.80 6.30"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="-1.500000" y="6.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="1.80 5.00 12.70"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="0.500000" y="6.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="1.80 5.80 12.70"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="2.500000" y="6.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="4.50 12.70 1.80"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="4.500000" y="6.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="11.10 12.70 1.80"/>
+  </Light>
+
+  <Light type = "SphereLight">
+    <float3 name = "center" x ="6.500000" y="6.500000" z="0.0"/>
+    <float name = "radius" value = "0.2"/>
+    <rgb name = "radiance" value="1.80 12.70 6.40"/>
+  </Light>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "-5.500000" y = "-6.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "-3.500000" y = "-6.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "-1.500000" y = "-6.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "0.500000" y = "-6.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "2.500000" y = "-6.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "4.500000" y = "-6.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "6.500000" y = "-6.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "-6.500000" y = "-5.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "-4.500000" y = "-5.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "-2.500000" y = "-5.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "-0.500000" y = "-5.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "1.500000" y = "-5.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "3.500000" y = "-5.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "5.500000" y = "-5.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "-5.500000" y = "-4.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "-3.500000" y = "-4.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "-1.500000" y = "-4.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "0.500000" y = "-4.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "2.500000" y = "-4.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "4.500000" y = "-4.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "6.500000" y = "-4.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "-6.500000" y = "-3.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "-4.500000" y = "-3.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
 
   <Shape type = "Sphere">
     <Point name = "center" x = "-2.500000" y = "-3.500000" z = "-0.0" />
@@ -306,6 +839,18 @@
 
   <Shape type = "Sphere">
     <Point name = "center" x = "3.500000" y = "-3.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "5.500000" y = "-3.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "-5.500000" y = "-2.500000" z = "-0.0" />
     <Point name = "radius" value = "0.45" />
     <ref name = "bsdf" value = "matWhite" />
   </Shape>
@@ -335,6 +880,30 @@
   </Shape>
 
   <Shape type = "Sphere">
+    <Point name = "center" x = "4.500000" y = "-2.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "6.500000" y = "-2.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "-6.500000" y = "-1.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "-4.500000" y = "-1.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
     <Point name = "center" x = "-2.500000" y = "-1.500000" z = "-0.0" />
     <Point name = "radius" value = "0.45" />
     <ref name = "bsdf" value = "matWhite" />
@@ -354,6 +923,18 @@
 
   <Shape type = "Sphere">
     <Point name = "center" x = "3.500000" y = "-1.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "5.500000" y = "-1.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "-5.500000" y = "-0.500000" z = "-0.0" />
     <Point name = "radius" value = "0.45" />
     <ref name = "bsdf" value = "matWhite" />
   </Shape>
@@ -383,6 +964,30 @@
   </Shape>
 
   <Shape type = "Sphere">
+    <Point name = "center" x = "4.500000" y = "-0.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "6.500000" y = "-0.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "-6.500000" y = "0.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "-4.500000" y = "0.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
     <Point name = "center" x = "-2.500000" y = "0.500000" z = "-0.0" />
     <Point name = "radius" value = "0.45" />
     <ref name = "bsdf" value = "matWhite" />
@@ -402,6 +1007,18 @@
 
   <Shape type = "Sphere">
     <Point name = "center" x = "3.500000" y = "0.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "5.500000" y = "0.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "-5.500000" y = "1.500000" z = "-0.0" />
     <Point name = "radius" value = "0.45" />
     <ref name = "bsdf" value = "matWhite" />
   </Shape>
@@ -431,6 +1048,30 @@
   </Shape>
 
   <Shape type = "Sphere">
+    <Point name = "center" x = "4.500000" y = "1.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "6.500000" y = "1.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "-6.500000" y = "2.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "-4.500000" y = "2.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
     <Point name = "center" x = "-2.500000" y = "2.500000" z = "-0.0" />
     <Point name = "radius" value = "0.45" />
     <ref name = "bsdf" value = "matWhite" />
@@ -455,6 +1096,18 @@
   </Shape>
 
   <Shape type = "Sphere">
+    <Point name = "center" x = "5.500000" y = "2.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "-5.500000" y = "3.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
     <Point name = "center" x = "-3.500000" y = "3.500000" z = "-0.0" />
     <Point name = "radius" value = "0.45" />
     <ref name = "bsdf" value = "matWhite" />
@@ -474,6 +1127,144 @@
 
   <Shape type = "Sphere">
     <Point name = "center" x = "2.500000" y = "3.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "4.500000" y = "3.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "6.500000" y = "3.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "-6.500000" y = "4.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "-4.500000" y = "4.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "-2.500000" y = "4.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "-0.500000" y = "4.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "1.500000" y = "4.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "3.500000" y = "4.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "5.500000" y = "4.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "-5.500000" y = "5.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "-3.500000" y = "5.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "-1.500000" y = "5.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "0.500000" y = "5.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "2.500000" y = "5.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "4.500000" y = "5.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "6.500000" y = "5.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "-6.500000" y = "6.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "-4.500000" y = "6.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "-2.500000" y = "6.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "-0.500000" y = "6.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "1.500000" y = "6.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "3.500000" y = "6.500000" z = "-0.0" />
+    <Point name = "radius" value = "0.45" />
+    <ref name = "bsdf" value = "matWhite" />
+  </Shape>
+
+  <Shape type = "Sphere">
+    <Point name = "center" x = "5.500000" y = "6.500000" z = "-0.0" />
     <Point name = "radius" value = "0.45" />
     <ref name = "bsdf" value = "matWhite" />
   </Shape>

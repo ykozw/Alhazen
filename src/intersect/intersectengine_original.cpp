@@ -34,8 +34,14 @@ SceneGeom::intersect(const Ray& ray, bool skipLight, Intersect* isect) const
     // TODO: ライトを登録してそこからプリミティブIDを得るような形にする
     if (!skipLight)
     {
-        for (const auto& light : lights_)
+        for(int32_t li = 0;li<int32_t(lights_.size());++li)
         {
+            if (isInBvh_[li])
+            {
+                continue;
+            }
+            //
+            auto& light = lights_[li];
             if (light->intersect(ray, isect))
             {
                 AL_ASSERT_DEBUG(isect->bsdf);
@@ -67,8 +73,14 @@ bool SceneGeom::intersectCheck(const Ray& ray, bool skipLight) const
     // TODO: ライトを登録してそこからプリミティブIDを得るような形にする
     if (!skipLight)
     {
-        for (const auto& light : lights_)
+        for (int32_t li = 0; li<int32_t(lights_.size()); ++li)
         {
+            if (isInBvh_[li])
+            {
+                continue;
+            }
+            //
+            auto& light = lights_[li];
             if (light->intersectCheck(ray))
             {
                 return true;
@@ -145,12 +157,13 @@ void SceneGeom::buildScene()
         aabbLights.resize(std::distance(aabbLights.begin(), ite));
         lightsBVH_.construct(aabbLights);
         //
-        lights_.erase(std::remove_if(lights_.begin(),
-                                     lights_.end(),
-                                     [](const LightPtr& light) {
-                                         return light->aabb().validate();
-                                     }),
-                      lights_.end());
+        isInBvh_.resize(lights_.size());
+        for(int32_t li=0;li<int32_t(lights_.size());++li)
+        {
+            auto& light = lights_[li];
+            const bool isBVHed = light->aabb().validate();
+            isInBvh_[li] = isBVHed;
+        }
     }
     //
     geometory_->buildScene();

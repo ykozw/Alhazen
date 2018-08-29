@@ -92,16 +92,16 @@ AL_TEST(Isect, 0)
             //
             vdbmt_color(Vec3(0.0f,1.0f,0.0f));
             // めり込んでいる場合
-            auto t = long double(isect.t);
-            auto dx = long double(ray.d.x());
-            auto dy = long double(ray.d.y());
-            auto dz = long double(ray.d.z());
-            auto ox = long double(ray.o.x());
-            auto oy = long double(ray.o.y());
-            auto oz = long double(ray.o.z());
-            auto sox = long double(so.x());
-            auto soy = long double(so.y());
-            auto soz = long double(so.z());
+            auto t = (long double)(isect.t);
+            auto dx = (long double)(ray.d.x());
+            auto dy = (long double)(ray.d.y());
+            auto dz = (long double)(ray.d.z());
+            auto ox = (long double)(ray.o.x());
+            auto oy = (long double)(ray.o.y());
+            auto oz = (long double)(ray.o.z());
+            auto sox = (long double)(so.x());
+            auto soy = (long double)(so.y());
+            auto soz = (long double)(so.z());
             auto x = dx * t + ox;
             auto y = dy * t + oy;
             auto z = dz * t + oz;

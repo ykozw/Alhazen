@@ -27,6 +27,7 @@ template<typename Float = float, FSS_MomentLevel ML = FSS_MomentLevel::MuVar, bo
 class FloatStreamStats
 {
 public:
+    FloatStreamStats() = default;
     void add(Float v)
     {
         //
@@ -174,8 +175,13 @@ private:
     template<>
     struct MinMaxBuffer<true>
     {
-        Float mn = std::numeric_limits<Float>::max();
-        Float mx = std::numeric_limits<Float>::lowest();
+        MinMaxBuffer<true>()
+        {
+            mn = std::numeric_limits<Float>::max();
+            mx = std::numeric_limits<Float>::lowest();
+        }
+        Float mn;
+        Float mx;
     };
     MinMaxBuffer<ENABLE_MINMAX> mmb_;
 };

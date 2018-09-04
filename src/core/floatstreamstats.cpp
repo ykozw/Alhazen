@@ -109,3 +109,27 @@ AL_TEST(testFloatStreamStats, 0)
         AL_ASSERT_ALWAYS(fabsf(stats.sigma() / 19.2f - 1.0f) < 0.1f);
     }
 }
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+AL_TEST_IMM(testFloatStreamStats, 1)
+{
+    FloatStreamStats<float, FSS_MomentLevel::MuVarSkewKurt> stats;
+    stats.add(2.0f);
+    stats.add(30.0f);
+    stats.add(51.0f);
+    stats.add(72.0f);
+    const float t0 = stats.mu();
+    const float t1 = stats.var();
+    const float t2 = stats.skew();
+    const float t3 = stats.kurt();
+
+    AL_ASSERT_ALWAYS(fabsf((t0 / +38.75f) - 1.0f) < 0.1f);
+    AL_ASSERT_ALWAYS(fabsf((t1 / +894.25f) - 1.0f) < 0.1f);
+    AL_ASSERT_ALWAYS(fabsf((t2 / -0.1685f) - 1.0f) < 0.1f);
+    AL_ASSERT_ALWAYS(fabsf((t3 / -1.29f) - 1.0f) < 0.1f);
+
+}
+   

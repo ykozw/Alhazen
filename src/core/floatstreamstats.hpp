@@ -41,12 +41,12 @@ public:
     // 相加平均
     Float mu() const
     {
-        return mb_.m0;
+        return mb_.m1;
     }
     // 不偏分散
     Float var() const
     {
-        return mb_.m1 / Float(n_ - 1);
+        return mb_.m2 / Float(n_ - 1);
     }
     // 不偏標準偏差
     Float sigma() const
@@ -59,7 +59,7 @@ public:
     }
     Float kurt() const
     {
-        return (float(n_) * m4_) / (m2_ * m2_);
+        return (float(n_) * mb_.m4) / (mb_.m2 * mb_.m2) - 3.0f;
     }
     Float min() const
     {
@@ -89,38 +89,43 @@ private:
     template<FSS_MomentLevel ML>
     typename std::enable_if<ML == FSS_MomentLevel::Mu>::type updateMoment(Float v)
     {
-        mb_.m0 = (v - mb_.m0) / Float(n_) + mb_.m0;
+        const Float delta = v - mb_.m1;
+        const Float delta_n = delta / Float(n_);
+        mb_.m1 += delta_n;
     }
     template<FSS_MomentLevel ML>
     typename std::enable_if<ML == FSS_MomentLevel::MuVar>::type updateMoment(Float v)
     {
-        const float nmu = (v - mb_.m0) / Float(n_) + mb_.m0;
-        const float newM = (v - mb_.m0) * (v - nmu) + mb_.m1;
-        mb_.m1 = newM;
-        mb_.m0 = nmu;
+        const Float delta = v - mb_.m1;
+        const Float delta_n = delta / Float(n_);
+        const Float t = delta * delta_n * Float(n_ - 1);
+        mb_.m2 += t;
+        mb_.m1 += delta_n;
     }
     template<FSS_MomentLevel ML>
     typename std::enable_if<ML == FSS_MomentLevel::MuVarSkew>::type updateMoment(Float v)
     {
-        const Float delta = v - mb_.m0;
+        const Float delta = v - mb_.m1;
         const Float delta_n = delta / Float(n_);
-        mb_.m0 += delta_n;
-        mb_.m1 += delta * (delta - delta_n);
-        const Float delta_2 = delta * delta;
-        const Float delta_n_2 = delta_n * delta_n;
-        mb_.m2 += Float(-3.0) * delta_n * mb_.m2 + delta * (delta_2 - delta_n_2);
+        const Float t = delta * delta_n * Float(n_ - 1);
+        mb_.m3 += Float(-3.0) * delta_n * mb_.m2 + t * delta_n * (Float(n_) - Float(2.0));
+        mb_.m2 += t;
+        mb_.m1 += delta_n;
     }
     template<FSS_MomentLevel ML>
     typename std::enable_if<ML == FSS_MomentLevel::MuVarSkewKurt>::type updateMoment(Float v)
     {
-        const Float delta = v - mb_.m0;
+        const Float delta = v - mb_.m1;
         const Float delta_n = delta / Float(n_);
-        mb_.m0 += delta_n;
-        mb_.m1 += delta * (delta - delta_n);
-        const Float delta_2 = delta * delta;
-        const Float delta_n_2 = delta_n * delta_n;
-        mb_.m2 += Float(-3.0) * delta_n * mb_.m2 + delta * (delta_2 - delta_n_2);
-        mb_.m3 += Float(-4.0) * delta_n * mb_.m3 - Float(6.0) * delta_n_2 * mb_.m2 + delta * (delta * delta_2 - delta_n * delta_n_2);
+        const Float delta_n2 = delta_n * delta_n;
+        const Float t = delta * delta_n * Float(n_-1);
+        mb_.m4 +=
+            t * delta_n2 * (Float(n_)*Float(n_) - Float(3.0) * Float(n_) + Float(3.0))
+            + Float(6.0) * delta_n2 * Float(mb_.m2)
+            - Float(4.0) * delta_n * Float(mb_.m3);
+        mb_.m3 += Float(-3.0) * delta_n * mb_.m2 + t * delta_n * (Float(n_) - Float(2.0));
+        mb_.m2 += t;
+        mb_.m1 += delta_n;
     }
 private:
     //
@@ -133,39 +138,39 @@ private:
     struct MomentBuffer<FSS_MomentLevel::Mu>
     {
         MomentBuffer<FSS_MomentLevel::Mu>()
-            : m0(0.0f)
+            : m1(0.0f)
         {}
-        Float m0 = 0.0f;
+        Float m1 = 0.0f;
     };
     template<>
     struct MomentBuffer<FSS_MomentLevel::MuVar>
     {
         MomentBuffer<FSS_MomentLevel::MuVar>()
-            : m0(0.0f), m1(0.0f)
+            : m1(0.0f), m2(0.0f)
         {}
-        Float m0;
         Float m1;
+        Float m2;
     };
     template<>
     struct MomentBuffer<FSS_MomentLevel::MuVarSkew>
     {
         MomentBuffer<FSS_MomentLevel::MuVarSkew>()
-            : m0(0.0f), m1(0.0f), m2(0.0f)
+            : m1(0.0f), m2(0.0f), m3(0.0f)
         {}
-        Float m0;
         Float m1;
         Float m2;
+        Float m3;
     };
     template<>
     struct MomentBuffer<FSS_MomentLevel::MuVarSkewKurt>
     {
         MomentBuffer<FSS_MomentLevel::MuVarSkewKurt>()
-            : m0(0.0f), m1(0.0f), m2(0.0f), m3(0.0f)
+            : m1(0.0f), m2(0.0f), m3(0.0f), m4(0.0f)
         {}
-        Float m0;
         Float m1;
         Float m2;
         Float m3;
+        Float m4;
     };
     MomentBuffer<ML> mb_;
 

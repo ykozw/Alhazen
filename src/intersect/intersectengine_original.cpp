@@ -34,14 +34,25 @@ SceneGeom::intersect(const Ray& ray, bool skipLight, Intersect* isect) const
     // TODO: ライトを登録してそこからプリミティブIDを得るような形にする
     if (!skipLight)
     {
-        for (const auto& light : lights_)
+        for(int32_t li = 0;li<int32_t(lights_.size());++li)
         {
+            if (isInBvh_[li])
+            {
+                continue;
+            }
+            //
+            auto& light = lights_[li];
             if (light->intersect(ray, isect))
             {
                 AL_ASSERT_DEBUG(isect->bsdf);
                 isect->sceneObject = light.get();
                 isHit = true;
             }
+        }
+        //
+        if (lightsBVH_.intersect(ray, isect))
+        {
+            isHit = true;
         }
     }
     return isHit;
@@ -62,12 +73,23 @@ bool SceneGeom::intersectCheck(const Ray& ray, bool skipLight) const
     // TODO: ライトを登録してそこからプリミティブIDを得るような形にする
     if (!skipLight)
     {
-        for (const auto& light : lights_)
+        for (int32_t li = 0; li<int32_t(lights_.size()); ++li)
         {
+            if (isInBvh_[li])
+            {
+                continue;
+            }
+            //
+            auto& light = lights_[li];
             if (light->intersectCheck(ray))
             {
                 return true;
             }
+        }
+        //
+        if (lightsBVH_.intersectCheck(ray))
+        {
+            return true;
         }
     }
     return false;
@@ -127,6 +149,21 @@ void SceneGeom::buildScene()
         auto light = std::make_shared<ConstantLight>();
         light->init(Spectrum::White);
         lights_.push_back(light);
+    }
+    else
+    {
+        std::vector<LightPtr> aabbLights(lights_.size());
+        auto ite = std::copy_if(lights_.begin(), lights_.end(), aabbLights.begin(), [](const LightPtr& light) {return light->aabb().validate(); });
+        aabbLights.resize(std::distance(aabbLights.begin(), ite));
+        lightsBVH_.construct(aabbLights);
+        //
+        isInBvh_.resize(lights_.size());
+        for(int32_t li=0;li<int32_t(lights_.size());++li)
+        {
+            auto& light = lights_[li];
+            const bool isBVHed = light->aabb().validate();
+            isInBvh_[li] = isBVHed;
+        }
     }
     //
     geometory_->buildScene();

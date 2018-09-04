@@ -20,11 +20,12 @@ public:
         const std::vector<LightPtr>& lights,
         Sampler* sampler)
     {
+        logging("LightSphereBVH::construct() start");
         // BVHを作成する
         bvh_.construct(int32_t(lights.size()), [&](int32_t lightIdx)
         {
             // HACK: このalphaは決め打ち
-            const float alpha = 2.0f;
+            const float alpha = 0.05f;
             const float xi = sampler->get1d();
             const float dist0 = std::sqrtf(1.0f / alpha);
             const float dist1 = std::sqrtf(1.0f / xi);
@@ -36,6 +37,7 @@ public:
             aabb.addSphere(lightCenter, radius);
             return aabb;
         });
+        logging("LightSphereBVH::construct() end");
     }
     //
     int32_t selectLight(Vec3 point, const std::vector<LightPtr>& lights, Sampler* sampler, float* pdf) const
@@ -92,8 +94,9 @@ public:
             ++lightInfosLen;
         });
         const float invCdfTotal = 1.0f / cdfTotal;
-        for (auto& lightInfo : lightInfos)
+        for(int32_t li=0;li<lightInfosLen;++li)
         {
+            auto& lightInfo = lightInfos[li];
             lightInfo.pdf *= invCdfTotal;
             lightInfo.cdf *= invCdfTotal;
         }
@@ -318,6 +321,7 @@ PTSurfaceIntegrator::estimateDirectLight(const SceneGeom& scene,
     // 全てのライトを評価
     case DirectLighitingSelectStrategy::All:
     {
+        //printf("AL");
         Spectrum estimated;
         for (const auto& light : lights)
         {
@@ -411,7 +415,6 @@ PTSurfaceIntegrator::estimateDirectLight(const SceneGeom& scene,
     break;
     case DirectLighitingSelectStrategy::StocasticCulling:
     {
-        
         float lightSelectPdf = 0.0f;
         const int32_t lightIndex = lightSphereBVH_.selectLight(isect.position, lights, sampler, &lightSelectPdf);
         if (lightIndex == -1)

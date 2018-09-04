@@ -814,12 +814,6 @@ void BVHBuilder::construct(int32_t volumeNum,
                     Vec3 rhsc = rhs.aabb.center();
                     return lhsc[axis] < rhsc[axis];
                 };
-
-                // HACK: 軸を適当に決めてしまっている。SAHでもするべき。
-                static int32_t axisNext = 0;
-                const int32_t bestAxis = (axisNext++) % 3;
-                // ソート
-                axis = bestAxis;
                 std::sort(beginIte, endIte, sortPred);
             };
 
@@ -928,4 +922,16 @@ void ShapeBVH::construct(const std::vector<ShapePtr>& shapes)
     //
     bvh_.construct(int32_t(shapes.size()),
                    [&](int32_t index) { return shapes[index]->aabb(); });
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+void LightBVH::construct(const std::vector<LightPtr>& lights)
+{
+    lights_ = lights;
+    //
+    bvh_.construct(int32_t(lights_.size()),
+        [&](int32_t index) { return lights_[index]->aabb(); });
 }

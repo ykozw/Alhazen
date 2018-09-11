@@ -148,15 +148,15 @@ namespace {
    // ----------------------------------------------------------------------------
    // The interface for microfacet distribution
    // ----------------------------------------------------------------------------
-class MicrofacetDistribution {
+class MicrofacetDistributionYatagawa {
 public:
-    MicrofacetDistribution(float alphax, float alphay, bool sampleVisible)
+    MicrofacetDistributionYatagawa(float alphax, float alphay, bool sampleVisible)
         : alphax_{ alphax }
         , alphay_{ alphay }
         , sampleVisible_{ sampleVisible } {
     }
 
-    virtual ~MicrofacetDistribution() {
+    virtual ~MicrofacetDistributionYatagawa() {
     }
 
     // Sample microfacet normal
@@ -194,10 +194,10 @@ public:
 // ----------------------------------------------------------------------------
 // Beckmann distribution
 // ----------------------------------------------------------------------------
-class BeckmannDistribution : public MicrofacetDistribution {
+class BeckmannDistribution : public MicrofacetDistributionYatagawa {
 public:
     BeckmannDistribution(float alphax, float alphay, bool sampleVisible)
-        : MicrofacetDistribution{ alphax, alphay, sampleVisible } {
+        : MicrofacetDistributionYatagawa{ alphax, alphay, sampleVisible } {
     }
 
     Vec3 sampleWm(Sampler* sampler, const Vec3& wo) const override {
@@ -364,10 +364,10 @@ public:
 // ----------------------------------------------------------------------------
 // GGX distribution
 // ----------------------------------------------------------------------------
-class GGXDistribution : public MicrofacetDistribution {
+class GGXDistribution : public MicrofacetDistributionYatagawa {
 public:
     GGXDistribution(float alphax, float alphay, bool sampleVisible)
-        : MicrofacetDistribution{ alphax, alphay, sampleVisible } {
+        : MicrofacetDistributionYatagawa{ alphax, alphay, sampleVisible } {
     }
 
     Vec3 sampleWm(Sampler* sampler, const Vec3& wi) const override {
@@ -508,17 +508,220 @@ public:
     }
 };
 
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+
+enum class MicrofacetDistributionType
+{
+    Beckmann,
+    GGX,
+};
+template<MicrofacetDistributionType TYPE = MicrofacetDistributionType::GGX, bool USE_VISIBLE_NORMAL = true>
+class MicrofacetDistributionNew
+{
+public:
+public:
+    //
+    MicrofacetDistributionNew(float alphaX, float alphaY)
+    {
+        alphaX_ = std::max(alphaX_, (float) 1e-4f);
+        alphaY_ = std::max(alphaY_, (float) 1e-4f);
+    }
+
+    inline float eval(const Vec3& m) const
+    {
+        if (cosTheta(m) <= 0)
+        {
+            return 0.0f;
+        }
+
+        float cosTheta2 = cos2Theta(m);
+        float beckmannExponent = ((m.x()*m.x()) / (alphaX_ * alphaX_)
+            + (m.y()*m.y()) / (alphaY_ * alphaY_)) / cosTheta2;
+
+        float result;
+        switch (TYPE)
+        {
+        case MicrofacetDistributionType::Beckmann:
+        {
+            /* Beckmann distribution function for Gaussian random surfaces -
+             * [Walter 2005] evaluation */
+            result = std::expf(-beckmannExponent) /
+                     (M_PI * alphaX_ * alphaY_ * cosTheta2 * cosTheta2);
+        }
+        break;
+
+        case MicrofacetDistributionType::GGX:
+        {
+            /* GGX / Trowbridge-Reitz distribution function for rough surfaces
+             */
+            float root = ((float)1 + beckmannExponent) * cosTheta2;
+            result = (float)1 / (M_PI * alphaX_ * alphaY_ * root * root);
+        }
+        break;
+        default:
+            return 0.0f;
+        }
+
+        /* Prevent potential numerical issues in other stages of the model */
+        if (result * cosTheta(m) < 1e-20f)
+        {
+            result = 0;
+        }
+
+        return result;
+    }
+    // 
+    inline void sample(const Vec3 wi, const Vec2 sample, Vec3* wm, float* pdf) const
+    {
+        if (USE_VISIBLE_NORMAL)
+        {
+            //*wm = sampleVisible(wi, sample);
+            //*pdf = pdfVisible(wi, *wm);
+        }
+        else
+        {
+            sampleAll(sample, wm, pdf);
+        }
+    }
+
+    //
+    inline void sampleAll(const Vec2& sample, Vec3* wm, float* pdf) const
+    {
+        /* The azimuthal component is always selected
+        uniformly regardless of the distribution */
+        float cosThetaM = 0.0f;
+        float sinPhiM, cosPhiM;
+        float alphaSqr;
+
+        switch (TYPE)
+        {
+        case MicrofacetDistributionType::Beckmann:
+        {
+            /* Beckmann distribution function for Gaussian random surfaces */
+            if (isIsotropic())
+            {
+                /* Sample phi component (isotropic case) */
+                const float tmp = (2.0f * M_PI) * sample.y();
+                sinPhiM = std::sinf(tmp);
+                cosPhiM = std::cosf(tmp);
+                alphaSqr = alphaX_ * alphaX_;
+            }
+            else
+            {
+                /* Sample phi component (anisotropic case) */
+                float phiM = std::atan(alphaY_ / alphaX_ *
+                                       std::tan(M_PI + 2 * M_PI * sample.y())) +
+                             M_PI * std::floor(2 * sample.y() + 0.5f);
+                sinPhiM = std::sinf(phiM);
+                cosPhiM = std::cosf(phiM);
+                float cosSc = cosPhiM / alphaX_, sinSc = sinPhiM / alphaY_;
+                alphaSqr = 1.0f / (cosSc * cosSc + sinSc * sinSc);
+            }
+
+            /* Sample theta component */
+            float tanThetaMSqr = alphaSqr * -std::logf(1.0f - sample.x());
+            cosThetaM = 1.0f / std::sqrt(1.0f + tanThetaMSqr);
+
+            /* Compute probability density of the sampled position */
+            *pdf = (1.0f - sample.x()) / (M_PI * alphaX_ * alphaY_ * cosThetaM *
+                                       cosThetaM * cosThetaM);
+        }
+        break;
+
+        case MicrofacetDistributionType::GGX:
+        {
+            /* GGX / Trowbridge-Reitz distribution function for rough surfaces
+             */
+            if (isIsotropic())
+            {
+                /* Sample phi component (isotropic case) */
+                const float tmp = (2.0f * M_PI) * sample.y();
+                sinPhiM = std::sinf(tmp);
+                cosPhiM = std::cosf(tmp);
+                /* Sample theta component */
+                alphaSqr = alphaX_ * alphaX_;
+            }
+            else
+            {
+                /* Sample phi component (anisotropic case) */
+                float phiM = std::atan(alphaY_ / alphaX_ *
+                                       std::tan(M_PI + 2 * M_PI * sample.y())) +
+                             M_PI * std::floor(2 * sample.y() + 0.5f);
+                sinPhiM = std::sinf(phiM);
+                cosPhiM = std::cosf(phiM);
+                float cosSc = cosPhiM / alphaX_, sinSc = sinPhiM / alphaY_;
+                alphaSqr = 1.0f / (cosSc * cosSc + sinSc * sinSc);
+            }
+
+            /* Sample theta component */
+            float tanThetaMSqr = alphaSqr * sample.x() / (1.0f - sample.x());
+            cosThetaM = 1.0f / std::sqrtf(1.0f + tanThetaMSqr);
+
+            /* Compute probability density of the sampled position */
+            float temp = 1 + tanThetaMSqr / alphaSqr;
+            *pdf = INV_PI / (alphaX_ * alphaY_ * cosThetaM * cosThetaM *
+                            cosThetaM * temp * temp);
+        }
+        break;
+
+        default:
+            *pdf = -1;
+            return;
+        }
+
+        /* Prevent potential numerical issues in other stages of the model */
+        if (*pdf < 1e-20f)
+        {
+            *pdf = 0;
+        }
+
+        const float sinThetaM =
+            std::sqrtf(std::max((float)0, 1 - cosThetaM * cosThetaM));
+
+        *wm = Vec3(sinThetaM * cosPhiM, sinThetaM * sinPhiM, cosThetaM);
+    }
+
+    /// Is this an anisotropic microfacet distribution?
+    inline bool isIsotropic() const { return alphaX_ == alphaY_; }
+
+private:
+    float alphaX_ = 0.0f;
+    float alphaY_ = 0.0f;
+};
+
 
 void test2()
 {
     //
-    const float alphaX = 1.0f;
-    const float alphaY = 1.0f;
+    const float alphaX = 0.1f;
+    const float alphaY = 0.1f;
     GGXDistribution ggx0(alphaX, alphaY, true);
     GGXDistribution ggx1(alphaX, alphaY, false);
+    MicrofacetDistributionNew<> ggxNew(alphaX, alphaY);
+
+
     FloatStreamStats<float,FSS_MomentLevel::MuVar,true> fs0, fs1;
     SamplerHalton sampler;
     sampler.setHash(0x123);
+
+    // TODO: 本当に全周で1になるか
+    for (int32_t sn = 0; sn < 1024 * 16; ++sn)
+    {
+        sampler.startSample(sn);
+        const Vec3 woLocal = sampler.getHemisphere();
+        Vec3 wiLocal, wm;
+        const float w = ggx0.weight(woLocal, wiLocal, wm);
+        fs1.add(w);
+        //
+        ggxNew.eval(woLocal);
+        float pdf;
+        ggxNew.sample(woLocal, Vec2(), &wm, &pdf);
+    }
+    printf("mu:%f sig:%f min:%f max:%f\n", fs1.mu(), fs1.sigma(), fs1.min(), fs1.max());
+    return;
+
     //
     for (int32_t sn=0;sn<1024*1024;++sn)
     {

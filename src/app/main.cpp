@@ -370,7 +370,7 @@ public:
         : MicrofacetDistribution{ alphax, alphay, sampleVisible } {
     }
 
-    Vec3 sampleWm(Sampler* sampler, const Vec3 &wo) const override {
+    Vec3 sampleWm(Sampler* sampler, const Vec3& wi) const override {
         const Vec2 uv = sampler->get2d();
         const float U1 = uv.x();
         const float U2 = uv.y();
@@ -411,8 +411,8 @@ public:
         }
         else {
             // Sample microfacet normals by considering only visible normals
-            bool flip = wo.z() < 0.0;
-            Vec3 wm = sampleGGX(sampler, flip ? -wo : wo, alphax_, alphay_);
+            bool flip = wi.z() < 0.0;
+            Vec3 wm = sampleGGX(sampler, flip ? -wi : wi, alphax_, alphay_);
 
             if (wm.z() < 0.0) {
                 wm = -wm;
@@ -422,7 +422,8 @@ public:
         }
     }
 
-    static Vec3 sampleGGX(Sampler* sampler, const Vec3 &wi, float alphax, float alphay) {
+    static Vec3 sampleGGX(Sampler* sampler, const Vec3& wi, float alphax, float alphay)
+    {
         // 1. stretch wi
         Vec3 wiStretched = Vec3(alphax * wi.x(), alphay * wi.y(), wi.z()).normalize();
 
@@ -497,6 +498,11 @@ public:
 
         const float alpha =
             std::sqrtf(cos2Phi(wo) * alphax_ * alphax_ + sin2Phi(wo) * alphay_ * alphay_);
+        //
+        if (std::isinf(alpha))
+        {
+            return 0.0f;
+        }
         const float alpha2Tan2Theta = (alpha * absTanThetaO) * (alpha * absTanThetaO);
         return (-1.0f + std::sqrtf(1.0f + alpha2Tan2Theta)) / 2.0f;
     }
@@ -505,43 +511,37 @@ public:
 
 void test2()
 {
-
     //
     const float alphaX = 1.0f;
     const float alphaY = 1.0f;
     GGXDistribution ggx0(alphaX, alphaY, true);
     GGXDistribution ggx1(alphaX, alphaY, false);
-    FloatStreamStats<> fs0, fs1;
+    FloatStreamStats<float,FSS_MomentLevel::MuVar,true> fs0, fs1;
     SamplerHalton sampler;
     sampler.setHash(0x123);
     //
-    for (int32_t sn=0;sn<1024*128;++sn)
+    for (int32_t sn=0;sn<1024*1024;++sn)
     {
         sampler.startSample(sn);
-#if 1
-        const Vec3 wiLocal = sampler.getHemisphere();
-#else
-        const Vec3 wiLocal = Vec3(0.0f, 1.0f, 0.01f).normalized();
-#endif
+        //const Vec3 wiLocal = sampler.getHemisphere();
+        const Vec3 wiLocal = Vec3(1.0,0.0f,0.01f).normalized();
         //
         {
             const Vec3 wm = ggx0.sampleWm(&sampler, wiLocal);
-            const Vec3 woLocal0 = wm.reflect(wiLocal);
-            const Vec3 woLocal = wm * 2.0 * Vec3::dot(wm, wiLocal) - wiLocal;
+            const Vec3 woLocal = -wm.reflect(wiLocal);
             const float w = ggx0.weight(woLocal, wiLocal, wm);
             fs0.add(w);
         }
         //
         {
             const Vec3 wm = ggx1.sampleWm(&sampler, wiLocal);
-            const Vec3 woLocal0 = wm.reflect(wiLocal);
-            const Vec3 woLocal = wm * 2.0 * Vec3::dot(wm, wiLocal) - wiLocal;
+            const Vec3 woLocal = -wm.reflect(wiLocal);
             const float w = ggx1.weight(woLocal, wiLocal, wm);
             fs1.add(w);
         }
     }
-    printf("mu:%f sig:%f\n", fs0.mu(), fs0.sigma());
-    printf("mu:%f sig:%f\n", fs1.mu(), fs1.sigma());
+    printf("mu:%f sig:%f min:%f max:%f\n", fs0.mu(), fs0.sigma(), fs0.min(), fs0.max() );
+    printf("mu:%f sig:%f min:%f max:%f\n", fs1.mu(), fs1.sigma(), fs1.min(), fs1.max() );
 }
 
 /*

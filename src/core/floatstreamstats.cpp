@@ -114,7 +114,7 @@ AL_TEST(testFloatStreamStats, 0)
 -------------------------------------------------
 -------------------------------------------------
 */
-AL_TEST_IMM(testFloatStreamStats, 1)
+AL_TEST(testFloatStreamStats, 1)
 {
     FloatStreamStats<float, FSS_MomentLevel::MuVarSkewKurt> stats;
     stats.add(2.0f);

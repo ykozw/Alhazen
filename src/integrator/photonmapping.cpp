@@ -79,7 +79,8 @@ bool PMIntegrator::preRendering(const SceneGeom& scene)
         // TODO: emission方向によらない光源を仮定しているのを直す
         // light->sample(sampler, &samplePos, &emission, &pdf,
         // &lightLocalCoord); light->sampleLe(sampler,) 射出方向の選択
-        const Vec3 launchDirWorld = sampler->getSphere();
+        float pdfSphere;
+        const Vec3 launchDirWorld = sampler->getSphere(&pdfSphere);
         // const Vec3 launchDirWorld =
         // lightLocalCoord.local2world(launchDirLocal);
         //
@@ -110,7 +111,8 @@ bool PMIntegrator::preRendering(const SceneGeom& scene)
             // const Vec3 wi = lc.world2local(ray.d);
             // HACK:
             // 適当に反射方向を決めてしまっている。Diffuseしか存在しないとしている
-            const Vec3 wo = sampler->getHemisphere();
+            float pdfSphere;
+            const Vec3 wo = sampler->getHemisphere(&pdfSphere);
 #if 0
             const Spectrum reflectance = isect.bsdf->bsdf(wo, wi, Vec2(0.0f));
             (void)reflectance;

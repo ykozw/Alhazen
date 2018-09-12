@@ -91,11 +91,11 @@ public:
     Vec2 getDiscConcentric();
 
     // Hemisphere(xyz_)
-    Vec3 getHemisphere();
+    Vec3 getHemisphere(float* pdf);
     Vec3 getHemisphereCosineWeighted(float* pdf);
 
     // Sphere(xyz_)
-    Vec3 getSphere();
+    Vec3 getSphere(float* pdf);
 
     // Cone(xyz_でz軸が中心)
     Vec3 getCone(float cosTheta);

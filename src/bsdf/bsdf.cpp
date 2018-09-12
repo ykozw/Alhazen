@@ -43,12 +43,14 @@ static void testBSDFcore(BSDFPtr bsdf)
         FloatStreamStats<> statsRhd1;
         //
         samplerWo.startSample(i);
-        const Vec3 wo = samplerWo.getHemisphere();
+        float pdf;
+        const Vec3 wo = samplerWo.getHemisphere(&pdf);
         //
         for (int32_t sn = 0; sn < 1024 * 16; ++sn)
         {
             samplerWi.startSample(sn);
-            const Vec3 wi = samplerWi.getHemisphere();
+            float pdfSphere;
+            const Vec3 wi = samplerWi.getHemisphere(&pdfSphere);
             const Spectrum ref0 = bsdf->bsdf(wo, wi);
             const Spectrum ref1 = bsdf->bsdf(wi, wo);
             // ヘルムホルツの相反性
@@ -325,12 +327,14 @@ AL_TEST(BlinnNDF, 0)
         FloatStreamStats<> statsRhd1;
         //
         samplerWo.startSample(i);
-        const Vec3 wo = samplerWo.getSphere();
+        float pdfSphere;
+        const Vec3 wo = samplerWo.getSphere(&pdfSphere);
         //
         for (int32_t sn = 0; sn < 1024; ++sn)
         {
             samplerWi.startSample(sn);
-            const Vec3 wi = samplerWi.getSphere();
+            float pdfSphere;
+            const Vec3 wi = samplerWi.getSphere(&pdfSphere);
             // HalfVectorの作成
             const Vec3 wh = (wi + wo).normalized();
             const float ref = nd->eval(wh);
@@ -912,9 +916,9 @@ AL_TEST(BSDF, testMISC)
     for (int32_t i = 0; i < sn; ++i)
     {
         sampler.startSample(i);
-
-        const Vec3 wo = sampler.getHemisphere();
-        const Vec3 wi = sampler.getHemisphere();
+        float pdfWo, pdfWi;
+        const Vec3 wo = sampler.getHemisphere(&pdfWo);
+        const Vec3 wi = sampler.getHemisphere(&pdfWi);
         const Spectrum reflectance = lambert.bsdf(wo, wi);
         // const float cosweight = wi.z();
         total = total + reflectance;

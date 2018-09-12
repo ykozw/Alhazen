@@ -95,7 +95,8 @@ Spectrum ConstantLight::sampleLe(Sampler* sampler,
     // 常に一定
     *pdf = this->pdf(Vec3(), Vec3());
     // 方向をランダムに選択
-    const Vec3 sampleDir = sampler->getSphere();
+    float pdfSphere;
+    const Vec3 sampleDir = sampler->getSphere(&pdfSphere);
     // sample位置を作成
     *samplePos = targetPos + sampleDir * faraway_;
     // spectrumは一定
@@ -139,7 +140,8 @@ AL_TEST(ConstantLight, 0)
     for (int32_t sn = 0; sn < 1024 * 16; ++sn)
     {
         sampler.startSample(sn);
-        const Vec3 dir = sampler.getHemisphere();
+        float pdf;
+        const Vec3 dir = sampler.getHemisphere(&pdf);
         Intersect isect;
         isect.clear();
         const bool hit =
@@ -428,7 +430,8 @@ AL_TEST(RectangleLight, 0)
     for (int32_t sn = 0; sn < 1024 * 1024; ++sn)
     {
         sampler.startSample(sn);
-        const Vec3 dir = sampler.getHemisphere();
+        float pdfSphere;
+        const Vec3 dir = sampler.getHemisphere(&pdfSphere);
         Intersect isect;
         isect.clear();
         const bool hit =
@@ -481,7 +484,8 @@ AL_TEST(RectangleLight, 1)
     for (int32_t sn = 0; sn < 1024 * 16; ++sn)
     {
         sampler.startSample(sn);
-        const Vec3 dir = sampler.getHemisphere();
+        float pdfSphere;
+        const Vec3 dir = sampler.getHemisphere(&pdfSphere);
         Intersect isect;
         isect.clear();
         const bool hit =
@@ -637,7 +641,8 @@ Spectrum SphereLight::sampleLe(Sampler* sampler,
     // 内側だった場合は、球を一様にサンプル
     if (dist2 < float(radius2_))
     {
-        const Vec3 samplePosNormal = sampler->getSphere();
+        float pdfSphere;
+        const Vec3 samplePosNormal = sampler->getSphere(&pdfSphere);
         *samplePos = center_ + samplePosNormal * float(radius_);
         *pdf = invArea_;
         return emission_;
@@ -708,7 +713,8 @@ AL_TEST(SphereLight, 1)
     for (int32_t sn = 0; sn < 1024 * 16; ++sn)
     {
         sampler.startSample(sn);
-        const Vec3 dir = sampler.getHemisphere();
+        float pdfSphere;
+        const Vec3 dir = sampler.getHemisphere(&pdfSphere);
         Intersect isect;
         isect.clear();
         const bool hit =

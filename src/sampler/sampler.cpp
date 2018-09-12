@@ -147,7 +147,7 @@ Hemisphere(xyz_)
 単位球上で一様に分布する
 -------------------------------------------------
 */
-Vec3 Sampler::getHemisphere()
+Vec3 Sampler::getHemisphere(float* pdf)
 {
     //
     const Vec2 xy = get2d();
@@ -156,7 +156,8 @@ Vec3 Sampler::getHemisphere()
     const float cosPhi = std::cosf(phi);
     const float cosTheta = 1.0f - xy.y();
     const float sinTheta = std::sqrtf(1 - cosTheta * cosTheta);
-    const Vec3 r = {sinTheta * cosPhi, sinTheta * sinPhi, cosTheta};
+    const Vec3 r = { sinTheta * cosPhi, sinTheta * sinPhi, cosTheta };
+    *pdf = INV_PI * 0.5f;
     //
     AL_ASSERT_DEBUG(std::fabsf(Vec3::dot(r, r) - 1.0f) < 0.01f);
     return r;
@@ -192,7 +193,7 @@ Vec3 Sampler::getHemisphereCosineWeighted(float* pdf)
 Sphere(xyz_)
 -------------------------------------------------
 */
-Vec3 Sampler::getSphere()
+Vec3 Sampler::getSphere(float* pdf)
 {
     const Vec2 xy = get2d();
     const float z = 2.0f * xy.x() - 1.0f;
@@ -200,6 +201,7 @@ Vec3 Sampler::getSphere()
     const float iz = sqrtf(1.0f - z * z);
     const float x = sinf(theta) * iz;
     const float y = cosf(theta) * iz;
+    *pdf = INV_PI * 0.25f;
     return Vec3{x, y, z};
 }
 

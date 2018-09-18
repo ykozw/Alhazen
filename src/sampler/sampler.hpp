@@ -91,8 +91,8 @@ public:
     Vec2 getDiscConcentric();
 
     // Hemisphere(xyz_)
-    Vec3 getHemisphere(float* pdf);
-    Vec3 getHemisphereCosineWeighted(float* pdf);
+    Vec3 getHemisphere(float* pdf = nullptr);
+    Vec3 getHemisphereCosineWeighted(float* pdf = nullptr);
 
     // Sphere(xyz_)
     Vec3 getSphere(float* pdf);

@@ -46,18 +46,27 @@ inline float Cos2Phi(const Vec3 &w) { return CosPhi(w) * CosPhi(w); }
 inline float Sin2Phi(const Vec3 &w) { return SinPhi(w) * SinPhi(w); }
 
 
+inline Vec3 SphericalDirection(float sinTheta, float cosTheta, float phi) {
+    return Vec3(sinTheta * std::cosf(phi), sinTheta * std::sinf(phi),
+        cosTheta);
+}
 
 inline float AbsDot(Vec3 v1, Vec3 v2)
 {
     return std::abs(Vec3::dot(v1, v2));
 }
 
+inline bool SameHemisphere(const Vec3 &w, const Vec3 &wp) {
+    return w.z() * wp.z() > 0;
+}
 
 
 class MicrofacetDistribution
 {
 public:
-    MicrofacetDistribution() = default;
+    MicrofacetDistribution(bool sampleVisibleArea)
+        :sampleVisibleArea_(sampleVisibleArea)
+    {}
     virtual ~MicrofacetDistribution() = default;
     virtual float D(Vec3 wh) const = 0;
     virtual float lambda(Vec3 w) const = 0;
@@ -65,21 +74,23 @@ public:
     float G(Vec3 wo, Vec3 wi) const;
     virtual Vec3 sampleWh(Vec3 wo, float u0, float u1) const = 0;
     float pdf(Vec3 wo, Vec3 wh) const;
+protected:
+    bool sampleVisibleArea_ = true;
 };
 
 class GGXDistribution 
     : public MicrofacetDistribution
 {
 public:
-    GGXDistribution(float alphax, float alphay)
-        : alphaX_(alphax), alphaY_(alphay)
+    GGXDistribution(float alphax, float alphay, bool sampleVisibleArea)
+        : MicrofacetDistribution(sampleVisibleArea), alphaX_(alphax), alphaY_(alphay)
         {}
     float D(Vec3 wh) const override;
     Vec3 sampleWh(Vec3 wo, float u0, float u1) const override;
 
 private:
     float lambda(Vec3 w) const override;
-
+private:
     float alphaX_ = 0.0f;
     float alphaY_ = 0.0f;
 };
@@ -97,8 +108,14 @@ float MicrofacetDistribution::G(Vec3 wo, Vec3 wi) const
 
 float MicrofacetDistribution::pdf(Vec3 wo, Vec3 wh) const
 {
-    return D(wh) * G1(wo) * AbsDot(wo, wh) / AbsCosTheta(wo);
-    //return D(wh) * AbsCosTheta(wh);
+    if (sampleVisibleArea_)
+    {
+        return D(wh) * G1(wo) * AbsDot(wo, wh) / AbsCosTheta(wo);
+    }
+    else
+    {
+        return D(wh) * AbsCosTheta(wh);
+    }
 }
 
 
@@ -188,14 +205,42 @@ Vec3 GGXDistribution::sampleWh(
     Vec3 wo,
     float u0, float u1) const
 {
-    Vec3 wh;
-    bool flip = wo.z() < 0;
-    wh = GGxSample(flip ? -wo : wo, alphaX_, alphaY_, u0, u1);
-    if (flip)
+    //
+    if (sampleVisibleArea_)
     {
-        wh = -wh;
+        bool flip = wo.z() < 0;
+        Vec3 wh = GGxSample(flip ? -wo : wo, alphaX_, alphaY_, u0, u1);
+        if (flip)
+        {
+            wh = -wh;
+        }
+        return wh;
     }
-    return wh;
+    //
+    else
+    {
+        float cosTheta = 0, phi = (2 * PI) * u1;
+        if (alphaX_ == alphaY_) {
+            float tanTheta2 = alphaX_ * alphaX_ * u0 / (1.0f - u0);
+            cosTheta = 1 / std::sqrt(1 + tanTheta2);
+        }
+        else {
+            phi =
+                std::atan(alphaY_ / alphaX_ * std::tan(2 * PI * u1 + .5f * PI));
+            if (u1 > .5f) phi += PI;
+            float sinPhi = std::sin(phi), cosPhi = std::cos(phi);
+            const float alphax2 = alphaX_ * alphaX_, alphay2 = alphaY_ * alphaY_;
+            const float alpha2 =
+                1 / (cosPhi * cosPhi / alphax2 + sinPhi * sinPhi / alphay2);
+            float tanTheta2 = alpha2 * u0 / (1 - u0);
+            cosTheta = 1 / std::sqrt(1 + tanTheta2);
+        }
+        float sinTheta =
+            std::sqrt(std::max((float)0., (float)1. - cosTheta * cosTheta));
+        Vec3 wh = SphericalDirection(sinTheta, cosTheta, phi);
+        if (!SameHemisphere(wo, wh)) wh = -wh;
+        return wh;
+    }
 }
 
 float GGXDistribution::lambda(const Vec3 w) const
@@ -212,9 +257,9 @@ float GGXDistribution::lambda(const Vec3 w) const
 
 void test0()
 {
-    const float alphaX = 1.0f;
-    const float alphaY = 1.0f;
-    GGXDistribution ggx(alphaX, alphaY);
+    const float alphaX = 0.1f;
+    const float alphaY = 0.1f;
+    GGXDistribution ggx(alphaX, alphaY, true);
     SamplerHalton sampler;
     sampler.setHash(0x123);
 
@@ -225,7 +270,7 @@ void test0()
     */
     {
         FloatStreamStats<> fs;
-        for (int32_t sn = 0; sn < 1024; ++sn)
+        for (int32_t sn = 0; sn < 1024 * 16; ++sn)
         {
             sampler.startSample(sn);
             float hsPdf;
@@ -243,9 +288,16 @@ void test0()
         for (int32_t sn = 0; sn < 1024 * 16; ++sn)
         {
             sampler.startSample(sn);
-            const Vec3 wo = Vec3(0.0f, 0.1f, 1.0f).normalized();
+            const Vec3 wo = Vec3(0.0f, 1.0f, 1.0f).normalized();
             const Vec3 wh = ggx.sampleWh(wo, sampler.get1d(), sampler.get1d());
-
+            const Vec3 wi = -wh.reflect(wo);
+            //
+            if (!SameHemisphere(wo, wi))
+            {
+                continue;
+            }
+            const float f0 = ggx.pdf(wo, wh);
+            const float f1 = 4.0f * Vec3::dot(wo, wh);
             const float pdf = ggx.pdf(wo, wh) / (4.0f * Vec3::dot(wo, wh));
             fs.add(pdf * 4.0f * PI );
         }

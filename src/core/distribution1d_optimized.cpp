@@ -2,7 +2,6 @@
 #include "core/logging.hpp"
 #include "core/math.hpp"
 #include "core/rng.hpp"
-#include "core/unittest.hpp"
 
 /*
 -------------------------------------------------
@@ -230,43 +229,4 @@ float Distribution1D_Optimized::pdf(int32_t index) const
     // TODO: 実装
     AL_ASSERT_DEBUG(false);
     return 0.0f;
-}
-
-/*
--------------------------------------------------
-TestNaiveAndOptimized
-Distribution1D_Optimizedが、Naive版と同じ挙動になっているかのチェック
--------------------------------------------------
-*/
-AL_TEST(Distribution, Optimized)
-{
-    // データの作成
-    std::vector<float> datas;
-    std::vector<float> samples;
-    RNG rng;
-    for (int32_t i = 0; i < 57; ++i)
-    {
-        const float v = (float)rand() / (float)RAND_MAX * 100;
-        datas.push_back(v);
-    }
-    for (int32_t i = 0; i < 1000; ++i)
-    {
-        samples.push_back(rng.nextFloat());
-    }
-    //
-    Distribution1D_Naive naive(datas);
-    Distribution1D_Optimized optimized(datas);
-    //
-    for (size_t i = 0, n = samples.size(); i < n; ++i)
-    {
-#if 0
-        float pdf0;
-        float pdf1;
-        volatile float v0 = naive.sample(samples[i], &pdf0);
-        volatile float v1 = optimized.sample(samples[i], &pdf1);
-        AL_ASSERT_DEBUG(v0 == v1);
-        AL_ASSERT_DEBUG(pdf0 == pdf1);
-#endif
-    }
-    return;
 }

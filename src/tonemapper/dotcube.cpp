@@ -1,7 +1,6 @@
 ﻿#include "tonemapper/tonemapper.hpp"
 #include "core/distribution1d.hpp"
 #include "core/logging.hpp"
-#include "core/unittest.hpp"
 
 /*
 -------------------------------------------------

@@ -1,7 +1,6 @@
 ﻿#include "core/distribution2d.hpp"
 #include "core/logging.hpp"
 #include "core/rng.hpp"
-#include "core/unittest.hpp"
 
 /*
 -------------------------------------------------
@@ -160,39 +159,4 @@ float Distribution2D::pdf(int32_t x, int32_t y) const
     const float pdfY = columns_.pdf(y);
     const float pdf = pdfX * pdfY;
     return pdf;
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-AL_TEST(Distribution, TwoDimention)
-{
-    // 推定が正しいかチェック
-    {
-        XorShift128 rng;
-        std::vector<std::vector<float>> samples(
-            {{{{0.1f, 0.6f}}, {{0.6f, 1.1f}}}});
-        Distribution2D d2(samples);
-        const int32_t NUM_SAMPLE = 1000;
-        float total = 0.0f;
-        for (int32_t i = 0; i < NUM_SAMPLE; ++i)
-        {
-            //
-            float pdf;
-            Vec2 sp;
-            d2.sample(rng.nextFloat(), rng.nextFloat(), &pdf, &sp);
-            const float v0 = alLerp(samples[0][0], samples[0][1], sp.x());
-            const float v1 = alLerp(samples[1][0], samples[1][1], sp.x());
-            const float v = alLerp(v0, v1, sp.y());
-            total += v / pdf;
-        }
-        total /= (float)NUM_SAMPLE;
-        const float rate = total / 0.6f;
-        if (fabsf(rate - 1.0f) > 0.02f)
-        {
-            return;
-        }
-    }
-    return;
 }

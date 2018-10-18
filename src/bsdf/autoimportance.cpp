@@ -1,7 +1,6 @@
 ﻿#include "bsdf/autoimportance.hpp"
 #include "core/image.hpp"
 #include "core/logging.hpp"
-#include "core/unittest.hpp"
 /*
 TODOs
 - "An importance sampling method for arbitrary BRDFs(2009)"をちゃんと実装する
@@ -238,16 +237,3 @@ float AutoImportance::pdf(Vec3 localWo, Vec3 localWi) const
     return dist2d.pdf(xi, yi);
 }
 
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-AL_TEST(AutoImportance, Basic)
-{
-#if 0
-    AutoImportance ai;
-    BSDFPtr bsdf = createObject<BSDF>("disney");
-    //BSDFPtr bsdf = createObjectOld<BSDF>("diffuse", ObjectProp());
-    ai.setBRDF(bsdf.get());
-#endif
-}

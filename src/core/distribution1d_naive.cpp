@@ -2,7 +2,6 @@
 #include "core/logging.hpp"
 #include "core/math.hpp"
 #include "core/rng.hpp"
-#include "core/unittest.hpp"
 
 /*
 -------------------------------------------------
@@ -121,32 +120,3 @@ float Distribution1D_Naive::pdf(int32_t index) const
     return (cdf_[index + 1] - cdf_[index]) * numValue_;
 }
 
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-AL_TEST(Distribution, OneDimention)
-{
-    // 推定が正しいかチェック
-    {
-        XorShift128 rng;
-        const std::vector<float> samples = {{0.1f, 0.4f}};
-        Distribution1D distribution1d(samples);
-        const int32_t NUM_SAMPLE = 1000;
-        float total = 0.0f;
-        for (int32_t i = 0; i < NUM_SAMPLE + 1; ++i)
-        {
-            float pdf;
-            const float samplePoint =
-                distribution1d.sample(rng.nextFloat(), &pdf);
-            const float value = alLerp(samples[0], samples[1], samplePoint);
-            total += value / pdf;
-        }
-        total /= (float)NUM_SAMPLE;
-        if (fabsf(total / 0.25f - 1.0f) > 0.01f)
-        {
-            return;
-        }
-    }
-    return;
-}

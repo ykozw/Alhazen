@@ -1,7 +1,6 @@
 ﻿#include "accelerator/kdtree.hpp"
 #include "core/orthonormalbasis.hpp"
 #include "core/rng.hpp"
-#include "core/unittest.hpp"
 #include "integrator/integrator.hpp"
 #include "sampler/sampler.hpp"
 

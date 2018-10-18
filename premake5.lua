@@ -7,7 +7,6 @@ solution "Alhazen"
 
 -- global scope
 
-location "generated"
 kind "ConsoleApp"
 language "C++"
 targetdir "bin/%{cfg.buildcfg}"
@@ -105,8 +104,10 @@ configuration "windows"
 
 -- projects
 project "Alhazen"
+  location "generated/alhazen"
 
 project "Alhazen_test"
+  location "generated/test"
   excludes {
     "src/app/*.*"
   }

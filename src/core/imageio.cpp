@@ -1,7 +1,6 @@
 ﻿#include "core/math.hpp"
 #include "core/image.hpp"
 #include "core/logging.hpp"
-#include "core/unittest.hpp"
 #include "core/util.hpp"
 
 // stbimageはここでしか使わないのでここでのみincludeする
@@ -79,29 +78,6 @@ void ImageLDR::writePNG(const std::string& fileName) const
     stbi_write_png(
         fullPath.c_str(), width_, height_, comp, data, strideInBytes);
 }
-
-#if 0
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-AL_TEST(ImageLDR, write)
-{
-    // グラデーションのファイルを出力する
-    ImageLDR image(256, 256);
-    auto& pixels = image.pixels();
-    int32_t index = 0;
-    for (int32_t y = 0; y < image.height(); ++y)
-    {
-        for (int32_t x = 0; x < image.width(); ++x)
-        {
-            pixels[index] = { uint8_t(x),uint8_t(y),0 };
-            ++index;
-        }
-    }
-    image.writePNG("test.png");
-}
-#endif
 
 /*
 -------------------------------------------------

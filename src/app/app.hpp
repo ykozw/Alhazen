@@ -11,7 +11,6 @@ public:
     //
     bool dumpLensData = false;
     bool floatException = false;
-    bool unitTest = false;
     //
     std::string sceneFilePath;
     std::string baseFileDir;

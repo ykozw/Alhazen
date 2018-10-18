@@ -1,8 +1,11 @@
-﻿#include "core/errfloat.hpp"
+﻿//
+#include "catch2/catch.hpp"
+//
+#include "core/errfloat.hpp"
 #include "core/unittest.hpp"
 #include "core/rng.hpp"
 
-AL_TEST(ErrFloat, 0)
+TEST_CASE("ErrFloat:: Basic0", "ErrFloat")
 {
     XorShift128 rng(0x123);
     for (int32_t i=0;i<1024;++i)
@@ -21,9 +24,9 @@ AL_TEST(ErrFloat, 0)
         ErrFloat e1 = genEF();
         long double el0 = double(float(e0));
         long double el1 = double(float(e1));
-        AL_ASSERT_ALWAYS(check(e0 + e1, el0 + el1));
-        AL_ASSERT_ALWAYS(check(e0 - e1, el0 - el1));
-        AL_ASSERT_ALWAYS(check(e0 * e1, el0 * el1));
-        AL_ASSERT_ALWAYS(check(e0 / e1, el0 / el1));
+        REQUIRE(check(e0 + e1, el0 + el1));
+        REQUIRE(check(e0 - e1, el0 - el1));
+        REQUIRE(check(e0 * e1, el0 * el1));
+        REQUIRE(check(e0 / e1, el0 / el1));
     }
 }

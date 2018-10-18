@@ -1,7 +1,6 @@
 ﻿#include "tonemapper/tonemapper.hpp"
 #include "core/distribution1d.hpp"
 #include "core/logging.hpp"
-#include "core/unittest.hpp"
 
 /*
 -------------------------------------------------
@@ -161,20 +160,4 @@ bool Amp::process(const Image& src, ImageLDR& dst) const
     }
     //
     return true;
-}
-
-/*
--------------------------------------------------
--------------------------------------------------
-*/
-AL_TEST(AMP, basic)
-{
-#if 0
-    ObjectProp prop;
-    prop.createFromString(
-        "<tonemapper type = \"Amp\">"\
-        "<string name = \"filee\" value = \"C:\\dev\\chv5\\asset\\scene\\tone.amp\" />"\
-        "</tonemapper>");
-    Amp amp(prop);
-#endif
 }

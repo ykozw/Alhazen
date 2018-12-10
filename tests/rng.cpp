@@ -3,7 +3,6 @@
 //
 #include "core/rng.hpp"
 #include "core/floatstreamstats.hpp"
-#include "core/unittest.hpp"
 
 /*
 -------------------------------------------------
@@ -13,7 +12,7 @@ TEST_CASE("RNG::Basic0", "RNG")
 {
     // 一様に分布しているかのチェック
     XorShift128 rng;
-
+    //
     FloatStreamStats<> statRnd;
     for (int32_t i = 0; i < 10000; ++i)
     {

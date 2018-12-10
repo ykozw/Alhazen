@@ -2,7 +2,6 @@
 #include "catch2/catch.hpp"
 //
 #include "core/errfloat.hpp"
-#include "core/unittest.hpp"
 #include "core/rng.hpp"
 
 TEST_CASE("ErrFloat:: Basic0", "ErrFloat")

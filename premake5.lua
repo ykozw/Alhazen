@@ -6,8 +6,6 @@ solution "Alhazen"
    platforms {"x64"}
 
 -- global scope
-
-kind "ConsoleApp"
 language "C++"
 targetdir "bin/%{cfg.buildcfg}"
 vectorextensions "AVX2"
@@ -23,6 +21,7 @@ includedirs {
   "thirdparty/vdb",
   "thirdparty/tinyobjloader",
   "thirdparty/catch2/single_include",
+  "thirdparty/pybind/include/",
   "%EMBREE_ROOT%/include/",
   "$(EMBREE_ROOT)/include/",
 }
@@ -32,7 +31,12 @@ files {
   "src/**.hpp",
   "src/**.cpp",
   "src/**.inl", 
-  "thirdparty/tinyxml2/tinyxml2.cpp"
+  "thirdparty/tinyxml2/tinyxml2.cpp",
+  "**.lua"
+}
+
+excludes {
+  "src/binder.cpp"
 }
 
 characterset "MBCS"
@@ -104,9 +108,19 @@ configuration "windows"
 
 -- projects
 project "Alhazen"
+  kind "ConsoleApp"
   location "generated/alhazen"
 
+project "AlhazenPy"
+  kind "SharedLib"
+  targetextension ".pyd"
+  includedirs{"$(PYTHON_DIR)/include"}
+  libdirs{"$(PYTHON_DIR)/libs"}
+  files { "src/binder.cpp"}
+  links { "python37.lib" }
+
 project "Alhazen_test"
+  kind "ConsoleApp"
   location "generated/test"
   excludes {
     "src/app/*.*"

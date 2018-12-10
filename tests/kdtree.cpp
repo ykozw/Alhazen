@@ -1,6 +1,5 @@
 ﻿#include "catch2/catch.hpp"
 #include "accelerator/kdtree.hpp"
-#include "core/unittest.hpp"
 #include "sampler/sampler.hpp"
 
 /*

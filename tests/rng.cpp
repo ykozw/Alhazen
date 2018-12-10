@@ -3,7 +3,6 @@
 //
 #include "core/rng.hpp"
 #include "core/floatstreamstats.hpp"
-#include "core/unittest.hpp"
 
 /*
 -------------------------------------------------

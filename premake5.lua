@@ -21,6 +21,7 @@ includedirs {
   "thirdparty/vdb",
   "thirdparty/tinyobjloader",
   "thirdparty/catch2/single_include",
+  "thirdparty/pybind/include/",
   "%EMBREE_ROOT%/include/",
   "$(EMBREE_ROOT)/include/",
 }
@@ -32,6 +33,10 @@ files {
   "src/**.inl", 
   "thirdparty/tinyxml2/tinyxml2.cpp",
   "**.lua"
+}
+
+excludes {
+  "src/binder.cpp"
 }
 
 characterset "MBCS"
@@ -111,6 +116,8 @@ project "AlhazenPy"
   targetextension ".pyd"
   includedirs{"$(PYTHON_DIR)/include"}
   libdirs{"$(PYTHON_DIR)/libs"}
+  files { "src/binder.cpp"}
+  links { "python37.lib" }
 
 project "Alhazen_test"
   kind "ConsoleApp"

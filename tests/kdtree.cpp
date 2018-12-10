@@ -9,7 +9,7 @@
 TEST_CASE("kdtree0", "Accel")
 {
     return;
-
+    //
     struct TestPoint
     {
     public:

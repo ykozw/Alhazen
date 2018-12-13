@@ -2,37 +2,54 @@
 #include "pybind11/stl.h"
 
 //
-int add(int i, int j)
+class DummyRenderer
 {
-    return i + j;
-}
-
-//
-struct Pet
-{
-    Pet(const std::string &name) : name(name) { }
-    void setName(const std::string &name_) { name = name_; }
-    const std::string &getName() const { return name; }
-    std::vector<int32_t> getInts() const
+public:
+    DummyRenderer(int32_t width, int32_t height)
     {
-        return { 0,1,2 };
+        width_ = width;
+        height_ = height;
+        buffer_.resize(width_*height_);
+        for (int32_t y = 0; y < height_; ++y)
+        {
+            for (int32_t x = 0; x < width_; ++x)
+            {
+                auto& p = buffer_[x + y * width_];
+                p[0] = 1.0f;
+                p[1] = 0.0f;
+                p[2] = 0.0f;
+                p[3] = 1.0f;
+            }
+        }
     }
-
-    std::string name;
+    int32_t width()
+    {
+        return width_;
+    }
+    int32_t height()
+    {
+        return height_;
+    }
+    const std::vector<std::array<float,4>>& getBuffer() const
+    {
+        return buffer_;
+    }
+private:
+    int32_t width_ = 0;
+    int32_t height_ = 0;
+    std::vector<std::array<float, 4>> buffer_;
 };
 
 //
 namespace py = pybind11;
-PYBIND11_MODULE(example, m)
+PYBIND11_MODULE(AlhazenPy, m)
 {
     m.doc() = "pybind11 example plugin";
-    m.def("add2", &add, "A function which adds two numbers");
-
-    py::class_<Pet>(m, "Pet")
-        .def(py::init<const std::string &>())
-        .def("setName", &Pet::setName)
-        .def("setName", &Pet::setName)
-        .def("getINts", &Pet::getInts)
+    //
+    py::class_<DummyRenderer>(m, "Render")
+        .def(py::init<int32_t,int32_t>())
+        .def("width", &DummyRenderer::width)
+        .def("height", &DummyRenderer::height)
+        .def("getBuffer", &DummyRenderer::getBuffer)
         ;
-
 }

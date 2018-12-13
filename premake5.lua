@@ -117,7 +117,7 @@ project "AlhazenPy"
   includedirs{"$(PYTHON_DIR)/include"}
   libdirs{"$(PYTHON_DIR)/libs"}
   files { "src/binder.cpp"}
-  links { "python37.lib" }
+  links { "python35.lib" }
 
 project "Alhazen_test"
   kind "ConsoleApp"

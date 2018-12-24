@@ -1,6 +1,13 @@
-﻿import bpy
+﻿# TODOs
+# - イメージのサイズの変更(UI経由で)
+# - 書き込み先イメージ名をいじれるように(UI経由で)
+# - イメージ書き込み後に自動でリフレッシュされているかのチェック
+# - Blener上のindex情報などをpydに渡せるようにする
+
+import bpy
 from bpy.props import IntProperty, FloatProperty
 from bpy.props import EnumProperty, FloatVectorProperty
+import bmesh
 import AlhazenPy
 
 bl_info = {
@@ -59,7 +66,23 @@ class RenderOperation(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-        main()
+        #main()
+        # 選択中のメッシュを得る
+        bm = bmesh.new()
+        me = bpy.context.object.data
+        bm.from_mesh(me)
+
+        bm.verts.ensure_lookup_table()
+        bm.faces.ensure_lookup_table()
+        print(dir(bm))
+        print(dir(bm.verts[0]))
+        print(bm.verts)
+        print(bm.faces)
+        # Modify the BMesh, can do anything here...
+        #for v in bm.verts:
+        #    v.co.x += 1.0
+
+        #print(dir(m))
         return {'FINISHED'}
 
 

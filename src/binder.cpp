@@ -7,6 +7,8 @@ class DummyRenderer
 public:
     DummyRenderer(int32_t width, int32_t height)
     {
+        printf("AlhazenRender Build %s %s\n", __DATE__, __TIME__);
+        //
         width_ = width;
         height_ = height;
         buffer_.resize(width_*height_);
@@ -15,8 +17,8 @@ public:
             for (int32_t x = 0; x < width_; ++x)
             {
                 auto& p = buffer_[x + y * width_];
-                p[0] = 1.0f;
-                p[1] = 0.0f;
+                p[0] = float(x)/float(width_);
+                p[1] = float(y) / float(height_);
                 p[2] = 0.0f;
                 p[3] = 1.0f;
             }

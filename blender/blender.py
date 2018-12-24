@@ -23,7 +23,7 @@ bl_info = {
 
 def main():
     imgName = "ALHAZEN"
-    imgSize = [2,2]
+    imgSize = [128,128]
     images = bpy.data.images
     # 書き込み先イメージの作成
     if images.find(imgName) == -1:

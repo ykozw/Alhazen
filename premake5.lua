@@ -26,6 +26,7 @@ includedirs {
   "$(EMBREE_ROOT)/include/",
 }
 
+-- 全体で使用されるファイル
 files {
   "src/pch.cpp",
   "src/**.hpp",

@@ -11,17 +11,17 @@ import bmesh
 import AlhazenPy
 
 bl_info = {
-    "name": "サンプル2-9: BlenderのUIを制御するアドオン2",
-    "author": "Nutti",
-    "version": (2, 0),
-    "blender": (2, 75, 0),
-    "location": "3Dビュー > ツールシェルフ",
-    "description": "BlenderのUIを制御するアドオン",
-    "warning": "",
-    "support": "TESTING",
-    "wiki_url": "",
-    "tracker_url": "",
-    "category": "User Interface"
+    "name": "Alhazen",
+    "author" : "q",
+    "version" : (1, 0),
+    "blender" : (2, 75, 0),
+    "location" : "",
+    "description" : "Alhazeの呼び出し",
+    "warning" : "",
+    "support" : "TESTING",
+    "wiki_url" : "",
+    "tracker_url" : "",
+    "category" : "User Interface"
 }
 
 def main():
@@ -67,6 +67,7 @@ class RenderOperation(bpy.types.Operator):
 
     def execute(self, context):
         #main()
+        print("EXECUTE")
         # 選択中のメッシュを得る
         bm = bmesh.new()
         me = bpy.context.object.data
@@ -79,8 +80,13 @@ class RenderOperation(bpy.types.Operator):
         print(bm.verts)
         print(bm.faces)
         # Modify the BMesh, can do anything here...
-        #for v in bm.verts:
-        #    v.co.x += 1.0
+        for v in bm.verts:
+            print("index: %d" % v.index)
+            print("norm : %.2f %.2f %.2f" % (v.normal.x, v.normal.y, v.normal.z) )
+
+        for face in bm.faces:
+            print(face)
+
 
         #print(dir(m))
         return {'FINISHED'}
@@ -133,32 +139,47 @@ class ShowAllIcons(bpy.types.Operator):
     def execute(self, context):
         return {'FINISHED'}
 
+class MySettings(bpy.types.PropertyGroup):
+    prop_image_width = IntProperty(
+        name="ImageWidth",
+        description="ImageWidth",
+        default=256,
+        min=64,
+        max=2048
+    )
+    prop_image_height = IntProperty(
+        name="ImageHeight",
+        description="ImageHeight",
+        default=256,
+        min=64,
+        max=2048
+    )
 
 # ツールシェルフに「カスタムメニュー」タブを追加
-class VIEW3D_PT_CustomMenu(bpy.types.Panel):
+class AlhazenPanel(bpy.types.Panel):
     bl_label = "Alhazen"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'TOOLS'
     bl_category = "Alhazen"
     bl_context = "objectmode"
 
-    # ヘッダーのカスタマイズ
-    def draw_header(self, context):
-        layout = self.layout
-        layout.label(text="", icon='PLUGIN')
-
     # メニューの描画処理
     def draw(self, context):
         layout = self.layout
         scene = context.scene
+        #print(dir(scene))
+        #alhazen = context.scene.alhazen
 
         # ボタンを追加
-        layout.label(text="ボタンを追加する:")
-        layout.operator(RenderOperation.bl_idname, text="ボタン1")
-        layout.operator(NullOperation.bl_idname, text="ボタン2", emboss=False)
+        layout.operator(RenderOperation.bl_idname, text="レンダリング")
 
         # 上下の間隔を空ける
         layout.separator()
+
+        # 画像解像度設定
+        layout.label(text="画像設定")
+        #layout.prop(scene, "prop_image_width", text="幅")
+        #layout.prop(scene, "prop_image_height", text="縦")
 
         # メニューを追加
         layout.label(text="メニューを追加する:")
@@ -168,10 +189,10 @@ class VIEW3D_PT_CustomMenu(bpy.types.Panel):
 
         # プロパティを追加
         layout.label(text="プロパティを追加する:")
-        layout.prop(scene, "cm_prop_int", text="プロパティ 1")
-        layout.prop(scene, "cm_prop_float", text="プロパティ 2")
-        layout.prop(scene, "cm_prop_enum", text="プロパティ 3")
-        layout.prop(scene, "cm_prop_floatv", text="プロパティ 4")
+        #layout.prop(scene, "cm_prop_int", text="プロパティ 1")
+        #layout.prop(scene, "cm_prop_float", text="プロパティ 2")
+        # layout.prop(scene, "cm_prop_enum", text="プロパティ 3")
+        #layout.prop(scene, "cm_prop_floatv", text="プロパティ 4")
 
         layout.separator()
 
@@ -305,6 +326,8 @@ def init_props():
         min=0.0,
         max=1.0
     )
+
+
     scene.cm_prop_enum = EnumProperty(
         name="Prop 3",
         description="Enum Property",
@@ -318,11 +341,28 @@ def init_props():
     scene.cm_prop_floatv = FloatVectorProperty(
         name="Prop 4",
         description="Float Vector Property",
-        subtype='COLOR_GAMMA',
+        subtype='LAYER',
         default=(1.0, 1.0, 1.0),
         min=0.0,
         max=1.0
     )
+
+    scene.prop_image_width = IntProperty(
+        name="ImageWidth",
+        description="ImageWidth",
+        default=256,
+        min=64,
+        max=2048
+    )
+
+    scene.prop_image_height = IntProperty(
+        name="ImageHeight",
+        description="ImageHeight",
+        default=256,
+        min=64,
+        max=2048
+    )
+    #scene.cm_prop_unko = PointerProperty(type=MySettings)
 
 
 # プロパティを削除
@@ -336,14 +376,14 @@ def clear_props():
 
 def register():
     bpy.utils.register_module(__name__)
+    #bpy.utils.register_class(MySettings)
     init_props()
-    print("サンプル2-9: アドオン「サンプル2-9」が有効化されました。")
 
 
 def unregister():
     bpy.utils.unregister_module(__name__)
+    bpy.utils.unregister_module(MySettings)
     clear_props()
-    print("サンプル2-9: アドオン「サンプル2-9」が無効化されました。")
 
 
 if __name__ == "__main__":

@@ -3,6 +3,7 @@
 #include "core/distribution2d.hpp"
 #include "core/rng.hpp"
 #include "core/math.hpp"
+#include "core/floatstreamstats.hpp"
 
 /*
 -------------------------------------------------
@@ -31,6 +32,112 @@ TEST_CASE("OneDimention", "Distribution")
             return;
         }
     }
+    return;
+}
+
+/*
+-------------------------------------------------
+-------------------------------------------------
+*/
+TEST_CASE("OneDimention2", "Distribution")
+{
+
+    /*
+    TODOs
+    - 速度テスト
+    - χ2テスト
+    */
+    std::mt19937 rng(0x123);
+    std::uniform_real_distribution<> distUnif;
+    std::vector<float> elements;
+    //
+    SECTION("little ements")
+    {
+        // 長さ0～4で動作するかテスト
+        for (int32_t numElements = 0; numElements <= 4; ++numElements)
+        {
+            elements.clear();
+            for (size_t i = 0; i < numElements; ++i)
+            {
+                elements.push_back((float)distUnif(rng));
+            }
+            Distribution1D_AliasMethod dist(elements);
+            for (int32_t i = 0; i < 128; ++i)
+            {
+                float pdf;
+                dist.sample((float)distUnif(rng), &pdf);
+            }
+        }
+    }
+    SECTION("strange input")
+    {
+        // 要素がない場合
+        {
+            Distribution1D_AliasMethod dist({});
+            for (int32_t i = 0; i < 16; ++i)
+            {
+                float pdf;
+                const float offset = dist.sample((float)distUnif(rng), &pdf);
+                CHECK(pdf == 1.0f);
+                CHECK(offset == 0.0f);
+            }
+        }
+        // 一つだけある要素が0の場合
+        {
+            Distribution1D_AliasMethod dist({ 0.0 });
+            for (int32_t i = 0; i < 16; ++i)
+            {
+                float pdf;
+                int32_t offset;
+                dist.sample((float)distUnif(rng), &pdf, &offset);
+                CHECK(pdf == 1.0f);
+                CHECK(offset == 0);
+            }
+        }
+        // 全ての要素が0の場合
+        {
+            Distribution1D_AliasMethod dist({ 0.0, 0.0f, 0.0f });
+            for (int32_t i = 0; i < 16; ++i)
+            {
+                float pdf;
+                dist.sample((float)distUnif(rng), &pdf);
+                CHECK(pdf == 1.0f);
+            }
+        }
+        // 負の要素がある場合
+        {
+            Distribution1D_AliasMethod dist({ -1.0f, 0.0f, 1.0f });
+            for (int32_t i = 0; i < 16; ++i)
+            {
+                float pdf;
+                int32_t offset;
+                dist.sample((float)distUnif(rng), &pdf, &offset);
+                CHECK(pdf == 3.0f);
+                CHECK(offset == 2);
+            }
+        }
+    }
+    // ちゃんと確率密度が正しい値が返ってるかをテスト
+    SECTION("basic1")
+    {
+        FloatStreamStats fs;
+        const std::vector<float> values = {4.0f,1.0f,1.0f};
+        Distribution1D_AliasMethod dist(values);
+        for (int32_t i = 0; i < 1024; ++i)
+        {
+            float pdf;
+            int32_t offset0;
+            const float u0 = (float)distUnif(rng);
+            const float offsetF = dist.sample(u0, &pdf, &offset0);
+            const int32_t offset1 = int32_t(offsetF);
+            // オフセットは同じ
+            CHECK(offset0 == offset1);
+            const float value = values[offset0] / pdf;
+            // 全て2にならないといけない
+            CHECK(value == Approx(2.0f).epsilon(0.001f));
+        }
+    }
+
     return;
 }
 

@@ -55,9 +55,37 @@ private:
     std::vector<float> cdfBreadthFirst_;
 };
 
+/*
+-------------------------------------------------
+https://en.wikipedia.org/wiki/Alias_method
+http://www.keithschwarz.com/darts-dice-coins/
+-------------------------------------------------
+*/
+class Distribution1D_AliasMethod
+{
+public:
+    Distribution1D_AliasMethod();
+    Distribution1D_AliasMethod(const std::vector<float>& weights);
+    Distribution1D_AliasMethod(const std::initializer_list<float>& pdf);
+    void construct(const std::vector<float>& weightsRaw);
+    float sample(float u, float* pdf, int32_t* offset = nullptr) const;
+    float pdf(int32_t index) const;
+    
+private:
+    //
+    struct AliasProb
+    {
+        // エイリアスのインデックス
+        int32_t alias;
+        // 非エイリアスの選択確率
+        float prob;
+        // 元々の選択確率
+        float pdf;
+    };
+    std::vector<AliasProb> aliasProbs_;
+};
+
 //
-#if 0
-typedef Distribution1D_Optimized Distribution1D;
-#else
-typedef Distribution1D_Naive Distribution1D;
-#endif
+//typedef Distribution1D_Optimized Distribution1D;
+//typedef Distribution1D_Naive Distribution1D;
+typedef Distribution1D_AliasMethod Distribution1D;

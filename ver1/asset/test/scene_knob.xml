@@ -1,0 +1,114 @@
+<?xml version='1.0' encoding='utf-8'?>
+<scene version="0.4.0">
+  
+  <!--タイムアウト。300秒-->
+  <integer name="timeout" value="1500" />
+  
+  <!--プログレッシブ動作-->
+  <boolean name="progressive" value="true" />
+  
+  <!--スナップショット出力秒数設定-->
+  <integer name="snapshotinterval" value="5" />
+  
+  <!--スナップショット毎にデノイズ-->
+  <boolean name="snapshotdenoise" value="false"/>
+  
+  <!--一回のインターバルでのspp-->
+  <integer name="sppinterval" value="4" />
+  
+  <!--サブサンプル指定をここに-->
+  <Sampler type="SamplerIndepent">
+  </Sampler>
+  
+  <!--デノイザー指定-->
+  <!--<denoiser type="medianfilter"/>-->
+  <Denoiser type="NullDenoiser"/>
+  <!--<denoiser type="ap"/>-->
+  
+  <!--インテグレーター-->
+<!--  <LTEIntegrator type="DebugSurfaceIntegrator">-->
+  <LTEIntegrator type="AOSurfaceIntegrator">
+<!--  <LTEIntegrator type="PTSurfaceIntegrator">-->
+  <!--<LTEIntegrator type="BruteForceIntegrator">-->
+  <!--<LTEIntegrator type="PMSurfaceIntegrator">-->
+  </LTEIntegrator>
+  
+  <Tonemapper type="Degamma">
+  </Tonemapper>
+
+  <!--センサー-->
+	<Sensor type="Perspective">
+		<float name="farClip" value="100"/>
+		<float name="focusDistance" value="7"/>
+        <float name="fov" value="45.0"/>
+        <string name="fovAxis" value="x"/>
+		<float name="nearClip" value="0.1"/>
+		<transform name="toWorld">
+			<lookat target="0.0, 0.0, 0.0" origin="0.0, 0.0, -5.0" up="0.0, 1.0, 0.0"/>
+		</transform>
+    <film type="hdrfilm">
+      <integer name="pixelWidth" value="640"/>
+      <integer name="pixelHeight" value="480"/>
+<!--      <integer name="pixelWidth" value="1920"/>-->
+<!--      <integer name="pixelHeight" value="1200"/>-->
+      <float name="filmWidthMM" value="90"/>
+      <float name="filmHeightMM" value="60"/>
+    </film>
+  </Sensor>
+
+  <!--ライト設定-->
+  <!--<Light type="ConstantLight">
+  </Light>-->
+  
+  <!--<Light type="RectangleLight">
+    <float3 name="center" x="0.0" y="0.2" z="0.0"/>
+    <float3 name="axisx" x="0.2" y="0.0" z="0.0"/>
+    <float3 name="axisy" x="0.0" y="0.0" z="0.2"/>
+    <rgb name="radiance" value="1.0 1.0 1.0"/>
+  </Light>-->
+  
+<!--  <Light type="SphereLight">-->
+<!--    <float3 name="center" x="0.0" y="0.8" z="0.0"/>-->
+<!--    <float name="radius" value="0.12"/>-->
+<!--    <rgb name="radiance" value="15.0 15.0 15.0"/>-->
+<!--  </Light>-->
+
+  <!--マテリアル設定-->
+  <BSDF type="Lambertian" id="matWhite">
+    <rgb name="reflectance" value="1.0 1.0 1.0"/>
+  </BSDF>
+  
+  <BSDF type="Lambertian" id="matRed">
+      <rgb name="reflectance" value="1.0 0.0 0.0"/>
+  </BSDF>
+  
+  <BSDF type="Lambertian" id="matGreen">
+      <rgb name="reflectance" value="0.0 1.0 0.0"/>
+  </BSDF>
+  
+  <BSDF type="MicrofacetBSDF" id="metal0">
+    <float name="roughness" value="100000.0"/>
+  </BSDF>
+  
+  <BSDF type="MicrofacetBSDF" id="metal1">
+    <float name="roughness" value="1000.0"/>
+  </BSDF>
+  
+  <BSDF type="MicrofacetBSDF" id="metal2">
+    <float name="roughness" value="200.0"/>
+  </BSDF>
+  
+  <BSDF type="MicrofacetBSDF" id="metal3">
+    <float name="roughness" value="80.0"/>
+  </BSDF>
+  
+  <BSDF type="Mirror" id="mirror">
+    <rgb name="reflectance" value="1.0 1.0 1.0"/>
+  </BSDF>
+
+  <!--knob-->
+  <Shape type="ObjShape">
+    <filename value="mori_knob/testObj.obj"/>
+  </Shape>
+  
+</scene>

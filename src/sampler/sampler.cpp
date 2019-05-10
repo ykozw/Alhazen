@@ -156,7 +156,10 @@ Vec3 Sampler::getHemisphere(float* pdf)
     const float cosTheta = 1.0f - xy.y();
     const float sinTheta = std::sqrtf(1 - cosTheta * cosTheta);
     const Vec3 r = { sinTheta * cosPhi, sinTheta * sinPhi, cosTheta };
-    *pdf = INV_PI * 0.5f;
+    if (pdf != nullptr)
+    {
+        *pdf = INV_PI * 0.5f;
+    }
     //
     AL_ASSERT_DEBUG(std::fabsf(Vec3::dot(r, r) - 1.0f) < 0.01f);
     return r;
@@ -180,8 +183,12 @@ Vec3 Sampler::getHemisphereCosineWeighted(float* pdf)
     const float lenSq = Vec2::dot(uv, uv);
     const float z = std::sqrtf(std::max(1.0f - lenSq, 0.0f));
     const Vec3 r = {uv.x(), uv.y(), z};
-    const float cosTheta = z;
-    *pdf = cosTheta;
+    //
+    if (pdf != nullptr)
+    {
+        const float cosTheta = z;
+        *pdf = cosTheta;
+    }
     //
     AL_ASSERT_DEBUG(std::fabsf(Vec3::dot(r, r) - 1.0f) < 0.01f);
     return r;
